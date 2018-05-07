@@ -144,19 +144,18 @@
             
           // 社区媒体列表api
             axios({
-              method: 'get',
-              baseURL: '/api',
-              url: '/GetMediaList',
-              params:{
-                resid:1
-              }
+				method: 'get',
+				baseURL: '/api',
+				url: '/GetMediaList',
+				params:{
+					resid:1
+				}
             }).then(res => {
-                console.log("返回：", res);
-              }
-            ).catch(
-              err => {
-                console.log(err);
-              }
+					console.log("返回：", res);
+				}
+            ).catch(err => {
+					console.log(err);
+				}
             );
 
 
