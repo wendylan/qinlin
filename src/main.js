@@ -9,6 +9,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // import  $ from 'jquery'
 import axios from 'axios'
+import 'font-awesome/css/font-awesome.css'
 
 Vue.use(vueRouter);
 

@@ -1,0 +1,4 @@
+项目优化：
+    1.eslint的引入(js,vue文件中的js都需要检测)
+    2.小图片改成font-awesome图标
+    3.版本的统一(主要是vue+element-ui)

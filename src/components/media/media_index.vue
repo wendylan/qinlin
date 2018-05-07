@@ -11,7 +11,8 @@
                         </div>
                         <div class="panel_top_right">
                             <h1>媒体管理</h1>
-                            <span>查 看<img src="../../assets/home/rightArr.png" alt=""></span>
+                            <!-- <span>查 看<img src="../../assets/home/rightArr.png" alt=""></span> -->
+                            <span>查 看 <i class="fa fa-angle-right fa-lg"></i></span>
                         </div>
                     </div>
                     <div class="panel_bottom">
