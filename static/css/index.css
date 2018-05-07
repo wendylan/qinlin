@@ -118,10 +118,10 @@
 
 }
 
-.panel_top_right span img {
+.panel_top_right span i {
 	position: absolute;
-	top: 4px;
-	right: -17px;
+	top: 3px;
+	right: -15px;
 
 }
 

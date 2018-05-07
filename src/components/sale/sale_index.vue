@@ -10,8 +10,11 @@
               </div>
             </div>
             <div class="panel_top_right">
-              <h1>客户管理</h1>
-              <span>创 建<img src="../../assets/home/rightArr.png" alt=""></span>
+				<h1>客户管理</h1>
+				<span>创 建
+					<i class="fa fa-angle-right fa-lg"></i>
+					<!-- <img src="../../assets/home/rightArr.png" alt=""> -->
+				</span>
             </div>
           </div>
           <div class="panel_bottom">
@@ -27,7 +30,10 @@
             </div>
             <div class="panel_top_right">
               <h1>方案管理</h1>
-              <span>创 建<img src="../../assets/home/rightArr.png" alt=""></span>
+              <span>创 建
+				  <i class="fa fa-angle-right fa-lg"></i>
+				  <!-- <img src="../../assets/home/rightArr.png" alt=""> -->
+				</span>
             </div>
           </div>
           <div class="panel_bottom">
@@ -43,7 +49,10 @@
             </div>
             <div class="panel_top_right">
               <h1>订单管理</h1>
-              <span>查 看<img src="../../assets/home/rightArr.png" alt=""></span>
+              <span>查 看
+				  <!-- <img src="../../assets/home/rightArr.png" alt=""> -->
+				  <i class="fa fa-angle-right fa-lg"></i>
+				</span>
             </div>
           </div>
           <div class="panel_bottom">

@@ -42,7 +42,12 @@
 
     <!--尾部-->
     <div class="ad_index_footer clearfix" >
-      <p><img src="../../assets/home/home_icon.png" alt=""><router-link to="/admin"> 回到首页</router-link> | Copyright &copy;2018 亲邻科技线上产品部</p>
+		<p>
+			<!-- <img src="../../assets/home/home_icon.png" alt=""> -->
+			<i class="fa fa-home fa-lg"></i>
+			<router-link to="/admin"> 回到首页</router-link>
+			| Copyright &copy;2018 亲邻科技线上产品部
+		</p>
     </div>
 
   </div>
