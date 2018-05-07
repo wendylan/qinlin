@@ -34,11 +34,13 @@
           </el-form>-->
           <div class="username">
             <input type="text" placeholder="账户" v-model="username">
-            <img src="../../assets/home/usericon.png" alt="">
+            <!-- <img src="../../assets/home/usericon.png" alt=""> -->
+			<i class="fa fa-user-o"></i>
           </div>
           <div class="password">
             <input type="password" placeholder="密码" v-model="password" @keyup ="show($event)">
-            <img src="../../assets/home/passicon.png" alt="">
+            <!-- <img src="../../assets/home/passicon.png" alt=""> -->
+			<i class="fa fa-lock"></i>
           </div>
           <div class="remeberUser">
             <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
@@ -254,14 +256,13 @@
     margin-top: 24px;
     margin-bottom: 24px;
   }
-
-  .loginInput img {
-    position: absolute;
-    left: 10px;
-    top: 13px;
-    width: 12px;
-  }
-
+	.loginInput i {
+		position: absolute;
+		left: 10px;
+		top: 13px;
+		width: 12px;
+		color: #999999;
+	}
   input::placeholder {
     color: rgba(0, 0, 0, 0.25);
   }

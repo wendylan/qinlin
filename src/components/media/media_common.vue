@@ -31,8 +31,8 @@
       </ul>
       <div class="handle clearfix">
         <a href="#" class="ad_index_user">
-          <em>媒介</em> <i class="uname">{{name}}</i>
-          <img src="../../assets/home/downArr.png" alt="">
+          <em>媒介</em> <i class="uname fa fa-angle-down fa-lg">{{name}}</i>
+          <!-- <img src="../../assets/home/downArr.png" alt=""> -->
         </a>
         <div class="user_handel_list">
           <ul>

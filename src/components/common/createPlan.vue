@@ -88,7 +88,10 @@
                 <el-button type="primary" icon="el-icon-location-outline" class="map">地图</el-button>
                 <div class="shopcar" @click="dialogTableVisible = true">
                   <el-badge :value="12" class="item">
-                    <img src="../../assets/home/shopCar.png" alt="">
+                    <!-- <img src="../../assets/home/shopCar.png" alt=""> -->
+                    <span class="cart_box">
+						<i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
+					</span>
                   </el-badge>
                 </div>
               </div>
@@ -566,7 +569,8 @@
         <div class="step4" v-if="active==3">
           <div class="createSuccess">
             <div class="successIcon">
-              <img src="../../assets/home/createSuccess.png" alt="">
+              <!-- <img src="../../assets/home/createSuccess.png" alt=""> -->
+			  <i class="fa fa-check-circle fa-4x" style="color:#67C23A;"></i>
               <h2>创建成功</h2>
               <p>创建时间：2018年3月18日</p>
             </div>
@@ -1022,7 +1026,17 @@
   .search-wrap {
     position: relative;
   }
-
+	.cart_box{
+		color:#fff;
+		background:#108EE9;
+		border-radius:50%;
+		display:inline-block;
+		width:50px;
+		height:50px;
+		vertial-align:middle;
+		text-align:center;
+		line-height:50px;
+	}
   .shopcar {
     width: 65px;
     height: 65px;

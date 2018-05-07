@@ -382,7 +382,8 @@
             >
                 <template slot-scope="scope">
                     <p>{{scope.row.city.split(':')[0]}} </p>
-                    <p>{{scope.row.city.split(':')[1]}} <img class="img_box"src="../../assets/mediaMana/lock.png" alt=""></p>
+                    <!-- <p>{{scope.row.city.split(':')[1]}} <img class="img_box"src="../../assets/mediaMana/lock.png" alt=""></p> -->
+                    <p>{{scope.row.city.split(':')[1]}} <i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
                 </template>
             </el-table-column>
             <el-table-column
@@ -783,11 +784,11 @@
     border-radius: 4px;
 
   }
-    .img_box{
+    /* .img_box{
         display: inline-block;
         width: 12px;
         height: 12px;
-    }
+    } */
 
   /*表格*/
   /deep/.el-date-editor .el-range-separator{
