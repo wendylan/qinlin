@@ -788,351 +788,354 @@
 </template>
 
 <script>
-  export default {
+import axios from 'axios';
+export default {
     name: "mediaList",
     data() {
-      return {
-        input: '',
-        //表格
-        planList: [{
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '深圳',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '上海',
-          region: '天河区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '广州',
-          region: '天河区',
-          business: '白云万达商业广场',
-          mediaType: '社区门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '小区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }, {
-          recName: '新世界四季御园新世界四季御园',
-          recType: '社区',
-          city: '石家庄',
-          region: '海珠区',
-          business: '白云万达商业广场',
-          mediaType: '广告门',
-          mediaName: '西街大道东门',
-          assetID: '005B2018D3GZ-X446',
-          usableNum: '2',
-          ptStatus: '正常'
-        }]
-      }
+		return {
+			input: '',
+			//表格
+			planList: [{
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '深圳',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '上海',
+				region: '天河区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '广州',
+				region: '天河区',
+				business: '白云万达商业广场',
+				mediaType: '社区门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '小区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}, {
+				recName: '新世界四季御园新世界四季御园',
+				recType: '社区',
+				city: '石家庄',
+				region: '海珠区',
+				business: '白云万达商业广场',
+				mediaType: '广告门',
+				mediaName: '西街大道东门',
+				assetID: '005B2018D3GZ-X446',
+				usableNum: '2',
+				ptStatus: '正常'
+			}]
+		}
     },
     mounted: function () {
-      this.getData();
+		this.getInitData();
     },
     methods: {
-      //筛选
-      filterRecType(value, row) {
-        return row.recType === value;
-      },
-      filterCity(value, row) {
-        return row.city === value;
-      },
-      filterRegion(value, row) {
-        return row.region === value;
-      },
-      filterMediaType(value, row) {
-        return row.mediaType === value;
-      },
-      filterPTStatus(value, row) {
-        return row.ptStatus === value;
-      },
-      //请求
-      getData() {
-        /* this.$http.get('https://beta.qinlinad.com/QADN/GetResCT')
-           .then(res => {
-             if (res) {
+		//筛选
+		filterRecType(value, row) {
+			return row.recType === value;
+		},
+		filterCity(value, row) {
+			return row.city === value;
+		},
+		filterRegion(value, row) {
+			return row.region === value;
+		},
+		filterMediaType(value, row) {
+			return row.mediaType === value;
+		},
+		filterPTStatus(value, row) {
+			return row.ptStatus === value;
+		},
+		//请求
+		getInitData() {
+			axios({
+				method: 'get',
+				baseURL: '/api',
+				url: '/GetMediaList',
+				params:{
+					resid:1
+				}
+			}).then(res => {
+					console.log("返回：", res);
+				}
+			).catch(err => {
+					console.log(err);
+				}
+			);
+		},
+		//确认框
+		confirmBox(e) {
+			var Status = e.target.innerText;
 
-             } else{
+			this.$confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				dangerouslyUseHTMLString: true,
+				type: 'warning'
+			}).then(() => {
+				//确定
+				this.$message({
+					type: 'success',
+					message: '成功更改状态'
+				});
+			}).catch(() => {
+				this.$message({
+					type: 'info',
+					message: '已取消操作'
+				})
+			});
+		},
+		submitForm() {
+			this.$http({})
+		},
 
-             }
-           })
-           .catch(err => {
-             console.log(err);
-           });*/
-      },
-    },
-    //确认框
-    confirmBox(e) {
-      var Status = e.target.innerText;
+		//删除
+		deleteRow(index, rows) {
+			this.$confirm('你确定删除这条数据吗？', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+				this.$message({
+					type: 'success',
+					message: '删除成功！'
+				});
+				//删除
+				rows.splice(index, 1);
+			}).catch(() => {
+				this.$message({
+					type: 'info',
+					message: '已取消删除'
+				})
+			})
 
-      this.$confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-        type: 'warning'
-      }).then(() => {
-        //确定
-        this.$message({
-          type: 'success',
-          message: '成功更改状态'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        })
-      })
-    },
-    submitForm() {
-      this.$http({})
-    },
-
-    //删除
-    deleteRow(index, rows) {
-      this.$confirm('你确定删除这条数据吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功！'
-        });
-        //删除
-        rows.splice(index, 1);
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-
-    },
-  }
-  $(function () {
-
-    $('body').on('.el-tooltip__popper.is-light').css({
-      'color': '#666666'
-    })
-  })
+		},
+	}
+}
+$(function () {
+	$('body').on('.el-tooltip__popper.is-light').css({
+		'color': '#666666'
+	})
+})
 </script>
 
 <style scoped>
 
-  /deep/ .el-tooltip__popper.is-light {
-    color: #666666 !important;
-    border: 1px solid #666666 !important;
-  }
+	/deep/ .el-tooltip__popper.is-light {
+		color: #666666 !important;
+		border: 1px solid #666666 !important;
+	}
 
-  /*面包屑导航*/
-  .ad_mediaDetail_wrap {
-    position: relative;
-    /*height: 768px;*/
-  }
+	/*面包屑导航*/
+	.ad_mediaDetail_wrap {
+		position: relative;
+		/*height: 768px;*/
+	}
 
-  .ad_mediaDetail_nav p {
-    padding-left: 57px;
-    position: absolute;
-    left: 0;
-    top: 12px;
-    font-family: PingFangSC-Regular;
-    font-size: 14px;
-    line-height: 18px;
-  }
+	.ad_mediaDetail_nav p {
+		padding-left: 57px;
+		position: absolute;
+		left: 0;
+		top: 12px;
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		line-height: 18px;
+	}
 
-  .ad_mediaDetail_nav p a {
-    color: #666;
-  }
+	.ad_mediaDetail_nav p a {
+		color: #666;
+	}
 
-  .ad_mediaDetail_nav {
-    height: 42px;
-    position: relative;
-  }
+	.ad_mediaDetail_nav {
+		height: 42px;
+		position: relative;
+	}
 
-  /*媒体列表*/
-  .mediaList_wrap {
-    width: 1246px;
-    background: #FFFFFF;
-    border: 1px solid #E6E7E9;
-    margin: 0 auto;
-    margin-bottom: 26px;
-  }
+	/*媒体列表*/
+	.mediaList_wrap {
+		width: 1246px;
+		background: #FFFFFF;
+		border: 1px solid #E6E7E9;
+		margin: 0 auto;
+		margin-bottom: 26px;
+	}
 
-  .mediaList_wrap .mediaList_head {
-    width: 100%;
-    height: 24px;
-    padding: 12px 0;
-    border-bottom: 1px solid #E6E7E9;
-  }
+	.mediaList_wrap .mediaList_head {
+		width: 100%;
+		height: 24px;
+		padding: 12px 0;
+		border-bottom: 1px solid #E6E7E9;
+	}
 
-  .mediaList_wrap .mediaList_head h2 {
-    font-size: 16px;
-    color: #2C313C;
-    height: 24px;
-    border-left: 2px solid #465D89;
-    padding-left: 14px;
-    font-weight: bold;
-  }
+	.mediaList_wrap .mediaList_head h2 {
+		font-size: 16px;
+		color: #2C313C;
+		height: 24px;
+		border-left: 2px solid #465D89;
+		padding-left: 14px;
+		font-weight: bold;
+	}
 
-  .mediaList_wrap .mediaList_container {
-    width: 100%;
-    padding: 18px 18px 31px 18px;
-  }
+	.mediaList_wrap .mediaList_container {
+		width: 100%;
+		padding: 18px 18px 31px 18px;
+	}
 
-  .el-input {
-    width: 180px;
-    height: 34px !important;
-    border-radius: 4px;
-  }
+	.el-input {
+		width: 180px;
+		height: 34px !important;
+		border-radius: 4px;
+	}
 
-  /deep/ .el-input__inner {
-    height: 34px;
-    position: relative;
-    top: -1px;
-  }
+	/deep/ .el-input__inner {
+		height: 34px;
+		position: relative;
+		top: -1px;
+	}
 
-  .el-button--primary {
-    background: #108EE9;
-    border-radius: 4px;
-  }
+	.el-button--primary {
+		background: #108EE9;
+		border-radius: 4px;
+	}
 
-  .el-button {
-    width: 76px;
-    height: 34px;
-    text-align: center;
-    line-height: 34px;
-    padding: 0;
-    margin-left: 2px
-  }
+	.el-button {
+		width: 76px;
+		height: 34px;
+		text-align: center;
+		line-height: 34px;
+		padding: 0;
+		margin-left: 2px
+	}
 
-  .mediaList_wrap .mediaList_container .table_wrap {
-    width: 1210px;
-    margin: 10px 0 0 0;
+	.mediaList_wrap .mediaList_container .table_wrap {
+		width: 1210px;
+		margin: 10px 0 0 0;
 
-    border-radius: 4px;;
-  }
+		border-radius: 4px;;
+	}
 
-  .table_wrap {
-    width: 1210px;
-    border-radius: 4px;
+	.table_wrap {
+		width: 1210px;
+		border-radius: 4px;
 
-    margin: 0 auto;
-    margin-top: 20px;
-  }
+		margin: 0 auto;
+		margin-top: 20px;
+	}
 
   /* .table_wrap .tr_wrap{
      width: 1208px;
@@ -1334,303 +1337,303 @@
    }*/
 
   /*表格*/
-  /deep/ .el-date-editor .el-range-separator {
-    line-height: 26px;
-  }
+	/deep/ .el-date-editor .el-range-separator {
+		line-height: 26px;
+	}
 
-  /deep/ .el-table th, .el-table tr {
-    height: 44px;
-    padding: 0;
-    background-color: #f7f7f7;
+	/deep/ .el-table th, .el-table tr {
+		height: 44px;
+		padding: 0;
+		background-color: #f7f7f7;
 
-  }
+	}
 
-  /deep/ .el-table td {
-    padding: 8px 0;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-  }
+	/deep/ .el-table td {
+		padding: 8px 0;
+		overflow-x: hidden;
+		text-overflow: ellipsis;
+	}
 
-  /deep/ .el-table--border {
-    border-radius: 4px;
-  }
+	/deep/ .el-table--border {
+		border-radius: 4px;
+	}
 
-  /deep/ .el-table th > .cell {
-    font-size: 14px;
-    color: #666666;
-    font-weight: bold;
-  }
+	/deep/ .el-table th > .cell {
+		font-size: 14px;
+		color: #666666;
+		font-weight: bold;
+	}
 
-  /deep/ .el-table .caret-wrapper {
-    width: 22px;
-  }
+	/deep/ .el-table .caret-wrapper {
+		width: 22px;
+	}
 
-  /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
-    background-color: #ecf5ff;
-  }
+	/deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
+		background-color: #ecf5ff;
+	}
 
-  /*滚动条*/
-  /deep/ .el-table__body-wrapper {
-    height: 405px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
+	/*滚动条*/
+	/deep/ .el-table__body-wrapper {
+		height: 405px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
 
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar {
-    width: 4px;
-    background: #FAFAFA;
+	/deep/ .el-table__body-wrapper::-webkit-scrollbar {
+		width: 4px;
+		background: #FAFAFA;
 
-  }
+	}
 
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+	/deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
 
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    background: #C1C1C1;
-    border-radius: 4px;
-  }
+		-webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+		background: #C1C1C1;
+		border-radius: 4px;
+	}
 
-  /*超出省略*/
-  /deep/ .el-table .cell {
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+	/*超出省略*/
+	/deep/ .el-table .cell {
+		overflow-x: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
-  /*筛选*/
-  /deep/ .el-table__column-filter-trigger {
-    margin-left: 10px;
-  }
+	/*筛选*/
+	/deep/ .el-table__column-filter-trigger {
+		margin-left: 10px;
+	}
 
-  /deep/ .el-table th > .cell.highlight {
-    color: #409EFF !important;
-  }
+	/deep/ .el-table th > .cell.highlight {
+		color: #409EFF !important;
+	}
 
-  /deep/ div.el-table-filter {
-    left: 1106px !important;
-  }
+	/deep/ div.el-table-filter {
+		left: 1106px !important;
+	}
 
-  /*操作*/
-  /deep/ .el-button--mini, .el-button--small {
-    font-size: 14px !important;
-  }
+	/*操作*/
+	/deep/ .el-button--mini, .el-button--small {
+		font-size: 14px !important;
+	}
 
-  /deep/ .el-button .el-button--primary .el-button--mini {
-    width: 51px;
-  }
+	/deep/ .el-button .el-button--primary .el-button--mini {
+		width: 51px;
+	}
 
-  /deep/ .el-dropdown-menu--mini .el-dropdown-menu__item {
-    width: 65px;
-  }
+	/deep/ .el-dropdown-menu--mini .el-dropdown-menu__item {
+		width: 65px;
+	}
 
-  .tar {
-    text-align: right !important;
-    padding-right: 10px;
-  }
+	.tar {
+		text-align: right !important;
+		padding-right: 10px;
+	}
 
-  /deep/ .el-table_1_column_9 {
-    text-align: right;
-  }
+	/deep/ .el-table_1_column_9 {
+		text-align: right;
+	}
 
-  /*
-    /deep/ .el-dropdown .el-button-group .el-button{
-      height: 28px;
-    }*/
+	/*
+	/deep/ .el-dropdown .el-button-group .el-button{
+		height: 28px;
+	}*/
 
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
+	/deep/ .el-button:focus, /deep/ .el-button:hover {
+		border: 1px solid #409eff;
+		color: #409EFF;
+		background-color: #ffffff;
 
-  }
+	}
 
-  /*提示框*/
-  /deep/ .el-message {
-    top: 65px;
-    padding: 7px 15px 7px 20px;
-  }
+	/*提示框*/
+	/deep/ .el-message {
+		top: 65px;
+		padding: 7px 15px 7px 20px;
+	}
 
-  /*操作*/
+	/*操作*/
 
-  .dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    position: relative;
-    top: -2px;
-    margin-right: 6px;
-  }
+	.dot {
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		position: relative;
+		top: -2px;
+		margin-right: 6px;
+	}
 
-  .dwx_dot {
-    background-color: #FE7A38;
-  }
+	.dwx_dot {
+		background-color: #FE7A38;
+	}
 
-  .daz_dot {
-    background-color: #FAAE14;
-  }
+	.daz_dot {
+		background-color: #FAAE14;
+	}
 
-  .zc_dot {
-    background-color: #87D068;
-  }
+	.zc_dot {
+		background-color: #87D068;
+	}
 
-  .jy_dot {
-    background-color: #cccccc;
-  }
+	.jy_dot {
+		background-color: #cccccc;
+	}
 
-  /deep/ .el-dropdown .el-button-group .el-button {
-    height: 28px;
-    width: 54px;
-    font-size: 14px;
-    padding: 0;
-  }
+	/deep/ .el-dropdown .el-button-group .el-button {
+		height: 28px;
+		width: 54px;
+		font-size: 14px;
+		padding: 0;
+	}
 
-  /deep/ .el-dropdown .el-button-group .el-button:last-child {
-    width: 30px;
-  }
+	/deep/ .el-dropdown .el-button-group .el-button:last-child {
+		width: 30px;
+	}
 
-  /deep/ .popper__arrow {
-    display: none;
-  }
+	/deep/ .popper__arrow {
+		display: none;
+	}
 
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
+	/deep/ .el-button:focus, /deep/ .el-button:hover {
+		border: 1px solid #409eff;
+		color: #409EFF;
+		background-color: #ffffff;
 
-  }
+	}
 
-  .handel_btn {
-    position: relative;
-  }
+	.handel_btn {
+		position: relative;
+	}
 
-  /* .handel_btn img{
-     position: relative;
-     top: -2px;
-     left: 12px;
-     transform: rotate(180deg);
-   }*/
+	/* .handel_btn img{
+		position: relative;
+		top: -2px;
+		left: 12px;
+		transform: rotate(180deg);
+	}*/
 
-  /* .handel_list{
-     width: 84px;
-     display: none;
-     background: #FFFFFF;
-     border: 1px solid #D9D9D9;
-     box-shadow: 0 1px 4px 0 rgba(0,0,0,0.20);
-     border-radius: 4px;
-     position: absolute;
-     left: 14px;
-     top: 36px;
-     z-index: 999;
-   }
+	/* .handel_list{
+		width: 84px;
+		display: none;
+		background: #FFFFFF;
+		border: 1px solid #D9D9D9;
+		box-shadow: 0 1px 4px 0 rgba(0,0,0,0.20);
+		border-radius: 4px;
+		position: absolute;
+		left: 14px;
+		top: 36px;
+		z-index: 999;
+	}
 
-   .handel_list>li{
-     height: 24px;
-     line-height: 24px;
-     padding: 0;
-     cursor: pointer;
-   }
-   !*蓝色边框*!
-   .blurBd{
-     border: 1px solid #108EE9;
-     color: #108EE9;
-   }*/
+	.handel_list>li{
+		height: 24px;
+		line-height: 24px;
+		padding: 0;
+		cursor: pointer;
+	}
+	!*蓝色边框*!
+	.blurBd{
+		border: 1px solid #108EE9;
+		color: #108EE9;
+	}*/
 
-  /*提示框*/
-  .tipBox {
-    width: 224px;
-    height: 93px;
-    position: absolute;
-    top: -134px;
-    left: -142px;
-    background: #FFFFFF;
-    /*box-shadow: 0 1px 4px 0 rgba(0,0,0,0.20);*/
-    box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.20);
-    border-radius: 4px;
-    padding-top: 25px;
-    padding-left: 15px;
-    box-sizing: border-box;
-    display: none;
-    z-index: 999;
-  }
+	/*提示框*/
+	.tipBox {
+		width: 224px;
+		height: 93px;
+		position: absolute;
+		top: -134px;
+		left: -142px;
+		background: #FFFFFF;
+		/*box-shadow: 0 1px 4px 0 rgba(0,0,0,0.20);*/
+		box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.20);
+		border-radius: 4px;
+		padding-top: 25px;
+		padding-left: 15px;
+		box-sizing: border-box;
+		display: none;
+		z-index: 999;
+	}
 
-  .tipBox p {
-    font-size: 12px;
-    color: #666666;
-    margin-bottom: 15px;
-  }
+	.tipBox p {
+		font-size: 12px;
+		color: #666666;
+		margin-bottom: 15px;
+	}
 
-  .tipBox p em {
-    font-weight: bold;
-  }
+	.tipBox p em {
+		font-weight: bold;
+	}
 
-  .tipBox p img {
-    padding-right: 8px;
-  }
+	.tipBox p img {
+		padding-right: 8px;
+	}
 
-  .tipBox:after {
-    position: absolute;
-    display: inline-block;
-    top: 86px;
-    left: 165px;
-    width: 0;
-    height: 0;
-    content: '';
-    border-style: solid;
-    border-width: 5px;
-    border-color: #fff #fff transparent transparent;
-    transform: rotate(135deg);
-    box-shadow: 2px -2px 2px #ccc;
-  }
+	.tipBox:after {
+		position: absolute;
+		display: inline-block;
+		top: 86px;
+		left: 165px;
+		width: 0;
+		height: 0;
+		content: '';
+		border-style: solid;
+		border-width: 5px;
+		border-color: #fff #fff transparent transparent;
+		transform: rotate(135deg);
+		box-shadow: 2px -2px 2px #ccc;
+	}
 
-  .tipBox button {
-    width: 44px;
-    height: 22px;
-    border: 1px solid #D9D9D9;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: 12px;
-    color: #666666;
-    margin-left: 99px;
-    outline: none;
-  }
+	.tipBox button {
+		width: 44px;
+		height: 22px;
+		border: 1px solid #D9D9D9;
+		border-radius: 4px;
+		background-color: #fff;
+		font-size: 12px;
+		color: #666666;
+		margin-left: 99px;
+		outline: none;
+	}
 
-  .tipBox button:last-child {
-    background-color: #108EE9;
-    color: #ffffff;
-    margin-left: 8px;
-  }
+	.tipBox button:last-child {
+		background-color: #108EE9;
+		color: #ffffff;
+		margin-left: 8px;
+	}
 
-  /*1440*/
-  @media screen and (min-width: 1440px) {
+/*1440*/
+@media screen and (min-width: 1440px) {
 
-    .ad_mediaDetail_nav p {
-      padding-left: 60px;
-    }
+	.ad_mediaDetail_nav p {
+		padding-left: 60px;
+	}
 
-    .mediaList_wrap {
-      width: 1321.3px !important;
-      margin-bottom: 165px !important;
-    }
+	.mediaList_wrap {
+		width: 1321.3px !important;
+		margin-bottom: 165px !important;
+	}
 
-    .mediaList_wrap .mediaList_container .table_wrap {
-      width: 1284px;
-    }
+	.mediaList_wrap .mediaList_container .table_wrap {
+		width: 1284px;
+	}
 
-  }
+}
 
-  /*1920*/
-  @media screen and (min-width: 1920px) {
+/*1920*/
+@media screen and (min-width: 1920px) {
 
-    .mediaList_wrap {
-      width: 1800px !important;
-      margin-bottom: 176px !important;
-    }
+	.mediaList_wrap {
+		width: 1800px !important;
+		margin-bottom: 176px !important;
+	}
 
-    .mediaList_wrap .mediaList_container .table_wrap {
-      width: 1764px;
-    }
+	.mediaList_wrap .mediaList_container .table_wrap {
+		width: 1764px;
+	}
 
-  }
+}
 
 
 </style>
