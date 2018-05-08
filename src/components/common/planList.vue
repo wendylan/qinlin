@@ -357,9 +357,14 @@
             </el-table-column>
             <el-table-column
               prop="clientName"
-              label="客户名称"
+              label="客户名称" 
               min-width="12.6%"
             >
+				<template slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="scope.row.clientName" placement="bottom">
+						<span title="">{{scope.row.clientName}}</span>
+					</el-tooltip>
+              </template>
             </el-table-column>
 			<el-table-column
               prop="brandName"

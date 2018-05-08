@@ -657,7 +657,7 @@
               min-width="10.2%"
             >
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" content="scope.row.recName" placement="bottom-start">
+                <el-tooltip class="item" effect="dark" :content="scope.row.recName" placement="bottom-start">
                   <span title="">{{scope.row.recName}}</span>
                 </el-tooltip>
               </template>
@@ -966,12 +966,24 @@ export default {
 		},
 		//请求
 		getInitData() {
+			// axios({
+			// 	method: 'get',
+			// 	baseURL: '/api',
+			// 	url: '/GetMediaList',
+			// 	params:{
+			// 		resid:1
+			// 	}
+			// }).then(res => {
+			// 	console.log("返回：", res);
+			// }).catch(err => {
+			// 	console.log(err);
+			// });
 			axios({
-				method: 'get',
+				method: 'post',
 				baseURL: '/api',
-				url: '/GetMediaList',
-				params:{
-					resid:1
+				url: '/GetTradingArea',
+				data:{
+					ta:'山泉'
 				}
 			}).then(res => {
 				console.log("返回：", res);
