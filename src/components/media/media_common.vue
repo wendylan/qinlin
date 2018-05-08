@@ -62,54 +62,51 @@
 </template>
 
 <script>
-  import utils from '../../utils.js';
-
-  export default {
-    name: 'home',
-
-    mounted: function () {
-      $(function () {
-       /* $('.ad_index_nav').children('li').hover(function () {
-          $(this).children('a').css({
-            "color": "#fff",
-            "border-bottom": "3px solid #fff"
-          });
-          $(this).find('ul').show();
-        }, function () {
-          $(this).children('a').css({
-            "color": "#999",
-            "border-bottom": "none"
-          });
-          $(this).find('ul').hide();
-        }).click(function () {
-          $(this).find('ul').hide();
-        });
-
-*/
-        //修改密码
-        $('.ad_index_user').click(function () {
-          if ($('.user_handel_list').css('display') === 'none') {
-            $('.user_handel_list').show();
-          } else {
-            $('.user_handel_list').hide();
-          }
-        });
-      });
-      this.name = utils.getCookie('realname');
-    },
-    data() {
-      return {
-        name: '',
-        paths: ["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
-      }
-    },
-    methods: {
-      routerNav: function (path) {
-        // this.$router.push({ path: path })
-        this.$router.push(path)
-      },
-    }
-  }
+import utils from '../../utils.js';
+export default {
+	name: 'home',
+	mounted: function () {
+		$(function () {
+			/* $('.ad_index_nav').children('li').hover(function () {
+				$(this).children('a').css({
+					"color": "#fff",
+					"border-bottom": "3px solid #fff"
+				});
+				$(this).find('ul').show();
+				}, function () {
+				$(this).children('a').css({
+					"color": "#999",
+					"border-bottom": "none"
+				});
+				$(this).find('ul').hide();
+				}).click(function () {
+				$(this).find('ul').hide();
+				});
+		*/
+			//修改密码
+			$('.ad_index_user').click(function () {
+				if ($('.user_handel_list').css('display') === 'none') {
+					$('.user_handel_list').show();
+				} else {
+					$('.user_handel_list').hide();
+				}
+			});
+		});
+		this.name = utils.getCookie('realname');
+	},
+	data() {
+		return {
+			name: '',
+			paths: ["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
+		}
+	},
+	methods: {
+		routerNav: function (path) {
+			// this.$router.push({ path: path })
+			this.$router.push(path)
+		},
+	}
+}
 
 
 </script>

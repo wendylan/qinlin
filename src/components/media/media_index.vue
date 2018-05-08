@@ -59,9 +59,9 @@
 </template>
 
 <script>
-    export default {
-        name: "media_index"
-    }
+export default {
+    name: "media_index"
+}
 </script>
 
 <style scoped>

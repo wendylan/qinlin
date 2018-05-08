@@ -790,8 +790,8 @@
 <script>
 import axios from 'axios';
 export default {
-    name: "mediaList",
-    data() {
+	name: "mediaList",
+	data() {
 		return {
 			input: '',
 			//表格
@@ -940,11 +940,11 @@ export default {
 				ptStatus: '正常'
 			}]
 		}
-    },
-    mounted: function () {
+	},
+	mounted: function () {
 		this.getInitData();
-    },
-    methods: {
+	},
+	methods: {
 		//筛选
 		filterRecType(value, row) {
 			return row.recType === value;
@@ -971,12 +971,10 @@ export default {
 					resid:1
 				}
 			}).then(res => {
-					console.log("返回：", res);
-				}
-			).catch(err => {
-					console.log(err);
-				}
-			);
+				console.log("返回：", res);
+			}).catch(err => {
+				console.log(err);
+			});
 		},
 		//确认框
 		confirmBox(e) {
@@ -1035,7 +1033,6 @@ $(function () {
 </script>
 
 <style scoped>
-
 	/deep/ .el-tooltip__popper.is-light {
 		color: #666666 !important;
 		border: 1px solid #666666 !important;

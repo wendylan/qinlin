@@ -97,141 +97,140 @@
   </div>
 </template>
 <script>
-    export default {
-        name: "publishPriceList",
-      data(){
-        return {
-          publishPriceList:[{
-            city:'北京',
-            media:'社区广告门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-        }, {
-            city:'广州',
-            media:'社区广告门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }, {
-            city:'上海222',
-            media:'电梯门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }, {
-            city:'深圳',
-            media:'社区广告门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }, {
-            city:'重庆',
-            media:'电梯门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }, {
-            city:'成都',
-            media:'社区广告门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }, {
-            city:'上海上海',
-            media:'社区广告门',
-            publicPrice:'￥3800',
-            cityUpdate:'',
-            mediaUpdate:'',
-            priceUpdate:'',
-            showInput:false,
-            changeBtn:false,
-          }]
-        }
-      },
-      methods:{
-        filterCity(value, row) {
-          return row.city === value;
-        },
-        filterMedia(value, row){
-          return row.media === value;
-        },
-        //删除
-        deleteRow(index, rows){
-          this.$confirm('确定要删除这条数据吗？', '提示', {
-            confirmButtonText:'确定',
-            cancelButtonText:'取消',
-            type:'warning'
-          }).then(()=>{
-            //请求？
-            rows.splice(index, 1);
-              this.$message({
-            type:'success',
-              message:'删除成功！'
-            });
-          }).catch(()=>{
-            this.$message({
-              type:'info',
-              message:'已取消删除'
-            })
-          })
+	export default {
+		name: "publishPriceList",
+		data(){
+			return {
+				publishPriceList:[{
+					city:'北京',
+					media:'社区广告门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'广州',
+					media:'社区广告门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'上海222',
+					media:'电梯门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'深圳',
+					media:'社区广告门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'重庆',
+					media:'电梯门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'成都',
+					media:'社区广告门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}, {
+					city:'上海上海',
+					media:'社区广告门',
+					publicPrice:'￥3800',
+					cityUpdate:'',
+					mediaUpdate:'',
+					priceUpdate:'',
+					showInput:false,
+					changeBtn:false,
+				}]
+			}
+		},
+		methods:{
+			filterCity(value, row) {
+				return row.city === value;
+			},
+			filterMedia(value, row){
+				return row.media === value;
+			},
+			//删除
+			deleteRow(index, rows){
+				this.$confirm('确定要删除这条数据吗？', '提示', {
+					confirmButtonText:'确定',
+					cancelButtonText:'取消',
+					type:'warning'
+				}).then(()=>{
+					//请求？
+					rows.splice(index, 1);
+					this.$message({
+						type:'success',
+						message:'删除成功！'
+					});
+				}).catch(()=>{
+					this.$message({
+						type:'info',
+						message:'已取消删除'
+					})
+				})
+			},
+			//编辑
+			editPP(index){
+				this.publishPriceList[index].cityUpdate = this.publishPriceList[index].city;
+				this.publishPriceList[index].mediaUpdate = this.publishPriceList[index].media;
+				this.publishPriceList[index].priceUpdate = this.publishPriceList[index].publicPrice;
+				//切换输入框和操作类型的显示
+				this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
+				this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
+			},
+			//保存
+			savePP(index){
+				//数据保存到后台然后重新渲染
+				/* this.$http.get('/user?ID=12345')
+					.then(function(res){
+					console.log(res);
+					})
+					.catch(function(err){
+					console.log(err);
+					});*/
 
-        },
-        //编辑
-        editPP(index, rows){
-          this.publishPriceList[index].cityUpdate = this.publishPriceList[index].city;
-          this.publishPriceList[index].mediaUpdate = this.publishPriceList[index].media;
-          this.publishPriceList[index].priceUpdate = this.publishPriceList[index].publicPrice;
-          //切换输入框和操作类型的显示
-          this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-          this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
-        },
-        //保存
-        savePP(index, rows){
-          //数据保存到后台然后重新渲染
-          /* this.$http.get('/user?ID=12345')
-             .then(function(res){
-               console.log(res);
-             })
-             .catch(function(err){
-               console.log(err);
-             });*/
+				//前端显示
+				this.publishPriceList[index].city = this.publishPriceList[index].cityUpdate;
+				this.publishPriceList[index].media = this.publishPriceList[index].mediaUpdate;
+				this.publishPriceList[index].publicPrice = this.publishPriceList[index].priceUpdate;
 
-          //前端显示
-          this.publishPriceList[index].city = this.publishPriceList[index].cityUpdate;
-          this.publishPriceList[index].media = this.publishPriceList[index].mediaUpdate;
-          this.publishPriceList[index].publicPrice = this.publishPriceList[index].priceUpdate;
-
-          //切换输入框和操作类型的显示
-          this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-          this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
-        },
-        //取消
-        cancelPP(index, rows){
-          //切换输入框和操作类型的显示
-          this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-          this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
-        }
-      }
-    }
+				//切换输入框和操作类型的显示
+				this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
+				this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
+			},
+			//取消
+			cancelPP(index){
+				//切换输入框和操作类型的显示
+				this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
+				this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
+			}
+		}
+	}
 
     /*$(function() {
       //编辑

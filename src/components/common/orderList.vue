@@ -109,164 +109,162 @@
 </template>
 
 <script>
-  export default {
-    name: "projectList",
-    data() {
-      return {
-        cDate: '',
-        search: '',
-        //表格
-        orderList: [{
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '强制完成',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        }, {
-          orderName: '新世界百货二月投放方案2.0',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'GZ201809890',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        }]
-      }
-    },
+	export default {
+		name: "projectList",
+		data() {
+			return {
+				cDate: '',
+				search: '',
+				//表格
+				orderList: [{
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '未投放',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '强制完成',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '已完成',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '已完成',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '已完成',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '未投放',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '未投放',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '进行中',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '进行中',
+				}, {
+					orderName: '新世界百货二月投放方案2.0',
+					clientName: '北京通瑞万华置业北京通瑞万华置业',
+					contractID: 'GZ201809890',
+					orderPrice: '￥3,720,000',
+					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
+					createDate: '2018.08.30',
+					Status: '进行中',
+				}]
+			}
+		},
 
-    methods: {
-      //提示框
-      inputBox1(){
-        this.$prompt('请输入监控备注', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputType:'textarea',
-          inputPattern:  /^.{1,100}$/,
-          inputErrorMessage: '监控备注超过100字,请缩减'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '监控备注输入成功'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });
-        });
-      },
+		methods: {
+			//提示框
+			inputBox1(){
+				this.$prompt('请输入监控备注', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					inputType:'textarea',
+					inputPattern:  /^.{1,100}$/,
+					inputErrorMessage: '监控备注超过100字,请缩减'
+				}).then(() => {
+					this.$message({
+						type: 'success',
+						message: '监控备注输入成功'
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消输入'
+					});
+				});
+			},
 
-      confirmBox1(){
-        console.log(this);
-        this.$confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？', '提示', {
-          confirmButtonText:'是',
-          cancelButtonText:'否',
-          dangerouslyUseHTMLString: true,
-          type:'warning'
-        }).then(()=>{
-          //确定
-          this.$message({
-            type:'success',
-            message:'操作成功'
-          });
-        }).catch(()=>{
-          this.$message({
-            type:'info',
-            message:'已取消操作'
-          })
-        });
-      },
-      //筛选
-      filterStatus(value, row) {
-        return row.Status === value;
-      },
-      //状态
+			confirmBox1(){
+				console.log(this);
+				this.$confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？', '提示', {
+					confirmButtonText:'是',
+					cancelButtonText:'否',
+					dangerouslyUseHTMLString: true,
+					type:'warning'
+				}).then(()=>{
+					//确定
+					this.$message({
+						type:'success',
+						message:'操作成功'
+					});
+				}).catch(()=>{
+					this.$message({
+						type:'info',
+						message:'已取消操作'
+					})
+				});
+			},
+			//筛选
+			filterStatus(value, row) {
+				return row.Status === value;
+			},
+			//状态
 
-    },
+		},
+	}
 
-  }
+	$(function () {
+		/*window.onresize = function () {
+			if ($(window.width >= 1366)) {
+				$('.el-table-filter').css({
+					left: '1145'
+				})
+			}
+		};*/
+		var Status = $('.el-table__row').find('td').text();
+		if(Status === '已完成'){
+			$('.watch').attr('disabled', 'disabled')
+		}
 
-  $(function () {
-    /*window.onresize = function () {
-      if ($(window.width >= 1366)) {
-        $('.el-table-filter').css({
-          left: '1145'
-        })
-      }
-    };*/
-    var Status = $('.el-table__row').find('td').text();
-    if(Status === '已完成'){
-        $('.watch').attr('disabled', 'disabled')
-    }
-
-
-  })
+	})
 </script>
 
 <style scoped>

@@ -67,108 +67,98 @@
 </template>
 
 <script>
-  import  utils from '../../utils.js';
-  import axios from 'axios';
-  export default {
-    name: "login",
-    data() {
+import  utils from '../../utils.js';
+import axios from 'axios';
+export default {
+	name: "login",
+	data() {
+		return {
+			loading: false,
+			isActive: true,
+			remeAccount: false,
+			username: '',
+			password: '',
+			realName:''
+		}
+	},
+	mounted: function () {
+		// this.postData()
+		//页面加载调用获取cookie值
+		this.username = utils.getCookie('username');
+		this.password = utils.getCookie('password');
+	},
+	methods: {
+		//键盘
+		show:function(ev){
+			if(ev.keyCode===13){
+				this.doLogin();
+			}
+		},
+		//登录
+		doLogin: function () {
+			let name = this.username;
+			let pass = this.password;
+			if (name === '' || name == null) {
+				alert('请输入正确的用户名');
+				return;
+			} else if (pass === '' || pass == null) {
+				alert('请输入正确的密码');
+				return;
+			}
+			//判断复选框是否勾选，勾选则调用配置cookie方法
+			if (this.remeAccount === true) {
+				utils.setCookie('username', name, 7);
+				utils.setCookie('password', pass, 7);
+			} else {
+				utils.clearCookie();
+			}
 
-      return {
-        loading: false,
-        isActive: true,
-        remeAccount: false,
-        username: '',
-        password: '',
-        realName:''
-      }
-    },
-    mounted: function () {
-      // this.postData()
-      //页面加载调用获取cookie值
-      this.username = utils.getCookie('username');
-      this.password = utils.getCookie('password');
+			// //接口
+			// this.$http.post(url,data)
+			// .then(res => {
 
-    },
-    methods: {
-      //键盘
-      show:function(ev){
-        if(ev.keyCode===13){
-          this.doLogin();
-        }
-      },
-      //登录
-      doLogin: function () {
+			// })
+			// .catch(err => {
 
-        let name = this.username;
-        let pass = this.password;
-        if (name === '' || name == null) {
-          alert('请输入正确的用户名');
-          return;
-        } else if (pass === '' || pass == null) {
-          alert('请输入正确的密码');
-          return;
-        }
-        //判断复选框是否勾选，勾选则调用配置cookie方法
-        if (this.remeAccount === true) {
-          utils.setCookie('username', name, 7);
-          utils.setCookie('password', pass, 7);
-        } else {
-          utils.clearCookie();
-        }
+			// });
 
-        //接口
+			// // login登录api
+			// axios({
+			// 	method: 'post',
+			// 	baseURL: '/api',
+			// 	url: '/Login',
+			// 	data:{
+			// 		username: name,
+			// 		pwd: pass 
+			// 	}
+			// }).then(res => {
+			// 	console.log("返回：",res);
+			// }).catch(err => {
+			// 	console.log(err);
+			// });
 
-        // this.$http.post(url,data)
-        //   .then(res => {
-
-        //   })
-        //   .catch(err => {
-
-        //   });
-
-            // login登录api
-            // axios({
-            //   method: 'post',
-            //   baseURL: '/api',
-            //   url: '/Login',
-            //   data:{
-            //     username: name,
-            //     pwd: pass 
-            //   }
-            // }).then(res => {
-            //     console.log("返回：",res);
-            //   }
-            // ).catch(
-            //   err => {
-            //     console.log(err);
-            //   }
-            // );
-            
-          // 社区媒体列表api
-            axios({
+			// 社区媒体列表api
+			axios({
 				method: 'get',
 				baseURL: '/api',
 				url: '/GetMediaList',
 				params:{
 					resid:1
 				}
-            }).then(res => {
-					console.log("返回：", res);
-				}
-            ).catch(err => {
-					console.log(err);
-				}
-            );
+			}).then(res => {
+				console.log("返回：", res);
+			}).catch(err => {
+				console.log(err);
+			});
 
+		},
+		loginType() {
+			this.isActive = !this.isActive;
+		},
 
-      },
-      loginType() {
-        this.isActive = !this.isActive;
-      },
+	},
 
-    },
-
-  }
+}
 
 
 </script>
