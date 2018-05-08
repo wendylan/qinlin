@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <!-- <div id="app"> -->
     <!--头部-->
-    <div class="ad_index_header" >
+    <!-- <div class="ad_index_header" >
       <div class="logo">
         <img src="../../assets/home/logo.png" alt="">
       </div>
@@ -41,7 +41,6 @@
       <div class="handle clearfix">
         <a href="#" class="ad_index_user">
           <em>超级运营</em> <i class="uname fa fa-angle-down fa-lg">{{name}}</i>
-          <!-- <img src="../../assets/home/downArr.png" alt=""> -->
         </a>
         <div class="user_handel_list">
           <ul>
@@ -55,51 +54,82 @@
 
     <router-view></router-view>
 
-    <!--尾部-->
-    <div class="ad_index_footer clearfix" >
-		<p>
-			<!-- <img src="../../assets/home/home_icon.png" alt=""> -->
-			<i class="fa fa-home"></i>
-			<router-link to="/admin"> 回到首页</router-link>
-			| Copyright &copy;2018 亲邻科技线上产品部
-		</p>
-    </div>
+  </div> -->
+</template>
 
+<script>
+	// import  utils from '../../utils.js';
+	// export default {
+	// 	name: 'home',
+	// 	data(){
+	// 		return {
+	// 			name:'',
+	// 		}
+	// 	},
+	// 	methods:{
+	// 		routerNav:function (path) {
+	// 		// this.$router.push({ path: path })
+	// 			this.$router.push(path)
+	// 		},
+	// 	},
+	
+	// 	mounted:function(){
+	// 		$(function () {
+
+	// 			//修改密码
+	// 			$('.ad_index_user').click(function () {
+	// 				if ($('.user_handel_list').css('display') === 'none') {
+	// 					$('.user_handel_list').show();
+	// 				} else {
+	// 					$('.user_handel_list').hide();
+	// 				}
+	// 			});
+	// 		});
+	// 		this.name = utils.getCookie('realname');
+	// 	},
+	// }
+
+</script>
+
+<style>
+
+</style>
+
+
+
+<template>
+  <div id="app">
+	<headerbar :pageData="pageData" :name="name"></headerbar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-	import  utils from '../../utils.js';
-	export default {
-		name: 'home',
-		data(){
-			return {
-				name:'',
-			}
-		},
-		methods:{
-			routerNav:function (path) {
-			// this.$router.push({ path: path })
-				this.$router.push(path)
-			},
-		},
-	
-		mounted:function(){
-			$(function () {
-
-				//修改密码
-				$('.ad_index_user').click(function () {
-					if ($('.user_handel_list').css('display') === 'none') {
-						$('.user_handel_list').show();
-					} else {
-						$('.user_handel_list').hide();
-					}
-				});
-			});
-			this.name = utils.getCookie('realname');
-		},
-	}
-
+import headerbar from '../public/headerbar.vue';
+export default {
+	name: 'home',
+	components:{
+		headerbar,
+	},
+	data() {
+		return {
+			name:'超级运营',
+			pageData: [
+				{name: '首页',path: '/superOperate'},
+				{name: '媒体列表',path: '/superOperate/mediaList'},
+				{name: '客户列表',path: '/superOperate/clientList'},
+				{name: '方案列表',path: '/superOperate/planList'},
+				{name: '订单列表',path: '/superOperate/orderList'},
+				{name: '账号设置',path: '/'},
+				{name: '广告限制',path: '/superOperate/ADlimitList'},
+				{name: '刊例价',path: '/superOperate/publishPriceList'},
+				{name: '图片库',path: '/'},
+				{name: '画像申请',path: '/'},
+				{name: '操作指引',path: '/'},
+			],
+		}
+	},
+}
 </script>
 
 <style>

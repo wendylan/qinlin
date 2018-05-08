@@ -155,7 +155,7 @@ html{
   right: 13px;
   top: 41px;
   border: 1px solid #ccc;
-  display: none;
+  /* display: none; */
   z-index: 9999;
 }
 

@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <!--头部-->
+  <!-- <div id="app">
+    //头部
     <div class="ad_index_header" >
       <div class="logo">
         <img src="../../assets/home/logo.png" alt="">
@@ -26,7 +26,6 @@
       <div class="handle clearfix">
         <a href="#" class="ad_index_user">
           <em>销售</em> <i class="uname fa fa-angle-down fa-lg">{{name}}</i>
-          <!-- <img src="../../assets/home/downArr.png" alt=""> -->
         </a>
         <div class="user_handel_list">
           <ul>
@@ -40,52 +39,79 @@
 
     <router-view></router-view>
 
-    <!--尾部-->
-    <div class="ad_index_footer clearfix" >
-		<p>
-			<!-- <img src="../../assets/home/home_icon.png" alt=""> -->
-			<i class="fa fa-home fa-lg"></i>
-			<router-link to="/admin"> 回到首页</router-link>
-			| Copyright &copy;2018 亲邻科技线上产品部
-		</p>
-    </div>
+  </div> -->
+</template>
 
+<script>
+// import  utils from '../../utils.js';
+// export default {
+// 	name: 'home',
+
+// 	mounted:function(){
+// 		$(function () {
+
+// 			//修改密码
+// 			$('.ad_index_user').click(function () {
+// 				if ($('.user_handel_list').css('display') === 'none') {
+// 					$('.user_handel_list').show();
+// 				} else {
+// 					$('.user_handel_list').hide();
+// 				}
+// 			});
+// 		})
+// 		this.name = utils.getCookie('realname');
+// 	},
+// 	data(){
+// 		return {
+// 			name:'',
+// 			paths:["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
+// 		}
+// 	},
+// 	methods:{
+// 		routerNav:function (path) {
+// 			// this.$router.push({ path: path })
+// 			this.$router.push(path)
+// 		},
+// 	}
+// }
+
+</script>
+
+<style>
+
+</style>
+
+
+
+
+<template>
+  <div id="app">
+	<headerbar :pageData="pageData" :name="name"></headerbar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import  utils from '../../utils.js';
+import headerbar from '../public/headerbar.vue';
 export default {
 	name: 'home',
-
-	mounted:function(){
-		$(function () {
-
-			//修改密码
-			$('.ad_index_user').click(function () {
-				if ($('.user_handel_list').css('display') === 'none') {
-					$('.user_handel_list').show();
-				} else {
-					$('.user_handel_list').hide();
-				}
-			});
-		})
-		this.name = utils.getCookie('realname');
+	components:{
+		headerbar,
 	},
-	data(){
+	data() {
 		return {
-			name:'',
-			paths:["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
+			name:'销售',
+			pageData: [
+				{name: '首页',path: '/sale'},
+				{name: '创建用户',path: '/sale/createClient'},
+				{name: '创建方案',path: '/sale/createPlan'},
+				{name: '订单列表',path: '/sale/orderList'},
+				{name: '刊例价',path: '/sale/publishPriceList'},
+				{name: '操作指引',path: '/media'},
+			],
 		}
 	},
-	methods:{
-		routerNav:function (path) {
-			// this.$router.push({ path: path })
-			this.$router.push(path)
-		},
-	}
 }
-
 </script>
 
 <style>

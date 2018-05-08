@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!--头部-->
-    <div class="ad_index_header" >
+    <!-- <div class="ad_index_header" >
       <div class="logo">
         <img src="../../assets/home/logo.png" alt="">
       </div>
@@ -33,7 +33,6 @@
       <div class="handle clearfix">
         <a href="#" class="ad_index_user">
           <em>管理员</em> <i class="uname fa fa-angle-down fa-lg">{{name}}</i>
-          <!-- <img src="../../assets/home/downArr.png" alt=""> -->
         </a>
         <div class="user_handel_list">
           <ul>
@@ -43,27 +42,38 @@
         </div>
       </div>
 
-    </div>
-
+    </div> -->
+	<headerbar :pageData="pageData" :name="name"></headerbar>
     <router-view></router-view>
-
-    <!--尾部-->
-    <div class="ad_index_footer clearfix" >
-		<p>
-			<!-- <img src="../../assets/home/home_icon.png" alt=""> -->
-			<i class="fa fa-home fa-lg"></i>
-			<router-link to="/admin"> 回到首页</router-link>
-			| Copyright &copy;2018 亲邻科技线上产品部
-		</p>
-    </div>
 
   </div>
 </template>
 
 <script>
+import headerbar from '../public/headerbar.vue';
 import  utils from '../../utils.js';
 export default {
 	name: 'home',
+    data(){
+      return {
+        // name:'',
+        // paths:["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
+        name:'管理员',
+        pageData: [
+			{name: '客户管理',path: '/admin/clientList'},
+			{name: '媒体管理',path: '/admin/mediaList'},
+			{name: '方案管理',path: '/admin/planList'},
+			{name: '订单管理',path: '/admin/orderList'},
+			{name: '刊例价',path: '/'},
+			{name: '广告限制',path: '/'},
+			{name: '账号设置',path: '/media'},
+			{name: '操作指引',path: '/media'},
+        ],
+      }
+    },
+	components:{
+		headerbar,
+	},
 	mounted:function(){
 		$(function () {
 			$('.ad_index_nav').children('li').hover(function () {
@@ -92,13 +102,7 @@ export default {
 				}
 			});
 		})
-		this.name = utils.getCookie('realname');
-	},
-	data(){
-		return {
-			name:'',
-			paths:["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
-		}
+		// this.name = utils.getCookie('realname');
 	},
 	methods:{
 		routerNav:function (path) {

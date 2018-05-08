@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!--头部-->
-    <div class="ad_index_header">
+    <!-- <div class="ad_index_header">
       <div class="logo">
         <img src="../../assets/home/logo.png" alt="">
       </div>
@@ -32,7 +32,6 @@
       <div class="handle clearfix">
         <a href="#" class="ad_index_user">
           <em>媒介</em> <i class="uname fa fa-angle-down fa-lg">{{name}}</i>
-          <!-- <img src="../../assets/home/downArr.png" alt=""> -->
         </a>
         <div class="user_handel_list">
           <ul>
@@ -44,27 +43,20 @@
         </div>
       </div>
 
-    </div>
-
+    </div> -->
+	<headerbar :pageData="pageData" :name="name"></headerbar>
     <router-view></router-view>
-
-    <!--尾部-->
-    <div class="ad_index_footer clearfix">
-		<p>
-			<!-- <img src="../../assets/home/home_icon.png" alt=""> -->
-			<i class="fa fa-home fa-lg"></i>
-			<router-link to="/admin"> 回到首页</router-link>
-			| Copyright &copy;2018 亲邻科技线上产品部
-		</p>
-    </div>
-
   </div>
 </template>
 
 <script>
+import headerbar from '../public/headerbar.vue';
 import utils from '../../utils.js';
 export default {
 	name: 'home',
+	components:{
+		headerbar,
+	},
 	mounted: function () {
 		$(function () {
 			/* $('.ad_index_nav').children('li').hover(function () {
@@ -84,19 +76,30 @@ export default {
 				});
 		*/
 			//修改密码
-			$('.ad_index_user').click(function () {
-				if ($('.user_handel_list').css('display') === 'none') {
-					$('.user_handel_list').show();
-				} else {
-					$('.user_handel_list').hide();
-				}
-			});
+			// $('.ad_index_user').click(function () {
+			// 	if ($('.user_handel_list').css('display') === 'none') {
+			// 		$('.user_handel_list').show();
+			// 	} else {
+			// 		$('.user_handel_list').hide();
+			// 	}
+			// });
 		});
-		this.name = utils.getCookie('realname');
+		// this.name = utils.getCookie('realname');
 	},
 	data() {
 		return {
-			name: '',
+			// name: '',
+			name:'媒介',
+			pageData: [
+				{name: '首页',path: '/media'},
+				{name: '媒体列表',path: '/media/mediaList'},
+				{name: '创建方案',path: '/media/createPlan'},
+				{name: '订单列表',path: '/media/orderList'},
+				{name: '账号设置',path: '/media'},
+				{name: '刊例价',path: '/media/publishPriceList'},
+				{name: '图片库',path: '/media'},
+				{name: '操作指引',path: '/media'},
+			],
 			paths: ["admin/clientList", "admin/clientList", "admin/planList", "admin/orderList"]
 		}
 	},
@@ -107,8 +110,6 @@ export default {
 		},
 	}
 }
-
-
 </script>
 
 <style>
