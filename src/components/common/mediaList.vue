@@ -789,6 +789,7 @@
 
 <script>
 import axios from 'axios';
+import dateFormat from '../../../api/timeFormat.js';
 export default {
 	name: "mediaList",
 	data() {
@@ -943,6 +944,8 @@ export default {
 	},
 	mounted: function () {
 		this.getInitData();
+		console.log(dateFormat.date('2018-06-03d12:12:12.0'));
+		console.log(dateFormat.dateTime('2018-06-03 12:12:12.0'));
 	},
 	methods: {
 		//筛选
