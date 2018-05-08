@@ -86,11 +86,10 @@
 </template>
 
 <script>
-    export default {
-        name: "admin_index"
-    }
+	export default {
+		name: "admin_index"
+	}
 </script>
-
 <style scoped>
 
 </style>

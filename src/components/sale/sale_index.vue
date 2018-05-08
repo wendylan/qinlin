@@ -64,9 +64,9 @@
 </template>
 
 <script>
-    export default {
-        name: "sale_index"
-    }
+	export default {
+		name: "sale_index"
+	}
 </script>
 
 <style scoped>
