@@ -19,10 +19,7 @@ Vue.prototype.$http = axios;
 
 
 //引入全局css
-import  '../static/css/reset.css'
-import  '../static/css/index.css'
-// import '../static/css/header.css'
-import '../static/css/footer.css'
+import  '../static/css/reset.css';
 
 /*//创建实例，配置默认项
 var instance = axios.create({

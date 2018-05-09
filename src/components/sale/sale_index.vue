@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import managebox from '../public/manage.vue';
+import managebox from '../public/cardManage.vue';
 export default {
 	name: "sale_index",
 	data(){
