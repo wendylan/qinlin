@@ -12,6 +12,7 @@ import accountList from '../components/common/accountList.vue';
 import orderList from '../components/common/orderList.vue';
 import clientDetail from '../components/common/clientDetail.vue';
 import createPlan from '../components/common/createPlan.vue';
+import orderDetail from '../components/common/orderDetail.vue';
 //超级运营
 import adminIndex from '../components/superOperate/superOperate_index.vue';
 import ADlimitList from '../components/superOperate/ADlimitList.vue';
@@ -84,6 +85,7 @@ export default new Router({
 				{path: '/media/accountList', name: '帐户列表', component: accountList},
 				{path: '/media/orderList', name: '订单列表', component: orderList},
 				{path: '/media/createPlan', name: '创建方案', component: createPlan},
+				{path: '/media/orderDetail',  component: orderDetail},
 			]
 		},
 		//销售
