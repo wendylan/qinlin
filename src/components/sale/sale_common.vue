@@ -9,6 +9,7 @@
 <script>
 import headerbar from '../public/headerbar.vue';
 import footerbar from '../public/footer.vue';
+import data from '../public/pageHeadData.js';
 export default {
 	name: 'home',
 	components:{
@@ -17,15 +18,8 @@ export default {
 	},
 	data() {
 		return {
-			name:'销售',
-			pageData: [
-				{name: '首页',path: '/sale'},
-				{name: '创建用户',path: '/sale/createClient'},
-				{name: '创建方案',path: '/sale/createPlan'},
-				{name: '订单列表',path: '/sale/orderList'},
-				{name: '刊例价',path: '/sale/publishPriceList'},
-				{name: '操作指引',path: '/media'},
-			],
+			name: data.sale.name,
+			pageData: data.sale.pageData
 		}
 	},
 }
