@@ -789,7 +789,7 @@
 
 <script>
 import axios from 'axios';
-import dateFormat from '../../../api/timeFormat.js';
+import dateFormat from '../../commonFun/timeFormat.js';
 export default {
 	name: "mediaList",
 	data() {

@@ -32,13 +32,13 @@
 						:default-sort = "{prop: 'date', order: 'descending'}"
 					>
 						<el-table-column
-							prop="contacts"
+							prop="realName"
 							label="联系人"
 							min-width="6%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="place"
+							prop="rName"
 							label="所在地"
 							min-width="7.2%"
 						>
@@ -57,13 +57,13 @@
 						>
 						</el-table-column>
 						<el-table-column
-							prop="companyName"
+							prop="cName"
 							label="公司名称"
 							min-width="18.4%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="city"
+							prop="rName"
 							label="所在城市"
 							min-width="8%"
 							:filters="[
@@ -78,22 +78,26 @@
 						>
 						</el-table-column>
 						<el-table-column
-							prop="brand"
+							prop="cBrand"
 							label="公司品牌"
 							min-width="12.1%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="owner"
+							prop="puName"
 							label="所有人"
 							min-width="6.1%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="cDate"
 							label="创建日期"
 							min-width="8.3%"
 						>
+							<template slot-scope="scope">
+								<span>{{ formatTime(scope.row.joinTime) }}</span>
+								<!-- <span v-text="dateFormat.dateTime(scope.row.joinTime)"></span> -->
+								<!-- <span>{{ scope.row.joinTime}}</span> -->
+							</template>
 						</el-table-column>
 						<el-table-column
 							label="操作"
@@ -112,6 +116,7 @@
 
 <script>
 import axios from 'axios';
+import dateFormat from '../../commonFun/timeFormat.js';
 export default {
 	name: "customList",
 	data() {
@@ -119,191 +124,35 @@ export default {
 			input: '',
 			value6: '',
 			//表格
-			planList: [{
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, {
-				contacts: '成吉思汗',
-				place: '成都',
-				position: '城市总经理',
-				phone:'0775586070000',
-				companyName:'深圳市亲邻科技有限公司广州分公司',
-				city:'广州',
-				brand:'亲邻团购/社区门禁',
-				owner:'欧阳震华',
-				cDate:'2018.03.08'
-			}, ]
+			planList: []
 		}
 	},
 	mounted:function(){
-		// 社区媒体列表api
-		// axios({
-		// 	method: 'get',
-		// 	baseURL: '/api',
-		// 	url: '/MyCustomer',
-		// 	// url: '/GetCustomer',
-		// 	params:{
-		// 		uid:6
-		// 	}
-		// }).then(res => {
-		// 	console.log("返回：", res);
-		// }).catch(err => {
-		// 	console.log(err);
-		// });
-
-		axios.all([GetMediaList(), GetCustomer()])
-		.then(axios.spread(function (acct, perms) {
-			console.log(acct);
-			console.log(perms);
-		}));
-
+		this.GetCustomer();
 	},
 	methods: {
+		formatTime(time){
+			return dateFormat.date(time);
+		},
 		//筛选
 		filterCity(value, row) {
 			return row.city === value;
 		},
-		
-		GetMediaList() {
-			return axios({
-				method: 'get',
-				baseURL: '/api',
-				url: '/GetMediaList',
-				params:{
-					resid:1
-				}
-			});
-		},
-		
 		GetCustomer() {
-			// 社区媒体列表api
-			return axios({
+			// 客户列表api
+			axios({
 				method: 'get',
 				baseURL: '/api',
-				url: '/MyCustomer',
-				// url: '/GetCustomer',
+				url: '/GetCustomer',
 				params:{
-					uid:2
+					puid:2
 				}
+			}).then(res => {
+				console.log(res);
+				this.planList = res.data;
+			}).catch(res => {
+				console.log(res);
 			});
-
 		},
 	}
 }
