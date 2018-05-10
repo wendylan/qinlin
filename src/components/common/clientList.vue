@@ -10,24 +10,26 @@
 			<div class="mediaList_container">
 				<el-row>
 					<div class="mediaList_handel">
-						<el-input  v-model="input" placeholder="公司名称、公司品牌"></el-input>
+						<el-input  v-model="keyword" placeholder="公司名称、公司品牌"></el-input>
 						<div class="block">
 							<el-date-picker
-							v-model="value6"
+							v-model="date"
 							type="daterange"
 							range-separator="-"
+							format="yyyy-MM-dd" 
+							value-format="yyyy-MM-dd"
 							start-placeholder="创建日期"
 							end-placeholder="创建日期">
 							</el-date-picker>
 						</div>
-						<el-button type="primary" icon="el-icon-search">搜索</el-button>
-						<el-button plain>新建</el-button>
+						<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+						<el-button plain @click="newClient">新建</el-button>
 					</div>
 				</el-row>
 				<div class="table_wrap">
 					<el-table
 						border
-						:data="planList"
+						:data="currentPlan"
 						style="width: 100%"
 						:default-sort = "{prop: 'date', order: 'descending'}"
 					>
@@ -95,8 +97,6 @@
 						>
 							<template slot-scope="scope">
 								<span>{{ formatTime(scope.row.joinTime) }}</span>
-								<!-- <span v-text="dateFormat.dateTime(scope.row.joinTime)"></span> -->
-								<!-- <span>{{ scope.row.joinTime}}</span> -->
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -104,7 +104,7 @@
 							min-width="4.1%"
 						>
 							<template slot-scope="scope">
-								<a href="#" style="color: #108EE9">查看</a>
+								<a href="javascript:void(0)" @click="showDetail(scope.row)" style="color: #108EE9">查看</a>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -121,23 +121,64 @@ export default {
 	name: "customList",
 	data() {
 		return {
-			input: '',
-			value6: '',
+			keyword: '',
+			date: '',
 			//表格
-			planList: []
+			planList: [],
+			currentPlan: [],
 		}
 	},
 	mounted:function(){
 		this.GetCustomer();
 	},
 	methods: {
+		// 搜索
+		search(){
+			let rangeDate = this.date;
+			let arr = [];
+			if(rangeDate || this.keyword){
+				for(let data of this.planList){
+					if(rangeDate && this.keyword){
+						if(
+							dateFormat.date(data.joinTime) >= rangeDate[0] &&
+							dateFormat.date(data.joinTime) <= rangeDate[1] &&
+							(data.cBrand.includes(this.keyword) || data.cName.includes(this.keyword))
+						){
+							arr.push(data);
+						}
+					}else if(rangeDate){
+						if(
+							dateFormat.date(data.joinTime) >= rangeDate[0] &&
+							dateFormat.date(data.joinTime) <= rangeDate[1] 
+						){
+							arr.push(data);
+						}
+					}else if(this.keyword){
+						if(data.cBrand.includes(this.keyword) || data.cName.includes(this.keyword)){
+							arr.push(data);
+						}
+					}
+				}
+			}
+			this.currentPlan = arr;
+		},
+		// 时间格式化
 		formatTime(time){
 			return dateFormat.date(time);
+		},
+		// 新建按钮
+		newClient(){
+			this.$router.push('./createClient');
+		},
+		// 查看按钮
+		showDetail(data){
+			this.$router.push('./clientDetail');
 		},
 		//筛选
 		filterCity(value, row) {
 			return row.city === value;
 		},
+		// 获取客户列表
 		GetCustomer() {
 			// 客户列表api
 			axios({
@@ -148,8 +189,8 @@ export default {
 					puid:2
 				}
 			}).then(res => {
-				console.log(res);
 				this.planList = res.data;
+				this.currentPlan = this.planList;
 			}).catch(res => {
 				console.log(res);
 			});
