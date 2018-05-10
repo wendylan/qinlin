@@ -559,10 +559,6 @@
                                                     <i class="el-icon-plus"></i>
                                                     <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
-
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload
@@ -573,15 +569,12 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
-                                                <div class="showimgbox" @click="isShow=true" v-if="isShow==false">
+                                                <div class="showimgbox" @click="isShow1=true" v-if="isShow1==false">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-if="isShow">
+                                                <div v-if="isShow1">
                                                     <div class="upload-img">
                                                         <el-upload
                                                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -591,10 +584,6 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div> 
                                                     <div class="upload-img">
                                                         <el-upload
@@ -605,17 +594,12 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div>
 													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow=false">
+													<div class="showimgbox" @click="isShow1=false">
 														<i class="fa fa-angle-double-up"></i>
 													</div>
 												</div>
-
                                             </el-card>
                                         </div>
                                         <div class="up-loader-Imgpanel">
@@ -633,9 +617,6 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload
@@ -646,16 +627,13 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
 
 												<!-- 是否显示更多的图片上传框打开 -->
-                                                <div class="showimgbox" @click="isShow=true" v-if="isShow==false">
+                                                <div class="showimgbox" @click="isShow2=true" v-if="isShow2==false">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-if="isShow">
+                                                <div v-if="isShow2">
                                                     <div class="upload-img">
                                                         <el-upload
                                                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -665,10 +643,6 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div> 
                                                     <div class="upload-img">
                                                         <el-upload
@@ -679,13 +653,9 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div>
 													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow=false">
+													<div class="showimgbox" @click="isShow2=false">
 														<i class="fa fa-angle-double-up"></i>
 													</div>
 												</div>
@@ -706,10 +676,6 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
-
                                                 </div>
                                                 <div class="upload-img">
 													<el-upload
@@ -726,10 +692,10 @@
                                                 </div>
 
 												<!-- 是否显示更多的图片上传框打开 -->
-                                                <div class="showimgbox" @click="isShow=true" v-if="isShow==false">
+                                                <div class="showimgbox" @click="isShow3=true" v-if="isShow3==false">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-if="isShow">
+                                                <div v-if="isShow3">
                                                     <div class="upload-img">
                                                         <el-upload
                                                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -739,10 +705,6 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div> 
                                                     <div class="upload-img">
                                                         <el-upload
@@ -753,13 +715,9 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div>
 													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow=false">
+													<div class="showimgbox" @click="isShow3=false">
 														<i class="fa fa-angle-double-up"></i>
 													</div>
 												</div>
@@ -780,10 +738,6 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
-
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload
@@ -794,16 +748,13 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
                                                 
                                                 <!-- 是否显示更多的图片上传框打开 -->
-                                                <div class="showimgbox" @click="isShow=true" v-if="isShow==false">
+                                                <div class="showimgbox" @click="isShow4=true" v-if="isShow4==false">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-if="isShow">
+                                                <div v-if="isShow4">
                                                     <div class="upload-img">
                                                         <el-upload
                                                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -813,10 +764,6 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div> 
                                                     <div class="upload-img">
                                                         <el-upload
@@ -827,13 +774,9 @@
                                                             <i class="el-icon-plus"></i>
                                                             <span>上传远景照片</span>
                                                         </el-upload>
-                                                        <el-dialog :visible.sync="dialogVisible">
-                                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                                        </el-dialog>
-
                                                     </div>
 													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow=false">
+													<div class="showimgbox" @click="isShow4=false">
 														<i class="fa fa-angle-double-up"></i>
 													</div>
 												</div>
@@ -854,9 +797,6 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload
@@ -867,10 +807,38 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
+
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow5=true" v-if="isShow5==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow5">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow5=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
                                             </el-card>
                                         </div>
                                         <div class="up-loader-Imgpanel">
@@ -888,10 +856,6 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
-
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload
@@ -902,10 +866,38 @@
                                                         <i class="el-icon-plus"></i>
                                                         <span>上传远景照片</span>
                                                     </el-upload>
-                                                    <el-dialog :visible.sync="dialogVisible">
-                                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                                    </el-dialog>
                                                 </div>
+
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow6=true" v-if="isShow6==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow6">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow6=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
                                             </el-card>
                                         </div>
                                     </div>
@@ -997,6 +989,12 @@
                         </div>
                     </el-tab-pane>
                 </el-tabs>
+
+                <!-- 图片查看显示 -->
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+                <!-- 返回框 -->
                 <div class="content_bottom_btn">
                     <button class="back">返回</button>
                 </div>
@@ -1010,7 +1008,12 @@ export default {
 	name: "planDetail",
 	data() {
 		return {
-			isShow:false,
+			isShow1:false,
+			isShow2:false,
+			isShow3:false,
+			isShow4:false,
+			isShow5:false,
+			isShow6:false,
 			//添加点位
 			dialogAddPoint:false,
 			dateInput:'',
