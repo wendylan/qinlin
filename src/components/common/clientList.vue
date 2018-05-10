@@ -254,24 +254,56 @@ export default {
 	},
 	mounted:function(){
 		// 社区媒体列表api
-			axios({
-				method: 'get',
-				baseURL: '/api',
-				url: '/MyCustomer',
-				// url: '/GetCustomer',
-				params:{
-					uid:6
-				}
-			}).then(res => {
-				console.log("返回：", res);
-			}).catch(err => {
-				console.log(err);
-			});
+		// axios({
+		// 	method: 'get',
+		// 	baseURL: '/api',
+		// 	url: '/MyCustomer',
+		// 	// url: '/GetCustomer',
+		// 	params:{
+		// 		uid:6
+		// 	}
+		// }).then(res => {
+		// 	console.log("返回：", res);
+		// }).catch(err => {
+		// 	console.log(err);
+		// });
+
+		axios.all([GetMediaList(), GetCustomer()])
+		.then(axios.spread(function (acct, perms) {
+			console.log(acct);
+			console.log(perms);
+		}));
+
 	},
 	methods: {
 		//筛选
 		filterCity(value, row) {
 			return row.city === value;
+		},
+		
+		GetMediaList() {
+			return axios({
+				method: 'get',
+				baseURL: '/api',
+				url: '/GetMediaList',
+				params:{
+					resid:1
+				}
+			});
+		},
+		
+		GetCustomer() {
+			// 社区媒体列表api
+			return axios({
+				method: 'get',
+				baseURL: '/api',
+				url: '/MyCustomer',
+				// url: '/GetCustomer',
+				params:{
+					uid:2
+				}
+			});
+
 		},
 	}
 }

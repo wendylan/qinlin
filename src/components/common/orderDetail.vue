@@ -932,59 +932,413 @@
                     </el-tab-pane>
                     <el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn">
                         <div class="fifth-wrap box-wrap">
-                            <h4>报价单</h4>
+                            <h4>上刊报告</h4>
                             <div class="panel">
-                                <el-tabs type="border-card" class="baojiadan">
-                                    <el-tab-pane label="广州">
-                                        <div class="tab-info">
-                                            <div class="pqxx">
-                                                <h4>排期信息</h4>
-                                                <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-                                            </div>
-                                        <div class="price">
-                                            <div class="price-left">
-                                                <h4>广告费</h4>
-                                                <ul>
-                                                    <li>刊例价(面/周) <span>￥1900.00</span></li>
-                                                    <li>投放量(面·天) <span>235</span></li>
-                                                    <li>赠送(面·天) <span>35</span></li>
-                                                    <li>广告费折扣 <span>96.67%</span></li>
-                                                    <li>￥3,800,000.00</li>
-                                                </ul>
-                                            </div>
-                                            <div class="price-right">
-                                                <h4>制作费</h4>
-                                                <ul>
-                                                    <li>制作费单价<span>￥100</span></li>
-                                                    <li>广告画数量(张)<span>35</span></li>
-                                                    <li></li>
-                                                    <li>制作费折扣<span>100%</span></li>
-                                                    <li>￥3,000.00</li>
-                                                </ul>
-                                            </div>
+                                <div class="up-report">
+                                    <div class="up-loader-header">
+                                        <el-cascader
+                                        :options="citys"
+                                        v-model="selectedOptions"
+                                        >
+                                        </el-cascader>
+                                        <el-select placeholder="全部社区" v-model="allhouse">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>
+                                        <el-select placeholder="全部监播图" v-model="allPic">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>
+                                        <!--进度条-->
+                                        <div class="progress">
+                                            <el-progress :percentage="50"></el-progress>
+                                            <span>130 / 260</span>
                                         </div>
-                                        <div class="bottom">
-                                            <div class="bottom-detail">
-                                                <div class="remark">
-                                                    <p>备注：无</p>
+                                    </div>
+                                    <div>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
                                                 </div>
-                                                <div class="bill-title-right">
-                                                    <ul>
-                                                        <li><p><em>现金结算：</em><span>¥ 88,000,000.00</span></p></li>
-                                                        <li><p><em>资源置换：</em><span>¥ 2,000,000.00</span></p></li>
-                                                        <li><p><em>其他费用：</em><span>¥ 2,000,000.00</span></p></li>
-                                                    </ul>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                                    list-type="picture-card"
+                                                    :on-preview="handlePictureCardPreview"
+                                                    :on-remove="handleRemove">
+                                                    <i class="el-icon-plus"></i>
+                                                    <span>上传远景照片</span>
+                                                    </el-upload>
                                                 </div>
-                                            </div>
-                                            <div class="bottom-fin">
-                                                <p><em style="top: 5px">总计：</em><span class="totalPrice">¥ 90,000,000.00</span></p>
-                                            </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow1=true" v-if="isShow1==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow1">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow1=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
                                         </div>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+
+												<!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow2=true" v-if="isShow2==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow2">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow2=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
                                         </div>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-                                    <el-tab-pane label="成都">成都内容</el-tab-pane>
-                                </el-tabs>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+													<el-upload
+														action="https://jsonplaceholder.typicode.com/posts/"
+														list-type="picture-card"
+														:on-preview="handlePictureCardPreview"
+														:on-remove="handleRemove">
+														<i class="el-icon-plus"></i>
+														<span>上传远景照片</span>
+													</el-upload>
+													<el-dialog :visible.sync="dialogVisible">
+														<img width="100%" :src="dialogImageUrl" alt="">
+													</el-dialog>
+                                                </div>
+
+												<!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow3=true" v-if="isShow3==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow3">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow3=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
+                                        </div>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow4=true" v-if="isShow4==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow4">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow4=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
+                                        </div>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow5=true" v-if="isShow5==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow5">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow5=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
+                                        </div>
+                                        <div class="up-loader-Imgpanel">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <span>广州市-天河区-东方雅苑-西门-B</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        list-type="picture-card"
+                                                        :on-preview="handlePictureCardPreview"
+                                                        :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>上传远景照片</span>
+                                                    </el-upload>
+                                                </div>
+
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow6=true" v-if="isShow6==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow6">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow6=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+                                            </el-card>
+                                        </div>
+                                    </div>
+                                    <div class="pager">
+                                        <el-pagination
+                                            small
+                                            background
+                                            @size-change="handleSizeChange"
+                                            @current-change="handleCurrentChange"
+                                            :current-page="1"
+                                            :page-sizes="[6, 12]"
+                                            :page-size="6"
+                                            layout=" sizes, prev, pager, next, jumper"
+                                            :total="30">
+                                        </el-pagination>
+                                    </div>
+                                    <div class="up-report-bottom">
+                                        <div class="up-report-bottom-checkbox">
+                                            <el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
+                                                <el-button type="text">修改</el-button>
+                                            </el-checkbox>
+                                        </div>
+                                        <div class="up-report-bottom-btns">
+                                            <el-button type="primary">生成报告</el-button>
+                                            <el-button plain>下载PDF</el-button>
+                                            <el-button plain>复制链接</el-button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </el-tab-pane>
