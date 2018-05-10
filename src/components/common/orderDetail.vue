@@ -798,6 +798,45 @@
                                                         <img width="100%" :src="dialogImageUrl" alt="">
                                                     </el-dialog>
                                                 </div>
+                                                
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow=true" v-if="isShow==false">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-if="isShow">
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                        <el-dialog :visible.sync="dialogVisible">
+                                                            <img width="100%" :src="dialogImageUrl" alt="">
+                                                        </el-dialog>
+
+                                                    </div> 
+                                                    <div class="upload-img">
+                                                        <el-upload
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            list-type="picture-card"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>上传远景照片</span>
+                                                        </el-upload>
+                                                        <el-dialog :visible.sync="dialogVisible">
+                                                            <img width="100%" :src="dialogImageUrl" alt="">
+                                                        </el-dialog>
+
+                                                    </div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
                                             </el-card>
                                         </div>
                                         <div class="up-loader-Imgpanel">
