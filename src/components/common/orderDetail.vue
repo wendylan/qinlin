@@ -80,6 +80,14 @@
                                 <el-button type="primary" size="small" style="margin-left: 10px" @click="dialogAddPoint = true">添加点位</el-button>
                                 <span>原投放面数：40    种植投放面数：1    新增面数：1    现投放面数：40</span>
                             </h4>
+                            <el-select v-model="resource_name" filterable placeholder="请选择资源名称" size="small" style="margin-top:20px;margin-left:28px;">
+                                <el-option
+                                    v-for="item in resourceNameArr"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
                             <div class="table_wrap">
                                 <el-table
                                     border
@@ -110,12 +118,17 @@
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column
+                                    <!-- <el-table-column
                                         label="资源名称"
                                         min-width="16.1%"
                                         prop="recName"
                                         :filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
                                         :filter-method="filterRecName"
+                                    > -->
+                                    <el-table-column
+                                        label="资源名称"
+                                        min-width="16.1%"
+                                        prop="recName"
                                     >
                                     </el-table-column>
                                     <el-table-column
@@ -1367,7 +1380,9 @@ export default {
 			isShow3:false,
 			isShow4:false,
 			isShow5:false,
-			isShow6:false,
+            isShow6:false,
+            resource_name: '',
+            resourceNameArr: [],
 			//添加点位
 			dialogAddPoint:false,
 			dateInput:'',
@@ -1402,7 +1417,7 @@ export default {
 			//添加点位列表
 			planList: [
 				{
-				recName: '珠江帝景花园',
+				recName: '珠江帝景',
 				city: '广州',
 				origin: '海珠区',
 				buildType: '高端住宅',
@@ -2022,140 +2037,154 @@ export default {
 			//上刊报告社区和监播图
 			allhouse: '',
 			allPic: '',
-      };
+        };
     },
     methods: {
-      filterRecName(value, row) {
-        return row.recName === value;
-      },
-      filterCity(value, row) {
-        return row.city === value;
-      },
-      filterOrigin(value, row) {
-        return row.origin === value;
-      },
-      filterSchedules(value, row) {
-        return row.schedules === value;
-      },
-      //已锁状态资源加红色背景并置顶
-      tableRowClassName({row, rowIndex}) {
-        //状态行 根据状态判断
-        if (rowIndex === 0) {
-          //添加类名
-          return 'warning-row'
+        // 过滤来获取唯一的资源名称
+        getResourceNameArr(dataArr){
+            let arr = [];
+            let door = 1;
+            for(let data of dataArr){
+                for(let item of arr){
+                    if(data.recName == item.value){
+                        door=0;
+                    }
+                }
+                if(door){
+                    arr.push({label: data.recName, value: data.recName});
+                }
+            }
+            return arr;
+        },
+        filterCity(value, row) {
+            return row.city === value;
+        },
+        filterOrigin(value, row) {
+            return row.origin === value;
+        },
+        filterSchedules(value, row) {
+            return row.schedules === value;
+        },
+        //已锁状态资源加红色背景并置顶
+        tableRowClassName({row, rowIndex}) {
+            //状态行 根据状态判断
+            if (rowIndex === 0) {
+                //添加类名
+                return 'warning-row'
+            }
+            return '';
+        },
+        cancelChangeID() {
+            this.changeCID = false;
+            this.$message('取消修改合同编号');
+        },
+        confirmChangeID() {
+            this.cid = this.CIDinput;
+            this.changeCID = false;
+            this.$message.success('修改合同编号成功');
+        },
+        cancelChangeRemark() {
+            this.changeRemark = false;
+            this.$message('取消修改监播备注');
+        },
+        confirmChangeRemark() {
+            this.changeRemark = false;
+            this.$message.success('修改监播备注成功');
+        },
+        //上传照片
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        //页码
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
+        //点击换点
+        changePoint() {
+            this.usableBtn = true;
+            $(window).scrollTop(288);
+            this.showTitle = true;
+            this.showBtn = false;
+            this.showHandel = true;
+        },
+        saveChangePoint(){
+            this.usableBtn = false;
+            this.showTitle = false;
+            this.showBtn = true;
+            this.showHandel = false;
+        },
+        //确认操作对话框
+        confirmHandel() {
+            let recName  = this.orderList[0].recName;
+            let schedules = this.orderList[0].schedules;
+            this.$confirm('是否停止 '+recName +' 在 '+schedules +' 的投放？\n','提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$message({
+                        type: 'success',
+                        message: '操作成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                        type: 'info',
+                        message: '已取消操作'
+                });
+            });
+        },
+        //添加点位对话框确认按钮
+        confirmAddPoint(){
+            this.dialogAddPoint = false;
+            this.$message({
+            type:'success',
+            message:'操作成功!'
+            })
+        },
+        //添加点位对话框取消按钮
+        cancelAddPoint(){
+            this.dialogAddPoint = false;
+            this.$message({
+                type: 'info',
+                message: '已取消操作'
+            });
         }
-        return '';
-      },
-      cancelChangeID() {
-        this.changeCID = false;
-        this.$message('取消修改合同编号');
-      },
-      confirmChangeID() {
-        this.cid = this.CIDinput;
-        this.changeCID = false;
-        this.$message.success('修改合同编号成功');
-      },
-      cancelChangeRemark() {
-        this.changeRemark = false;
-        this.$message('取消修改监播备注');
-      },
-      confirmChangeRemark() {
-        this.changeRemark = false;
-        this.$message.success('修改监播备注成功');
-      },
-      //上传照片
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      //页码
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      //点击换点
-      changePoint() {
-        this.usableBtn = true;
-        $(window).scrollTop(288);
-        this.showTitle = true;
-        this.showBtn = false;
-        this.showHandel = true;
-      },
-      saveChangePoint(){
-        this.usableBtn = false;
-        this.showTitle = false;
-        this.showBtn = true;
-        this.showHandel = false;
-      },
-      //确认操作对话框
-      confirmHandel() {
-        let recName  = this.orderList[0].recName;
-        let schedules = this.orderList[0].schedules;
-        this.$confirm('是否停止 '+recName +' 在 '+schedules +' 的投放？\n','提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      },
-      //添加点位对话框确认按钮
-      confirmAddPoint(){
-        this.dialogAddPoint = false;
-        this.$message({
-          type:'success',
-          message:'操作成功!'
-        })
-      },
-      //添加点位对话框取消按钮
-      cancelAddPoint(){
-        this.dialogAddPoint = false;
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        });
-      }
     },
     mounted:function(){
-      $(function () {
-        //事件委托
-        $('.content_top_wrap').on('click', 'dd', function () {
-          if ($(this).hasClass('active')) {
-            $(this).removeClass('active')
-          } else {
-            $(this).addClass('active');
-          }
-        });
-        //筛选输入框
-        $('.content_top_wrap').on('focus', '.input', function () {
-          $(this).parents('.input-wrap').addClass('focus');
-          $(this).siblings('button').show();
-        }).on('blur', '.input', function () {
-          $(this).parents('.input-wrap').removeClass('focus');
-          $(this).siblings('button').hide();
-        });
+        this.resourceNameArr = this.getResourceNameArr(this.planList);
+        $(function () {
+            //事件委托
+            $('.content_top_wrap').on('click', 'dd', function () {
+                if ($(this).hasClass('active')) {
+                    $(this).removeClass('active')
+                } else {
+                    $(this).addClass('active');
+                }
+            });
+            //筛选输入框
+            $('.content_top_wrap').on('focus', '.input', function () {
+                $(this).parents('.input-wrap').addClass('focus');
+                $(this).siblings('button').show();
+            }).on('blur', '.input', function () {
+                $(this).parents('.input-wrap').removeClass('focus');
+                $(this).siblings('button').hide();
+            });
 
-        $('.content_top_wrap').on('click', '.close-tags', function () {
-          $(this).parents('.tags').hide();
-        });
-        $('.content_top_wrap').on('click', '.clear-filter', function () {
-          $(this).parents('.filter-tags').hide();
+            $('.content_top_wrap').on('click', '.close-tags', function () {
+                $(this).parents('.tags').hide();
+            });
+            $('.content_top_wrap').on('click', '.clear-filter', function () {
+                $(this).parents('.filter-tags').hide();
+            })
+
         })
-
-      })
     },
   }
 
