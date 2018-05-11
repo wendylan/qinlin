@@ -30,7 +30,7 @@
 							<li><em>公司名称：</em>{{companyInfo.cName}}</li>
 							<li><em>公司地址：</em>{{companyInfo.cAddress}}</li>
 							<li><em>公司品牌：</em>{{companyInfo.cBrand}}</li>
-							<li><em>所在城市：</em>{{userInfo.rName}}</li>
+							<li><em>所在城市：</em>{{companyInfo.rName}}</li>
 						</ul>
 						<div class="remarkBox">
 							<p>
@@ -44,7 +44,7 @@
 
 		<div class="content_bottom_btn">
 			<el-button type="primary">编辑</el-button>
-			<el-button>返回</el-button>
+			<el-button @click="goBack">返回</el-button>
 		</div>
 	</div>
 </template>
@@ -60,9 +60,17 @@ export default {
 		}
 	},
 	created(){
-		let initdata = JSON.parse(sessionStorage.getItem('data'));
-		this.userInfo = initdata;
-		axios({
+		this.getInitData();
+	},
+	methods: {
+		// 返回
+		goBack(){
+			this.$router.push('./clientList');
+		},
+		getInitData(){
+			let initdata = JSON.parse(sessionStorage.getItem('data'));
+			this.userInfo = initdata;
+			axios({
 				method: 'get',
 				baseURL: '/api',
 				url: '/GetCompanyInfo',
@@ -71,14 +79,13 @@ export default {
 					uid: initdata.uID
 				}
 			}).then(res => {
-				console.log(res);
+				console.log(res.data);
 				this.companyInfo = res.data;
 			}).catch(res => {
 				console.log(res);
 			});
-		console.log(initdata);
+		},
 	},
-	methods: {},
 }
 </script>
 
