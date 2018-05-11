@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../../../api/api.js';
 export default {
 	name: "clientDetail",
 	data() {
@@ -70,19 +70,12 @@ export default {
 		getInitData(){
 			let initdata = JSON.parse(sessionStorage.getItem('data'));
 			this.userInfo = initdata;
-			axios({
-				method: 'get',
-				baseURL: '/api',
-				url: '/GetCompanyInfo',
-				params:{
-					cid: initdata.uWho,
-					uid: initdata.uID
-				}
+			api.getApi('/GetCompanyInfo', {
+				cid: initdata.uWho,
+				uid: initdata.uID
 			}).then(res => {
 				console.log(res.data);
 				this.companyInfo = res.data;
-			}).catch(res => {
-				console.log(res);
 			});
 		},
 	},

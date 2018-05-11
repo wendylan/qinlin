@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../../../api/api.js';
 // 时间控件格式化
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
@@ -179,18 +179,13 @@ export default {
 		},
 		// 获取客户列表
 		GetCustomer() {
-			axios({
-				method: 'get',
-				baseURL: '/api',
-				url: '/GetCustomer',
-				params:{
-					puid:2
-				}
-			}).then(res => {
+			api.getApi('/GetCustomer', {
+				puid:2
+			}).then(res=>{
 				this.planList = res.data;
 				this.currentPlan = this.planList;
 				this.filtCity = filterFormat(this.planList, 'rName');
-			}).catch(res => {
+			}).catch(res =>{
 				console.log(res);
 			});
 		},

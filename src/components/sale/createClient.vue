@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import api from '../../../api/api.js';
 export default {
 	name: "createClient",
 	data() {
@@ -219,7 +220,16 @@ export default {
 			}
 		}
 	},
+	created() {
+		this.getIndustry();
+	},
 	methods: {
+		// 获取所有行业信息
+		getIndustry(){
+			api.getApi('/GetIndustry').then(res =>{
+				console.log(res.data);
+			});
+		},
 		// 返回
 		goBack(){
 			this.$router.push('./clientList');
