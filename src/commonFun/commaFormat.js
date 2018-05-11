@@ -1,3 +1,5 @@
+// 运用场景： 价格需要每三位加上逗号
+
 var comma = {};
 // 价格逗号
 comma.init = function(price) {

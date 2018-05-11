@@ -1,3 +1,5 @@
+// 运用场景：时间格式化
+
 var timeFormat = {};
 // 获取时间年月日
 timeFormat.date = function(time){
