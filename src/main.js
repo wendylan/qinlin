@@ -13,6 +13,9 @@ import 'font-awesome/css/font-awesome.css'
 
 Vue.use(vueRouter);
 
+//echarts
+import echarts from 'echarts';
+Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;

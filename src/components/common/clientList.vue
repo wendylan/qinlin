@@ -183,9 +183,11 @@ export default {
 			api.getApi('/GetCustomer', {
 				puid:sessionStorage.getItem("uid")
 			}).then(res=>{
-				this.planList = res.data;
-				this.currentPlan = this.planList;
-				this.filtCity = filterFormat(this.planList, 'rName');
+				if(res.data){
+					this.planList = res.data;
+					this.currentPlan = this.planList;
+					this.filtCity = filterFormat(this.planList, 'rName');
+				}
 			}).catch(res =>{
 				console.log(res);
 			});

@@ -14,8 +14,8 @@
 						<div class="content_top_form_wrap">
 							<el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
 									class="demo-ruleForm">
-								<el-form-item label="联系人:" prop="contacts">
-									<el-input v-model="clientForm.contacts" placeholder="请输入联系人姓名"></el-input>
+								<el-form-item label="联系人:" prop="realname">
+									<el-input v-model="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
 								</el-form-item>
 								<el-form-item label="职位:" prop="position">
 									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
@@ -23,19 +23,19 @@
 								<el-form-item label="手机号码:" prop="phone">
 									<el-input v-model.number="clientForm.phone" placeholder="请输入联系人手机号码"></el-input>
 								</el-form-item>
-								<el-form-item label="所在地:" prop="location">
-									<el-select v-model="clientForm.location" placeholder="请选择活动区域">
+								<el-form-item label="所在地:" prop="rid">
+									<el-select v-model="clientForm.rid" placeholder="请选择活动区域">
 										<el-option :label="item.rName" :value="item.rID" v-for="item of AllArea" :key="item.rID"></el-option>
 									</el-select>
 								</el-form-item>
 								<el-form-item label="邮箱:" prop="email">
 									<el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
 								</el-form-item>
-								<el-form-item label="固定电话:" prop="telephone">
-									<el-input v-model.number="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
+								<el-form-item label="固定电话:" prop="telphone">
+									<el-input v-model.number="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
 								</el-form-item>
-								<el-form-item label="事业部:" prop="companyBU">
-									<el-input v-model="clientForm.companyBU" placeholder="请输入联系人所属事业部"></el-input>
+								<el-form-item label="事业部:" prop="division">
+									<el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
 								</el-form-item>
 							</el-form>
 						</div>
@@ -154,13 +154,13 @@ export default {
 			inputValue: '',
 			//表单
 			clientForm: {
-				contacts: '',
+				realname: '',
 				position: '',
 				phone: '',
-				location: '',
+				rid: '',
 				email: '',
-				telephone: '',
-				companyBU: ''
+				telphone: '',
+				division: ''
 			},
 			companyForm: {
 				companyName: '',
@@ -171,7 +171,7 @@ export default {
 				tradeClassify:''
 			},
 			clientRules: {
-				contacts: [
+				realname: [
 					{required: true, message: '联系人不能为空', trigger: 'blur'},
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
 				],
@@ -183,14 +183,14 @@ export default {
 					{required: true, message: '电话号码不能为空', trigger: 'blur'},
 					{ type:'number', message:'只能输入数字', trigger:'blur'},
 				],
-				location: [],
+				rid: [],
 				email: [
 					{ validator: validateEmail, trigger:'blur'},
 				],
-				telephone: [
+				telphone: [
 					{ type:'number', message:'只能输入数字', trigger:'change'},
 				],
-				companyBU: [
+				division: [
 					{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
 				],
 			},

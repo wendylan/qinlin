@@ -1,7 +1,7 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-      <p class="clearfix"><a href="#">订单管理</a></p>
+      <p><a href="#" style="color: #999">订单管理</a><em> / </em><a href="#">订单列表</a></p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -35,21 +35,35 @@
               min-width="13.6%"
             >
               <template slot-scope="scope">
-                <a href="#">{{scope.row.orderName}}</a>
+                <router-link :to="{path:'/sale/orderDetail'}">{{scope.row.orderName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column
-              prop="clientName"
               label="客户名称"
               min-width="11.4%"
             >
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.clientName" placement="bottom">
+                  <span title="">{{scope.row.clientName}}</span>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractID"
+              prop="brandName"
+              label="品牌名称"
+              min-width="6.0%"
+            >
+            </el-table-column>
+            <el-table-column
               label="合同编号"
               class="tar"
               min-width="8.9%"
             >
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.contractID" placement="bottom">
+                  <span title="">{{scope.row.contractID}}</span>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column
               prop="orderPrice"
@@ -60,8 +74,8 @@
             </el-table-column>
             <el-table-column
               prop="city"
-              label="投放城市(点位面数，周期，排期)"
-              min-width="23.6%"
+              label="投放城市(点位面数，排期)"
+              min-width="19.2%"
             >
             </el-table-column>
             <el-table-column
@@ -87,7 +101,7 @@
             </el-table-column>
             <el-table-column
               label="操作"
-              min-width="8.4%"
+              min-width="6.4%"
             >
               <template slot-scope="scope">
                 <el-dropdown size="small" split-button trigger="click">
@@ -109,162 +123,176 @@
 </template>
 
 <script>
-	export default {
-		name: "projectList",
-		data() {
-			return {
-				cDate: '',
-				search: '',
-				//表格
-				orderList: [{
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '未投放',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '强制完成',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '已完成',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '已完成',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '已完成',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '未投放',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '未投放',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '进行中',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '进行中',
-				}, {
-					orderName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					contractID: 'GZ201809890',
-					orderPrice: '￥3,720,000',
-					city: '广州市(300面,12周10天,2017.09.10-2017.10.01)',
-					createDate: '2018.08.30',
-					Status: '进行中',
-				}]
-			}
-		},
+  export default {
+    name: "projectList",
+    data() {
+      return {
+        cDate: '',
+        search: '',
+        //表格
+        orderList: [
+          {
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '未投放',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '强制完成',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '已完成',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '已完成',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '已完成',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '未投放',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '未投放',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '进行中',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '进行中',
+        },{
+          orderName: '新世界百货二月投放方案2.0',
+          brandName:'亲邻科技',
+          clientName: '北京通瑞万华置业北京通瑞万华置业',
+          contractID: 'QC201803284401001',
+          orderPrice: '￥3,720,000',
+          city: '广州市(300面,2017.09.10-2017.10.01)',
+          createDate: '2018.08.30',
+          Status: '进行中',
+        }]
+      }
+    },
 
-		methods: {
-			//提示框
-			inputBox1(){
-				this.$prompt('请输入监控备注', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					inputType:'textarea',
-					inputPattern:  /^.{1,100}$/,
-					inputErrorMessage: '监控备注超过100字,请缩减'
-				}).then(() => {
-					this.$message({
-						type: 'success',
-						message: '监控备注输入成功'
-					});
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '取消输入'
-					});
-				});
-			},
+    methods: {
+      //提示框
+      inputBox1(){
+        this.$prompt('请输入监控备注', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputType:'textarea',
+          inputPattern:  /^.{1,100}$/,
+          inputErrorMessage: '监控备注超过100字,请缩减'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '监控备注输入成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });
+        });
+      },
 
-			confirmBox1(){
-				console.log(this);
-				this.$confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？', '提示', {
-					confirmButtonText:'是',
-					cancelButtonText:'否',
-					dangerouslyUseHTMLString: true,
-					type:'warning'
-				}).then(()=>{
-					//确定
-					this.$message({
-						type:'success',
-						message:'操作成功'
-					});
-				}).catch(()=>{
-					this.$message({
-						type:'info',
-						message:'已取消操作'
-					})
-				});
-			},
-			//筛选
-			filterStatus(value, row) {
-				return row.Status === value;
-			},
-			//状态
+      confirmBox1(){
+        console.log(this);
+        this.$confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？','提示',{
+          confirmButtonText:'是',
+          cancelButtonText:'否',
+          dangerouslyUseHTMLString: true,
+          type:'warning'
+        }).then(()=>{
+          //确定
+          this.$message({
+            type:'success',
+            message:'操作成功'
+          });
+        }).catch(()=>{
+          this.$message({
+            type:'info',
+            message:'已取消操作'
+          })
+        });
+      },
+      //筛选
+      filterStatus(value, row) {
+        return row.Status === value;
+      },
+      //状态
 
-		},
-	}
+    },
 
-	$(function () {
-		/*window.onresize = function () {
-			if ($(window.width >= 1366)) {
-				$('.el-table-filter').css({
-					left: '1145'
-				})
-			}
-		};*/
-		var Status = $('.el-table__row').find('td').text();
-		if(Status === '已完成'){
-			$('.watch').attr('disabled', 'disabled')
-		}
+  }
 
-	})
+  $(function () {
+    /*window.onresize = function () {
+      if ($(window.width >= 1366)) {
+        $('.el-table-filter').css({
+          left: '1145'
+        })
+      }
+    };*/
+    var Status = $('.el-table__row').find('td').text();
+    if(Status === '已完成'){
+        $('.watch').attr('disabled','disabled')
+    }
+
+
+
+  })
 </script>
 
 <style scoped>
@@ -310,7 +338,6 @@
   /*面包屑导航*/
   .ad_mediaDetail_wrap {
     position: relative;
-
   }
 
   .ad_mediaDetail_nav p {
@@ -318,7 +345,7 @@
     position: absolute;
     left: 0;
     top: 12px;
-    font-family: PingFangSC-Regular;
+    color: #999999;
     font-size: 14px;
     line-height: 18px;
   }
@@ -492,13 +519,13 @@
 
   /deep/ .el-dropdown .el-button-group .el-button {
     height: 28px;
-    width: 54px;
+    width: 40px;
     font-size: 14px;
     padding: 0;
   }
 
   /deep/ .el-dropdown .el-button-group .el-button:last-child {
-    width: 30px;
+    width: 22px;
   }
 
   /deep/ .popper__arrow {

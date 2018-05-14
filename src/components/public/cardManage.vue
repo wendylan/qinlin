@@ -46,9 +46,6 @@
 </script>
 <style>
 /*内容*/
-.ad_index_container {
-	height: 708px;
-}
 
 .ad_index_panel {
 	margin-top: 40px;
@@ -202,10 +199,6 @@
 
 /*1366*/
 @media screen and (min-width: 1366px) {
-	.ad_index_container {
-		height: 633px;
-	}
-
 	.ad_index_panel li {
 		width: 295px;
 		height: 166px;
@@ -221,10 +214,6 @@
 
 /*1440*/
 @media screen and (min-width: 1440px) {
-
-	.ad_index_container {
-		height: 765px;
-	}
 
 	.ad_index_panel li {
 		width: 295px;

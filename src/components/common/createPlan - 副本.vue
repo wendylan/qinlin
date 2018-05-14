@@ -12,6 +12,7 @@
             <el-step title="确认报价单"></el-step>
             <el-step title="完成"></el-step>
           </el-steps>
+
         </div>
         <!--填写客户信息-->
         <div class="step1" v-if="active==0">
@@ -86,8 +87,11 @@
                 <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
                 <el-button type="primary" icon="el-icon-location-outline" class="map">地图</el-button>
                 <div class="shopcar" @click="dialogTableVisible = true">
-                  <el-badge :value="badgeNumber" class="item">
-                    <img src="../../assets/images/shopCar.png" alt="">
+                  <el-badge :value="12" class="item">
+                    <!-- <img src="../../assets/home/shopCar.png" alt=""> -->
+                    <span class="cart_box">
+						<i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
+					</span>
                   </el-badge>
                 </div>
               </div>
@@ -211,22 +215,16 @@
             <!--表格-->
             <div class="table_wrap">
               <el-table
-                ref="multipleTable"
                 border
                 :data="planList"
-                :default-sort="{prop: 'recName', order: 'descending'}"
-                @select="handleSelect"
-                @cell-mouse-enter="mouseEnter"
                 style="width: 100%"
+                :default-sort="{prop: 'recName', order: 'descending'}"
               >
                 <el-table-column type="expand">
                   <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
                       <el-form-item label="商圈：">
                         <span>{{ props.row.businessOrigin}}</span>
-                      </el-form-item>
-                      <el-form-item label="楼栋数量：">
-                        <span>{{ props.row.buildNum }}</span>
                       </el-form-item>
                       <el-form-item label="资产编号：">
                         <span>{{ props.row.assetID }}</span>
@@ -237,34 +235,25 @@
                       <el-form-item label="广告限制：">
                         <span>{{ props.row.adLimit }}</span>
                       </el-form-item>
+
                     </el-form>
                   </template>
                 </el-table-column>
                 <el-table-column
                   type="selection"
-                  width="41px"
-                  scope="scope"
-                   >
-
+                  width="41px">
                 </el-table-column>
 
                 <el-table-column
                   label="资源名称"
-                  min-width="16.1%"
+                  min-width="14.1%"
                   prop="recName"
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="mediaName"
-                  label="媒体名称"
-                  min-width="10.3%"
-                  class="tar"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="city"
                   label="城市"
-                  min-width="6%"
+                  min-width="7%"
                 >
                 </el-table-column>
                 <el-table-column
@@ -282,32 +271,86 @@
                 <el-table-column
                   prop="houseNum"
                   label="小区户数"
-                  min-width="7.3%"
+                  min-width="8.3%"
                   class="tar"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="buildPrice"
                   label="楼盘价格"
-                  min-width="7.3%"
+                  min-width="8.3%"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="buildNum"
+                  label="楼栋数量"
+                  min-width="8.3%"
+                  class="tar"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="schedules"
                   label="排期"
-                  min-width="14.2%"
+                  min-width="16.2%"
                 >
                 </el-table-column>
                 <el-table-column width="132px">
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.checkBox.A" label="A面" @change="changeA(scope.row)"></el-checkbox>
-                    <el-checkbox  v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)"></el-checkbox>
+                      <el-checkbox>A面</el-checkbox>
+                      <el-checkbox>B面</el-checkbox>
                   </template>
                 </el-table-column>
               </el-table>
+             <!-- <div>
+                <div class="thead tt">
+                  <ul>
+                    <li style="width:41px;">
+                      <el-checkbox></el-checkbox>
+                    </li>
+                    <li style="min-width:14.1%">资源名称</li>
+                    <li style="min-width:7%">城市</li>
+                    <li style="min-width:7.4%">区域</li>
+                    <li style="min-width:8.8%">楼盘类型</li>
+                    <li style="min-width:8.3%">小区户数</li>
+                    <li style="min-width:8.3%">楼盘价格</li>
+                    <li style="min-width:8.3%">楼栋数量</li>
+                    <li style="min-width:16.2%">排期</li>
+                    <li style="width:160px; border-right: none"></li>
+                  </ul>
+                </div>
+                <div class="tbody tt">
+                  <div v-for="item in planList">
+                    <ul class="tr">
+                      <li>
+                        <el-checkbox @click="showDetail"></el-checkbox>
+                      </li>
+                      <li>{{item.recName}}</li>
+                      <li>{{item.city}}</li>
+                      <li>{{item.origin}}</li>
+                      <li>{{item.buildType}}</li>
+                      <li style="text-align: right">{{item.houseNum}}</li>
+                      <li>{{item.buildPrice}}</li>
+                      <li style="text-align: right">{{item.buildNum}}</li>
+                      <li>{{item.schedules}}</li>
+                      <li style="border-right: none">
+                        <div>
+                          <el-checkbox>A面</el-checkbox>
+                          <el-checkbox>B面</el-checkbox>
+                        </div>
+                      </li>
+                    </ul>
+                    <div class="tr-txt">
+                      <p><span>商圈：</span> <em>{{item.businessOrigin}}</em></p>
+                      <p><span>资产编号：</span> <em>{{item.assetID}}</em></p>
+                      <p><span>入住年份：</span> <em>{{item.liveYear}}</em></p>
+                      <p><span>广告限制：</span> <em>地产</em>/<em>医药</em>/<em>汽车</em></p>
+                    </div>
+                  </div>
+                </div>
+              </div>-->
             </div>
             <!--购物车-->
-            <el-dialog title="购物车" :visible.sync="dialogTableVisible">
+            <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
                 <template slot-scope="scope">
                   <div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
                     <div class="car-title">
@@ -340,16 +383,11 @@
                       </el-table-column>
                       <el-table-column
                         label="资源名称"
-                        min-width="11.5%"
+                        min-width="14.1%"
                         prop="recName"
                       >
                       </el-table-column>
-                      <el-table-column
-                        prop="mediaName"
-                        label="媒体名称"
-                        min-width="8.9%"
-                      >
-                      </el-table-column>
+
                       <el-table-column
                         prop="city"
                         label="城市"
@@ -371,7 +409,7 @@
                       <el-table-column
                         prop="houseNum"
                         label="小区户数"
-                        min-width="7.8%"
+                        min-width="8.3%"
                       >
                       </el-table-column>
                       <el-table-column
@@ -380,8 +418,12 @@
                         min-width="8.3%"
                       >
                       </el-table-column>
-
-
+                      <el-table-column
+                        prop="buildNum"
+                        label="楼栋数量"
+                        min-width="8.0%"
+                      >
+                      </el-table-column>
                       <el-table-column
                         prop="schedules"
                         label="排期"
@@ -399,6 +441,53 @@
                         </template>
                       </el-table-column>
                     </el-table>
+                    <!-- <div>
+                       <div class="thead tt">
+                         <ul>
+                           <li style="width:41px;">
+                             <el-checkbox></el-checkbox>
+                           </li>
+                           <li style="min-width:14.1%">资源名称</li>
+                           <li style="min-width:7%">城市</li>
+                           <li style="min-width:7.4%">区域</li>
+                           <li style="min-width:8.8%">楼盘类型</li>
+                           <li style="min-width:8.3%">小区户数</li>
+                           <li style="min-width:8.3%">楼盘价格</li>
+                           <li style="min-width:8.3%">楼栋数量</li>
+                           <li style="min-width:16.2%">排期</li>
+                           <li style="width:160px; border-right: none"></li>
+                         </ul>
+                       </div>
+                       <div class="tbody tt">
+                         <div v-for="item in planList">
+                           <ul class="tr">
+                             <li>
+                               <el-checkbox @click="showDetail"></el-checkbox>
+                             </li>
+                             <li>{{item.recName}}</li>
+                             <li>{{item.city}}</li>
+                             <li>{{item.origin}}</li>
+                             <li>{{item.buildType}}</li>
+                             <li style="text-align: right">{{item.houseNum}}</li>
+                             <li>{{item.buildPrice}}</li>
+                             <li style="text-align: right">{{item.buildNum}}</li>
+                             <li>{{item.schedules}}</li>
+                             <li style="border-right: none">
+                               <div>
+                                 <el-checkbox>A面</el-checkbox>
+                                 <el-checkbox>B面</el-checkbox>
+                               </div>
+                             </li>
+                           </ul>
+                           <div class="tr-txt">
+                             <p><span>商圈：</span> <em>{{item.businessOrigin}}</em></p>
+                             <p><span>资产编号：</span> <em>{{item.assetID}}</em></p>
+                             <p><span>入住年份：</span> <em>{{item.liveYear}}</em></p>
+                             <p><span>广告限制：</span> <em>地产</em>/<em>医药</em>/<em>汽车</em></p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>-->
                   </div>
                 </template>
             </el-dialog>
@@ -406,133 +495,82 @@
         </div>
         <div class="step3" v-if="active==2">
           <div class="confirmBox">
-            <div class="bill-title">
-               <div class="bill-title-left">
-                  <h4>珠江帝景地产三月份投放</h4>
-                  <p>广州市视传文化传播有限公司</p>
-                  <p>珠江帝景</p>
-               </div>
-              <div class="bill-title-right">
-                <ul>
-                  <li><p><em>现金结算：</em><span>￥88,000,000.00</span></p></li>
-                  <li><p><em>资源置换：</em><span>￥2,000,000.00</span></p></li>
-                  <li><p><em>其他费用：</em><span>￥2,000,000.00</span></p></li>
-                  <li><p><em style="top: 5px">总计：</em><span class="totalPrice">￥90,000,000.00</span></p></li>
-                </ul>
-              </div>
-            </div>
-            <div class="panel">
-              <el-tabs type="border-card">
-                <el-tab-pane label="广州">
-                  <div class="tab-info">
-                    <div class="pqxx">
-                      <h4>排期信息</h4>
-                      <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-                    </div>
-                    <div class="price">
-                      <div class="price-left">
-                        <h4>广告费 <el-button type="text" @click="changeAD = true">修改</el-button></h4>
-                        <ul>
-                          <li>刊例价(面/周) <span>{{ADPrice}}</span></li>
-                          <li>投放量(面·天) <span>{{tfl}}</span></li>
-                          <li>赠送(面·天) <span>35</span></li>
-                          <li>广告费折扣 <span>96.67%</span></li>
-                          <li>￥3,800,000.00</li>
-                        </ul>
+            <el-tabs type="border-card">
+              <el-tab-pane label="广州">
+                <div class="bill-panel">
+                  <div class="bill-top">
+                    <div class="bill-top-left">
+                      <div class="bill-title">
+                        <h2>珠江帝景地产三月份投放</h2>
+                        <p>广州市视传文化传播有限公司</p>
+                        <p>珠江帝景</p>
                       </div>
-                      <div class="price-right">
-                        <h4>制作费<el-button type="text" @click="changeMake = true">修改</el-button></h4>
+                      <div class="put-info title">
+                        <h3>
+                          投放信息
+                          <button>修改</button>
+                        </h3>
                         <ul>
-                          <li>制作费单价<span>￥100</span></li>
-                          <li>广告画数量(张)<span>35</span></li>
-                          <li></li>
-                          <li>制作费折扣<span>100%</span></li>
-                          <li>{{makePrice}}</li>
+                          <li><h4>投放城市</h4>
+                            <p>广州</p></li>
+                          <li><h4>投放面数</h4>
+                            <p>100面(赠送10面)</p></li>
+                          <li><h4>投放周期</h4>
+                            <p>12周0天(赠送0天0面)</p></li>
+                          <li class="jtpq"><h4>具体排期</h4>
+                            <p>2018.03.01-2018.03.28（4周0天）</p>
+                            <p>2018.04.01-2018.04.28（4周0天）</p>
+                            <p>2018.05.01-2018.05.28（4周0天）</p>
+                          </li>
                         </ul>
                       </div>
                     </div>
-                    <div class="bottom">
-                      <div class="bottom-detail">
-                        <div class="remark">
-                          <p>备注：{{remark}}</p>
-                        </div>
-                        <div class="bill-title-right">
-                          <ul>
-                            <li><p><em>现金结算：</em><span>{{cash}}</span></p></li>
-                            <li><p><em>资源置换：</em><span>{{zyzh}}</span></p></li>
-                            <li><p><em>其他费用：</em><span>{{other}}</span></p></li>
-                          </ul>
+                    <div class="bill-top-right ">
+                      <div class="ad title">
+                        <h3>
+                          广告费
+                          <button>修改</button>
+                        </h3>
+                        <ul class="adPrice">
+                          <li>刊例价 <span>￥1900.00/周/面</span></li>
+                          <li>广告费折扣 <span>100%</span></li>
+                          <li><span class="total">￥3,800,000.00</span></li>
+                        </ul>
+                      </div>
+                      <div class="make title">
+                        <h3>
+                          制作费
+                          <button>修改</button>
+                        </h3>
+                        <ul class="makePrice">
+                          <li>广告画制作费 <span>￥100/张</span></li>
+                          <li>结算制作费折扣 <span>100%</span></li>
+                          <li>赠送制作费折扣 <span>100%</span></li>
+                          <li><span class="total">￥3,800,000.00</span></li>
+                        </ul>
+                        <div class="all-total">
+                          合计
+                          <h3>￥76,00,000.00</h3>
                         </div>
                       </div>
-                      <div class="bottom-fin">
-                        <el-button type="text" @click="changeBill = true">修改</el-button>
-                        <p><em style="top: 5px">总计：</em><span class="totalPrice">{{totalPrice}}</span></p>
-                      </div>
+
                     </div>
                   </div>
-                </el-tab-pane>
-                <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-                <el-tab-pane label="成都">成都内容</el-tab-pane>
-              </el-tabs>
-              <!--修改对话框-->
-              <el-dialog
-                title="修改广告费"
-                :visible.sync="changeAD"
-                width="30%">
-                <div class="changeMakePrice">
-                  <p>赠送(面·天)</p>
-                  <el-input-number v-model="tfl" controls-position="right"></el-input-number>
-                  <p style="margin-top: 20px">广告费</p>
-                  <el-input v-model="ADPrice" placeholder="请输入内容"></el-input>
-                </div>
-                <span slot="footer" class="dialog-footer">
-    <el-button @click="changeAD = false">取 消</el-button>
-    <el-button type="primary" @click="handleClose">确 定</el-button>
-  </span>
-              </el-dialog>
-              <!---->
-              <el-dialog
-                title="修改制作费"
-                :visible.sync="changeMake"
-                width="30%">
-                <div class="changeMakePrice">
-                  <p>制作费</p>
-                  <el-input v-model="makePrice" placeholder="请输入内容"></el-input>
-                </div>
-                <span slot="footer" class="dialog-footer">
-    <el-button @click="changeMake = false">取 消</el-button>
-    <el-button type="primary" @click="handleClose">确 定</el-button>
-  </span>
-              </el-dialog>
-              <el-dialog
-                title="修改结算方式"
-                :visible.sync="changeBill"
-                width="30%"
-                >
-                <div class="changeBill">
-                  <h4>{{totalPrice}}</h4>
-                  <p>现金结算</p>
-                  <el-input v-model="cash" placeholder="请输入内容"></el-input>
-                  <p>资源置换</p>
-                  <el-input v-model="zyzh" placeholder="请输入内容"></el-input>
-                  <p>其他费用</p>
-                  <el-input v-model="other" placeholder="请输入内容"></el-input>
-                  <p>结算备注</p>
-                  <el-input v-model="remark" type="textarea"></el-input>
-                </div>
-                <span slot="footer" class="dialog-footer">
-    <el-button @click="changeBill = false">取 消</el-button>
-    <el-button type="primary"  @click="handleClose">确 定</el-button>
-  </span>
-              </el-dialog>
+                  <div class="bill-bottom">
 
-            </div>
+                  </div>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="深圳">深圳内容</el-tab-pane>
+              <el-tab-pane label="成都">成都内容</el-tab-pane>
+            </el-tabs>
           </div>
         </div>
         <div class="step4" v-if="active==3">
           <div class="createSuccess">
             <div class="successIcon">
-              <img src="../../assets/images/createSuccess.png" alt="">
+              <!-- <img src="../../assets/home/createSuccess.png" alt=""> -->
+			  <i class="fa fa-check-circle fa-4x" style="color:#67C23A;"></i>
               <h2>创建成功</h2>
               <p>创建时间：2018年3月18日</p>
             </div>
@@ -559,10 +597,6 @@
         <button class="cancel">查看订单</button>
       </div>
     </div>
-    <!--添加商品到购物车的动画效果-->
-    <div class="shopAnimate" v-show="shoppingShow">
-      <img src="../../assets/images/110.png" alt="">
-    </div>
   </div>
 </template>
 
@@ -571,39 +605,17 @@
     name: "createPlan",
     data() {
       return {
-        shopXY:{x:'',y:''},   // 动画起始坐标
-        shoppingShow: false, //动画效果的显示隐藏
-        badgeNumber: 11,    // 购物车数量
-        bodyWidth: 1920,
-        //step2修改弹框
-        changeAD:false,
-        changeMake:false,
-        changeBill:false,
-        //step2制作费
-        makePrice:'￥3,000',
-        //广告费
-        ADPrice:'￥3,000,000',
-        //投放量
-        tfl:'235',
-        //总价
-        totalPrice:'￥90,000,000.00',
-        //备注
-        remark:'无',
-        cash:'￥88,000,000.00',
-        zyzh:'￥2,000,000.00',
-        other:'￥2,000,000.00',
-
         //step1投放城市
         throwCity:[{
           value: '广州',
           label: '广州'
-        },{
+        }, {
           value: '北京',
           label: '北京'
-        },{
+        }, {
           value: '上海',
           label: '上海'
-        },{
+        }, {
           value: '成都',
           label: '成都'
         }],
@@ -651,7 +663,7 @@
           companyBrand: '',
           throwCity:'',
           ownerBU: '',
-          planRemark: '',
+          planRemark: ''
         },
         planRules: {
           planName: [
@@ -671,260 +683,205 @@
         },
         //step2列表
         planList: [{
-          id:1,
-          recName: '珠江帝景花园111111',
-          city: '广州1',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
-          id:2,
-          recName: '珠江帝景花园2222222222',
-          city: '广州2',
-          origin: '白云区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
-          id:3,
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
+          adLimit: '地产/医药/汽车'
+        }, {
           recName: '珠江帝景花园',
           city: '广州',
           origin: '海珠区',
           buildType: '高端住宅',
           houseNum: '600',
           buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
           buildNum: '12',
           schedules: '2017.08.30-2017.09.30',
           businessOrigin: '白云万达广场',
           assetID: 'GZ201871024',
           liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
+          adLimit: '地产/医药/汽车'
+        }, {
+          recName: '珠江帝景花园',
+          city: '广州',
+          origin: '海珠区',
+          buildType: '高端住宅',
+          houseNum: '600',
+          buildPrice: '￥30,000',
+          buildNum: '12',
+          schedules: '2017.08.30-2017.09.30',
+          businessOrigin: '白云万达广场',
+          assetID: 'GZ201871024',
+          liveYear: '1999年',
+          adLimit: '地产/医药/汽车'
+        }, {
+          recName: '珠江帝景花园',
+          city: '广州',
+          origin: '海珠区',
+          buildType: '高端住宅',
+          houseNum: '600',
+          buildPrice: '￥30,000',
+          buildNum: '12',
+          schedules: '2017.08.30-2017.09.30',
+          businessOrigin: '白云万达广场',
+          assetID: 'GZ201871024',
+          liveYear: '1999年',
+          adLimit: '地产/医药/汽车'
         }],
 
       };
     },
-    created:function () {
-
-    },
-    computed:{
-
-    },
-    mounted(){
-      // 注：window.onresize只能在项目内触发1次
-      let that = this
-      window.onresize = function windowResize () {    // 实时监控body的宽带。注：修改该方法后要重启项目并重新打开页面
-        // 通过捕获系统的onresize事件触发我们需要执行的事件
-        that.bodyWidth = document.body.offsetWidth
-        that.shopXY.x = that.bodyWidth - 170
-        shopAnimate.style.right = this.shopXY.x + 'px'
-      //  console.log('bodyWidth',that.bodyWidth)
-      //  console.log('shopXY',that.shopXY.x)
-      }
-    //  let Right = document.body.offsetWidth - 170
-      let Right = document.body.offsetWidth - 835
-      this.shopXY.x = Right
-  //    this.shopXY.x = this.bodyWidth - 170
-      let shopAnimate = document.getElementsByClassName('shopAnimate')[0]
-      shopAnimate.style.right = this.shopXY.x + 'px'
+    mounted:function(){
       $(function () {
         //事件委托
         $('.content_top_wrap').on('click', 'dd', function () {
@@ -939,82 +896,21 @@
           $(this).parents('.input-wrap').addClass('focus');
           $(this).siblings('button').show();
         }).on('blur', '.input', function () {
-          $(this).parents('.input-wrap').removeClass('focus');
-          $(this).siblings('button').hide();
+          // $(this).parents('.input-wrap').removeClass('focus');
+          // $(this).siblings('button').hide();
         });
 
         $('.content_top_wrap').on('click', '.close-tags', function () {
-          $(this).parents('.tags').hide();
+          // $(this).parents('.tags').hide();
         });
         $('.content_top_wrap').on('click', '.clear-filter', function () {
-          $(this).parents('.filter-tags').hide();
+          // $(this).parents('.filter-tags').hide();
         })
 
       })
     },
     methods: {
-      //获取mouseEnter屏幕时的坐标像素
-      mouseEnter(row, column, cell, event){
-        let e = event || window.event;
-        this.shopXY.y =  e.clientY
-      },
-     // 行选中打钩
-      handleSelect(selection,row){
-        if(row.checkBox.B === false){
-          row.checkBox.A = !row.checkBox.A
-        }else{
-          row.checkBox.A = false
-        }
-         if(row.checkBox.A){
-           this.shopShow_hide()
-         }else {
-            row.checkBox.B = false
-            this.badgeNumber--
-         }
-      },
-      // 选中A、B面的时候
-      /*changeAB(row){
-          let check = row
-          let that = this
-          if(check.checkBox.A == true || check.checkBox.B == true){
-            this.$refs.multipleTable.toggleRowSelection(check,true);
-
-            if(check.checkBox.A == false || check.checkBox.B == false){
-              this.shoppingShow = true
-              setTimeout(function () {
-                that.shoppingShow = false
-              },1000)
-            }
-          }else{
-            this.$refs.multipleTable.toggleRowSelection(check,false);
-          }
-      },*/
-      changeA(row){
-        let check = row
-        if(check.checkBox.A === true || check.checkBox.B === true){
-          this.$refs.multipleTable.toggleRowSelection(check,true);
-
-          if(check.checkBox.A === true && check.checkBox.B === false){
-            this.shopShow_hide()
-          }
-        }else{
-          this.$refs.multipleTable.toggleRowSelection(check,false);
-          this.badgeNumber--
-        }
-      },
-      changeB(row){
-        let check = row
-        if(check.checkBox.A === true || check.checkBox.B === true){
-          this.$refs.multipleTable.toggleRowSelection(check,true);
-          if(check.checkBox.B === true && check.checkBox.A === false){
-           this.shopShow_hide()
-          }
-        }else{
-          this.$refs.multipleTable.toggleRowSelection(check,false);
-          this.badgeNumber--
-        }
-      },
-      // 点击确认框后显示详情
+      //点击确认框后显示详情
       showDetail(){
         console.log(123);
       },
@@ -1035,55 +931,529 @@
         //表单重置
         /*this.planForm.resetFields();*/
       },
-      //step3确认修改
-      handleClose(){
-        this.$message({
-          message: '修改成功',
-          type: 'success'
-        });
-        this.changeBill = false;
-        this.changeMake = false;
-        this.changeAD = false;
-      },
-      //修改动画效果及显示隐藏
-      shopShow_hide(){
-        this.shoppingShow = true
-        let R = this.shopXY.x
-        let T = this.shopXY.y
-        let shopAnimate = document.getElementsByClassName('shopAnimate')[0]
-        console.log(shopAnimate.offsetTop)
-        shopAnimate.style.top = this.shopXY.y + 'px'
-        shopAnimate.style.right = this.shopXY.x + 'px'
-        let that = this
-        $(".shopAnimate").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
-          $(".shopAnimate").css({'top': T,'right': R,width:'650px',height:'49px'})
-          that.shoppingShow = false
-          that.badgeNumber++
-        })
-      },
     }
   }
+
 </script>
 
 <style scoped>
 
-    .shopAnimate{
-      font-weight: bold;
-      font-size: 18px;
-      position: fixed;
-      top: 574px;
-      right:170px;
-    /*  width: 48px;
-      height: 48px;
-      border-radius: 50%;*/
-      width: auto;
-      height: auto;
-      background: rgba(250,0,0,1);
-      color: #fff;
-      z-index: 1000;
-      text-align: center;
-      line-height: 18px;
-    }
+  /*选择点位*/
+  /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
+    width: 95px;
+    position: relative;
+    top: 0;
+    left: -5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-right: 0;
+    padding-left: 10px;
+  }
+
+  /deep/ .el-button {
+    width: 76px;
+    height: 34px;
+  }
+
+  .searchInput /deep/ .el-input__inner, .searchInput {
+    width: 224px !important;
+    position: relative;
+    left: -7px;
+    top: 0;
+    height: 34px;
+    border-left: none !important;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+  /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
+    width: 180px;
+    margin-left: -6px;
+  }
+
+  /deep/ .date-select.el-input__inner {
+    width: 237px;
+    position: relative;
+    top: 3px;
+    left: -5px;
+  }
+
+  /deep/ .el-date-editor .el-range__icon {
+    position: relative;
+    top: -2px;
+    left: -3px;
+  }
+
+  .searchBtn, .map {
+    position: relative;
+    top: 3px;
+    left: -3px;
+  }
+
+  /deep/ .searchBtn .el-icon-search {
+    position: relative;
+    top: -2px;
+    left: -9px;
+  }
+
+  /deep/ .el-button.searchBtn span {
+    position: relative;
+    left: -5px;
+  }
+
+  .map {
+    width: 76px;
+    height: 34px;
+    border: 1px solid #C2C2C2;
+    border-radius: 4px;
+    cursor: pointer;
+    top: 3px;
+    text-align: center;
+    font-size: 14px;
+  }
+  /deep/ .map .el-icon-location-outline {
+    position: relative;
+    top: -2px;
+    left: -9px;
+  }
+
+  /deep/ .el-button.map span {
+    position: relative;
+    left: -10px;
+    top: -2px;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+	.cart_box{
+		color:#fff;
+		background:#108EE9;
+		border-radius:50%;
+		display:inline-block;
+		width:50px;
+		height:50px;
+		vertial-align:middle;
+		text-align:center;
+		line-height:50px;
+	}
+  .shopcar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    position: fixed;
+    right: 29px;
+    top: 75px;
+    z-index: 999;
+  }
+
+  /deep/ .shopcar .el-badge__content.is-fixed {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+  }
+
+  .shopcar img {
+    width:59px;
+    height: 59px;
+    border-radius: 50%;
+  }
+
+  /*面板*/
+  .dw-panel {
+    border: 1px solid #D8D8D8;
+    margin-top: 8px;
+    padding: 10px 18px 0 18px;
+  }
+
+  .dw-panel dl {
+    border-bottom: 2px dashed #D8D8D8;
+    line-height: 40px;
+  }
+
+  .dw-panel dt {
+    display: inline-block;
+    font-size: 14px;
+    color: #999999;
+    height: 40px;
+  }
+
+  .dw-panel .city-proper {
+    padding-left: 75px;
+  }
+
+  .dw-panel dd {
+    font-size: 14px;
+    color: #666666;
+    display: inline-block;
+    height: 22px;
+    line-height: 22px;
+    padding: 2px 7px;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+
+  .dw-panel dd.active {
+    color: #1890FF;
+    border: 1px solid #1890ff;
+    border-radius: 4px;
+  }
+
+  /*筛选输入框*/
+  .filter-input {
+    width: 100%;
+    height: 38px;
+    background: #F1F1F1;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #979797;
+    padding: 5px 0 6px 10px;
+    box-sizing: border-box;
+  }
+
+  .filter-input input {
+    border: 1px solid #C2C2C2;
+    border-radius: 4px;
+    width: 50px;
+    height: 26px;
+    outline: none;
+    text-indent: 1em;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .filter-input ul {
+   /* display: flex;
+    align-items: center;*/
+  }
+
+  .filter-input ul li {
+    float: left;
+    margin-left: 33px;
+    position: relative;
+    width: 189px;
+    top: 4px;
+  }
+  .filter-input ul li:last-child {
+    float: left;
+    margin-left: 33px;
+    position: relative;
+    width: 189px;
+    top: 1px;
+  }
+
+
+  /deep/ .buildType .el-input, /deep/ .buildType .el-input__inner {
+    width: 95px;
+    height: 26px;
+    position: relative;
+    top: 0;
+    left: -5px;
+    padding-right: 0;
+    padding-left: 10px;
+  }
+
+  .filter-input .input-wrap {
+    position: absolute;
+    left: 64px;
+    top: -8px;
+    height: 64px;
+    padding: 4px 2px;
+    border-radius: 4px;
+  }
+
+  .filter-input .input-wrap button {
+    display: none;
+  }
+
+  .input-wrap.focus {
+    background-color: #fff;
+    z-index: 9;
+    border: 1px solid #d8d8d8;
+  }
+
+  .filter-input .input-wrap .el-button--mini {
+    width: 43px;
+    height: 22px;
+    position: relative;
+    top: 10px;
+  }
+
+  .input-wrap /deep/ .el-button--mini span {
+    position: relative;
+    top: -2px;
+    left: -5px;
+  }
+
+  .el-button + .el-button {
+    margin-left: 28px;
+  }
+  .searchBtn.el-button + .el-button{
+    margin-left: 0;
+  }
+
+  /*筛选tags*/
+  .filter-tags {
+    width: 100%;
+    height: 41px;
+    padding-bottom: 8px;
+  }
+
+  .filter-tags .tags {
+    display: inline-block;
+    border: 1px solid #D8D8D8;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    color: #999999;
+    padding: 0 0 0 8px;
+    margin-right: 8px;
+    position: relative;
+  }
+
+  .filter-tags .tags i {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    font-size: 16px;
+    border-left: 1px solid #d8d8d8;
+    cursor: pointer;
+    margin-left: 10px;
+    font-style: normal;
+  }
+
+  .filter-tags .clear-filter {
+    position: relative;
+    z-index: 2;
+  }
+
+  /*表格*/
+   /deep/ .el-table th, .el-table tr{
+     background: #F7F7F7;
+     padding: 10px 0;
+   }
+   /deep/ .el-table th>.cell{
+     color: #666666;
+     line-height: 14px;
+     font-weight: bold;
+   }
+   /deep/ .el-checkbox+.el-checkbox{
+     margin-left: 10px;
+   }
+   /deep/ .el-table__expanded-cell[class*=cell]{
+     padding: 0 86px;
+     background-color: #F7F7F7;;
+   }
+  /deep/ .el-table__expanded-cell[class*=cell] .el-form{
+    height: 44px;
+    line-height: 44px;
+  }
+  /deep/ .el-form-item__content{
+    line-height: 46px;
+  }
+  /deep/ .el-form-item__label{
+    padding: 0 0 0 12px;
+  }
+
+  /deep/ .tar .cell {
+    text-align: right !important;
+    padding-right: 10px;
+  }
+  /*滚动条*/
+  /deep/ .el-table__body-wrapper{
+    height: 480px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  /deep/ .el-table__body-wrapper::-webkit-scrollbar{
+    width: 4px;
+    background: #FAFAFA;
+
+  }
+  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #C1C1C1;
+    border-radius: 4px;
+  }
+  /deep/ .el-form--inline .el-form-item{
+    margin-right: 45px;
+  }
+  /deep/ .el-dialog{
+    width: 1000px;
+  }
+
+
+  /*.table_wrap .thead {
+    width: 100%;
+  }
+
+  .thead ul {
+    height: 44px;
+  }
+
+  .tt ul li {
+    float: left;
+  }
+
+  .table_wrap > div {
+    border: 1px solid #E9E9E9;
+    border-radius: 4px;
+    border-bottom: none;
+  }
+
+  .table_wrap .tt {
+    border-bottom: 1px solid #e9e9e9;
+    background: #F7F7F7;
+    width: 100%;
+  }
+
+  .table_wrap .thead.tt {
+
+  }
+
+  .tt ul li {
+    height: 44px;
+    line-height: 44px;
+    float: left;
+    font-size: 14px;
+    color: #666666;
+    font-weight: bold;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border-right: 1px solid #e9e9e9;
+  }
+
+  /deep/ .el-checkbox + .el-checkbox {
+    margin-left: 10px;
+  }
+
+  .tbody .tr li {
+    font-weight: normal;
+    background-color: #fff;
+  }
+
+  .tbody .tr /deep/ .el-checkbox-group {
+    height: 42px;
+  }
+
+  .tbody .tr-txt, .tr {
+    height: 44px;
+    line-height: 44px;
+    border-bottom: 1px solid #e9e9e9;
+  }
+
+  .tbody .tr-txt {
+    font-size: 14px;
+    color: #666666;
+    padding-left: 55px;
+  }
+
+  .tbody .tr-txt p {
+    display: inline-block;
+    margin-right: 24px;
+  }
+
+  .tbody .tr li:nth-of-type(1) {
+    width: 3.5%;
+  }
+
+  .tbody .tr li:nth-of-type(2) {
+    width: 14.1%;
+  }
+
+  .tbody .tr li:nth-of-type(3) {
+    width: 7.1%;
+  }
+
+  .tbody .tr li:nth-of-type(4) {
+    width: 7.4%;
+  }
+
+  .tbody .tr li:nth-of-type(5) {
+    width: 8.8%;
+  }
+
+  .tbody .tr li:nth-of-type(6) {
+    width: 8.4%;
+  }
+
+  .tbody .tr li:nth-of-type(7) {
+    width: 8.3%;
+  }
+
+  .tbody .tr li:nth-of-type(8) {
+    width: 8.3%;
+  }
+
+  .tbody .tr li:nth-of-type(9) {
+    width: 16.2%;
+  }
+
+  .tbody .tr li:nth-of-type(10) {
+    width: 211px;
+  }
+
+  !*滚动条*!
+  .table_wrap .tbody {
+    height: 441px;
+    overflow-y: scroll;
+  }
+
+  .table_wrap .tbody::-webkit-scrollbar {
+    width: 4px;
+    background: #FAFAFA;
+  }
+
+  .table_wrap .tbody::-webkit-scrollbar-thumb {
+    background: #C1C1C1;
+    border-radius: 4px;
+  }*/
+
+  /*购物车列表*/
+  .car-title{
+    margin-bottom: 10px;
+  }
+  .car-title h4{
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  .car-title p{
+    font-size: 14px;
+    font-weight: normal;
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .car-title span{
+    font-size: 14px;
+    font-weight: normal;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #1890ff;
+  }
+  .car-del{
+    text-align: center;
+    cursor: pointer;
+    color: #1890ff;
+  }
+  /deep/.car-list .el-table__expanded-cell[class*=cell]{
+    padding: 0 46px;
+    background-color: #F7F7F7;;
+  }
+
+  /deep/ .el-table_1_column_7, /deep/ .el-table_1_column_8, /deep/ .el-table_1_column_9, /deep/ .el-table_2_column_17, /deep/ .el-table_1_column_18, /deep/ .el-table_2_column_19{
+    text-align: right;
+  }
+
+  /deep/.table_wrap.car-list{
+    margin-top: 0 !important;
+  }
+
+
+
   /*面包屑导航*/
   .ad_mediaMana_nav {
     position: relative;
@@ -1294,626 +1664,89 @@
     resize: vertical;
   }
 
-
-  /*选择点位*/
-  /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
-    width: 95px;
-    position: relative;
-    top: 0;
-    left: -5px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    padding-right: 0;
-    padding-left: 10px;
-  }
-
-  /deep/ .el-button {
-    width: 76px;
-    height: 34px;
-  }
-
-  .searchInput /deep/ .el-input__inner, .searchInput {
-    width: 224px !important;
-    position: relative;
-    left: -7px;
-    top: 0;
-    height: 34px;
-    border-left: none !important;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-  }
-
-  /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
-    width: 180px;
-    margin-left: -6px;
-  }
-
-  /deep/ .date-select.el-input__inner {
-    width: 237px;
-    position: relative;
-    top: 3px;
-    left: -5px;
-  }
-
-  /deep/ .el-date-editor .el-range__icon {
-    position: relative;
-    top: -2px;
-    left: -3px;
-  }
-
-  .searchBtn, .map {
-    position: relative;
-    top: 3px;
-    left: -3px;
-  }
-
-  /deep/ .searchBtn .el-icon-search {
-    position: relative;
-    top: -2px;
-    left: -9px;
-  }
-
-  /deep/ .el-button.searchBtn span {
-    position: relative;
-    left: -5px;
-  }
-
-  .map {
-    width: 76px;
-    height: 34px;
-    border: 1px solid #C2C2C2;
-    border-radius: 4px;
-    cursor: pointer;
-    top: 3px;
-    text-align: center;
-    font-size: 14px;
-  }
-  /deep/ .map .el-icon-location-outline {
-    position: relative;
-    top: -2px;
-    left: -9px;
-  }
-
-  /deep/ .el-button.map span {
-    position: relative;
-    left: -10px;
-    top: -2px;
-  }
-
-  .search-wrap {
-    position: relative;
-  }
-
-  .shopcar {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    position: fixed;
-    right: 29px;
-    top: 75px;
-    z-index: 999;
-  }
-
-  /deep/ .shopcar .el-badge__content.is-fixed {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-  }
-
-  .shopcar img {
-    width:59px;
-    height: 59px;
-    border-radius: 50%;
-  }
-
-  /*面板*/
-  .dw-panel {
-    border: 1px solid #D8D8D8;
-    margin-top: 8px;
-    padding: 10px 18px 0 18px;
-  }
-
-  .dw-panel dl {
-    border-bottom: 2px dashed #D8D8D8;
-    line-height: 40px;
-  }
-
-  .dw-panel dt {
-    display: inline-block;
-    font-size: 14px;
-    color: #999999;
-    height: 40px;
-  }
-
-  .dw-panel .city-proper {
-    padding-left: 75px;
-  }
-
-  .dw-panel dd {
-    font-size: 14px;
-    color: #666666;
-    display: inline-block;
-    height: 22px;
-    line-height: 22px;
-    padding: 2px 7px;
-    cursor: pointer;
-    margin-left: 6px;
-  }
-
-  .dw-panel dd.active {
-    color: #1890FF;
-    border: 1px solid #1890ff;
-    border-radius: 4px;
-  }
-
-  /*筛选输入框*/
-  .filter-input {
-    width: 100%;
-    height: 38px;
-    background: #F1F1F1;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #979797;
-    padding: 5px 0 6px 10px;
-    box-sizing: border-box;
-  }
-
-  .filter-input input {
-    border: 1px solid #C2C2C2;
-    border-radius: 4px;
-    width: 50px;
-    height: 26px;
-    outline: none;
-    text-indent: 1em;
-    font-size: 14px;
-    color: #666;
-  }
-
-  .filter-input ul {
-    /* display: flex;
-     align-items: center;*/
-  }
-
-  .filter-input ul li {
-    float: left;
-    margin-left: 33px;
-    position: relative;
-    width: 189px;
-    top: 4px;
-  }
-  .filter-input ul li:last-child {
-    float: left;
-    margin-left: 33px;
-    position: relative;
-    width: 189px;
-    top: 1px;
-  }
-
-
-  /deep/ .buildType .el-input, /deep/ .buildType .el-input__inner {
-    width: 95px;
-    height: 26px;
-    position: relative;
-    top: 0;
-    left: -5px;
-    padding-right: 0;
-    padding-left: 10px;
-  }
-
-  .filter-input .input-wrap {
-    position: absolute;
-    left: 64px;
-    top: -8px;
-    height: 64px;
-    padding: 4px 2px;
-    border-radius: 4px;
-  }
-
-  .filter-input .input-wrap button {
-    display: none;
-  }
-
-  .input-wrap.focus {
-    background-color: #fff;
-    z-index: 9;
-    border: 1px solid #d8d8d8;
-  }
-
-  .filter-input .input-wrap .el-button--mini {
-    width: 43px;
-    height: 22px;
-    position: relative;
-    top: 10px;
-  }
-
-  .input-wrap /deep/ .el-button--mini span {
-    position: relative;
-    top: -2px;
-    left: -5px;
-  }
-
-  .el-button + .el-button {
-    margin-left: 28px;
-  }
-  .searchBtn.el-button + .el-button{
-    margin-left: 0;
-  }
-
-  /*筛选tags*/
-  .filter-tags {
-    width: 100%;
-    height: 41px;
-    padding-bottom: 8px;
-  }
-
-  .filter-tags .tags {
-    display: inline-block;
-    border: 1px solid #D8D8D8;
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-    color: #999999;
-    padding: 0 0 0 8px;
-    margin-right: 8px;
-    position: relative;
-  }
-
-  .filter-tags .tags i {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    text-align: center;
-    font-size: 16px;
-    border-left: 1px solid #d8d8d8;
-    cursor: pointer;
-    margin-left: 10px;
-    font-style: normal;
-  }
-
-  .filter-tags .clear-filter {
-    position: relative;
-    z-index: 2;
-  }
-
-  /*表格*/
-  /deep/ .el-table th, .el-table tr{
-    background: #F7F7F7;
-    padding: 10px 0;
-  }
-  /deep/ .el-table th>.cell{
-    color: #666666;
-    line-height: 14px;
-    font-weight: bold;
-  }
-  /deep/ .el-checkbox+.el-checkbox{
-    margin-left: 10px;
-  }
-  /deep/ .el-table__expanded-cell[class*=cell]{
-    padding: 0 86px;
-    background-color: #F7F7F7;;
-  }
-  /deep/ .el-table__expanded-cell[class*=cell] .el-form{
-    height: 44px;
-    line-height: 44px;
-  }
-  /deep/ .el-form-item__content{
-    line-height: 46px;
-  }
-  /deep/ .el-form-item__label{
-    padding: 0 0 0 12px;
-  }
-
-  /deep/ .tar .cell {
-    text-align: right !important;
-    padding-right: 10px;
-  }
-  /*滚动条*/
-  /deep/ .el-table__body-wrapper{
-    height: 480px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar{
-    width: 4px;
-    background: #FAFAFA;
-
-  }
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    background: #C1C1C1;
-    border-radius: 4px;
-  }
-  /deep/ .el-form--inline .el-form-item{
-    margin-right: 45px;
-  }
-  /deep/ .el-dialog{
-    width: 1000px;
-  }
-
-
-
-  /*购物车列表*/
-  .car-title{
-    margin-bottom: 10px;
-  }
-  .car-title h4{
-    font-size: 16px;
-    font-weight: bold;
-    display: inline-block;
-  }
-  .car-title p{
-    font-size: 14px;
-    font-weight: normal;
-    display: inline-block;
-    margin-left: 10px;
-  }
-  .car-title span{
-    font-size: 14px;
-    font-weight: normal;
-    margin-left: 10px;
-    cursor: pointer;
-    color: #1890ff;
-  }
-  .car-del{
-    text-align: center;
-    cursor: pointer;
-    color: #1890ff;
-  }
-  /deep/.car-list .el-table__expanded-cell[class*=cell]{
-    padding: 0 46px;
-    background-color: #F7F7F7;;
-  }
-
-  /deep/ .el-table_1_column_7, /deep/ .el-table_1_column_8, /deep/ .el-table_1_column_9,  .el-table_1_column_18, /deep/ .el-table_2_column_19{
-    text-align: right;
-  }
-
-  /deep/.table_wrap.car-list{
-    margin-top: 0 !important;
-  }
-  /*超出省略*/
-  /deep/ .el-table .cell {
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   /*确认报价单*/
-  .step3{
-    padding: 0 105px;
-  }
-
-  .bill-title{
-    width: 100%;
-    height: 181px;
-    box-sizing: border-box;
-    border: 1px solid #D8D8D8;
-    margin-bottom: 10px;
-    padding: 22px 60px;
-  }
-  .bill-title h4{
-    font-size: 18px;
-    color: #333333;
-    font-weight: bold;
-    margin-bottom: 12px;
-  }
-  .bill-title p{
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #666666;
-  }
-
-  .bill-title-left{
-    float: left;
-  }
-  .bill-title-right{
-    float: right;
-  }
-  .bill-title-right{
-    font-size: 14px;
-    color: #666666;
-  }
-  .bill-title-right p{
-      text-align: right;
-    position: relative;
-  }
-  .bill-title-right em{
-    float: right;
-    position: absolute;
-    right: 225px;
-    top: 0;
-    width: 100px;
-  }
-  .bill-title-right .totalPrice{
-    font-size: 22px;
-    color: #333333;
-  }
-  /deep/.el-tabs--border-card>.el-tabs__content{
-    padding: 40px;
-  }
-  .tab-info h4{
-    width: 100%;
-    background: #FAFAFA;
-    border-radius: 2px;
-    font-size: 16px;
-    color: #333333;
-    height: 34px;
-    line-height: 34px;
-    padding-left: 20px;
-    font-weight: bold;
-  }
-  .tab-info p{
-    margin-bottom: 40px;
-    margin-top: 20px;
-    margin-left: 20px;
-    font-size: 14px;
-    color: #666666;
-  }
-
-  .price{
-    width: 100%;
-    height: 300px;
-  }
-  .price-left{
-    box-sizing: border-box;
-    padding-right: 66px;
+  .bill-top-left {
     width: 49%;
     float: left;
+    padding-right: 35px;
+    margin-right: 35px;
     border-right: 2px dashed #D8D8D8;
   }
-  .price-right{
-    width: 49%;
-    float: right;
-    padding-left: 66px;
-    box-sizing: border-box;
+
+  .bill-panel {
+    padding: 47px 60px;
   }
-  .tab-info .price h4{
-    width: 90%;
+
+  .bill-title {
+    margin-bottom: 20px;
   }
-  .tab-info .price h4 button{
-    width: 50px;
-    height: 24px;
-    background: #E6F1FC;
-    border: 1px solid #A3D0FD;
-    border-radius: 4px;
-    float: right;
-    font-size: 12px;
-    color: #1989FA;
-    position: relative;
-    top: 5px;
-    right: 10px;
-    outline: none;
-  }
-  /deep/ .el-button.el-button--text span{
-    position: relative;
-    top: -5px;
-  }
-  .price ul li{
-    font-size: 14px;
-    color: #666666;
-    border-bottom: 1px solid  #D8D8D8;
-    height: 50px;
-    line-height: 50px;
-    margin-left: 19px;
-    margin-right: 28px;
-  }
-  .price ul li:last-child{
-    text-align: right;
-    border-bottom: none;
+
+  .bill-title h2 {
     font-size: 18px;
     color: #333333;
     font-weight: bold;
-  }
-  .price ul li span{
-    float: right;
-  }
-  .bottom{
-    width: 100%;
-    height: 181px;
-    background: #FAFAFA;
-    box-sizing: border-box;
-    padding: 21px;
-  }
-  .tab-info .bottom p{
-    margin: 0;
-  }
-  .bottom .remark{
-    display: inline-block;
-    width: 60%;
-    height: 105px;
-  }
-  .bottom .bill-title-right li{
-    font-size: 18px;
-    color: #666666;
-    margin-bottom: 8px;
-  }
-  .bottom .bill-title-right li em{
-    font-size: 14px;
-    color: #666666;
-  }
-  .bottom-detail{
-    border-bottom: 2px dashed #D8D8D8;
-  }
-  .bottom-fin{
-    margin-top: 15px;
-  }
-  .bottom-fin button{
-    background: #E6F1FC;
-    border: 1px solid #A3D0FD;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #1989FA;
-    width: 50px;
-    height: 24px;
-    outline: none;
-  }
-  .bottom-fin p{
-    float: right;
-  }
-  .bottom-fin span{
-    font-size: 22px;
-    color: #333333;
-    font-weight: bold;
-  }
-  /*确认报价单修改框*/
-  /deep/ .el-dialog__body{
-    padding: 8px 20px;
-  }
-  .changeBill h4{
-    font-size: 20px;
-    color: #303133;
-  }
-  .changeBill p{
-    margin-top: 20px;
     margin-bottom: 6px;
   }
-  /deep/ .step3 .el-input__inner,/deep/ .step3 .el-textarea__inner{
-    width: 348px;
+
+  .bill-title p {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 4px;
   }
 
-
-  /*计数器*/
-  /deep/ .el-input-number__decrease, /deep/ .el-input-number__increase {
-    background-color: transparent !important;
-  }
-
-  /deep/ .el-icon-arrow-down {
-    position: relative;
-    top: 1px;
-  }
-
-  /deep/ .el-input-number .el-input__suffix {
-    right: 42px !important;
-  }
-
-  /deep/ .el-input-number.is-controls-right .el-input-number__decrease [class*=el-icon], .el-input-number.is-controls-right .el-input-number__increase [class*=el-icon] {
-    position: relative;
-    top: 2px;
-  }
-  /deep/ .el-input-number{
-    width: 348px;
-  }
-
-  /deep/.el-table th>.cell.highlight{
-    color: #409EFF !important;
-  }
-  .changeMakePrice .el-input__inner{
-    width: 352px;
+  .title h3 {
+    background: #FAFAFA;
+    border-radius: 2px;
     height: 34px;
-    margin-top: 6px;
-  }
-  /deep/ .el-input-number.is-controls-right .el-input__inner{
-    text-align: left;
-  }
-
-  /deep/.el-tabs--border-card{
-    box-shadow: none;
-    border: 1px solid #D8D8D8;
+    width: 100%;
+    line-height: 34px;
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+    margin-bottom: 24px;
   }
 
+  .title button {
+    background: #E6F1FC;
+    border: 1px solid #A3D0FD;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1989FA;
+    width: 50px;
+    height: 24px;
+    float: right;
+    position: relative;
+    top: 5px;
+    right: 15px;
+    outline: none;
+    cursor: pointer;
+  }
 
+  .put-info ul li {
+    margin-bottom: 12px;
+  }
+
+  .put-info ul li h4 {
+    font-size: 16px;
+    color: #666666;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  .put-info ul li p {
+    font-size: 14px;
+    color: #666666;
+  }
+
+  .put-info ul li.jtpq p {
+    margin-bottom: 6px;
+  }
+
+  .bill-top-right {
+    overflow: hidden;
+    margin-left: 65px;
+
+  }
 
   /*完成创建*/
   .successIcon img {
@@ -2047,10 +1880,6 @@
       position: absolute;
       bottom: -66px;
       left: 896px;
-    }
-
-    .tab-info .price h4{
-      width: 94%;
     }
 
     .filter-input input {
