@@ -98,7 +98,7 @@
 						</div>
 					</div>
 					<div class="content_bottom_btn">
-						<el-button type="primary">创建</el-button>
+						<el-button type="primary" @click="submitData">创建</el-button>
 						<el-button @click="goBack">取消</el-button>
 					</div>
 				</div>
@@ -226,7 +226,10 @@ export default {
 	methods: {
 		// 获取所有行业信息
 		getIndustry(){
-			api.getApi('/GetIndustry').then(res =>{
+			// api.getApi('/GetIndustry').then(res =>{
+			// 	console.log(res.data);
+			// });
+			api.getApi('/GetIndustry', {piid :1}).then(res =>{
 				console.log(res.data);
 			});
 		},
@@ -239,7 +242,11 @@ export default {
 				console.log(res);
 			});
 		},
-		// 返回
+		// 创建
+		submitData(){
+			console.log(this.clientForm);
+		},
+		// 取消返回
 		goBack(){
 			this.$router.push('./clientList');
 		},
