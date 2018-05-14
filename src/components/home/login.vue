@@ -1,74 +1,53 @@
 <template>
-  <div class="login_wrap">
-    <div class="loginBox">
-      <div class="logo">
-        <img src="../../assets/home/login_logo.png" alt="">
-        <p>致力于成为中国最有效的社区营销服务商</p>
-      </div>
-      <div class="login">
-        <ul class="loginType">
-          <li v-bind:class="{active:isActive}"
-              @click="loginType"
-          >密码登录
-          </li>
-          <li v-bind:class="{active:!isActive}"
-              @click="loginType">扫码登录
-          </li>
-        </ul>
-        <div class="loginInput" v-if="isActive">
-          <!--<el-form label-width="80px" :model="loginForm" :rules="loginRules">
-            <el-form-item prop="username">
-              <div class="username">
-                <input type="text" placeholder="账户" v-model="loginForm.username">
-                <img src="../../assets/home/usericon.png" alt="">
-              </div>
-              &lt;!&ndash; <el-input v-model="loginForm.username"></el-input>
-               <img src="../../assets/home/usericon.png" alt="">&ndash;&gt;
-            </el-form-item>
-            <el-form-item prop="password">
-              <div class="password">
-                <input type="password" placeholder="密码" v-model="loginForm.password">
-                <img src="../../assets/home/passicon.png" alt="">
-              </div>
-            </el-form-item>
-          </el-form>-->
-          <div class="username">
-            <input type="text" placeholder="账户" v-model="username">
-            <!-- <img src="../../assets/home/usericon.png" alt=""> -->
-			<i class="fa fa-user-o"></i>
-          </div>
-          <div class="password">
-            <input type="password" placeholder="密码" v-model="password" @keyup ="show($event)">
-            <!-- <img src="../../assets/home/passicon.png" alt=""> -->
-			<i class="fa fa-lock"></i>
-          </div>
-          <div class="remeberUser">
-            <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
-          </div>
-          <div class="loginBtn">
-            <button id="login" @click="doLogin()">登&nbsp;录</button>
-          </div>
-        </div>
-        <div class="weixinLogin" v-if="!isActive">
-          <div class="weixinCode">
-            <img src="../../assets/home/code.jpg" alt="">
-            <p>打开微信扫一扫登录</p>
-          </div>
-        </div>
-        <div class="tip">
-          <p>温馨提示：加盟城市请(<a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
-        </div>
-      </div>
-    </div>
-    <div class="footer">
-      <p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
-    </div>
-  </div>
+	<div class="login_wrap">
+		<div class="loginBox">
+			<div class="logo">
+				<img src="../../assets/home/login_logo.png" alt="">
+				<p>致力于成为中国最有效的社区营销服务商</p>
+			</div>
+			<div class="login">
+				<ul class="loginType">
+					<li v-bind:class="{active:isActive}" @click="loginType">密码登录</li>
+					<li v-bind:class="{active:!isActive}" @click="loginType">扫码登录</li>
+				</ul>
+				<div class="loginInput" v-if="isActive">
+					<div class="username">
+						<input type="text" placeholder="账户" v-model="username">
+						<i class="fa fa-user-o"></i>
+					</div>
+					<div class="password">
+						<input type="password" placeholder="密码" v-model="password" @keyup ="show($event)">
+						<i class="fa fa-lock"></i>
+					</div>
+					<div class="remeberUser">
+						<el-checkbox v-model="remeAccount">记住账号</el-checkbox>
+					</div>
+					<div class="loginBtn">
+						<button id="login" @click="doLogin()">登&nbsp;录</button>
+					</div>
+				</div>
+				<div class="weixinLogin" v-if="!isActive">
+					<div class="weixinCode">
+						<img src="../../assets/home/code.jpg" alt="">
+						<p>打开微信扫一扫登录</p>
+					</div>
+				</div>
+				<div class="tip">
+					<p>温馨提示：加盟城市请(<a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
+		</div>
+	</div>
 </template>
 
 <script>
-import  utils from '../../utils.js';
-import axios from 'axios';
+import utils from '../../js/utils.js';
+import commentFun from '../../js/commentFun.js'
+import api from '../../api/api'
+
 export default {
 	name: "login",
 	data() {
@@ -76,22 +55,25 @@ export default {
 			loading: false,
 			isActive: true,
 			remeAccount: false,
-			username: '',
-			password: '',
-			realName:''
+			username: '', //lxj
+			password: '', //qinlin888
+			realName: '',
+			checke: false
 		}
 	},
 	mounted: function () {
-		// this.postData()
 		//页面加载调用获取cookie值
 		this.username = utils.getCookie('username');
 		this.password = utils.getCookie('password');
+		if (this.username !== '' && this.password !== '') {
+			this.remeAccount = true;
+		}
 	},
 	methods: {
 		//键盘
-		show:function(ev){
-			if(ev.keyCode===13){
-				this.doLogin();
+		show: function (ev) {
+			if (ev.keyCode === 13) {
+			this.doLogin();
 			}
 		},
 		//登录
@@ -99,63 +81,64 @@ export default {
 			let name = this.username;
 			let pass = this.password;
 			if (name === '' || name == null) {
-				alert('请输入正确的用户名');
+				this.$alert('请输入正确的用户名', '用户登录', {
+					confirmButtonText: '确定',
+				});
 				return;
 			} else if (pass === '' || pass == null) {
-				alert('请输入正确的密码');
-				return;
+				this.$alert('请输入正确的密码', '用户登录', {
+					confirmButtonText: '确定',
+				});
+			return;
 			}
 			//判断复选框是否勾选，勾选则调用配置cookie方法
 			if (this.remeAccount === true) {
 				utils.setCookie('username', name, 7);
 				utils.setCookie('password', pass, 7);
-			} else {
-				utils.clearCookie();
 			}
 
-			// //接口
-			// this.$http.post(url,data)
-			// .then(res => {
-
-			// })
-			// .catch(err => {
-
-			// });
-
-			// // login登录api
-			axios({
-				method: 'get',
-				baseURL: '/api',
-				url: '/Login',
-				params:{
-					username: name,
-					pwd: pass 
+			//接口
+			let loginParams = {username: name, pwd: pass};
+			let apiUrl = '/Login';
+			api.getApi(apiUrl, loginParams).then(res => {
+				let userMsg = res.data;
+				console.log(res.data);
+				if (!userMsg.SysCode) {
+					sessionStorage.setItem("real_name", userMsg.realName);//userMsg.realName
+					sessionStorage.setItem("uid", userMsg.uID);//userMsg.realName
+					if (userMsg.uType === 'SM') {
+					//sessionStorage.getItem("real_name") 获取session的值
+						this.$router.push('/superOperate')
+					} else if (userMsg.uType === 'MD') {
+						this.$router.push('/media')
+					} else if (userMsg.uType === 'BD') {
+						this.$router.push('/sale')
+					}
+				} else {
+					this.$alert('用户名或密码错误,请重新输入', '用户登录', {
+						confirmButtonText: '确定',
+					});
 				}
-			}).then(res => {
-				console.log("返回：",res);
 			}).catch(err => {
 				console.log(err);
 			});
 
-			// 社区媒体列表api
-			// axios({
-			// 	method: 'get',
-			// 	baseURL: '/api',
-			// 	url: '/GetMediaList',
-			// 	params:{
-			// 		resid:1
-			// 	}
-			// }).then(res => {
-			// 	console.log("返回：", res);
-			// }).catch(err => {
-			// 	console.log(err);
-			// });
+			/*  let getParams = { resid: 1};  //get方法测试
+			let getUrl = '/GetResCT'
+			api.getApi(getUrl,getParams).then(data => {
+				console.log('返回成功222', data)
+				// this.$router.push('/superOperate')
+			}).catch(err => {
+				console.log(err);
+			});*/
+
+			/* let joinTime = '2018-04-03 16:21:45.0'
+			console.log(commentFun.spliceFun(joinTime))*/
 
 		},
 		loginType() {
 			this.isActive = !this.isActive;
 		},
-
 	},
 
 }

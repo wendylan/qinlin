@@ -179,8 +179,9 @@ export default {
 		},
 		// 获取客户列表
 		GetCustomer() {
+			console.log(sessionStorage.getItem('uid'));
 			api.getApi('/GetCustomer', {
-				puid:2
+				puid:sessionStorage.getItem("uid")
 			}).then(res=>{
 				this.planList = res.data;
 				this.currentPlan = this.planList;

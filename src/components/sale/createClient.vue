@@ -25,8 +25,7 @@
 								</el-form-item>
 								<el-form-item label="所在地:" prop="location">
 									<el-select v-model="clientForm.location" placeholder="请选择活动区域">
-										<el-option label="区域一" value="shanghai"></el-option>
-										<el-option label="区域二" value="beijing"></el-option>
+										<el-option :label="item.rName" :value="item.rID" v-for="item of AllArea" :key="item.rID"></el-option>
 									</el-select>
 								</el-form-item>
 								<el-form-item label="邮箱:" prop="email">
@@ -89,8 +88,7 @@
 								</el-form-item>
 								<el-form-item label="所在城市:" prop="companyCity">
 									<el-select v-model="companyForm.companyCity" placeholder="请选择公司所在城市">
-										<el-option label="区域一" value="shanghai"></el-option>
-										<el-option label="区域二" value="beijing"></el-option>
+										<el-option :label="item.rName" :value="item.rID" v-for="item of AllArea" :key="item.rID"></el-option>
 									</el-select>
 								</el-form-item>
 								<el-form-item label="备注:" prop="companyRemark">
@@ -123,6 +121,7 @@ export default {
 			}
 		};
 		return {
+			AllArea: [],
 			//行业分类
 			options: [{
 				value: 'hulianwang',
@@ -222,12 +221,22 @@ export default {
 	},
 	created() {
 		this.getIndustry();
+		this.getAreaData();
 	},
 	methods: {
 		// 获取所有行业信息
 		getIndustry(){
 			api.getApi('/GetIndustry').then(res =>{
 				console.log(res.data);
+			});
+		},
+		// 获取所有区域信息
+		getAreaData(){
+			api.getApi('/ShowRegion').then(res => {
+				console.log(res.data);
+				this.AllArea = res.data;
+			}).catch(res => {
+				console.log(res);
 			});
 		},
 		// 返回

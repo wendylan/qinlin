@@ -55,8 +55,23 @@ export default {
 	name: "clientDetail",
 	data() {
 		return {
-			userInfo: {},
-			companyInfo: {},
+			userInfo: {
+				realName: '',
+				email: '',
+				phone: '',
+				position: '',
+				telephone: '',
+				rName: '',
+				division: '',
+				puName: ''
+			},
+			companyInfo: {
+				cName: '',
+				cAddress: '',
+				cBrand: '',
+				rName: '',
+				cRemark: ''
+			},
 		}
 	},
 	created(){
@@ -67,6 +82,7 @@ export default {
 		goBack(){
 			this.$router.push('./clientList');
 		},
+		// 获取公司的基本信息
 		getInitData(){
 			let initdata = JSON.parse(sessionStorage.getItem('data'));
 			this.userInfo = initdata;
