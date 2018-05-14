@@ -85,14 +85,18 @@ export default {
 		// 获取公司的基本信息
 		getInitData(){
 			let initdata = JSON.parse(sessionStorage.getItem('data'));
-			this.userInfo = initdata;
-			api.getApi('/GetCompanyInfo', {
-				cid: initdata.uWho,
-				uid: initdata.uID
-			}).then(res => {
-				console.log(res.data);
-				this.companyInfo = res.data;
-			});
+			console.log(initdata);
+			if(initdata){
+				this.userInfo = initdata;
+				api.getApi('/GetCompanyInfo', {
+					cid: initdata.uWho,
+					uid: initdata.uID
+				}).then(res => {
+					console.log(res.data);
+					this.companyInfo = res.data;
+				});
+			}
+			
 		},
 	},
 }
@@ -247,9 +251,7 @@ export default {
 		position: relative;
 	}
 
-
 }
-
 
 /*1920*/
 @media screen and (min-width: 1920px) {

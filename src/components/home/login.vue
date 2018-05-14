@@ -148,87 +148,87 @@ export default {
 
 <style scoped>
 
-  /deep/ .el-form-item__content {
-    margin-left: 0 !important;
-  }
+	/deep/ .el-form-item__content {
+		margin-left: 0 !important;
+	}
 
-  .login_wrap {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: url("../../assets/home/loginBg.png") no-repeat;
-    background-size: cover;
-  }
+	.login_wrap {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		background: url("../../assets/home/loginBg.png") no-repeat;
+		background-size: cover;
+	}
 
-  .logo {
-    text-align: center;
-    margin-top: 125px;
-    margin-bottom: 34px;
-  }
+	.logo {
+		text-align: center;
+		margin-top: 125px;
+		margin-bottom: 34px;
+	}
 
-  .logo img {
-    width: 245px;
-    margin-bottom: 10px;
-  }
+	.logo img {
+		width: 245px;
+		margin-bottom: 10px;
+	}
 
-  .logo p {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.45);
-  }
+	.logo p {
+		font-size: 14px;
+		color: rgba(0, 0, 0, 0.45);
+	}
 
-  .login {
-    position: relative;
-    width: 100%;
-    /*display: flex;
-    justify-content: center;
-    align-items: center;*/
-  }
+	.login {
+		position: relative;
+		width: 100%;
+		/*display: flex;
+		justify-content: center;
+		align-items: center;*/
+	}
 
-  .login .loginType {
-    width: 100%;
-    text-align: center;
-  }
+	.login .loginType {
+		width: 100%;
+		text-align: center;
+	}
 
-  .loginType li {
-    display: inline-block;
-    width: 100px;
-    height: 40px;
-    text-align: center;
-    margin-bottom: 24px;
-    cursor: pointer;
-    margin-right: 40px;
-    margin-left: 40px;
-  }
+	.loginType li {
+		display: inline-block;
+		width: 100px;
+		height: 40px;
+		text-align: center;
+		margin-bottom: 24px;
+		cursor: pointer;
+		margin-right: 40px;
+		margin-left: 40px;
+	}
 
-  /*选中*/
-  .active {
-    border-bottom: 2px solid #1890FF;
-    color: #1890FF;
-  }
+	/*选中*/
+	.active {
+		border-bottom: 2px solid #1890FF;
+		color: #1890FF;
+	}
 
-  .username input, .password input {
-    border: 1px solid #D9D9D9 !important;
-    border-radius: 4px;
-    width: 368px;
-    height: 38px;
-    outline: none;
-    position: relative;
-    padding-left: 30px;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
+	.username input, .password input {
+		border: 1px solid #D9D9D9 !important;
+		border-radius: 4px;
+		width: 368px;
+		height: 38px;
+		outline: none;
+		position: relative;
+		padding-left: 30px;
+		font-size: 16px;
+		box-sizing: border-box;
+	}
 
-  .username, .password, .remeberUser, .loginBtn {
-    width: 368px;
-    margin: 0 auto;
-    text-align: center;
-    position: relative;
-  }
+	.username, .password, .remeberUser, .loginBtn {
+		width: 368px;
+		margin: 0 auto;
+		text-align: center;
+		position: relative;
+	}
 
-  .password {
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+	.password {
+		margin-top: 24px;
+		margin-bottom: 24px;
+	}
 	.loginInput i {
 		position: absolute;
 		left: 10px;
@@ -236,71 +236,70 @@ export default {
 		width: 12px;
 		color: #999999;
 	}
-  input::placeholder {
-    color: rgba(0, 0, 0, 0.25);
-  }
+	input::placeholder {
+		color: rgba(0, 0, 0, 0.25);
+	}
 
-  .remeberUser {
-    font-size: 14px;
-    text-align: left;
-    margin-bottom: 24px;
-  }
+	.remeberUser {
+		font-size: 14px;
+		text-align: left;
+		margin-bottom: 24px;
+	}
 
-  /deep/ .el-checkbox {
-    color: #666;
-  }
+	/deep/ .el-checkbox {
+		color: #666;
+	}
 
-  /deep/ .el-checkbox__input.is-checked + .el-checkbox__label {
-    color: #1890FF;
-  }
+	/deep/ .el-checkbox__input.is-checked + .el-checkbox__label {
+		color: #1890FF;
+	}
 
-  .loginBtn button {
-    width: 100%;
-    height: 40px;
-    color: #ffffff;
-    font-size: 16px;
-    border: none;
-    background-color: #1890FF;
-    outline: none;
-    cursor: pointer;
-    border-radius: 4px;
-  }
+	.loginBtn button {
+		width: 100%;
+		height: 40px;
+		color: #ffffff;
+		font-size: 16px;
+		border: none;
+		background-color: #1890FF;
+		outline: none;
+		cursor: pointer;
+		border-radius: 4px;
+	}
 
-  .tip {
-    margin: 25px auto;
-    width: 100%;
-  }
+	.tip {
+		margin: 25px auto;
+		width: 100%;
+	}
 
-  .tip p {
-    text-align: center;
-    font-size: 12px;
-    color: #999999;
-  }
+	.tip p {
+		text-align: center;
+		font-size: 12px;
+		color: #999999;
+	}
 
-  .tip p a {
-    font-size: 12px;
-    color: #1890FF;
-  }
+	.tip p a {
+		font-size: 12px;
+		color: #1890FF;
+	}
 
-  /*扫码登录*/
-  .weixinLogin {
-    width: 100%;
-    text-align: center;
-  }
+	/*扫码登录*/
+	.weixinLogin {
+		width: 100%;
+		text-align: center;
+	}
 
-  .weixinLogin img {
-    margin-bottom: 10px;
-  }
+	.weixinLogin img {
+		margin-bottom: 10px;
+	}
 
-  .footer {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    bottom: 42px;
-    left: 0;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.45);
-  }
-
+	.footer {
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		bottom: 42px;
+		left: 0;
+		font-size: 12px;
+		color: rgba(0, 0, 0, 0.45);
+	}
 
 </style>

@@ -13,21 +13,23 @@
           <div class="content_top_form_wrap">
             <el-form :model="recForm" status-icon :rules="recRules" ref="recForm" label-width="100px"
                      class="demo-ruleForm">
-              <el-form-item label="资源类型:" prop="recType">
+              <el-form-item label="资源类型:" prop="rt">
                 <div class="select_wrap">
-                  <el-select v-model="recForm.recType" placeholder="请选择资源类型">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
+                  <el-select v-model="recForm.rt" placeholder="请选择资源类型">
+                    <el-option label="社区" value="0"></el-option>
+                    <el-option label="小区" value="1"></el-option>
+                    <el-option label="别墅" value="2"></el-option>
                   </el-select>
                 </div>
               </el-form-item>
-              <el-form-item label="资源名称:" prop="recName">
-                <el-input v-model="recForm.recName" placeholder="例：尚东峰景"></el-input>
+              <el-form-item label="资源名称:" prop="resname">
+                <el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
               </el-form-item>
               <el-form-item label="所属城市:" prop="city">
                 <el-select v-model="recForm.city" placeholder="请选择所属城市">
-                  <el-option label="城市一" value="shanghai"></el-option>
-                  <el-option label="城市二" value="beijing"></el-option>
+                  <el-option label="广州" value="guangzhou"></el-option>
+                  <el-option label="上海" value="beijing"></el-option>
+                  <el-option label="深圳" value="shenzhen"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="所属区域:" prop="region">
@@ -39,8 +41,8 @@
               <el-form-item label="所属商圈:" prop="business">
                 <el-input v-model="recForm.business" placeholder="例：三里屯"></el-input>
               </el-form-item>
-              <el-form-item label="具体地址:" prop="address">
-                <el-input v-model="recForm.address" placeholder="例：工业大道53号"></el-input>
+              <el-form-item label="具体地址:" prop="resaddr">
+                <el-input v-model="recForm.resaddr" placeholder="例：工业大道53号"></el-input>
               </el-form-item>
               <el-form-item label="楼盘类型:" prop="buildingType">
                 <el-select v-model="recForm.buildingType" placeholder="请选择楼盘类型">
@@ -67,10 +69,11 @@
                 </div>
               </el-form-item>
               <el-form-item label="入住时间:" prop="liveTime">
-                <el-select v-model="recForm.liveTime" placeholder="请选择入住时间">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
+                <el-date-picker
+                  v-model="recForm.liveTime"
+                  type="datetime"
+                  placeholder="选择日期时间">
+                </el-date-picker>
               </el-form-item>
               <el-form-item label="经纬度:" prop="lng" class="lngNlat">
                 <el-input v-model.number="recForm.lng" placeholder="经度"></el-input>
@@ -84,15 +87,18 @@
               <el-form-item label="小区全貌:">
                 <div class="upload_img_wrap" style="width: 120px;">
                   <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action=""
                     list-type="picture-card"
+                    :limit = '1'
+                    :auto-upload = 'false'
+                    :on-change="recUploadChange"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                  <el-dialog :visible.sync="dialogVisible">
+                 <!-- <el-dialog :visible.sync="dialogVisible">
                     <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>
+                  </el-dialog>-->
                 </div>
               </el-form-item>
             </el-form>
@@ -101,43 +107,42 @@
       </div>
       <!--媒体一-->
       <div class="mediaMana_content_bottom clearfix">
-        <div class="content_bottom_wrap">
+        <div class="content_bottom_wrap" v-for="(item,key) in arrMedia" :key="key">
           <div class="content_bottom_head">
-            <h2>媒体一
-              <el-button type="danger" size="small" class="media_deleBtn">删除</el-button>
-            </h2>
+            <h2>{{item.text}}</h2>
+            <el-button type="danger" size="small" class="media_deleBtn" @click="mediaDelBtnFun(key)">删除</el-button>
           </div>
           <div class="content_bottom_form_wrap">
-            <el-form :model="mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
+            <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
                      class="demo-ruleForm">
               <el-form-item label="媒体类型:" prop="mediaType">
-                <el-select v-model="mediaForm.mediaType" placeholder="请选择媒体类型">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒体类型">
+                  <el-option label="" value="钣金门1"></el-option>
+                  <el-option label="" value="钣金门2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="媒体名称:" prop="mediaName">
-                <el-input v-model="mediaForm.mediaName" placeholder="例：东门"></el-input>
+                <el-input v-model="item.mediaForm.mediaName" placeholder="例：东门"></el-input>
               </el-form-item>
               <el-form-item label="可投面数:" prop="usableNum">
-                <el-input-number v-model="mediaForm.usableNum" controls-position="right" :min="1"
+                <el-input-number v-model="item.mediaForm.usableNum" controls-position="right" :min="1"
                                  :max="9999999"></el-input-number>
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mediaStatus">
-                <el-select v-model="mediaForm.mediaStatus" placeholder="请选择媒体状态">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态">
+                  <el-option label="" value="状态1"></el-option>
+                  <el-option label="" value="状态2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="资产编号:" prop="assetId">
-                <el-input v-model="mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>
+                <el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>
               </el-form-item>
               <el-form-item label="门体类型:" prop="doorType">
-                <el-input v-model="mediaForm.doorType" placeholder="例:消防门"></el-input>
+                <el-input v-model="item.mediaForm.doorType" placeholder="例:消防门"></el-input>
               </el-form-item>
               <el-form-item label="广告尺寸:" prop="adSizeW" class="lngNlat">
                 <div class="mm">
-                  <el-input v-model.number="mediaForm.adSizeW" placeholder="宽度">
+                  <el-input v-model.number="item.mediaForm.adSizeW" placeholder="宽度">
                   </el-input>
                   <span>mm</span>
                 </div>
@@ -145,7 +150,7 @@
               <el-form-item prop="adSizeH" class="lngNlat  RlngNlat">
                 <div class="mm">
                   <div>
-                    <el-input v-model.number="mediaForm.adSizeH" placeholder="高度">
+                    <el-input v-model.number="item.mediaForm.adSizeH" placeholder="高度">
                     </el-input>
                     <span>mm</span>
                   </div>
@@ -153,7 +158,7 @@
               </el-form-item>
               <el-form-item label="可视画面:" prop="visualW" class="lngNlat">
                 <div class="mm">
-                  <el-input v-model.number="mediaForm.visualW" placeholder="宽度">
+                  <el-input v-model.number="item.mediaForm.visualW" placeholder="宽度">
                   </el-input>
                   <span>mm</span>
                 </div>
@@ -161,26 +166,29 @@
               <el-form-item prop="visualH" class="lngNlat  RlngNlat largeW">
                 <div class="mm">
                   <div>
-                    <el-input v-model.number="mediaForm.visualH" placeholder="高度">
+                    <el-input v-model.number="item.mediaForm.visualH" placeholder="高度">
                     </el-input>
                     <span>mm</span>
                   </div>
                 </div>
               </el-form-item>
               <el-form-item label="广告限制:">
-                <el-select v-model="mediaForm.adLimit" placeholder="请选择广告限制">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select v-model="item.mediaForm.adLimit" placeholder="请选择广告限制">
+                  <el-option label="" value="地产1"></el-option>
+                  <el-option label="" value="地产2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="备注:" prop="mediaRemark">
-                <el-input type="textarea" v-model="mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
+                <el-input type="textarea" v-model="item.mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
               </el-form-item>
               <el-form-item label="门禁照片:">
-                <div class="upload_img_wrap" style="width: 250px;">
+                <div class="upload_img_wrap" style="width: 120px;">
                   <el-upload
                     action="https://jsonplaceholder.typicode.com/posts/"
                     list-type="picture-card"
+                    :limit = '1'
+                    :auto-upload = 'false'
+                    :on-change="mediaUploadChange"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
@@ -194,12 +202,11 @@
 
           </div>
         </div>
-
         <div class="addMedia">
-          <div class="addMediaBtn">+ 新增媒体</div>
+          <div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
         </div>
         <div class="content_bottom_btn">
-          <button class="create">创建</button>
+          <button class="create" @click="createMedia()">创建</button>
           <button class="cancel">取消</button>
         </div>
       </div>
@@ -208,6 +215,7 @@
 </template>
 
 <script>
+  import api from '../../api/api'
   export default {
     name: "mediaInput",
     data() {
@@ -236,25 +244,73 @@
         //缩略图
         dialogImageUrl: '',
         dialogVisible: false,
+        titleArr: ['媒体一','媒体二','媒体三','媒体四','媒体五'],
+        titleIndex: 0,
+        /* CreateMedia
+          rid         int【必填】     媒体所在地区ID
+          resid       int【必填】     资源ID
+          mtitle      String          媒体名称
+          pnum        int             广告位面数
+          adsize      String          广告位尺寸
+          adviewsize  String          广告可视画面
+          notpush     String          广告投放限制
+          assettag    String          资产编号
+          mtype       String          媒体类型
+          mimg        String          媒体照片
+          uid         int             安装工程师
+          mvc         String          媒介载体
+          mrk         String          媒体备注*/
+        arrMedia: [
+          { text: '媒体一' ,
+            mediaForm:{
+              mediaType: '',   //媒体类型mtype
+              mediaName: '',  //媒体名称mtitle
+              usableNum: '1',   //广告位面数pnum
+              mediaStatus: '',  //媒体状态
+              assetId: '',      //资产编号assettag
+              doorType: '',     // 门类型
+              adSizeW: '',      //广告尺寸adsize
+              adSizeH: '',     //广告尺寸
+              visualW: '',      //可视画面adviewsize
+              visualH: '',      //可视画面
+              mediaRemark: '',  //备注 mrk
+              adLimit: ''     //请选择广告限制 notpush
+            },
+          },
+        ],
         //表单
+        /*"chDay": "2013-01-03",
+          "hPrice": 60000,
+          "fNum": 175,
+          "dNum": 4,
+          "hNum": 175,
+          "cType": "别墅",
+          "resID": 1,
+          "rID": 440106,
+          "resName": "帝景山庄",
+          "resAddress": "广东省广州市天河区东圃镇悦景路11号",
+          "latLng": "113.428473;23.154321",
+          "tradingArea": "山泉",
+          "joinTime": "2018-04-03 16:21:45.0",
+          "resType": 1*/
         recForm: {
-          recType: '',
-          recName: '',
+          rt: '',     //资源类型
+          resname: '',  // 资源名称
           city: '',
-          region: '',
-          business: '',
-          address: '',
-          buildingType: '',
-          doorwayNum: '1',
-          buildingNum: '1',
-          households: '1',
-          buildingPrice: '',
+          region: '',  // 所属区域
+          business: '', // 所属商圈
+          resaddr: '',  // 资源地址
+          buildingType: '', // 楼盘类型
+          doorwayNum: '1',  // 出入数
+          buildingNum: '1',  // 楼栋数量
+          households: '1',   // 住户数量
+          buildingPrice: '',  // 楼盘价格
           liveTime: '',
           lng: '',
           lat: '',
           recRemark: '',
         },
-        mediaForm: {
+        /*mediaForm: {
           mediaType: '',
           mediaName: '',
           usableNum: '1',
@@ -267,7 +323,7 @@
           visualH: '',
           mediaRemark: '',
           adLimit: []
-        },
+        },*/
         recRules: {
           recType: [
             {required: true, message: '资源类型不能为空', trigger: 'change'},
@@ -349,39 +405,176 @@
             {min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'change'}
           ],
           adSizeW: [
-            {validator: validateNum, trigger: 'change'},
-            {required: true, message: '宽度不能为空', trigger: 'blur'},
+          //  {validator: validateNum, trigger: 'change'},
+            {required: true,type:'number', message: '宽度不能为空且只能为数字', trigger: 'blur'},
             // { type:'number', message: '只能输入数字',  trigger: 'blur' }
           ],
           adSizeH: [
-            {validator: validateNum, trigger: 'change'},
-            {required: true, message: '高度不能为空', trigger: 'blur'},
+          //  {validator: validateNum, trigger: 'change'},
+            {required: true,type:'number', message: '高度不能为空且只能为数字', trigger: 'blur'},
             // { type:'number', message: '只能输入数字', trigger: 'blur' }
           ],
           visualW: [
-            {validator: validateNum, trigger: 'change'},
-            /*{ type:'number', message: '只能输入数字',  trigger: 'change' }*/
+          //  {validator: validateNum, trigger: 'change'},
+            { type:'number', message: '宽度不能为空且只能输入数字',  trigger: 'change' }
           ],
           visualH: [
-            {validator: validateNum, trigger: 'change'},
-            /*{ type:'number', message: '只能输入数字', trigger: 'change' }*/
+          //  {validator: validateNum, trigger: 'change'},
+            { type:'number', message: '高度不能为空且只能输入数字', trigger: 'change' }
           ],
           mediaRemark: [
             {max: 200, message: '最多只能输入200个字符', trigger: 'change'}
           ],
         },
+        recFormImg:'', // 资源图片
+        mediaFormImg:'',// 媒体图片
       };
     },
-
+    components: {
+    //  MediaContent,
+    },
     methods: {
-      //请求
-      postData() {
-        this.$http({
-          method: 'post',
-          url: '',
-        }).then(function (res) {
+      //新增媒体面板
+      mediaAddFun(){
+        console.log('点击成功')
+      //  let titleArr = ['媒体一','媒体二','媒体三','媒体四','媒体五']
+        let mediaArr=[
+          { text: '媒体二',mediaForm:{
+              mediaType: '',
+              mediaName: '',
+              usableNum: '1',
+              mediaStatus: '',
+              assetId: '',
+              doorType: '',
+              adSizeW: '',
+              adSizeH: '',
+              visualW: '',
+              visualH: '',
+              mediaRemark: '',
+              adLimit: ''
+            } },
+        ]
+      //  console.log(mediaArr[this.titleIndex])
+        mediaArr[0].text = this.titleArr[++this.titleIndex]
+        if(this.titleIndex < 5){
+          this.arrMedia.push(mediaArr[0]);
+        }else{
+          this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${ action }`
+              });
+            }
+          });
+        }
+      },
+      //删除
+      mediaDelBtnFun(index){
+      //  this.arrMedia.splice(this.arrMedia.length-1,1)
+      //  alert(index)
 
-        })
+        this.arrMedia.splice(index,1)
+        console.log('长度为',this.arrMedia.length,'index:',index)
+        if(index < this.arrMedia.length){
+          for(let i=0;i<this.arrMedia.length;i++){
+            this.arrMedia[i].text = this.titleArr[i]
+          }
+        }
+        this.titleIndex--
+      },
+      //添加媒体
+      createMedia(){
+        console.log(this.arrMedia[0].mediaForm)
+        this.clearFromData()
+         /*  AddRes
+            参数：  uid     int【必填】     UserID
+            rid     int             地区id
+            ta      String          商圈名称
+            rt      int             资源类型
+            resname String          资源名称
+            resaddr String          资源地址*/
+         /*"resID": 1,
+          "rID": 440106,
+          "resName": "帝景山庄",
+          "resAddress": "广东省广州市天河区东圃镇悦景路11号",
+          "tradingArea": "山泉",
+          "joinTime": "2018-04-03 16:21:45.0",
+          "resType": 1*/
+         let obj = {
+           uid: 1,
+           rid: 440106,
+           ta: '山泉2',
+           rt: 1,
+           resname: '帝景山庄22',
+           resaddr: '广东省广州市天河区东圃镇悦景路11号',
+           latLng: '110.123;56.321'
+         }
+         this.recForm.uid = sessionStorage.getItem("uid")
+         this.recForm.latLng = this.recForm.lat+'；'+this.recForm.lng
+         delete this.recForm.lat
+         delete this.recForm.lng
+        /* api.postApi('https://beta.qinlinad.com/QADN/AddRes',this.recForm).then(res=>{//GetResList  AddRes
+           console.log('资源数据：',res.data)
+           let recData = res.data
+           let adsize = this.arrMedia[0].mediaForm.adSizeW + '*' +this.arrMedia[0].mediaForm.adSizeH
+           let adviewsize = this.arrMedia[0].mediaForm.visualW+'*'+ this.arrMedia[0].mediaForm.visualH
+           let mediaObj = {
+               rid: recData.rID ,
+               resid: recData.resID,
+               uid: this.recForm.uid,
+               mtitle: this.arrMedia[0].mediaForm.mediaName,
+               pnum: this.arrMedia[0].mediaForm.usableNum,
+               adsize: adsize,
+               adviewsize: adviewsize,
+               notpush: this.arrMedia[0].mediaForm.adLimit,
+               assettag: this.arrMedia[0].mediaForm.assetId,
+               mtype: this.arrMedia[0].mediaForm.mediaType,
+               mimg: '',
+               mvc: '',
+               mrk: this.arrMedia[0].mediaForm.mediaRemark
+           }
+           console.log('mediaObj',mediaObj)
+           /!*arrMedia: [
+          { text: '媒体一' ,
+            mediaForm:{
+              mediaType: '',   //媒体类型mtype
+              mediaName: '',  //媒体名称mtitle
+              usableNum: '1',   //广告位面数pnum
+              mediaStatus: '',  //媒体状态
+              assetId: '',      //资产编号assettag
+              doorType: '',     // 门类型
+              adSizeW: '',      //广告尺寸adsize
+              adSizeH: '',     //广告尺寸
+              visualW: '',      //可视画面adviewsize
+              visualH: '',      //可视画面
+              mediaRemark: '',  //备注 mrk
+              adLimit: ''     //请选择广告限制 notpush
+            },
+          },
+        ],*!/
+           api.postApi('https://beta.qinlinad.com/QADN/CreateMedia',mediaObj).then(res=>{
+                console.log(res)
+                this.clearFromData()
+           })
+         }).catch(err=>{
+           console.log(err)
+         })*/
+          /* CreateMedia
+            rid         int【必填】     媒体所在地区ID
+            resid       int【必填】     资源ID
+            mtitle      String          媒体名称
+            pnum        int             广告位面数
+            adsize      String          广告位尺寸
+            adviewsize  String          广告可视画面
+            notpush     String          广告投放限制
+            assettag    String          资产编号
+            mtype       String          媒体类型
+            mimg        String          媒体照片
+            uid         int             安装工程师
+            mvc         String          媒介载体
+            mrk         String          媒体备注*/
       },
       //缩略图
       handleRemove(file, fileList) {
@@ -389,7 +582,49 @@
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
+        console.log(this.dialogImageUrl)
         this.dialogVisible = true;
+      },
+      //recUploadChange\mediaUploadChange图片文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+      recUploadChange(file){
+        const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
+        const isLt1M = file.size / 1024 / 1024 < 1;
+
+        if (!isIMAGE) {
+          this.$message.error('只能上传jpg/png图片!');
+          return false;
+        }
+        if (!isLt1M) {
+          this.$message.error('上传文件大小不能超过 1MB!');
+          return false;
+        }
+        let that = this
+        let reader = new FileReader();
+        reader.readAsDataURL(file.raw);
+        reader.onload = function(e){
+          console.log(this.result)//图片的base64数据
+          console.log(that.recFormImg)
+        }
+      },
+      mediaUploadChange(file){
+        const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
+        const isLt1M = file.size / 1024 / 1024 < 1;
+
+        if (!isIMAGE) {
+          this.$message.error('只能上传jpg/png图片!');
+          return false;
+        }
+        if (!isLt1M) {
+          this.$message.error('上传文件大小不能超过 1MB!');
+          return false;
+        }
+        let that = this
+        let reader = new FileReader();
+        reader.readAsDataURL(file.raw);
+        reader.onload = function(e){
+          console.log(this.result)//图片的base64数据
+          console.log(that.mediaFormImg)
+        }
       },
       //表单
       submitForm(formName) {
@@ -404,24 +639,36 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-      }
+      },
+      //清空表单数据
+      clearFromData(){
+        let mediaFrom = this.arrMedia[0].mediaForm
+        for(let mkey in mediaFrom){
+          mediaFrom[mkey]  = ''
+        }
+        let recForm = this.recForm
+        for(let rkey in recForm){
+          recForm[rkey]  = ''
+        }
+      },
     },
     mounted: function () {
-      this.postData()
+
     },
   }
 
 
-  $(function () {
-    var titleIndex = 0;
-    var titleArr=['媒体一', '媒体二', '媒体三', '媒体四', '媒体五', '媒体六', '媒体七'];
+  /*$(function () {
+    let titleIndex = 0;
+    let titleArr=['媒体一','媒体二','媒体三','媒体四','媒体五','媒体六','媒体七'];
     $('.content_bottom_head').find('h2').text(titleArr[titleIndex]);
     $('.addMediaBtn').click(function () {
+      alert('1')
       titleIndex++;
       let $mediaForm = $('.content_bottom_wrap').eq(0);
       $('.addMediaBtn').before($mediaForm.clone(true));
-      $('.content_bottom_head').find('h2').text(titleArr[titleIndex]);
-    });
+      $('.content_bottom_head').eq(titleIndex).find('h2').text(titleArr[titleIndex]);
+    });*/
 
    /* $('.addMediaBtn').click(function () {
       var template = '<div class="content_bottom_wrap">' +
@@ -519,7 +766,7 @@
     });*/
 
 
-  })
+ // })
 
 </script>
 
@@ -610,6 +857,7 @@
     font-weight: bold;
     padding-left: 16px;
     height: 24px;
+    width: 70%;
     border-left: 2px solid #465D89;
     margin-top: 8px;
   }
@@ -738,6 +986,7 @@
     color: #FFFFFF;
     line-height: 10px;
     border: none;
+    margin-top: -26px;
   }
 
   .mm {
@@ -820,9 +1069,9 @@
   .upload_img_wrap {
     width: 236px;
     height: 125px;
+   /* overflow:auto*/
     overflow: hidden;
   }
-
   .el-checkbox-group {
     position: relative;
     top: 5px;
