@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import api from '../../../api/api.js';
+import api from '../../api/api.js';
 // 时间控件格式化
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤

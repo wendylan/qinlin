@@ -123,33 +123,33 @@ export default {
 			// });
 
 			// // login登录api
-			// axios({
-			// 	method: 'post',
-			// 	baseURL: '/api',
-			// 	url: '/Login',
-			// 	data:{
-			// 		username: name,
-			// 		pwd: pass 
-			// 	}
-			// }).then(res => {
-			// 	console.log("返回：",res);
-			// }).catch(err => {
-			// 	console.log(err);
-			// });
-
-			// 社区媒体列表api
 			axios({
 				method: 'get',
 				baseURL: '/api',
-				url: '/GetMediaList',
+				url: '/Login',
 				params:{
-					resid:1
+					username: name,
+					pwd: pass 
 				}
 			}).then(res => {
-				console.log("返回：", res);
+				console.log("返回：",res);
 			}).catch(err => {
 				console.log(err);
 			});
+
+			// 社区媒体列表api
+			// axios({
+			// 	method: 'get',
+			// 	baseURL: '/api',
+			// 	url: '/GetMediaList',
+			// 	params:{
+			// 		resid:1
+			// 	}
+			// }).then(res => {
+			// 	console.log("返回：", res);
+			// }).catch(err => {
+			// 	console.log(err);
+			// });
 
 		},
 		loginType() {
