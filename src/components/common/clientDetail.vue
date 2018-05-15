@@ -16,6 +16,7 @@
 						<li><em>联系人：</em>{{userInfo.realName}}</li>
 						<li><em>邮箱：</em>{{userInfo.email}}</li>
 						<li><em>手机号码：</em>{{userInfo.phone }}</li>
+						<li><em>账户名：</em>{{userInfo.sName}}</li>
 						<li><em>职位：</em>{{userInfo.position }}</li>
 						<li><em>固定电话：</em>{{userInfo.telephone }}</li>
 						<li><em>所在地：</em>{{userInfo.rName }}</li>
@@ -31,6 +32,7 @@
 							<li><em>公司地址：</em>{{companyInfo.cAddress}}</li>
 							<li><em>公司品牌：</em>{{companyInfo.cBrand}}</li>
 							<li><em>所在城市：</em>{{companyInfo.rName}}</li>
+							<li><em>行业：</em>{{companyInfo.rid}}</li>
 						</ul>
 						<div class="remarkBox">
 							<p>
@@ -63,7 +65,8 @@ export default {
 				telephone: '',
 				rName: '',
 				division: '',
-				puName: ''
+				puName: '',
+				sName: ''
 			},
 			companyInfo: {
 				cName: '',
@@ -143,7 +146,8 @@ export default {
 	/*客户信息*/
 	.ad_mediaInfo{
 		width: 1246px;
-		height: 346px;
+		/* height: 346px; */
+		height: 360px;
 		background: #FFFFFF;
 		border: 1px solid #E6E7E9;
 		margin: 10px auto;

@@ -53,11 +53,19 @@
 						<div class="content_bottom_form_wrap">
 							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
 									class="demo-ruleForm">
-								<el-form-item label="公司名称:" prop="companyName">
-									<span v-if="isFill">{{companyForm.companyName}}</span>
-									<el-input v-else v-model="companyForm.companyName" placeholder="请输入公司名称"></el-input>
+								<el-form-item label="公司名称:" prop="cName">
+									<span v-if="isFill">{{companyForm.cName}}</span>
+									<!-- <el-input v-else v-model="companyForm.cName" placeholder="请输入公司名称" @change="searchCompany"></el-input> -->
+									<el-autocomplete
+										v-else
+										v-model="companyForm.cName"
+										:fetch-suggestions="querySearchAsync"
+										placeholder="请输入内容"
+										@select="handleSelect"
+										>
+									</el-autocomplete>
 								</el-form-item>
-								<el-form-item label="公司品牌:" prop="companyBrand" class="tags">
+								<el-form-item label="公司品牌:" prop="cBrand" class="tags">
 									<el-tag
 										:key="tag"
 										v-for="tag in companyTags"
@@ -88,19 +96,19 @@
 										change-on-select
 									></el-cascader>
 								</el-form-item>
-								<el-form-item label="公司地址:" prop="companyAddress">
-									<span v-if="isFill">{{companyForm.companyAddress}}</span>
-									<el-input v-else v-model="companyForm.companyAddress" placeholder="请输入公司具体地址"></el-input>
+								<el-form-item label="公司地址:" prop="cAddress">
+									<span v-if="isFill">{{companyForm.cAddress}}</span>
+									<el-input v-else v-model="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
 								</el-form-item>
-								<el-form-item label="所在城市:" prop="companyCity">
-									<span v-if="isFill">{{companyForm.companyCity}}</span>
-									<el-select v-else v-model="companyForm.companyCity" placeholder="请选择公司所在城市">
+								<el-form-item label="所在城市:" prop="rID">
+									<span v-if="isFill">{{companyForm.rName}}</span>
+									<el-select v-else v-model="companyForm.rID" placeholder="请选择公司所在城市">
 										<el-option :label="item.rName" :value="item.rID" v-for="item of AllArea" :key="item.rID"></el-option>
 									</el-select>
 								</el-form-item>
-								<el-form-item label="备注:" prop="companyRemark">
-									<span v-if="isFill">{{companyForm.companyRemark}}</span>
-									<el-input v-else type="textarea" v-model="companyForm.companyRemark" placeholder="请填写备注信息"></el-input>
+								<el-form-item label="备注:" prop="cRemark">
+									<span v-if="isFill">{{companyForm.cRemark}}</span>
+									<el-input v-else type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
 								</el-form-item>
 							</el-form>
 							<!-- <div v-if="isEdit"></div> -->
@@ -132,8 +140,11 @@ export default {
 		return {
 			AllArea: [],
 			isFill: false,
+			timeout:  null,
 			//行业分类
 			bussiness: [],
+			// 搜索后获得到的公司
+			allCompany: [],
 			//tags
 			companyTags: ['亲邻团购'],
 			inputVisible: false,
@@ -153,12 +164,18 @@ export default {
 				puid: ''
 			},
 			companyForm: {
-				companyName: '',
-				companyBrand: '',
-				companyAddress:'',
-				companyCity:'',
-				companyRemark:'',
-				tradeClassify:''
+				cName: '',
+				cAddress: '',
+				cBrand: '',
+				rName: '',
+				cRemark: '',
+				// 地区id
+				rID: '',
+				// 行业id
+				iID: 56,
+				// 公司id
+				cID: '',
+				tradeClassify: ''
 			},
 			clientRules: {
 				realname: [
@@ -188,22 +205,22 @@ export default {
 				],
 			},
 			companyRules: {
-				companyName: [
+				cName: [
 					{required: true, message: '公司名称不能为空', trigger: 'blur'},
 					{ max: 50, message: '最多只能输入40个字节', trigger: 'blur' }
 				],
-				/* companyBrand: [
+				/* cBrand: [
 					{required: true ,trigger:'blur'},
 					{ max: 40, message: '最多只能输入40个字节', trigger: 'blur' }
 				],*/
-				companyAddress:[
+				cAddress:[
 					{required: true, message:'公司地址不能为空', trigger:'blur'},
 					{ max: 200, message: '最多只能输入200个字节', trigger: 'blur' }
 				],
-				companyCity:[
+				rID:[
 					{required:true, message:'公司所在城市不能为空', trigger:'blur'}
 				],
-				companyRemark:[
+				cRemark:[
 					{ max: 200, message: '最多只能输入200个字符', trigger: 'change' }
 				],
 				tradeClassify:[
@@ -246,40 +263,78 @@ export default {
 				console.log(res);
 			});
 		},
+		querySearchAsync(queryString, callback) {  
+			api.postApi('/GetCompanyInfo', {cn: queryString}).then(res => {
+				if(res.data){
+					for(let i of res.data){  
+						i.value = i.cName;  //将CUSTOMER_NAME作为value  
+					}  
+					this.allCompany = res.data;
+					var results = this.allCompany;
+					clearTimeout(this.timeout);
+					this.timeout = setTimeout(() => {
+						callback(results);
+					}, 3000 * Math.random());
+					
+				}
+			});
+		},
+		handleSelect(item) {
+			this.companyForm.cName = item.cName;
+			this.companyForm.cBrand = item.cBrand;
+			this.companyForm.cAddress = item.cAddress;
+			this.companyForm.cRemark = item.cRemark;
+			this.companyForm.rID = item.rID;
+			this.companyForm.cID = item.cID;
+			// console.log(item);
+			this.isFill = true;
+		},
 		// 创建
 		submitData(){
-			let userInfo = {
-				realname: 'wendy',
-				sname: 'wendy',
-				phone: 13612457899,
-				telphone: '787-787',
-				email: '3063766545@qq.com',
-				position: '前端',
-				rid: 440000,
-				utype: 'AD',
-				uwho: 1,
-				puid: 2
-			};
+			// let userInfo = {
+			// 	realname: 'wendy',
+			// 	sname: 'wendy',
+			// 	phone: 13612457899,
+			// 	telphone: '787-787',
+			// 	email: '3063766545@qq.com',
+			// 	position: '前端',
+			// 	rid: 440000,
+			// 	utype: 'AD',
+			// 	uwho: 1,
+			// 	puid: 2
+			// };
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
-			api.getApi('/GetCompanyInfo', {cn: companyForm.companyName}).then(res => {
-				console.log(res.data);
-				if(res.data){
+			if(this.companyForm.cID){
+				if(this.companyForm.cBrand != this.companyTags.join(',')){
+					api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
+						console.log(res);
+					});
+				}
+				// 注册用户
+				this.clientForm.puid = sessionStorage.getItem('puid');
+				this.clientForm.uwho = this.companyForm.cID;
+				api.postApi('/RegUser', userInfo).then(res => {
+					console.log(res);
+				}).catch(res =>{
+					console.log(res);
+				});
+
+			}else{
+				// 注册公司
+				api.postApi('/addCompanyInfo', companyForm).then(res => {
+					console.log(res.data);
 					// 注册用户
-					this.clientForm.puid = sessionStorage.getItem('uid');
+					this.clientForm.puid = sessionStorage.getItem('puid');
 					this.clientForm.uwho = res.data.cid;
 					api.postApi('/RegUser', userInfo).then(res => {
 						console.log(res);
 					}).catch(res =>{
 						console.log(res);
 					});
-
-				}else{
-
-				}
-			}).catch(res=>{
-				console.log(res);
-			});
-			console.log(this.clientForm);
+				}).catch(res => {
+					console.log(res);
+				});
+			}
 		},
 		// 取消返回
 		goBack(){
