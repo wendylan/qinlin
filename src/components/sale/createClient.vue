@@ -17,6 +17,9 @@
 								<el-form-item label="联系人:" prop="realname">
 									<el-input v-model="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
 								</el-form-item>
+								<el-form-item label="账户名:" prop="sname">
+									<el-input v-model="clientForm.sname" placeholder="请输入账户名"></el-input>
+								</el-form-item>
 								<el-form-item label="职位:" prop="position">
 									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
 								</el-form-item>
@@ -51,7 +54,8 @@
 							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
 									class="demo-ruleForm">
 								<el-form-item label="公司名称:" prop="companyName">
-									<el-input v-model="companyForm.companyName" placeholder="请输入公司名称"></el-input>
+									<span v-if="isFill">{{companyForm.companyName}}</span>
+									<el-input v-else v-model="companyForm.companyName" placeholder="请输入公司名称"></el-input>
 								</el-form-item>
 								<el-form-item label="公司品牌:" prop="companyBrand" class="tags">
 									<el-tag
@@ -76,25 +80,30 @@
 									<el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
 								</el-form-item>
 								<el-form-item label="行业分类:" prop="tradeClassify">
-									<el-cascader
+									<span v-if="isFill">{{companyForm.tradeClassify}}</span>
+									<el-cascader v-else
 										placeholder="试试搜索：互联网"
-										:options="options"
+										:options="bussiness"
 										filterable
 										change-on-select
 									></el-cascader>
 								</el-form-item>
 								<el-form-item label="公司地址:" prop="companyAddress">
-									<el-input v-model="companyForm.companyAddress" placeholder="请输入公司具体地址"></el-input>
+									<span v-if="isFill">{{companyForm.companyAddress}}</span>
+									<el-input v-else v-model="companyForm.companyAddress" placeholder="请输入公司具体地址"></el-input>
 								</el-form-item>
 								<el-form-item label="所在城市:" prop="companyCity">
-									<el-select v-model="companyForm.companyCity" placeholder="请选择公司所在城市">
+									<span v-if="isFill">{{companyForm.companyCity}}</span>
+									<el-select v-else v-model="companyForm.companyCity" placeholder="请选择公司所在城市">
 										<el-option :label="item.rName" :value="item.rID" v-for="item of AllArea" :key="item.rID"></el-option>
 									</el-select>
 								</el-form-item>
 								<el-form-item label="备注:" prop="companyRemark">
-									<el-input type="textarea" v-model="companyForm.companyRemark" placeholder="请填写备注信息"></el-input>
+									<span v-if="isFill">{{companyForm.companyRemark}}</span>
+									<el-input v-else type="textarea" v-model="companyForm.companyRemark" placeholder="请填写备注信息"></el-input>
 								</el-form-item>
 							</el-form>
+							<!-- <div v-if="isEdit"></div> -->
 						</div>
 					</div>
 					<div class="content_bottom_btn">
@@ -122,32 +131,9 @@ export default {
 		};
 		return {
 			AllArea: [],
+			isFill: false,
 			//行业分类
-			options: [{
-				value: 'hulianwang',
-				label: '互联网',
-				children: [{
-					value: 'shejiyuanze',
-					label: '设计原则',
-				}],
-			}, {
-				value: 'fuwu',
-				label: '服务业',
-				children: [{
-					value: 'chushi',
-					label: '厨师',
-				}, {
-					value: 'fuwuyuan',
-					label: '服务员',
-				}],
-			}, {
-				value: 'fangdichan',
-				label: '房地产',
-				children: [{
-					value: 'yi',
-					label: '一二三',
-				}],
-			}],
+			bussiness: [],
 			//tags
 			companyTags: ['亲邻团购'],
 			inputVisible: false,
@@ -155,12 +141,16 @@ export default {
 			//表单
 			clientForm: {
 				realname: '',
+				sname: '',
 				position: '',
 				phone: '',
 				rid: '',
 				email: '',
 				telphone: '',
-				division: ''
+				division: '',
+				utype: 'AD',
+				uwho: '',
+				puid: ''
 			},
 			companyForm: {
 				companyName: '',
@@ -174,6 +164,9 @@ export default {
 				realname: [
 					{required: true, message: '联系人不能为空', trigger: 'blur'},
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
+				],
+				sname: [
+					{required: true, message: '账户名不能为空', trigger: 'blur'}
 				],
 				position: [
 					{required: true, message: '职位不能为空', trigger: 'blur'},
@@ -226,12 +219,23 @@ export default {
 	methods: {
 		// 获取所有行业信息
 		getIndustry(){
-			// api.getApi('/GetIndustry').then(res =>{
-			// 	console.log(res.data);
-			// });
-			api.getApi('/GetIndustry', {piid :1}).then(res =>{
-				console.log(res.data);
+			api.getApi('/GetIndustry', {act:'all'}).then(res =>{
+				let arr = res.data;
+				let tmp = [];
+				for(let data of arr){
+					if(data.piID == 0){
+						tmp.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
+					}
+					for(let item of tmp){
+						if(data.piID == item.iID){
+							item.children.push({ piID: data.piID, iID: data.iID, value: data.iName, label: data.iName });
+						}
+					}
+				}
+				this.bussiness = tmp;
+				console.log(tmp);
 			});
+			
 		},
 		// 获取所有区域信息
 		getAreaData(){
@@ -244,6 +248,37 @@ export default {
 		},
 		// 创建
 		submitData(){
+			let userInfo = {
+				realname: 'wendy',
+				sname: 'wendy',
+				phone: 13612457899,
+				telphone: '787-787',
+				email: '3063766545@qq.com',
+				position: '前端',
+				rid: 440000,
+				utype: 'AD',
+				uwho: 1,
+				puid: 2
+			};
+			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
+			api.getApi('/GetCompanyInfo', {cn: companyForm.companyName}).then(res => {
+				console.log(res.data);
+				if(res.data){
+					// 注册用户
+					this.clientForm.puid = sessionStorage.getItem('uid');
+					this.clientForm.uwho = res.data.cid;
+					api.postApi('/RegUser', userInfo).then(res => {
+						console.log(res);
+					}).catch(res =>{
+						console.log(res);
+					});
+
+				}else{
+
+				}
+			}).catch(res=>{
+				console.log(res);
+			});
 			console.log(this.clientForm);
 		},
 		// 取消返回

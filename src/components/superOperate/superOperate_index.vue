@@ -116,9 +116,9 @@ export default {
     data(){
         return {
             containData:[
-                {path: '/superOperate/clientList', name: '客户管理', smallOpera: '查看', operationName: '创建客户', operationPath: 'admin/createClient'},
+                {path: '/superOperate/clientList', name: '客户管理', smallOpera: '查看', operationName: '创建客户', operationPath: '/superOperate/createClient'},
                 {path: '/superOperate/mediaList', name: '媒体管理', smallOpera:'查看', operationName: '录入媒体', operationPath: '/superOperate/mediaInput'},
-                {path: '/superOperate/planList', name: '方案管理', smallOpera:'查看', operationName: '创建方案', operationPath: 'admin/createPlan'},
+                {path: '/superOperate/planList', name: '方案管理', smallOpera:'查看', operationName: '创建方案', operationPath: '/superOperate/createPlan'},
                 {path: '/superOperate/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: ''},
             ],
             isActive1: true,
@@ -671,8 +671,8 @@ export default {
 
   /*echarts*/
   .echarts-box {
-    width: 100%;
-    padding: 0 60px;
+    /* width: 100%; */
+    margin-left: 60px;
     overflow: hidden;
   }
 

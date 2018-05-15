@@ -60,6 +60,8 @@ export default new Router({
 				{path: '/superOperate/planDetail',  component: planDetail},
 				{path: '/superOperate/orderDetail',  component: orderDetail},
 				{path: '/superOperate/photoGallery',  component: photoGallery},
+				{path: '/superOperate/createPlan', component: createPlan},
+				{path: '/superOperate/createClient',  component: createClient},
 			]
 		},
 		//普通运营

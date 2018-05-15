@@ -66,7 +66,11 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -96,7 +100,11 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -126,7 +134,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -156,7 +169,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -186,7 +204,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -216,7 +239,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -246,7 +274,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -276,7 +309,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -306,7 +344,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -336,7 +379,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -428,7 +476,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -458,7 +511,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -488,7 +546,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -518,7 +581,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -548,7 +616,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -578,7 +651,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -608,7 +686,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -638,7 +721,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -668,7 +756,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
@@ -698,7 +791,12 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-                          <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span>
+                          <!-- <span><img src="../../assets/images/mianIcon.png" alt=""> A面</span> -->
+						  <span>
+							  <!-- <img src="../../assets/images/mianIcon.png" alt="">  -->
+							  <i class="fa  fa-file-text"></i>
+							  A面
+							</span>
                           <el-tooltip placement="bottom" effect="light">
                             <span class="el-icon-info"></span>
                             <div slot="content" class="content">
