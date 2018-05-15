@@ -175,8 +175,8 @@ export default {
 		GetCustomer() {
 			console.log(sessionStorage.getItem('uid'));
 			api.getApi('/GetCustomer', {
-				puid:2
-				// puid:sessionStorage.getItem("uid")
+				// puid:2
+				puid:sessionStorage.getItem("uid")
 			}).then(res=>{
 				if(res.data){
 					this.planList = res.data;
