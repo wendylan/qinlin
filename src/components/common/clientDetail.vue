@@ -32,9 +32,7 @@
 							<li><em>公司地址：</em>{{companyInfo.cAddress}}</li>
 							<li><em>公司品牌：</em>{{companyInfo.cBrand}}</li>
 							<li><em>所在城市：</em>{{companyInfo.rName}}</li>
-							<!-- <li><em>所在城市：</em>{{companyInfo.rID}}</li> -->
 							<li><em>行业：</em>{{companyInfo.iName}}</li>
-							<li><em>行业：</em>{{companyInfo.iID}}</li>
 						</ul>
 						<div class="remarkBox">
 							<p>
@@ -90,25 +88,38 @@ export default {
 		},
 		// 获取公司的基本信息
 		getInitData(){
+			// 获取用户信息
 			let initdata = JSON.parse(sessionStorage.getItem('data'));
-			// console.log(initdata);
+			// 获取行业信息
+			let arr = JSON.parse(sessionStorage.getItem('industry'));
 			if(initdata){
 				this.userInfo = initdata;
 				api.getApi('/GetCompanyInfo', {
 					cid: initdata.uWho,
 					uid: initdata.uID
 				}).then(res => {
-					// console.log(res.data);
 					this.companyInfo = res.data;
-					console.log(res.data.iID);
+					let str = '';
+					let piid = '';
+					for(let item of arr){
+						if(res.data.iID == item.iID){
+							str = item.iName;
+							piid = item.piID;
+							break;
+						}
+					}
+					for(let item of arr){
+						if(piid == item.iID){
+							str = item.iName +'/'+str;
+							break;
+						}
+					}
+					// 公司信息所在行业
+					this.$set(this.companyInfo, 'iName', str);
+					// 公司信息所在城市
 					api.getApi('/ShowRegion', {rid: res.data.rID}).then(res => {
 						this.$set(this.companyInfo, 'rName', res.data[0].rName);
 					});
-					api.getApi('/GetIndustry', {act: '', iid: res.data.iID}).then(res => {
-						console.log(res.data);
-						// this.$set(this.companyInfo, 'iName', res.data[0].iName);
-					});
-
 				});
 			}
 			

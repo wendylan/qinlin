@@ -236,22 +236,19 @@ export default {
 	methods: {
 		// 获取所有行业信息
 		getIndustry(){
-			api.getApi('/GetIndustry', {act:'all'}).then(res =>{
-				let arr = res.data;
-				let tmp = [];
-				for(let data of arr){
-					if(data.piID == 0){
-						tmp.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
-					}
-					for(let item of tmp){
-						if(data.piID == item.iID){
-							item.children.push({ piID: data.piID, iID: data.iID, value: data.iName, label: data.iName });
-						}
+			let arr = JSON.parse(sessionStorage.getItem('industry'));
+			let tmp = [];
+			for(let data of arr){
+				if(data.piID == 0){
+					tmp.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
+				}
+				for(let item of tmp){
+					if(data.piID == item.iID){
+						item.children.push({ piID: data.piID, iID: data.iID, value: data.iName, label: data.iName });
 					}
 				}
-				this.bussiness = tmp;
-				console.log(tmp);
-			});
+			}
+			this.bussiness = tmp;
 			
 		},
 		// 获取所有区域信息
@@ -306,37 +303,49 @@ export default {
 			// 	puid: 2
 			// };
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
-			if(this.companyForm.cID){
-				if(this.companyForm.cBrand != this.companyTags.join(',')){
-					api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
-						console.log(res);
-					});
-				}
-				// 注册用户
-				this.clientForm.puid = sessionStorage.getItem('puid');
-				this.clientForm.uwho = this.companyForm.cID;
-				api.postApi('/RegUser', this.clientForm).then(res => {
-					console.log(res);
-				}).catch(res =>{
-					console.log(res);
-				});
+			// api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
+			api.getApi('/AddBrand', {bt: this.companyTags, cid: 1}).then(res => {
+				console.log(res);
+				alert(1);
+				alert(res.data);
+			});
+			api.getApi('/GetBrand', {cid: 1}).then(res => {
+				console.log(res);
+				alert(2);
+			});
+			// if(this.companyForm.cID){
+			// 	if(this.companyForm.cBrand != this.companyTags.join(',')){
+			// 		api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
+			// 			console.log(res);
+			// 			alert(1);
+			// 			alert(res.data);
+			// 		});
+			// 	}
+			// 	// 注册用户
+			// 	this.clientForm.puid = sessionStorage.getItem('puid');
+			// 	this.clientForm.uwho = this.companyForm.cID;
+			// 	api.postApi('/RegUser', this.clientForm).then(res => {
+			// 		console.log(res);
+			// 	}).catch(res =>{
+			// 		console.log(res);
+			// 	});
 
-			}else{
-				// 注册公司
-				api.postApi('/addCompanyInfo', companyForm).then(res => {
-					console.log(res.data);
-					// 注册用户
-					this.clientForm.puid = sessionStorage.getItem('puid');
-					this.clientForm.uwho = res.data.cid;
-					api.postApi('/RegUser', this.clientForm).then(res => {
-						console.log(res);
-					}).catch(res =>{
-						console.log(res);
-					});
-				}).catch(res => {
-					console.log(res);
-				});
-			}
+			// }else{
+			// 	// 注册公司
+			// 	api.postApi('/addCompanyInfo', companyForm).then(res => {
+			// 		console.log(res.data);
+			// 		// 注册用户
+			// 		this.clientForm.puid = sessionStorage.getItem('puid');
+			// 		this.clientForm.uwho = res.data.cid;
+			// 		api.postApi('/RegUser', this.clientForm).then(res => {
+			// 			console.log(res);
+			// 		}).catch(res =>{
+			// 			console.log(res);
+			// 		});
+			// 	}).catch(res => {
+			// 		console.log(res);
+			// 	});
+			// }
 		},
 		// 取消返回
 		goBack(){
@@ -348,7 +357,7 @@ export default {
 		},
 		showInput() {
 			this.inputVisible = true;
-			this.$nextTick(_ => {
+			this.$nextTick(() => {
 				this.$refs.saveTagInput.$refs.input.focus();
 			})
 		},

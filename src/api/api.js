@@ -37,7 +37,7 @@ export const api = {
 		return axios({
 			method: 'get',
 			// baseURL: Url,
-			baseURL: '/api',
+			// baseURL: '/api',
 			url: u,
 			params: getParams}).then(res => res).catch(err => {
 				console.log(err);

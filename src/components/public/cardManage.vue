@@ -33,13 +33,7 @@
             }
         },
         data() {
-            return {
-                // containData:[
-                //     {path: '/media/mediaList', name: '媒体管理', operationName: '录入媒体', operationPath: '/media/mediaInput'},
-                //     {path: '/media/planList', name: '方案管理', operationName: '创建方案', operationPath: '/media/createPlan'},
-                //     {path: '/media/orderList', name: '订单管理', operationName: '', operationPath: ''}
-                // ]
-            }
+            return {}
         },
         methods:{}
     }
