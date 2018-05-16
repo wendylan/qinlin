@@ -10,10 +10,10 @@ import axios from 'axios';
 export const api = {
 	postApi(u, postParams){
 		console.log(u, postParams)
-		let Url = 'https://beta.qinlinad.com/QADN/'
+		// let Url = 'https://beta.qinlinad.com/QADN/'
 		return axios({
 			method: 'post',
-			baseURL: Url,
+			// baseURL: Url,
 			url: u,
 			data: postParams,
 			transformRequest: [function (data) {
@@ -33,11 +33,11 @@ export const api = {
 	},
 	getApi(u, getParams){
 		//     console.log(u,getParams)
-		let Url = 'https://beta.qinlinad.com/QADN/'
+		// let Url = 'https://beta.qinlinad.com/QADN/'
 		return axios({
 			method: 'get',
-			baseURL: Url,
-			// baseURL: '/api',
+			// baseURL: Url,
+			baseURL: '/api',
 			url: u,
 			params: getParams}).then(res => res).catch(err => {
 				console.log(err);

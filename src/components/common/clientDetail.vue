@@ -32,7 +32,9 @@
 							<li><em>公司地址：</em>{{companyInfo.cAddress}}</li>
 							<li><em>公司品牌：</em>{{companyInfo.cBrand}}</li>
 							<li><em>所在城市：</em>{{companyInfo.rName}}</li>
-							<li><em>行业：</em>{{companyInfo.rid}}</li>
+							<!-- <li><em>所在城市：</em>{{companyInfo.rID}}</li> -->
+							<li><em>行业：</em>{{companyInfo.iName}}</li>
+							<li><em>行业：</em>{{companyInfo.iID}}</li>
 						</ul>
 						<div class="remarkBox">
 							<p>
@@ -73,7 +75,8 @@ export default {
 				cAddress: '',
 				cBrand: '',
 				rName: '',
-				cRemark: ''
+				cRemark: '',
+				iName: ''
 			},
 		}
 	},
@@ -88,15 +91,24 @@ export default {
 		// 获取公司的基本信息
 		getInitData(){
 			let initdata = JSON.parse(sessionStorage.getItem('data'));
-			console.log(initdata);
+			// console.log(initdata);
 			if(initdata){
 				this.userInfo = initdata;
 				api.getApi('/GetCompanyInfo', {
 					cid: initdata.uWho,
 					uid: initdata.uID
 				}).then(res => {
-					console.log(res.data);
+					// console.log(res.data);
 					this.companyInfo = res.data;
+					console.log(res.data.iID);
+					api.getApi('/ShowRegion', {rid: res.data.rID}).then(res => {
+						this.$set(this.companyInfo, 'rName', res.data[0].rName);
+					});
+					api.getApi('/GetIndustry', {act: '', iid: res.data.iID}).then(res => {
+						console.log(res.data);
+						// this.$set(this.companyInfo, 'iName', res.data[0].iName);
+					});
+
 				});
 			}
 			

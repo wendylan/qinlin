@@ -263,21 +263,23 @@ export default {
 				console.log(res);
 			});
 		},
-		querySearchAsync(queryString, callback) {  
-			api.postApi('/GetCompanyInfo', {cn: queryString}).then(res => {
-				if(res.data){
-					for(let i of res.data){  
-						i.value = i.cName;  //将CUSTOMER_NAME作为value  
-					}  
-					this.allCompany = res.data;
-					var results = this.allCompany;
-					clearTimeout(this.timeout);
-					this.timeout = setTimeout(() => {
-						callback(results);
-					}, 3000 * Math.random());
-					
-				}
-			});
+		querySearchAsync(queryString, callback) {
+			if(queryString){
+				api.postApi('/GetCompanyInfo', {cn: queryString}).then(res => {
+					if(res.data){
+						for(let i of res.data){  
+							i.value = i.cName;  //将CUSTOMER_NAME作为value  
+						}  
+						this.allCompany = res.data;
+						var results = this.allCompany;
+						clearTimeout(this.timeout);
+						this.timeout = setTimeout(() => {
+							callback(results);
+						}, 3000 * Math.random());
+						
+					}
+				});
+			}  
 		},
 		handleSelect(item) {
 			this.companyForm.cName = item.cName;
@@ -313,7 +315,7 @@ export default {
 				// 注册用户
 				this.clientForm.puid = sessionStorage.getItem('puid');
 				this.clientForm.uwho = this.companyForm.cID;
-				api.postApi('/RegUser', userInfo).then(res => {
+				api.postApi('/RegUser', this.clientForm).then(res => {
 					console.log(res);
 				}).catch(res =>{
 					console.log(res);
@@ -326,7 +328,7 @@ export default {
 					// 注册用户
 					this.clientForm.puid = sessionStorage.getItem('puid');
 					this.clientForm.uwho = res.data.cid;
-					api.postApi('/RegUser', userInfo).then(res => {
+					api.postApi('/RegUser', this.clientForm).then(res => {
 						console.log(res);
 					}).catch(res =>{
 						console.log(res);
