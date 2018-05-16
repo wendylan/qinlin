@@ -72,7 +72,7 @@
 										closable
 										:disable-transitions="false"
 										@close="handleClose(tag)">
-										{{tag}}
+										{{tag.bTitle}}
 									</el-tag>
 									<el-input
 										style="width: 90px"
@@ -87,8 +87,8 @@
 									</el-input>
 									<el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
 								</el-form-item>
-								<el-form-item label="行业分类:" prop="tradeClassify">
-									<span v-if="isFill">{{companyForm.tradeClassify}}</span>
+								<el-form-item label="行业分类:" prop="iName">
+									<span v-if="isFill">{{companyForm.iName}}</span>
 									<el-cascader v-else
 										placeholder="试试搜索：互联网"
 										:options="bussiness"
@@ -126,6 +126,8 @@
 
 <script>
 import api from '../../api/api.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import industryToText from '../../commonFun/industryToText.js';
 export default {
 	name: "createClient",
 	data() {
@@ -175,7 +177,7 @@ export default {
 				iID: 56,
 				// 公司id
 				cID: '',
-				tradeClassify: ''
+				iName: ''
 			},
 			clientRules: {
 				realname: [
@@ -223,7 +225,7 @@ export default {
 				cRemark:[
 					{ max: 200, message: '最多只能输入200个字符', trigger: 'change' }
 				],
-				tradeClassify:[
+				iName:[
 					{required:true, message:'请选择行业分类', trigger:'blur'}
 				]
 			}
@@ -237,19 +239,18 @@ export default {
 		// 获取所有行业信息
 		getIndustry(){
 			let arr = JSON.parse(sessionStorage.getItem('industry'));
-			let tmp = [];
+			let result = [];
 			for(let data of arr){
 				if(data.piID == 0){
-					tmp.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
+					result.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
 				}
-				for(let item of tmp){
+				for(let item of result){
 					if(data.piID == item.iID){
 						item.children.push({ piID: data.piID, iID: data.iID, value: data.iName, label: data.iName });
 					}
 				}
 			}
-			this.bussiness = tmp;
-			
+			this.bussiness = result;
 		},
 		// 获取所有区域信息
 		getAreaData(){
@@ -279,11 +280,45 @@ export default {
 			}  
 		},
 		handleSelect(item) {
+			console.log(item);
 			this.companyForm.cName = item.cName;
 			this.companyForm.cBrand = item.cBrand;
 			this.companyForm.cAddress = item.cAddress;
 			this.companyForm.cRemark = item.cRemark;
-			this.companyForm.rID = item.rID;
+			api.getApi('/ShowRegion', {rid: item.rID}).then(res => {
+				// console.log(res.data);
+				this.companyForm.rName = res.data[0].rName;
+			});
+			api.getApi('/GetBrand', {cid: item.cID}).then(res => {
+				console.log(res.data);
+				// this.companyForm.cBrand = res.data[0].rName;
+				this.companyTags = res.data;
+			});
+
+			// // 获取行业信息
+			// let arr = JSON.parse(sessionStorage.getItem('industry'));
+			// let str = '';
+			// let piid = '';
+			// for(let data of arr){
+			// 	if(item.iID == data.iID){
+			// 		str = data.iName;
+			// 		piid = data.piID;
+			// 		break;
+			// 	}
+			// }
+			// console.log(piid);
+			// console.log(str);
+			// for(let data of arr){
+			// 	if(piid == data.iID){
+			// 		str = data.iName +'/'+str;
+			// 		break;
+			// 	}
+			// }
+			let text = industryToText.getText(item.iID);
+			// 公司信息所在行业
+			this.$set(this.companyForm, 'iName', text);
+
+			// this.companyForm.rID = item.rID;
 			this.companyForm.cID = item.cID;
 			// console.log(item);
 			this.isFill = true;
@@ -304,48 +339,48 @@ export default {
 			// };
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
 			// api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
-			api.getApi('/AddBrand', {bt: this.companyTags, cid: 1}).then(res => {
-				console.log(res);
-				alert(1);
-				alert(res.data);
-			});
-			api.getApi('/GetBrand', {cid: 1}).then(res => {
-				console.log(res);
-				alert(2);
-			});
-			// if(this.companyForm.cID){
-			// 	if(this.companyForm.cBrand != this.companyTags.join(',')){
-			// 		api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
-			// 			console.log(res);
-			// 			alert(1);
-			// 			alert(res.data);
-			// 		});
-			// 	}
-			// 	// 注册用户
-			// 	this.clientForm.puid = sessionStorage.getItem('puid');
-			// 	this.clientForm.uwho = this.companyForm.cID;
-			// 	api.postApi('/RegUser', this.clientForm).then(res => {
-			// 		console.log(res);
-			// 	}).catch(res =>{
-			// 		console.log(res);
-			// 	});
+			// api.getApi('/AddBrand', {bt: this.companyTags, cid: 1}).then(res => {
+			// 	console.log(res);
+			// 	alert(1);
+			// 	alert(res.data);
+			// });
+			// api.getApi('/GetBrand', {cid: 1}).then(res => {
+			// 	console.log(res);
+			// 	alert(2);
+			// });
+			if(this.companyForm.cID){
+				if(this.companyForm.cBrand != this.companyTags.join(',')){
+					api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
+						console.log(res);
+						alert(1);
+						alert(res.data);
+					});
+				}
+				// 注册用户
+				this.clientForm.puid = sessionStorage.getItem('puid');
+				this.clientForm.uwho = this.companyForm.cID;
+				api.postApi('/RegUser', this.clientForm).then(res => {
+					console.log(res);
+				}).catch(res =>{
+					console.log(res);
+				});
 
-			// }else{
-			// 	// 注册公司
-			// 	api.postApi('/addCompanyInfo', companyForm).then(res => {
-			// 		console.log(res.data);
-			// 		// 注册用户
-			// 		this.clientForm.puid = sessionStorage.getItem('puid');
-			// 		this.clientForm.uwho = res.data.cid;
-			// 		api.postApi('/RegUser', this.clientForm).then(res => {
-			// 			console.log(res);
-			// 		}).catch(res =>{
-			// 			console.log(res);
-			// 		});
-			// 	}).catch(res => {
-			// 		console.log(res);
-			// 	});
-			// }
+			}else{
+				// 注册公司
+				api.postApi('/addCompanyInfo', companyForm).then(res => {
+					console.log(res.data);
+					// 注册用户
+					this.clientForm.puid = sessionStorage.getItem('puid');
+					this.clientForm.uwho = res.data.cid;
+					api.postApi('/RegUser', this.clientForm).then(res => {
+						console.log(res);
+					}).catch(res =>{
+						console.log(res);
+					});
+				}).catch(res => {
+					console.log(res);
+				});
+			}
 		},
 		// 取消返回
 		goBack(){

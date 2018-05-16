@@ -53,6 +53,8 @@
 
 <script>
 import api from '../../api/api.js';
+// 行业转换为中文
+import industryToText from '../../commonFun/industryToText.js';
 export default {
 	name: "clientDetail",
 	data() {
@@ -99,23 +101,10 @@ export default {
 					uid: initdata.uID
 				}).then(res => {
 					this.companyInfo = res.data;
-					let str = '';
-					let piid = '';
-					for(let item of arr){
-						if(res.data.iID == item.iID){
-							str = item.iName;
-							piid = item.piID;
-							break;
-						}
-					}
-					for(let item of arr){
-						if(piid == item.iID){
-							str = item.iName +'/'+str;
-							break;
-						}
-					}
+					// 行业中文
+					let text = industryToText.getText(res.data.iID);
 					// 公司信息所在行业
-					this.$set(this.companyInfo, 'iName', str);
+					this.$set(this.companyInfo, 'iName', text);
 					// 公司信息所在城市
 					api.getApi('/ShowRegion', {rid: res.data.rID}).then(res => {
 						this.$set(this.companyInfo, 'rName', res.data[0].rName);
