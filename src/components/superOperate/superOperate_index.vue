@@ -111,8 +111,15 @@
 
 <script>
 import managebox from '../public/cardManage.vue';
+import { Table, TableColumn, Progress } from 'element-ui';
 export default {
     name: "admin_index",
+    components:{
+        managebox,
+        elTable: Table,
+        elTableColumn: TableColumn,
+        elProgress: Progress
+    },
     data(){
         return {
             containData:[
@@ -148,9 +155,6 @@ export default {
             //客户行业分布情况
             data3: ['医美', '房地产', '汽车', '本地生活', '餐饮美食', '其他']
             }
-    },
-    components: {
-        managebox
     },
     mounted() {
         $(function () {
