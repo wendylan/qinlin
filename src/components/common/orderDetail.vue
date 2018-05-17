@@ -1370,7 +1370,7 @@
 </template>
 
 <script>
-import { Dialog, Tabs, TabPane, Table, TableColumn, Input, Button, Upload, Select, Option, Checkbox, Card, Progress,Cascader, Pagination } from 'element-ui';
+import { Dialog, Tabs, TabPane, Table, TableColumn, Input, Button, Upload, Select, Option, Checkbox, Card, Progress,Cascader, Pagination, MessageBox, Message } from 'element-ui';
 export default {
     name: "planDetail",
     components:{
@@ -2093,20 +2093,20 @@ export default {
         },
         cancelChangeID() {
             this.changeCID = false;
-            this.$message('取消修改合同编号');
+            Message('取消修改合同编号');
         },
         confirmChangeID() {
             this.cid = this.CIDinput;
             this.changeCID = false;
-            this.$message.success('修改合同编号成功');
+            Message.success('修改合同编号成功');
         },
         cancelChangeRemark() {
             this.changeRemark = false;
-            this.$message('取消修改监播备注');
+            Message('取消修改监播备注');
         },
         confirmChangeRemark() {
             this.changeRemark = false;
-            this.$message.success('修改监播备注成功');
+            Message.success('修改监播备注成功');
         },
         //上传照片
         handleRemove(file, fileList) {
@@ -2141,17 +2141,17 @@ export default {
         confirmHandel() {
             let recName  = this.orderList[0].recName;
             let schedules = this.orderList[0].schedules;
-            this.$confirm('是否停止 '+recName +' 在 '+schedules +' 的投放？\n','提示', {
+            MessageBox.confirm('是否停止 '+recName +' 在 '+schedules +' 的投放？\n','提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({
+                Message({
                         type: 'success',
                         message: '操作成功!'
                 });
             }).catch(() => {
-                this.$message({
+                Message({
                         type: 'info',
                         message: '已取消操作'
                 });
@@ -2160,7 +2160,7 @@ export default {
         //添加点位对话框确认按钮
         confirmAddPoint(){
             this.dialogAddPoint = false;
-            this.$message({
+            Message({
             type:'success',
             message:'操作成功!'
             })
@@ -2168,7 +2168,7 @@ export default {
         //添加点位对话框取消按钮
         cancelAddPoint(){
             this.dialogAddPoint = false;
-            this.$message({
+            Message({
                 type: 'info',
                 message: '已取消操作'
             });

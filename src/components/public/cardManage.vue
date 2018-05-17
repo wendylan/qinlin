@@ -224,10 +224,6 @@
 /*1920*/
 @media screen and (min-width: 1920px) {
 
-	.ad_index_container {
-		height: 838px;
-	}
-
 	.ad_index_panel li {
 		width: 295px;
 		height: 166px;

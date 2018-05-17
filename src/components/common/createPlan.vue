@@ -570,7 +570,7 @@
 </template>
 
 <script>
-import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox } from 'element-ui';
+import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message } from 'element-ui';
   export default {
 	name: "createPlan",
 	components:{
@@ -1059,7 +1059,7 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       },
       //step3确认修改
       handleClose(){
-        this.$message({
+        Message({
           message: '修改成功',
           type: 'success'
         });

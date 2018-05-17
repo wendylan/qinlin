@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip } from 'element-ui';
+import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip, MessageBox, Message } from 'element-ui';
   import api from '../../api/api'
   export default {
 	name: "mediaList",
@@ -250,19 +250,19 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
       //确认框
       confirmBox(e) {
         let Status = e.target.innerText;
-        this.$confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
+        MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
           //确定
-          this.$message({
+          Message({
             type: 'success',
             message: '成功更改状态'
           });
         }).catch(() => {
-          this.$message({
+          Message({
             type: 'info',
             message: '已取消操作'
           })
@@ -274,19 +274,19 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
 
       //删除
       deleteRow(index, rows) {
-        this.$confirm('你确定删除这条数据吗？', '提示', {
+        MessageBox.confirm('你确定删除这条数据吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
+          Message({
             type: 'success',
             message: '删除成功！'
           });
           //删除
           rows.splice(index, 1);
         }).catch(() => {
-          this.$message({
+          Message({
             type: 'info',
             message: '已取消删除'
           })

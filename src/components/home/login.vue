@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { Checkbox, MessageBox } from 'element-ui';
+import { Checkbox, MessageBox, Message } from 'element-ui';
   import utils from '../../js/utils.js';
   import commentFun from '../../js/commentFun.js'
   import api from '../../api/api'
@@ -157,7 +157,7 @@ import { Checkbox, MessageBox } from 'element-ui';
               showClose: false,
               confirmButtonText: '确定',
             });*/
-            this.$message({
+            Message({
               message: '用户名或密码错误！',
               type: 'warning'
             })

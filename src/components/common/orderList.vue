@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem,Tooltip, Button, Input } from 'element-ui';
+import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem,Tooltip, Button, Input, MessageBox, Message } from 'element-ui';
   export default {
 	name: "projectList",
 	components:{
@@ -248,12 +248,12 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
           inputPattern:  /^.{1,100}$/,
           inputErrorMessage: '监控备注超过100字,请缩减'
         }).then(() => {
-          this.$message({
+          Message({
             type: 'success',
             message: '监控备注输入成功'
           });
         }).catch(() => {
-          this.$message({
+          Message({
             type: 'info',
             message: '取消输入'
           });
@@ -262,19 +262,19 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
 
       confirmBox1(){
         console.log(this);
-        this.$confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？','提示',{
+        MessageBox.confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？','提示',{
           confirmButtonText:'是',
           cancelButtonText:'否',
           dangerouslyUseHTMLString: true,
           type:'warning'
         }).then(()=>{
           //确定
-          this.$message({
+          Message({
             type:'success',
             message:'操作成功'
           });
         }).catch(()=>{
-          this.$message({
+          Message({
             type:'info',
             message:'已取消操作'
           })

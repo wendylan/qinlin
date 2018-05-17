@@ -215,7 +215,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox } from 'element-ui';
+import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox, Message } from 'element-ui';
   import api from '../../api/api'
   export default {
 	name: "mediaInput",
@@ -476,7 +476,7 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
           MessageBox.alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
             confirmButtonText: '确定',
             callback: action => {
-              this.$message({
+              Message({
                 type: 'info',
                 message: `action: ${ action }`
               });
@@ -605,11 +605,11 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         const isLt1M = file.size / 1024 / 1024 < 1;
 
         if (!isIMAGE) {
-          this.$message.error('只能上传jpg/png图片!');
+          Message.error('只能上传jpg/png图片!');
           return false;
         }
         if (!isLt1M) {
-          this.$message.error('上传文件大小不能超过 1MB!');
+          Message.error('上传文件大小不能超过 1MB!');
           return false;
         }
         let that = this
@@ -625,11 +625,11 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         const isLt1M = file.size / 1024 / 1024 < 1;
 
         if (!isIMAGE) {
-          this.$message.error('只能上传jpg/png图片!');
+          Message.error('只能上传jpg/png图片!');
           return false;
         }
         if (!isLt1M) {
-          this.$message.error('上传文件大小不能超过 1MB!');
+          Message.error('上传文件大小不能超过 1MB!');
           return false;
         }
         let that = this

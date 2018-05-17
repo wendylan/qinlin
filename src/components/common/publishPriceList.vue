@@ -97,7 +97,7 @@
   </div>
 </template>
 <script>
-import { Button, Select, Option, Input, Table, TableColumn} from 'element-ui';
+import { Button, Select, Option, Input, Table, TableColumn, MessageBox, Message} from 'element-ui';
 export default {
 	name: "publishPriceList",
 	components:{
@@ -185,19 +185,19 @@ export default {
 		},
 		//删除
 		deleteRow(index, rows){
-			this.$confirm('确定要删除这条数据吗？', '提示', {
+			MessageBox.confirm('确定要删除这条数据吗？', '提示', {
 				confirmButtonText:'确定',
 				cancelButtonText:'取消',
 				type:'warning'
 			}).then(()=>{
 				//请求？
 				rows.splice(index, 1);
-				this.$message({
+				Message({
 					type:'success',
 					message:'删除成功！'
 				});
 			}).catch(()=>{
-				this.$message({
+				Message({
 					type:'info',
 					message:'已取消删除'
 				})

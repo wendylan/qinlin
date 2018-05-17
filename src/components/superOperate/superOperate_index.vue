@@ -746,7 +746,7 @@ export default {
     }
 
     .box4{
-        height: 504px;
+        /* height: 504px; */
     }
 
     .box4 h3 {
@@ -776,7 +776,7 @@ export default {
 
 
     .ad_index_container {
-        height: 1888px;
+        /* height: 1888px; */
     }
 
     .ad_index_panel li {
@@ -848,7 +848,7 @@ export default {
         }
 
         .ad_index_container {
-            height: 1441px;
+            /* height: 1441px; */
         }
 
         .ad_index_panel li + li {

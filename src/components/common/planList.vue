@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog } from 'element-ui';
+import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message } from 'element-ui';
 export default {
 	name: "projectList",
 	components:{
@@ -272,7 +272,7 @@ export default {
 			this.dialogVisible = true;
 			// var Status = e.target.innerText;
 
-			// this.$confirm(`<el-checkbox-group v-model="cityChoose">
+			// MessageBox.confirm(`<el-checkbox-group v-model="cityChoose">
 			//                   <el-checkbox label="广州市" border></el-checkbox>
 			//                   <el-checkbox label="深圳市" border></el-checkbox>
 			//               </el-checkbox-group>`, '提示', {
@@ -282,12 +282,12 @@ export default {
 			//   type: 'warning'
 			// }).then(() => {
 			//   //确定
-			//   this.$message({
+			//   Message({
 			//     type: 'success',
 			//     message: '成功更改状态'
 			//   });
 			// }).catch(() => {
-			//   this.$message({
+			//   Message({
 			//     type: 'info',
 			//     message: '已取消操作'
 			//   })
@@ -295,14 +295,14 @@ export default {
 		},
 		cancelLock(){
 			this.dialogVisible = false;
-			this.$message({
+			Message({
 				type: 'info',
 				message: '已取消操作'
 			});
 		},
 		confirmLock(){
 			this.dialogVisible = false;
-			this.$message({
+			Message({
 				type: 'success',
 				message: '成功更改状态'
 			});

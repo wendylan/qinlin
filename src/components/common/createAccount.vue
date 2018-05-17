@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Input, Button, MessageBox } from 'element-ui';
+import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message } from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -154,7 +154,7 @@ export default {
       //  console.log('this.accountForm.phone',this.accountForm.phone)
       //  if(this.accountForm.phone != '' && this.accountForm.phone != null){
           if(!(/^1[34578]\d{9}$/.test(this.accountForm.phone))){
-            this.$message({
+            Message({
               message: '手机号码有误，请重填！',
               type: 'warning'
             })
@@ -165,7 +165,7 @@ export default {
         if(this.accountForm.email != '' && this.accountForm.email != null){
           console.log('邮箱',this.accountForm.email)
           if(szReg.test(this.accountForm.email)){
-            this.$message({
+            Message({
               message: '邮箱格式不正确，请修改！',
               type: 'warning'
             })
