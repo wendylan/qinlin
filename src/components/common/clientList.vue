@@ -108,8 +108,17 @@ import api from '../../api/api.js';
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
+import { Row, Input, Button, Table, TableColumn, DatePicker } from 'element-ui';
 export default {
 	name: "customList",
+	components:{
+		elRow: Row,
+		elInput: Input,
+		elButton: Button,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDatePicker: DatePicker,
+	},
 	data() {
 		return {
 			keyword: '',

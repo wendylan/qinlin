@@ -67,8 +67,8 @@
 								</el-form-item>
 								<el-form-item label="公司品牌:" prop="cBrand" class="tags">
 									<el-tag
-										:key="tag"
-										v-for="tag in companyTags"
+										v-for="(tag, index) in companyTags"
+										:key="index"
 										closable
 										:disable-transitions="false"
 										@close="handleClose(tag)">
@@ -128,8 +128,20 @@
 import api from '../../api/api.js';
 // import areaToText from '../../commonFun/areaToText.js';
 import industryToText from '../../commonFun/industryToText.js';
+import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
 export default {
 	name: "createClient",
+	components:{
+		elForm: Form,
+		elFormItem: FormItem,
+		elInput: Input,
+		elButton: Button,
+		elCascader: Cascader,
+		elSelect: Select,
+		elOption: Option,
+		elAutocomplete: Autocomplete,
+		elTag: Tag,
+	},
 	data() {
 		var validateEmail=(rule, value, callback)=>{
 			var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
@@ -148,7 +160,7 @@ export default {
 			// 搜索后获得到的公司
 			allCompany: [],
 			//tags
-			companyTags: ['亲邻团购'],
+			companyTags: [],
 			inputVisible: false,
 			inputValue: '',
 			//表单
@@ -349,6 +361,8 @@ export default {
 			// 	alert(2);
 			// });
 			if(this.companyForm.cID){
+				console.log(this.companyTags);
+				console.log(this.companyForm.cBrand);
 				if(this.companyForm.cBrand != this.companyTags.join(',')){
 					api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
 						console.log(res);
@@ -399,7 +413,7 @@ export default {
 		handleInputConfirm() {
 			let inputValue = this.inputValue;
 			if (inputValue) {
-				this.companyTags.push(inputValue);
+				this.companyTags.push({bID: '', bTitle: inputValue});
 			}
 			this.inputVisible = false;
 			this.inputValue = '';

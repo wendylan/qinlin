@@ -55,8 +55,12 @@
 import api from '../../api/api.js';
 // 行业转换为中文
 import industryToText from '../../commonFun/industryToText.js';
+import { Button } from 'element-ui';
 export default {
 	name: "clientDetail",
+	components:{
+		elButton: Button,
+	},
 	data() {
 		return {
 			userInfo: {
