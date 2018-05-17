@@ -162,9 +162,23 @@
 </template>
 
 <script>
+import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip } from 'element-ui';
   import api from '../../api/api'
   export default {
-    name: "mediaList",
+	name: "mediaList",
+	components:{
+		elForm: Form,
+		elFormItem: FormItem,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDropdown: Dropdown,
+		elDropdownMenu: DropdownMenu,
+		elDropdownItem: DropdownItem,
+		elInput: Input,
+		elRow: Row,
+		elButton: Button,
+		elTooltip: Tooltip,
+	},
     data() {
       return {
         haveDetail:true,

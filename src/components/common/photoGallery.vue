@@ -1605,8 +1605,25 @@
 </template>
 
 <script>
+import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane, Select, Option, Cascader, DatePicker, Pagination } from 'element-ui';
   export default {
-    name: "PhotoGallery",
+	name: "PhotoGallery",
+	components:{
+		elButton: Button,
+		elInput: Input,
+		elDialog: Dialog,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elRow: Row,
+		elTooltip: Tooltip,
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elSelect: Select,
+		elOption: Option,
+		elCascader: Cascader,
+		elDatePicker: DatePicker,
+		elPagination: Pagination,
+	},
     data() {
       return {
         //缩略图

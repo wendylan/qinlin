@@ -459,190 +459,206 @@
 </template>
 
 <script>
-	export default {
-		name: "projectList",
-		data() {
-			return {
-				dialogVisible: false,
-				cityChoose:[],
-				cDate: '',
-				search: '',
-				//表格
-				planList: [{
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1):深圳市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货一月投放方案1.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'未投放',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'预锁中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'未投放',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}, {
-					planName: '新世界百货二月投放方案2.0',
-					clientName: '北京通瑞万华置业北京通瑞万华置业',
-					brandName: '亲邻科技',
-					planPrice: '￥3,2000,000',
-					owner:'李总大人',
-					city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
-					createDate:'2018.08.30',
-					Status:'进行中',
-				}]
-			}
-		},
-		methods: {
-			//筛选
-			filterStatus(value, row) {
-				return row.Status === value;
-			},
-			//状态
-			showStatus(){
-				console.log(this.planList.Status);
-			},
-			//确认框
-			preload(e) {
-				this.dialogVisible = true;
-				// var Status = e.target.innerText;
-
-				// this.$confirm(`<el-checkbox-group v-model="cityChoose">
-				//                   <el-checkbox label="广州市" border></el-checkbox>
-				//                   <el-checkbox label="深圳市" border></el-checkbox>
-				//               </el-checkbox-group>`, '提示', {
-				//   confirmButtonText: '确定',
-				//   cancelButtonText: '取消',
-				//   dangerouslyUseHTMLString: true,
-				//   type: 'warning'
-				// }).then(() => {
-				//   //确定
-				//   this.$message({
-				//     type: 'success',
-				//     message: '成功更改状态'
-				//   });
-				// }).catch(() => {
-				//   this.$message({
-				//     type: 'info',
-				//     message: '已取消操作'
-				//   })
-				// })
-			},
-			cancelLock(){
-				this.dialogVisible = false;
-				this.$message({
-					type: 'info',
-					message: '已取消操作'
-				});
-			},
-			confirmLock(){
-				this.dialogVisible = false;
-				this.$message({
-					type: 'success',
-					message: '成功更改状态'
-				});
-			},
-		},
-		//实时计算  数据发生变化时执行相应函数
-		computed:{
-			searchDate:function () {
-				//输入框传入的值
-				var search = this.search;
-				if(search){
-					//filter  数组的方法，返回回调函数中满足条件的值
-					return this.planList.filter(function (plan) {
-						//Object.keys(car) 返回一个数组，如果传入对象，返回对象的属性名集合
-						//some() 数组的方法 用于检测数组中的元素是否满足指定条件，参数必需是函数。
-						return Object.keys(plan).some(function (key) {
-							//String 把对象的值转化成字符串
-							//toLowerCase()字符串转换成小写
-							//indexOf(search)>-1 输入框里输入的筛选内容存在符合条件的数据
-							return String(plan[key]).toLowerCase().indexOf(search) > -1
-						})
-					})
-				}
-				return this.planList;
-			}
+import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog } from 'element-ui';
+export default {
+	name: "projectList",
+	components:{
+		elButton: Button,
+		elCheckboxGroup: CheckboxGroup,
+		elCheckbox: Checkbox,
+		elInput: Input,
+		elDropdown: Dropdown,
+		elDropdownItem: DropdownItem,
+		elDropdownMenu: DropdownMenu,
+		elRow: Row,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDatePicker: DatePicker,
+		elTooltip: Tooltip,
+		elDialog: Dialog,
+	},
+	data() {
+		return {
+			dialogVisible: false,
+			cityChoose:[],
+			cDate: '',
+			search: '',
+			//表格
+			planList: [{
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1):深圳市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货一月投放方案1.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'未投放',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'预锁中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'未投放',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}, {
+				planName: '新世界百货二月投放方案2.0',
+				clientName: '北京通瑞万华置业北京通瑞万华置业',
+				brandName: '亲邻科技',
+				planPrice: '￥3,2000,000',
+				owner:'李总大人',
+				city:'广州市(300面,12周10天,2017.09.10-2017.10.1)',
+				createDate:'2018.08.30',
+				Status:'进行中',
+			}]
 		}
-	}
+	},
+	methods: {
+		//筛选
+		filterStatus(value, row) {
+			return row.Status === value;
+		},
+		//状态
+		showStatus(){
+			console.log(this.planList.Status);
+		},
+		//确认框
+		preload(e) {
+			this.dialogVisible = true;
+			// var Status = e.target.innerText;
 
-	$(function (){
-		window.onresize = function(){
-			if($(window.width>=1366)){
-				$('.el-table-filter').css({
-					left:'1145'
+			// this.$confirm(`<el-checkbox-group v-model="cityChoose">
+			//                   <el-checkbox label="广州市" border></el-checkbox>
+			//                   <el-checkbox label="深圳市" border></el-checkbox>
+			//               </el-checkbox-group>`, '提示', {
+			//   confirmButtonText: '确定',
+			//   cancelButtonText: '取消',
+			//   dangerouslyUseHTMLString: true,
+			//   type: 'warning'
+			// }).then(() => {
+			//   //确定
+			//   this.$message({
+			//     type: 'success',
+			//     message: '成功更改状态'
+			//   });
+			// }).catch(() => {
+			//   this.$message({
+			//     type: 'info',
+			//     message: '已取消操作'
+			//   })
+			// })
+		},
+		cancelLock(){
+			this.dialogVisible = false;
+			this.$message({
+				type: 'info',
+				message: '已取消操作'
+			});
+		},
+		confirmLock(){
+			this.dialogVisible = false;
+			this.$message({
+				type: 'success',
+				message: '成功更改状态'
+			});
+		},
+	},
+	//实时计算  数据发生变化时执行相应函数
+	computed:{
+		searchDate:function () {
+			//输入框传入的值
+			var search = this.search;
+			if(search){
+				//filter  数组的方法，返回回调函数中满足条件的值
+				return this.planList.filter(function (plan) {
+					//Object.keys(car) 返回一个数组，如果传入对象，返回对象的属性名集合
+					//some() 数组的方法 用于检测数组中的元素是否满足指定条件，参数必需是函数。
+					return Object.keys(plan).some(function (key) {
+						//String 把对象的值转化成字符串
+						//toLowerCase()字符串转换成小写
+						//indexOf(search)>-1 输入框里输入的筛选内容存在符合条件的数据
+						return String(plan[key]).toLowerCase().indexOf(search) > -1
+					})
 				})
 			}
-		};
-	})
+			return this.planList;
+		}
+	}
+}
+
+$(function (){
+	window.onresize = function(){
+		if($(window.width>=1366)){
+			$('.el-table-filter').css({
+				left:'1145'
+			})
+		}
+	};
+})
 </script>
 
 <style scoped>

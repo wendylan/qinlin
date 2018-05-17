@@ -67,137 +67,144 @@
 </template>
 
 <script>
-	export default {
-		name: "ADlimit",
-		data() {
-			return {
-				/*showInput:false,
+import { Table, TableColumn, Input, Button } from 'element-ui';
+export default {
+	name: "ADlimit",
+	components: {
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elInput: Input,
+		elButton: Button,
+	},
+	data() {
+		return {
+			/*showInput:false,
+			changeBtn:false,
+			typeUpdate:'',
+			detailUpdate:'',*/
+			//表格
+			ADlist: [{
+				limitType: '地产',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
 				changeBtn:false,
 				typeUpdate:'',
-				detailUpdate:'',*/
-				//表格
-				ADlist: [{
-					limitType: '地产',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
-				}, {
-					limitType: '医疗',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+				detailUpdate:'',
+			}, {
+				limitType: '医疗',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}, {
-					limitType: '美容',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+			}, {
+				limitType: '美容',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}, {
-					limitType: '餐饮',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+			}, {
+				limitType: '餐饮',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}, {
-					limitType: '食品',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+			}, {
+				limitType: '食品',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}, {
-					limitType: '金融',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+			}, {
+				limitType: '金融',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}, {
-					limitType: '汽车',
-					detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
-					createDate: '2017.09.09',
-					showInput:false,
-					changeBtn:false,
-					typeUpdate:'',
-					detailUpdate:'',
+			}, {
+				limitType: '汽车',
+				detail: '地产指在一定的土地所有制关系下作为财产的土地。简单的说，就是在法律上有明确的权属关系的土地财产',
+				createDate: '2017.09.09',
+				showInput:false,
+				changeBtn:false,
+				typeUpdate:'',
+				detailUpdate:'',
 
-				}]
-			}
-		},
-		methods:{
-			//删除
-			deleteRow(index, rows){
-				this.$confirm('确定要删除这条数据吗？', '提示', {
-					confirmButtonText:'确定',
-					cancelButtonText:'取消',
-					type:'warning'
-				}).then(()=>{
-					//后台
-					rows.splice(index, 1);
-					this.$message({
-						type:'success',
-						message:'删除成功！'
-					});
-				}).catch(()=>{
-					this.$message({
-						type:'info',
-						message:'已取消删除'
-					})
-				})
-			},
-			//编辑
-			editAD(index){
-				this.ADlist[index].typeUpdate = this.ADlist[index].limitType;
-				this.ADlist[index].detailUpdate = this.ADlist[index].detail;
-				//切换输入框和操作类型的显示
-				this.ADlist[index].showInput = !this.ADlist[index].showInput;
-				this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
-			},
-			//保存
-			saveAD(index){
-				//数据保存到后台然后重新渲染
-				/* this.$http.get('/user?ID=12345')
-				.then(function(res){
-					console.log(res);
-				})
-				.catch(function(err){
-					console.log(err);
-				});*/
-
-				//前端显示
-				this.ADlist[index].limitType = this.ADlist[index].typeUpdate;
-				this.ADlist[index].detail = this.ADlist[index].detailUpdate;
-
-				//切换输入框和操作类型的显示
-				this.ADlist[index].showInput = !this.ADlist[index].showInput;
-				this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
-			},
-			//取消
-			cancelAD(index){
-				//切换输入框和操作类型的显示
-				this.ADlist[index].showInput = !this.ADlist[index].showInput;
-				this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
-			}
-
+			}]
 		}
+	},
+	methods:{
+		//删除
+		deleteRow(index, rows){
+			this.$confirm('确定要删除这条数据吗？', '提示', {
+				confirmButtonText:'确定',
+				cancelButtonText:'取消',
+				type:'warning'
+			}).then(()=>{
+				//后台
+				rows.splice(index, 1);
+				this.$message({
+					type:'success',
+					message:'删除成功！'
+				});
+			}).catch(()=>{
+				this.$message({
+					type:'info',
+					message:'已取消删除'
+				})
+			})
+		},
+		//编辑
+		editAD(index){
+			this.ADlist[index].typeUpdate = this.ADlist[index].limitType;
+			this.ADlist[index].detailUpdate = this.ADlist[index].detail;
+			//切换输入框和操作类型的显示
+			this.ADlist[index].showInput = !this.ADlist[index].showInput;
+			this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
+		},
+		//保存
+		saveAD(index){
+			//数据保存到后台然后重新渲染
+			/* this.$http.get('/user?ID=12345')
+			.then(function(res){
+				console.log(res);
+			})
+			.catch(function(err){
+				console.log(err);
+			});*/
+
+			//前端显示
+			this.ADlist[index].limitType = this.ADlist[index].typeUpdate;
+			this.ADlist[index].detail = this.ADlist[index].detailUpdate;
+
+			//切换输入框和操作类型的显示
+			this.ADlist[index].showInput = !this.ADlist[index].showInput;
+			this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
+		},
+		//取消
+		cancelAD(index){
+			//切换输入框和操作类型的显示
+			this.ADlist[index].showInput = !this.ADlist[index].showInput;
+			this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
+		}
+
 	}
+}
 
 /* $(function () {
 	//编辑

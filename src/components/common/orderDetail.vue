@@ -1371,8 +1371,26 @@
 </template>
 
 <script>
+import { Dialog, Tabs, TabPane, Table, TableColumn, Input, Button, Upload, Select, Option, Checkbox, Card, Progress,Cascader, Pagination } from 'element-ui';
 export default {
-	name: "planDetail",
+    name: "planDetail",
+    components:{
+        elDialog: Dialog,
+        elTabs: Tabs,
+        elTabPane: TabPane,
+        elTable: Table,
+        elTableColumn: TableColumn,
+        elInput: Input,
+        elButton: Button,
+        elUpload: Upload,
+        elSelect: Select,
+        elOption: Option,
+        elCheckbox: Checkbox,
+        elCard: Card,
+        elProgress: Progress,
+        elCascader: Cascader,
+        elPagination: Pagination,
+    },
 	data() {
 		return {
 			isShow1:false,

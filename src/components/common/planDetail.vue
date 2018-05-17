@@ -224,8 +224,18 @@
 </template>
 
 <script>
+import { Tabs, TabPane, Button, Table, TableColumn, Form, FormItem } from 'element-ui';
   export default {
-    name: "planDetail",
+	name: "planDetail",
+	components:{
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elButton: Button,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elForm: Form,
+		elFormItem: FormItem,
+	},
     data() {
       return {
         //监播备注

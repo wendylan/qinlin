@@ -96,9 +96,9 @@
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                 <!-- <el-dialog :visible.sync="dialogVisible">
+                 <el-dialog :visible.sync="dialogVisible">
                     <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>-->
+                  </el-dialog>
                 </div>
               </el-form-item>
             </el-form>
@@ -215,9 +215,26 @@
 </template>
 
 <script>
+import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber } from 'element-ui';
   import api from '../../api/api'
   export default {
-    name: "mediaInput",
+	name: "mediaInput",
+	components:{
+		elForm: Form,
+		elFormItem: FormItem,
+		elSelect: Select,
+		elOption: Option,
+		elButton: Button,
+		elSelect: Select,
+		elOption: Option,
+		elInput: Input,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDatePicker: DatePicker,
+		elDialog: Dialog,
+		elUpload: Upload,
+		elInputNumber: InputNumber,
+	},
     data() {
       //资产编号
       var validateAssetId = (rule, value, callback) => {
@@ -429,9 +446,6 @@
         recFormImg:'', // 资源图片
         mediaFormImg:'',// 媒体图片
       };
-    },
-    components: {
-    //  MediaContent,
     },
     methods: {
       //新增媒体面板

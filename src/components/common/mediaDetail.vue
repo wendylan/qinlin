@@ -182,10 +182,10 @@
         </div>
 
         <div class="content_bottom_btn">
-          <button class="create">编辑</button>
-          <button class="cancel">
-            <router-link :to="{path:'/superOperate/mediaList'}">返回</router-link>
-          </button>
+          <el-button type="primary">编辑</el-button>
+          <el-button type="default">
+			<router-link :to="{path:'/superOperate/mediaList'}">返回</router-link>
+          </el-button>
         </div>
       </div>
     </div>
@@ -194,8 +194,16 @@
 <script>
     import api from '../../api/api'
     import commentFun from '../../js/commentFun'
+    import { Button, Table, TableColumn, Row, Col} from 'element-ui';
     export default {
-        name: "mediaDetail",
+		name: "mediaDetail",
+		components:{
+			elButton: Button,
+			elTable: Table,
+			elTableColumn: TableColumn,
+			elRow: Row,
+			elCol: Col
+		},
         data(){
           return{
             obj:{
@@ -428,7 +436,7 @@
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 178px;
+    margin-bottom: 50px;
   }
 
   .ad_ad .ad_adHeader{
@@ -551,32 +559,7 @@
 
   /*按钮*/
   .content_bottom_btn{
-    position: absolute;
-    bottom: -10.3%;
-    left: 45.3%;
-  }
-
-  .content_bottom_btn button{
-    width: 80px;
-    height: 34px;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .content_bottom_btn button.create{
-    background: #108EE9;
-    border-radius: 2px;
-    font-size: 14px;
-    border: none;
-    color: #ffffff;
-
-  }
-
-  .content_bottom_btn button.cancel{
-    background: #F5F6FA;
-    border: none;
-    font-size: 14px;
-    color: #979797;
+	  text-align: center;
   }
 
   .ad_index_footer{
@@ -603,11 +586,6 @@
       width:1284px;
     }
 
-    .content_bottom_btn{
-      position: absolute;
-      bottom: -66px;
-      left: 45.6%;
-    }
     .ad_mediaDetail_wrap{
       margin-bottom: 216px;
       position: relative;
@@ -657,11 +635,6 @@
     }
     .ad_ad .ad_adPanel .table_wrap{
       width:1764px;
-    }
-    .content_bottom_btn{
-      position: absolute;
-      bottom: -80px;
-      left: 46.7%;
     }
 
   }

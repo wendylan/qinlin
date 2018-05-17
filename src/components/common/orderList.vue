@@ -123,8 +123,21 @@
 </template>
 
 <script>
+import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem,Tooltip, Button, Input } from 'element-ui';
   export default {
-    name: "projectList",
+	name: "projectList",
+	components:{
+		elRow: Row,
+		elDatePicker: DatePicker,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDropdown: Dropdown,
+		elDropdownMenu: DropdownMenu,
+		elDropdownItem: DropdownItem,
+		elTooltip: Tooltip,
+		elButton: Button,
+		elInput: Input,
+	},
     data() {
       return {
         cDate: '',

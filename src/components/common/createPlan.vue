@@ -567,8 +567,27 @@
 </template>
 
 <script>
+import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox } from 'element-ui';
   export default {
-    name: "createPlan",
+	name: "createPlan",
+	components:{
+		elInput: Input,
+		elDialog: Dialog,
+		elButton: Button,
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDatePicker: DatePicker,
+		elSelect: Select,
+		elOption: Option,
+		elForm: Form,
+		elFormItem: FormItem,
+		elSteps: Steps,
+		elStep: Step,
+		elBadge: Badge,
+		elCheckbox: Checkbox
+	},
     data() {
       return {
         shopXY:{x:'',y:''},   // 动画起始坐标

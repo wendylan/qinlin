@@ -57,16 +57,25 @@
 				</div>
 			</div>
 			<div class="content_bottom_btn">
-				<button class="create" @click="submitForm('accountForm')">创建</button>
-				<button class="cancel">取消</button>
+				<el-button type="primary" @click="submitForm('accountForm')">创建</el-button>
+				<el-button type="default">取消</el-button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { Form, FormItem, Select, Option, Input, Button } from 'element-ui';
 export default {
 	name: "createClient",
+	components:{
+		elForm: Form,
+		elFormItem: FormItem,
+		elSelect: Select,
+		elOption: Option,
+		elInput: Input,
+		elButton: Button,
+	},
 	data() {
 		var validateBoss=(rule, value, callback)=>{
 
@@ -298,33 +307,8 @@ export default {
 	}
 	/*按钮*/
 	.content_bottom_btn {
-		position: absolute;
-		bottom: -100px;
-		margin-bottom: 22px;
-		left: 45.3%;
-	}
-
-	.content_bottom_btn button {
-		width: 80px;
-		height: 34px;
-		outline: none;
-		cursor: pointer;
-	}
-
-	.content_bottom_btn button.create {
-		background: #108EE9;
-		border-radius: 2px;
-		font-size: 14px;
-		border: none;
-		color: #ffffff;
-
-	}
-
-	.content_bottom_btn button.cancel {
-		background: #F5F6FA;
-		border: none;
-		font-size: 14px;
-		color: #979797;
+		margin-top: 50px;
+		text-align: center;
 	}
 
 	/*tags样式*/
@@ -446,16 +430,9 @@ export default {
 
 	/*1920*/
 	@media screen and (min-width: 1920px) {
-		.mediaMana_content_bottom .content_bottom_btn {
-		position: absolute;
-		bottom: -66px;
-		left: 896px;
-		}
-
 		.bottom{
-		height: 875px;
+			height: 875px;
 		}
-
 	}
 </style>
 
