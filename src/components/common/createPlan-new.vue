@@ -88,7 +88,7 @@
                 <div class="shopcar" @click="dialogTableVisible = true">
                   <el-badge :value="badgeNumber" class="item">
                     <!-- <img src="../../assets/images/shopCar.png" alt=""> -->
-					<span class="cart_box">
+                    <span class="cart_box">
 						<i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
 					</span>
                   </el-badge>
@@ -219,7 +219,6 @@
                 :data="planList"
                 :default-sort="{prop: 'recName', order: 'descending'}"
                 @select="handleSelect"
-                @select-all="handleSelectAll"
                 @cell-mouse-enter="mouseEnter"
                 style="width: 100%"
               >
@@ -565,10 +564,7 @@
     </div>
     <!--添加商品到购物车的动画效果-->
     <div class="shopAnimate" v-show="shoppingShow">
-      <img src="../../assets/images/select.png" alt="">
-    </div>
-    <div class="shopAnimateAll" v-show="selectAll">
-      <img  src="../../assets/images/allselect.png" alt="">
+      <img src="../../assets/images/110.png" alt="">
     </div>
   </div>
 </template>
@@ -599,7 +595,6 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       return {
         shopXY:{x:'',y:''},   // 动画起始坐标
         shoppingShow: false, //动画效果的显示隐藏
-        selectAll:false, // 是否全选
         badgeNumber: 11,    // 购物车数量
         bodyWidth: 1920,
         //step2修改弹框
@@ -946,7 +941,7 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       //  console.log('bodyWidth',that.bodyWidth)
       //  console.log('shopXY',that.shopXY.x)
       }
-     // let Right = document.body.offsetWidth - 170
+    //  let Right = document.body.offsetWidth - 170
       let Right = document.body.offsetWidth - 835
       this.shopXY.x = Right
   //    this.shopXY.x = this.bodyWidth - 170
@@ -984,35 +979,20 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       mouseEnter(row, column, cell, event){
         let e = event || window.event;
         this.shopXY.y =  e.clientY
-        // console.log('this.shopXY.y',this.shopXY.y)
       },
      // 行选中打钩
       handleSelect(selection,row){
-        /*  if(row.checkBox.B === false){
-            row.checkBox.A = !row.checkBox.A
-        }/*else{
-            row.checkBox.A = false
-          }
-        if(row.checkBox.A){
-           this.shopShow_hide()
-        }else{
-          row.checkBox.B = false
-          this.badgeNumber--
-        }*/
-        if(!row.checkBox.B && !row.checkBox.A){
-          row.checkBox.A = true
-          this.shopShow_hide()
-        }else if(row.checkBox.A || row.checkBox.B){
-          if(row.checkBox.A && row.checkBox.B){
-            this.badgeNumber -= 2
-          }else{
-            this.badgeNumber--
-          }
-          row.checkBox.A = false
-          row.checkBox.B = false
+        if(row.checkBox.B === false){
+          row.checkBox.A = !row.checkBox.A
         }else{
           row.checkBox.A = false
         }
+         if(row.checkBox.A){
+           this.shopShow_hide()
+         }else {
+            row.checkBox.B = false
+            this.badgeNumber--
+         }
       },
       // 选中A、B面的时候
       /*changeAB(row){
@@ -1035,10 +1015,9 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
         let check = row
         if(check.checkBox.A === true || check.checkBox.B === true){
           this.$refs.multipleTable.toggleRowSelection(check,true);
-          if(check.checkBox.A){
-             this.shopShow_hide()
-          }else{
-             this.badgeNumber--
+
+          if(check.checkBox.A === true && check.checkBox.B === false){
+            this.shopShow_hide()
           }
         }else{
           this.$refs.multipleTable.toggleRowSelection(check,false);
@@ -1049,42 +1028,12 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
         let check = row
         if(check.checkBox.A === true || check.checkBox.B === true){
           this.$refs.multipleTable.toggleRowSelection(check,true);
-          if(check.checkBox.B === true){
-            this.shopShow_hide()
-          }else{
-            this.badgeNumber--
+          if(check.checkBox.B === true && check.checkBox.A === false){
+           this.shopShow_hide()
           }
         }else{
           this.$refs.multipleTable.toggleRowSelection(check,false);
           this.badgeNumber--
-        }
-      },
-      //点击全选按钮
-      handleSelectAll(selection){
-        console.log(selection)
-        let number = 0    // 统计全选后取消的行数或A/B面
-        if(selection.length !== 0){
-          console.log('number:',number)
-          for(let i=0;i<selection.length;i++){
-            if(selection[i].checkBox.A){
-              console.log('a')
-              number++
-            }
-            if(selection[i].checkBox.B){
-              console.log('b')
-              number++
-            }
-            selection[i].checkBox.A = true
-            selection[i].checkBox.B = true
-          }
-          this.shopShow_hide('all',number)
-        //  this.badgeNumber += (this.planList.length *2) - number
-        }else{
-          for(let i=0;i<this.planList.length;i++){
-            this.planList[i].checkBox.A = false
-            this.planList[i].checkBox.B = false
-          }
-          this.badgeNumber -= (this.planList.length *2)
         }
       },
       // 点击确认框后显示详情
@@ -1110,7 +1059,7 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       },
       //step3确认修改
       handleClose(){
-        this.$message({
+        Message({
           message: '修改成功',
           type: 'success'
         });
@@ -1119,35 +1068,20 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
         this.changeAD = false;
       },
       //修改动画效果及显示隐藏
-      shopShow_hide(all,num){
+      shopShow_hide(){
+        this.shoppingShow = true
         let R = this.shopXY.x
         let T = this.shopXY.y
-        console.log('Right:',R ,',Top:',T)
         let shopAnimate = document.getElementsByClassName('shopAnimate')[0]
-        let animateAll = document.getElementsByClassName('shopAnimateAll')[0]
-
+        console.log(shopAnimate.offsetTop)
         shopAnimate.style.top = this.shopXY.y + 'px'
         shopAnimate.style.right = this.shopXY.x + 'px'
-
-        animateAll.style.top = this.shopXY.y + 'px'
-        animateAll.style.right = (this.shopXY.x - 140) + 'px'
         let that = this
-        if(all === 'all'){
-          this.selectAll = true
-           $(".shopAnimateAll").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
-              $(".shopAnimateAll").css({'top': T,'right': R,width:'790px',height:'386px'})
-              that.selectAll = false
-              that.badgeNumber += (that.planList.length *2) - num
-           //   that.badgeNumber++
-           })
-        }else{
-          this.shoppingShow = true
-          $(".shopAnimate").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
-            $(".shopAnimate").css({'top': T,'right': R,width:'650px',height:'49px'})
-            that.shoppingShow = false
-            that.badgeNumber++
-          })
-        }
+        $(".shopAnimate").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
+          $(".shopAnimate").css({'top': T,'right': R,width:'650px',height:'49px'})
+          that.shoppingShow = false
+          that.badgeNumber++
+        })
       },
     }
   }
@@ -1155,23 +1089,22 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 
 <style scoped>
 
-    .shopAnimate,.shopAnimateAll{
+    .shopAnimate{
+      font-weight: bold;
+      font-size: 18px;
       position: fixed;
       top: 574px;
       right:170px;
-    /*
-      font-weight: bold;
-      font-size: 18px;
-      width: 48px;
+    /*  width: 48px;
       height: 48px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 18px;
-      */
+      border-radius: 50%;*/
       width: auto;
       height: auto;
+      background: rgba(250,0,0,1);
       color: #fff;
       z-index: 1000;
+      text-align: center;
+      line-height: 18px;
     }
   /*面包屑导航*/
   .ad_mediaMana_nav {
@@ -1472,17 +1405,6 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
   .search-wrap {
     position: relative;
   }
-
-  .shopcar {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    position: fixed;
-    right: 29px;
-    top: 75px;
-    z-index: 999;
-  }
-
 	.cart_box{
 		color:#fff;
 		background:#108EE9;
@@ -1494,6 +1416,16 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 		text-align:center;
 		line-height:50px;
 	}
+  .shopcar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    position: fixed;
+    right: 29px;
+    top: 75px;
+    z-index: 999;
+  }
+
   /deep/ .shopcar .el-badge__content.is-fixed {
     position: absolute;
     top: 10px;

@@ -5,13 +5,13 @@
             <img src="../../assets/home/logo.png" alt="">
         </div>
         <ul class="ad_index_nav">
-            <li v-for="(item, index) in pageData" :key="index">
+            <li v-for="(item, index) in pageData" :key="index" @click="activeFun(index)" :class="liIndex === index ? 'active': ''">
                 <router-link :to="{path: item.path}" class="nav_fast">{{item.name}}</router-link>
             </li>
         </ul>
         <div class="handle clearfix">
             <a href="#" class="ad_index_user" @click="showbox">
-                <em>{{name}}</em><i class="uname fa fa-angle-down fa-lg"></i>
+                <em>{{userName}}</em><i class="uname fa fa-angle-down fa-lg"></i>
             </a>
             <div class="user_handel_list" v-if="showPassbox">
                 <ul>
@@ -28,29 +28,99 @@
     </div>
 </template>
 <script>
+    import index from "../../router";
+
     export default {
         props:{
             pageData:{
                 type: Array,
                 default: function () {
-                    return [{name: '首页', path: '/'}] 
+                    return [{name: '首页', path: '/'}]
                 }
             },
              // 右上方的名字显示
-			name : {
+			/*name : {
                 type : String,
                 default: 'test'
-			},
+			},*/
         },
         data() {
             return {
                 showPassbox: false,
+                liIndex:0,
+                userName:'',
             }
+        },
+        mounted(){
+            this.getPath()
+            this.userName = sessionStorage.getItem('real_name')
+            console.log(this.userName)
         },
         methods:{
             showbox(){
                 this.showPassbox = !this.showPassbox;
-            }
+            },
+            activeFun(index){
+        //      console.log(index)
+              this.liIndex = index
+            },
+            // 手动输入地址时，获取地址栏的url去判断导航高亮
+            getPath(){
+              console.log(this.$route.path)
+              let urlPath = this.$route.path
+        //      alert(urlPath.indexOf('superOperate'))
+              if(urlPath.indexOf('superOperate') !== -1){    //superOperate 超级运营
+            //    alert('superOperate')
+                console.log(urlPath.substring(13,urlPath.length)) //mediaList
+                let supermOp = urlPath.substring(13,urlPath.length)
+                if(supermOp === '/mediaList'){
+                  this.liIndex = 1
+                }else if(supermOp === '/clientList'){
+                  this.liIndex = 2
+                }else if(supermOp === '/planList'){
+                  this.liIndex = 3
+                }else if(supermOp === '/orderList'){
+                  this.liIndex = 4
+                }else if(supermOp === '/createAccount'){
+                  this.liIndex = 5
+                }else if(supermOp === '/ADlimitList'){
+                  this.liIndex = 6
+                }else if(supermOp === '/publishPriceList'){
+                  this.liIndex = 7
+                }else if(supermOp === '/photoGallery'){
+                  this.liIndex = 8
+                }
+              }else if(urlPath.indexOf('media') !== -1){    // media 媒介
+            //    alert('media')
+                let media = urlPath.substring(6,urlPath.length)
+                if(media === '/mediaList'){
+                  this.liIndex = 1
+                }else if(media === '/createPlan'){
+                  this.liIndex = 2
+                }else if(media === '/orderList'){
+                  this.liIndex = 3
+                }else if(media === '/createAccount'){
+                  this.liIndex = 4
+                }else if(media === '/publishPriceList'){
+                  this.liIndex = 5
+                }/*else if(super === '/'){
+                  this.liIndex = 6
+                }*/
+              }else if(urlPath.indexOf('sale') !== -1){  // sale 销售
+                let sale = urlPath.substring(5,urlPath.length)
+                if(sale === '/createClient'){
+                  this.liIndex = 1
+                }else if(sale === '/createPlan'){
+                  this.liIndex = 2
+                }else if(sale === '/orderList'){
+                  this.liIndex = 3
+                }else if(sale === '/publishPriceList'){
+                  this.liIndex = 4
+                }/*else if(sale === ''){
+                  this.liIndex = 5
+                }*/
+              }
+            },
         },
     }
 </script>
@@ -111,7 +181,10 @@ html{
     border-bottom: 3px solid #fff;
     color: #fff;
 }
-
+.ad_index_header .ad_index_nav li.active a{
+  border-bottom: 3px solid #fff;
+  color: #fff;
+}
 .ad_index_header .ad_index_user {
     float: right;
     margin-right: 29.2px;
@@ -127,7 +200,7 @@ html{
 
 .ad_index_header .ad_index_user em {
     font-size: 10px;
-    color: #999999;
+    color: #fff;
     margin-right: 4px;
 }
 
