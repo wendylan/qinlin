@@ -18,11 +18,11 @@
         <div class="loginInput" v-if="isActive">
           <div class="username">
             <input type="text" placeholder="账户" v-model="username">
-            <img src="../../assets/images/usericon.png" alt="">
+            <i class="fa fa-user-o"></i>
           </div>
           <div class="password">
             <input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
-            <img src="../../assets/images/passicon.png" alt="">
+			<i class="fa fa-lock"></i>
           </div>
           <div class="remeberUser">
             <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
@@ -57,12 +57,16 @@
 </template>
 
 <script>
+import { Checkbox, MessageBox } from 'element-ui';
   import utils from '../../js/utils.js';
   import commentFun from '../../js/commentFun.js'
   import api from '../../api/api'
 
   export default {
-    name: "login",
+	name: "login",
+	components:{
+		elCheckbox: Checkbox,
+	},
     data() {
 
       return {
@@ -110,15 +114,15 @@
         let name = this.username;
         let pass = this.password;
         if (name === '' || name == null) {
-          this.$alert('请输入正确的用户名', '用户登录', {
+          MessageBox.alert('请输入正确的用户名', '用户登录', {
             showClose: false,
             confirmButtonText: '确定',
           });
           return;
         } else if (pass === '' || pass == null) {
-          this.$alert('请输入正确的密码', '用户登录', {
+          MessageBox.alert('请输入正确的密码', '用户登录', {
             showClose: false,
-            confirmButtonText: '确定',
+            confirmButtonText: '确定',	
           });
           return;
         }
@@ -149,7 +153,7 @@
 			
 			this.getIndustry();
           } else {
-           /* this.$alert('用户名或密码错误,请重新输入', '用户登录', {
+           /* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
               showClose: false,
               confirmButtonText: '确定',
             });*/
@@ -405,11 +409,12 @@
     margin-bottom: 24px;
   }
 
-  .loginInput img {
+  .loginInput i {
     position: absolute;
     left: 10px;
     top: 13px;
     width: 12px;
+	color: #999999;
   }
 
   input::placeholder {

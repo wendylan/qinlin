@@ -215,7 +215,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber } from 'element-ui';
+import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox } from 'element-ui';
   import api from '../../api/api'
   export default {
 	name: "mediaInput",
@@ -473,7 +473,7 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         if(this.titleIndex < 5){
           this.arrMedia.push(mediaArr[0]);
         }else{
-          this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
+          MessageBox.alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
             confirmButtonText: '确定',
             callback: action => {
               this.$message({

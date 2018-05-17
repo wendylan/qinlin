@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Input, Button } from 'element-ui';
+import { Form, FormItem, Select, Option, Input, Button, MessageBox } from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -204,7 +204,7 @@ export default {
           console.log(res)
           let data = res.data
           this.resetForm()
-          this.$alert(data.MSG+'<br>'+'用户ID：'+data.uID, '注册用户', {
+          MessageBox.alert(data.MSG+'<br>'+'用户ID：'+data.uID, '注册用户', {
           showClose: false,
           dangerouslyUseHTMLString: true,
           confirmButtonText: '确定',
