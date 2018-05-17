@@ -10,7 +10,6 @@
                     <div class="plan-title">
                         <h4>
                             <img src="../../assets/mediaMana/planlogo.png" alt="">珠江帝景地产三月投放
-                            <!--<p>{{cid}}<img src="../../assets/home/bi.png" alt="" @click="changeCID = true"></p>-->
                             <p>{{cid}}<i class="el-icon-edit" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i></p>
                         </h4>
                         <!--修改合同号对话框-->
