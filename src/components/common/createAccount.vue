@@ -66,6 +66,7 @@
 
 <script>
 import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message } from 'element-ui';
+import api from '../../api/api'
 export default {
 	name: "createClient",
 	components:{

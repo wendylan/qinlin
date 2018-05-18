@@ -67,12 +67,17 @@
 								</el-form-item>
 								<el-form-item label="公司品牌:" prop="cBrand" class="tags">
 									<el-tag
+										v-for="tag in oldBrandTags"
+										:key="tag.bID">
+										{{tag.bTitle}}
+									</el-tag>
+									<el-tag
 										v-for="(tag, index) in companyTags"
 										:key="index"
 										closable
 										:disable-transitions="false"
 										@close="handleClose(tag)">
-										{{tag.bTitle}}
+										{{tag}}
 									</el-tag>
 									<el-input
 										style="width: 90px"
@@ -159,6 +164,8 @@ export default {
 			bussiness: [],
 			// 搜索后获得到的公司
 			allCompany: [],
+			// 公司所对应的原来的品牌
+			oldBrandTags: [],
 			//tags
 			companyTags: [],
 			inputVisible: false,
@@ -204,19 +211,19 @@ export default {
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
 				],
 				phone: [
-					{required: true, message: '电话号码不能为空', trigger: 'blur'},
+					{required: true, message: '手机号码不能为空', trigger: 'blur'},
 					{ type:'number', message:'只能输入数字', trigger:'blur'},
 				],
 				rid: [],
 				email: [
 					{ validator: validateEmail, trigger:'blur'},
 				],
-				telphone: [
-					{ type:'number', message:'只能输入数字', trigger:'change'},
-				],
-				division: [
-					{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
-				],
+				// telphone: [
+				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
+				// ],
+				// division: [
+				// 	{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
+				// ],
 			},
 			companyRules: {
 				cName: [
@@ -294,45 +301,24 @@ export default {
 		handleSelect(item) {
 			console.log(item);
 			this.companyForm.cName = item.cName;
-			this.companyForm.cBrand = item.cBrand;
 			this.companyForm.cAddress = item.cAddress;
 			this.companyForm.cRemark = item.cRemark;
+			// 获取公司的中文名称
 			api.getApi('/ShowRegion', {rid: item.rID}).then(res => {
-				// console.log(res.data);
+				console.log(res.data);
 				this.companyForm.rName = res.data[0].rName;
 			});
+			// 获取公司原有的品牌信息
 			api.getApi('/GetBrand', {cid: item.cID}).then(res => {
 				console.log(res.data);
-				// this.companyForm.cBrand = res.data[0].rName;
-				this.companyTags = res.data;
+				this.oldBrandTags = res.data;
 			});
-
-			// // 获取行业信息
-			// let arr = JSON.parse(sessionStorage.getItem('industry'));
-			// let str = '';
-			// let piid = '';
-			// for(let data of arr){
-			// 	if(item.iID == data.iID){
-			// 		str = data.iName;
-			// 		piid = data.piID;
-			// 		break;
-			// 	}
-			// }
-			// console.log(piid);
-			// console.log(str);
-			// for(let data of arr){
-			// 	if(piid == data.iID){
-			// 		str = data.iName +'/'+str;
-			// 		break;
-			// 	}
-			// }
-			let text = industryToText.getText(item.iID);
 			// 公司信息所在行业
+			let text = industryToText.getText(item.iID);
 			this.$set(this.companyForm, 'iName', text);
 
-			// this.companyForm.rID = item.rID;
+			// 保存cID以便在创建客户的时候进行使用
 			this.companyForm.cID = item.cID;
-			// console.log(item);
 			this.isFill = true;
 		},
 		// 创建
@@ -350,33 +336,30 @@ export default {
 			// 	puid: 2
 			// };
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
-			// api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
-			// api.getApi('/AddBrand', {bt: this.companyTags, cid: 1}).then(res => {
-			// 	console.log(res);
-			// 	alert(1);
-			// 	alert(res.data);
-			// });
-			// api.getApi('/GetBrand', {cid: 1}).then(res => {
-			// 	console.log(res);
-			// 	alert(2);
-			// });
 			if(this.companyForm.cID){
-				console.log(this.companyTags);
-				console.log(this.companyForm.cBrand);
-				if(this.companyForm.cBrand != this.companyTags.join(',')){
-					api.getApi('/AddBrand', {bt: this.companyTags.join(','), cid: this.companyForm.cID}).then(res => {
-						console.log(res);
-						alert(1);
-						alert(res.data);
-					});
+				// 如果有新填入品牌则新增品牌
+				if(this.companyTags.length){
+					for(let brand of this.companyTags){
+						api.getApi('/AddBrand', {bt: brand, cid: this.companyForm.cID}).then(res => {
+							this.oldBrandTags.push(res.data);
+						});
+					}
+					this.companyTags = [];
 				}
-				// 注册用户
-				this.clientForm.puid = sessionStorage.getItem('puid');
-				this.clientForm.uwho = this.companyForm.cID;
-				api.postApi('/RegUser', this.clientForm).then(res => {
-					console.log(res);
-				}).catch(res =>{
-					console.log(res);
+				this.$refs['clientForm'].validate((valid) => {
+					if (valid) {
+						// 注册用户
+						this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
+						this.clientForm.uwho = this.companyForm.cID;
+						api.postApi('/RegUser', this.clientForm).then(res => {
+							console.log(res);
+						}).catch(res =>{
+							console.log(res);
+						});
+					} else {
+						console.log('error submit!!');
+						return false;
+					}
 				});
 
 			}else{
@@ -384,7 +367,7 @@ export default {
 				api.postApi('/addCompanyInfo', companyForm).then(res => {
 					console.log(res.data);
 					// 注册用户
-					this.clientForm.puid = sessionStorage.getItem('puid');
+					this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
 					this.clientForm.uwho = res.data.cid;
 					api.postApi('/RegUser', this.clientForm).then(res => {
 						console.log(res);
@@ -413,7 +396,7 @@ export default {
 		handleInputConfirm() {
 			let inputValue = this.inputValue;
 			if (inputValue) {
-				this.companyTags.push({bID: '', bTitle: inputValue});
+				this.companyTags.push(inputValue);
 			}
 			this.inputVisible = false;
 			this.inputValue = '';

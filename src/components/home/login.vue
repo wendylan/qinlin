@@ -142,6 +142,7 @@ import { Checkbox, MessageBox, Message } from 'element-ui';
           console.log(res.data);
           if (!userMsg.SysCode) {
             sessionStorage.setItem("real_name", userMsg.realName);//userMsg.realName
+            sessionStorage.setItem("session_data", JSON.stringify(userMsg));//userMsg.realName
             if (userMsg.uType === 'SM') {
               //sessionStorage.getItem("real_name") 获取session的值
               this.$router.push('/superOperate')
