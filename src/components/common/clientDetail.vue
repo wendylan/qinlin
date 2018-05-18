@@ -95,7 +95,7 @@ export default {
 		// 获取公司的基本信息
 		getInitData(){
 			// 获取用户信息
-			let initdata = JSON.parse(sessionStorage.getItem('data'));
+			let initdata = JSON.parse(sessionStorage.getItem('clientDetail_data'));
 			// 获取行业信息
 			let arr = JSON.parse(sessionStorage.getItem('industry'));
 			if(initdata){

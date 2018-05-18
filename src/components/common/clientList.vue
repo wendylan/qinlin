@@ -173,7 +173,7 @@ export default {
 		},
 		// 查看按钮
 		showDetail(data){
-			sessionStorage.setItem('data', JSON.stringify(data));
+			sessionStorage.setItem('clientDetail_data', JSON.stringify(data));
 			this.$router.push('./clientDetail');
 		},
 		//筛选
