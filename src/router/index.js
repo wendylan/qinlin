@@ -25,6 +25,7 @@ import operateCommon from '../components/operate/operate_common.vue';
 //销售
 import saleIndex from '../components/sale/sale_index.vue';
 import createClient from '../components/sale/createClient.vue';
+import editClient from '../components/sale/editClient.vue';
 import saleCommon from '../components/sale/sale_common.vue';
 //媒介
 import mediaIndex from '../components/media/media_index.vue';
@@ -107,6 +108,7 @@ export default new Router({
 			children: [
 				{path: '/sale', component: saleIndex},
 				{path: '/sale/createClient',  component: createClient},
+				{path: '/sale/editClient',  component: editClient},
 				{path: '/sale/clientList',  component: clientList},
 				{path: '/sale/planList',  component: planList},
 				{path: '/sale/publishPriceList', component: publishPriceList},

@@ -63,6 +63,7 @@ export default {
 	},
 	data() {
 		return {
+			role: '',
 			userInfo: {
 				realName: '',
 				email: '',
@@ -104,6 +105,7 @@ export default {
 					cid: initdata.uWho,
 					uid: initdata.uID
 				}).then(res => {
+					console.log(res.data);
 					this.companyInfo = res.data;
 					// 行业中文
 					let text = industryToText.getText(res.data.iID);
@@ -117,6 +119,12 @@ export default {
 			}
 			
 		},
+		// 编辑信息
+		editClient(){
+			sessionStorage.setItem('companyInfo', JSON.stringify(this.companyInfo));
+			console.log('editClient');
+			this.$router.push('./editClient');
+		}
 	},
 }
 </script>
