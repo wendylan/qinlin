@@ -55,7 +55,6 @@
 									class="demo-ruleForm">
 								<el-form-item label="公司名称:" prop="cName">
 									<span v-if="isFill">{{companyForm.cName}}</span>
-									<!-- <el-input v-else v-model="companyForm.cName" placeholder="请输入公司名称" @change="searchCompany"></el-input> -->
 									<el-autocomplete
 										v-else
 										v-model="companyForm.cName"
@@ -116,7 +115,6 @@
 									<el-input v-else type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
 								</el-form-item>
 							</el-form>
-							<!-- <div v-if="isEdit"></div> -->
 						</div>
 					</div>
 					<div class="content_bottom_btn">
@@ -131,7 +129,7 @@
 
 <script>
 import api from '../../api/api.js';
-// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
 export default {
@@ -255,7 +253,7 @@ export default {
 		this.getAreaData();
 	},
 	methods: {
-		// 获取所有行业信息
+		// 获取所有行业信息(组装成自己所需格式)
 		getIndustry(){
 			let arr = JSON.parse(sessionStorage.getItem('industry'));
 			let result = [];
@@ -273,13 +271,11 @@ export default {
 		},
 		// 获取所有区域信息
 		getAreaData(){
-			api.getApi('/ShowRegion').then(res => {
-				console.log(res.data);
-				this.AllArea = res.data;
-			}).catch(res => {
-				console.log(res);
+			areaToText.province(data=>{
+				this.AllArea = data;
 			});
 		},
+		// 输入获取公司信息(远程搜索)
 		querySearchAsync(queryString, callback) {
 			if(queryString){
 				api.postApi('/GetCompanyInfo', {cn: queryString}).then(res => {
@@ -293,7 +289,6 @@ export default {
 						this.timeout = setTimeout(() => {
 							callback(results);
 						}, 3000 * Math.random());
-						
 					}
 				});
 			}  
@@ -303,16 +298,18 @@ export default {
 			this.companyForm.cName = item.cName;
 			this.companyForm.cAddress = item.cAddress;
 			this.companyForm.cRemark = item.cRemark;
-			// 获取公司的中文名称
-			api.getApi('/ShowRegion', {rid: item.rID}).then(res => {
-				console.log(res.data);
-				this.companyForm.rName = res.data[0].rName;
-			});
+			
+			// 获取公司所在地的中文名称
+			areaToText.province(data=>{
+				this.companyForm.rName = data;
+			}, item.rID);
+
 			// 获取公司原有的品牌信息
 			api.getApi('/GetBrand', {cid: item.cID}).then(res => {
 				console.log(res.data);
 				this.oldBrandTags = res.data;
 			});
+
 			// 公司信息所在行业
 			let text = industryToText.getText(item.iID);
 			this.$set(this.companyForm, 'iName', text);
@@ -340,7 +337,7 @@ export default {
 				this.regUser(puid, cid);
 			}else{
 				this.$refs['companyForm'].validate((valid) => {
-					// 注册公司
+					// 注册公司(接口还没给，这个只是虚拟接口地址)
 					api.postApi('/addCompanyInfo', this.companyForm).then(res => {
 						console.log(res.data);
 						// 注册用户

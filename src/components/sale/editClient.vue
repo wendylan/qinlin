@@ -130,7 +130,7 @@
 
 <script>
 import api from '../../api/api.js';
-// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
 export default {
@@ -273,11 +273,8 @@ export default {
 		},
 		// 获取所有区域信息
 		getAreaData(){
-			api.getApi('/ShowRegion').then(res => {
-				console.log(res.data);
-				this.AllArea = res.data;
-			}).catch(res => {
-				console.log(res);
+			areaToText.province(data=>{
+				this.AllArea = data;
 			});
 		},
 		querySearchAsync(queryString, callback) {
@@ -303,16 +300,18 @@ export default {
 			this.companyForm.cName = item.cName;
 			this.companyForm.cAddress = item.cAddress;
 			this.companyForm.cRemark = item.cRemark;
-			// 获取公司的中文名称
-			api.getApi('/ShowRegion', {rid: item.rID}).then(res => {
-				console.log(res.data);
-				this.companyForm.rName = res.data[0].rName;
-			});
+
+			// 获取公司所在地的中文名称
+			areaToText.province(data=>{
+				this.companyForm.rName = data;
+			}, item.rID);
+
 			// 获取公司原有的品牌信息
 			api.getApi('/GetBrand', {cid: item.cID}).then(res => {
 				console.log(res.data);
 				// this.oldBrandTags = res.data;
 			});
+			
 			// 公司信息所在行业
 			let text = industryToText.getText(item.iID);
 			this.$set(this.companyForm, 'iName', text);

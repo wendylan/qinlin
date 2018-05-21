@@ -53,6 +53,8 @@
 
 <script>
 import api from '../../api/api.js';
+// 区域转换成中文
+import areaToText from '../../commonFun/areaToText.js';
 // 行业转换为中文
 import industryToText from '../../commonFun/industryToText.js';
 import { Button } from 'element-ui';
@@ -112,9 +114,9 @@ export default {
 					// 公司信息所在行业
 					this.$set(this.companyInfo, 'iName', text);
 					// 公司信息所在城市
-					api.getApi('/ShowRegion', {rid: res.data.rID}).then(res => {
-						this.$set(this.companyInfo, 'rName', res.data[0].rName);
-					});
+					areaToText.province(data=>{
+						this.$set(this.companyInfo, 'rName', data);
+					}, res.data.rID);
 				});
 			}
 			
