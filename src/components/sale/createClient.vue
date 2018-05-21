@@ -91,13 +91,14 @@
 									</el-input>
 									<el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
 								</el-form-item>
-								<el-form-item label="行业分类:" prop="iName">
+								<el-form-item label="行业分类:" prop="iID">
 									<span v-if="isFill">{{companyForm.iName}}</span>
 									<el-cascader v-else
 										placeholder="试试搜索：互联网"
 										:options="bussiness"
 										filterable
 										change-on-select
+										@change="handleChange"
 									></el-cascader>
 								</el-form-item>
 								<el-form-item label="公司地址:" prop="cAddress">
@@ -131,7 +132,7 @@
 import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
 import industryToText from '../../commonFun/industryToText.js';
-import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
+import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message } from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -144,6 +145,7 @@ export default {
 		elOption: Option,
 		elAutocomplete: Autocomplete,
 		elTag: Tag,
+		elMessage: Message,
 	},
 	data() {
 		var validateEmail=(rule, value, callback)=>{
@@ -155,7 +157,11 @@ export default {
 			}
 		};
 		return {
+			// 选中之后的行业组合
+			industryIdArr: [],
+			// 所有区域
 			AllArea: [],
+			// 是否有公司
 			isFill: false,
 			timeout:  null,
 			//行业分类
@@ -242,9 +248,9 @@ export default {
 				cRemark:[
 					{ max: 200, message: '最多只能输入200个字符', trigger: 'change' }
 				],
-				iName:[
-					{required:true, message:'请选择行业分类', trigger:'blur'}
-				]
+				// iName:[
+				// 	{required:true, message:'请选择行业分类', trigger:'blur'}
+				// ]
 			}
 		}
 	},
@@ -253,17 +259,20 @@ export default {
 		this.getAreaData();
 	},
 	methods: {
+		handleChange(val){
+			this.industryIdArr = val;
+		},
 		// 获取所有行业信息(组装成自己所需格式)
 		getIndustry(){
 			let arr = JSON.parse(sessionStorage.getItem('industry'));
 			let result = [];
 			for(let data of arr){
 				if(data.piID == 0){
-					result.push({piID: data.piID, iID: data.iID, value: data.iName, label: data.iName, children: [] });
+					result.push({piID: data.piID, iID: data.iID, value: data.iID, label: data.iName, children: [] });
 				}
 				for(let item of result){
 					if(data.piID == item.iID){
-						item.children.push({ piID: data.piID, iID: data.iID, value: data.iName, label: data.iName });
+						item.children.push({ piID: data.piID, iID: data.iID, value: data.iID, label: data.iName });
 					}
 				}
 			}
@@ -337,16 +346,39 @@ export default {
 				this.regUser(puid, cid);
 			}else{
 				this.$refs['companyForm'].validate((valid) => {
-					// 注册公司(接口还没给，这个只是虚拟接口地址)
-					api.postApi('/addCompanyInfo', this.companyForm).then(res => {
-						console.log(res.data);
-						// 注册用户
-						let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-						let cid = res.data.cID;
-						this.regUser(puid, cid);
-					}).catch(res => {
-						console.log(res);
-					});
+					if(valid){
+						// uid         int【必填】     当前账户UserID
+						// cname       String【必填】  公司名称
+						// iid         int【必填】     公司所属行业ID
+						// rid         int【必填】     公司所在地区ID
+						// cbrand      String          公司旗下品牌，多个品牌用半角分号,隔开
+						// caddr       String          公司通讯地址
+						// cremark     String          公司备注信息
+						let companyInfo = {};
+						companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+						companyInfo.cname = this.companyForm.cName;
+						companyInfo.iid = this.industryIdArr[1];
+						companyInfo.rid = this.companyForm.rID;
+						companyInfo.cbrand = this.companyTags.join(',');
+						companyInfo.caddr = this.companyForm.cAddress;
+						companyInfo.cremark = this.companyForm.cRemark;
+						console.log(companyInfo);
+						// 注册公司
+						api.getApi('/AddCom', companyInfo).then(res => {
+							console.log(res.data);
+							let userMsg = res.data;
+							if (!userMsg.SysCode) {
+								// 注册客户
+								let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
+								let cid = res.data.cID;
+								this.regUser(puid, cid);
+							}
+						}).catch(res => {
+							console.log(res);
+						});
+					}else{
+						return false;
+					}
 				});
 			}
 		},
@@ -354,11 +386,15 @@ export default {
 		regUser(puid, cid){
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
-					// 注册用户
+					// 注册客户
 					this.clientForm.puid = puid;
 					this.clientForm.uwho = cid;
 					api.postApi('/RegUser', this.clientForm).then(res => {
 						console.log(res);
+						let userMsg = res.data;
+						if (!userMsg.SysCode) {
+							Message.success('创建客户成功');
+						}
 					}).catch(res =>{
 						console.log(res);
 					});
