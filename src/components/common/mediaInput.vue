@@ -16,9 +16,8 @@
               <el-form-item label="资源类型:" prop="rt">
                 <div class="select_wrap">
                   <el-select v-model="recForm.rt" placeholder="请选择资源类型">
-                    <el-option label="社区" value="0"></el-option>
-                    <el-option label="小区" value="1"></el-option>
-                    <el-option label="别墅" value="2"></el-option>
+                    <el-option label="写字楼" value="0"></el-option>
+                    <el-option label="社区" value="1"></el-option>
                   </el-select>
                 </div>
               </el-form-item>
@@ -26,16 +25,30 @@
                 <el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
               </el-form-item>
               <el-form-item label="所属城市:" prop="city">
-                <el-select v-model="recForm.city" placeholder="请选择所属城市">
+                <!--<el-select v-model="recForm.city" placeholder="请选择所属城市">
                   <el-option label="广州" value="guangzhou"></el-option>
                   <el-option label="上海" value="beijing"></el-option>
                   <el-option label="深圳" value="shenzhen"></el-option>
-                </el-select>
+                </el-select>-->
+                <el-cascader
+                  :options="cityOptions"
+                  v-model="recForm.city"
+                  separator="-"
+                  :show-all-levels="false"
+                  @change="handleChange"
+                  @active-item-change="handleItemChange">
+                </el-cascader>
               </el-form-item>
               <el-form-item label="所属区域:" prop="region">
-                <el-select v-model="recForm.region" placeholder="请选择所属区域">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select v-model="recForm.region" placeholder="请选择所属区域" :clearable="true">
+                  <!--  <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>-->
+                  <el-option v-for="item in regionOpt"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="所属商圈:" prop="business">
@@ -46,8 +59,11 @@
               </el-form-item>
               <el-form-item label="楼盘类型:" prop="buildingType">
                 <el-select v-model="recForm.buildingType" placeholder="请选择楼盘类型">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                  <el-option label="高端住宅" value="0"></el-option>
+                  <el-option label="中端住宅" value="1"></el-option>
+                  <el-option label="一般住宅" value="2"></el-option>
+                  <el-option label="洋房" value="3"></el-option>
+                  <el-option label="别墅" value="4"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="出入口数:" prop="doorway">
@@ -96,9 +112,9 @@
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                 <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>
+                  <!-- <el-dialog :visible.sync="dialogVisible">
+                     <img width="100%" :src="dialogImageUrl" alt="">
+                   </el-dialog>-->
                 </div>
               </el-form-item>
             </el-form>
@@ -115,10 +131,9 @@
           <div class="content_bottom_form_wrap">
             <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
                      class="demo-ruleForm">
-              <el-form-item label="媒体类型:" prop="mediaType">
-                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒体类型">
-                  <el-option label="" value="钣金门1"></el-option>
-                  <el-option label="" value="钣金门2"></el-option>
+              <el-form-item label=" 媒介载体:" prop="mediaType">
+                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体">
+                  <el-option label="" value="广告门"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="媒体名称:" prop="mediaName">
@@ -130,14 +145,16 @@
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mediaStatus">
                 <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态">
-                  <el-option label="" value="状态1"></el-option>
-                  <el-option label="" value="状态2"></el-option>
+                  <el-option label="禁止" value="0"></el-option>
+                  <el-option label="正常" value="1"></el-option>
+                  <el-option label="待安装" value="2"></el-option>
+                  <el-option label="待维修" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="资产编号:" prop="assetId">
                 <el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>
               </el-form-item>
-              <el-form-item label="门体类型:" prop="doorType">
+              <el-form-item label=" 媒体类型:" prop="doorType">
                 <el-input v-model="item.mediaForm.doorType" placeholder="例:消防门"></el-input>
               </el-form-item>
               <el-form-item label="广告尺寸:" prop="adSizeW" class="lngNlat">
@@ -206,7 +223,7 @@
           <div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
         </div>
         <div class="content_bottom_btn">
-          <button class="create" @click="createMedia()">创建</button>
+          <button class="create" @click="submitForm('recForm','mediaForm')">创建</button>
           <button class="cancel">取消</button>
         </div>
       </div>
@@ -215,26 +232,27 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox, Message } from 'element-ui';
+import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox, Message } from 'element-ui';
   import api from '../../api/api'
   export default {
-	name: "mediaInput",
-	components:{
-		elForm: Form,
-		elFormItem: FormItem,
-		elSelect: Select,
-		elOption: Option,
-		elButton: Button,
-		elSelect: Select,
-		elOption: Option,
-		elInput: Input,
-		elTable: Table,
-		elTableColumn: TableColumn,
-		elDatePicker: DatePicker,
-		elDialog: Dialog,
-		elUpload: Upload,
-		elInputNumber: InputNumber,
-	},
+    name: "mediaInput",
+    components:{
+      elForm: Form,
+      elFormItem: FormItem,
+      // elSelect: Select,
+      // elOption: Option,
+      elButton: Button,
+      elSelect: Select,
+      elOption: Option,
+      elCascader:Cascader,
+      elInput: Input,
+      elTable: Table,
+      elTableColumn: TableColumn,
+      elDatePicker: DatePicker,
+      elDialog: Dialog,
+      elUpload: Upload,
+      elInputNumber: InputNumber,
+    },
     data() {
       //资产编号
       var validateAssetId = (rule, value, callback) => {
@@ -313,7 +331,7 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         recForm: {
           rt: '',     //资源类型
           resname: '',  // 资源名称
-          city: '',
+          city: [],
           region: '',  // 所属区域
           business: '', // 所属商圈
           resaddr: '',  // 资源地址
@@ -411,7 +429,7 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
             // { type:'number', min:1, max:26, message:'最多可投26面',trigger:'blur'},
           ],
           mediaStatus: [
-            {required: true, message: '媒体状态不能为空', trigger: 'blur'},
+            {required: true, message: '媒体状态不能为空', trigger: 'change'},
           ],
           assetId: [
             {validator: validateAssetId, trigger: 'blur'},
@@ -422,21 +440,21 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
             {min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'change'}
           ],
           adSizeW: [
-          //  {validator: validateNum, trigger: 'change'},
+            //  {validator: validateNum, trigger: 'change'},
             {required: true,type:'number', message: '宽度不能为空且只能为数字', trigger: 'blur'},
             // { type:'number', message: '只能输入数字',  trigger: 'blur' }
           ],
           adSizeH: [
-          //  {validator: validateNum, trigger: 'change'},
+            //  {validator: validateNum, trigger: 'change'},
             {required: true,type:'number', message: '高度不能为空且只能为数字', trigger: 'blur'},
             // { type:'number', message: '只能输入数字', trigger: 'blur' }
           ],
           visualW: [
-          //  {validator: validateNum, trigger: 'change'},
+            //  {validator: validateNum, trigger: 'change'},
             { type:'number', message: '宽度不能为空且只能输入数字',  trigger: 'change' }
           ],
           visualH: [
-          //  {validator: validateNum, trigger: 'change'},
+            //  {validator: validateNum, trigger: 'change'},
             { type:'number', message: '高度不能为空且只能输入数字', trigger: 'change' }
           ],
           mediaRemark: [
@@ -445,13 +463,39 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         },
         recFormImg:'', // 资源图片
         mediaFormImg:'',// 媒体图片
+        //城市数组
+        cityOptions: [{
+          value: 'zhinan',
+          label: '指南',
+          children: [
+            {
+              value: 'shejiyuanze',
+              label: '设计原则',
+            },
+            {
+              value: 'daohang',
+              label: '导航'
+            },
+            {
+              value: 'daohang2',
+              label: '导航2'
+            }
+          ]
+        }],
+        regionOpt:[]
       };
+    },
+    beforeCreate: function(){
+      //  this.ShowRegion()
+    },
+    mounted: function () {
+      this.ShowRegion()
     },
     methods: {
       //新增媒体面板
       mediaAddFun(){
         console.log('点击成功')
-      //  let titleArr = ['媒体一','媒体二','媒体三','媒体四','媒体五']
+        //  let titleArr = ['媒体一','媒体二','媒体三','媒体四','媒体五']
         let mediaArr=[
           { text: '媒体二',mediaForm:{
               mediaType: '',
@@ -468,15 +512,15 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
               adLimit: ''
             } },
         ]
-      //  console.log(mediaArr[this.titleIndex])
+        //  console.log(mediaArr[this.titleIndex])
         mediaArr[0].text = this.titleArr[++this.titleIndex]
         if(this.titleIndex < 5){
           this.arrMedia.push(mediaArr[0]);
         }else{
-          MessageBox.alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
+          this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
             confirmButtonText: '确定',
             callback: action => {
-              Message({
+              this.$message({
                 type: 'info',
                 message: `action: ${ action }`
               });
@@ -486,8 +530,8 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
       },
       //删除
       mediaDelBtnFun(index){
-      //  this.arrMedia.splice(this.arrMedia.length-1,1)
-      //  alert(index)
+        //  this.arrMedia.splice(this.arrMedia.length-1,1)
+        //  alert(index)
 
         this.arrMedia.splice(index,1)
         console.log('长度为',this.arrMedia.length,'index:',index)
@@ -498,56 +542,116 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         }
         this.titleIndex--
       },
-      //添加媒体
+      // 城市地区联动-省级
+      ShowRegion(){
+        api.getApi('/ShowRegion').then(res=>{
+          //      console.log('地区：',res.data)
+          let region = res.data
+          let arr = [];
+          for(let i=0;i<region.length;i++){
+            let opt = {label:'',value:'',children:[]}
+            opt.label = region[i].rName
+            opt.value = region[i].rID
+            arr.push(opt)
+          }
+          this.cityOptions = arr;
+        })
+      },
+      // 城市地区联动，选择省级后去获取市级和区、县级
+      handleItemChange(val){
+        console.log('active item:', val);
+        let region = []
+        api.getApi('/ShowRegion',{rid: val[0]}).then(res=>{
+          let city = res.data
+          console.log('city：',city)
+          for(let j=0;j<this.cityOptions.length;j++){
+            if(this.cityOptions[j].value == val[0]){
+              this.cityOptions[j].children = []
+              for(let i=0;i<city.length;i++){
+                let obj = {label:'',value:''}
+                obj.label = city[i].rName
+                obj.value = city[i].rID
+                if(city[i].rID.toString().substring(4,6) == '00' ){  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
+                  console.log(city[i].rID.toString().substring(4,6))
+                  this.cityOptions[j].children.push(obj)
+                }else{
+                  region.push(obj)              // 三级，所属区域
+                }
+              }
+              console.log('region',region)
+              this.regionOpt = region
+              break
+            }
+          }
+        })
+      },
+      // 根据市级城市（rid前四位），筛选属于它的下属区、县
+      handleChange(value){
+        console.log(value)
+        //  console.log('value',value[1])
+        let str = value[1].toString().substring(0,4)
+        let arr = []
+        for(let i=0;i<this.regionOpt.length;i++){
+          if(this.regionOpt[i].value.toString().substring(0,4) === str){
+            //  console.log('找到区域',this.regionOpt[i].label)
+            arr.push(this.regionOpt[i])
+          }
+        }
+        this.regionOpt = arr
+      },
+      //添加资源媒体
       createMedia(){
         console.log(this.arrMedia[0].mediaForm)
-        this.clearFromData()
-         /*  AddRes
-            参数：  uid     int【必填】     UserID
-            rid     int             地区id
-            ta      String          商圈名称
-            rt      int             资源类型
-            resname String          资源名称
-            resaddr String          资源地址*/
-         /*"resID": 1,
-          "rID": 440106,
-          "resName": "帝景山庄",
-          "resAddress": "广东省广州市天河区东圃镇悦景路11号",
-          "tradingArea": "山泉",
-          "joinTime": "2018-04-03 16:21:45.0",
-          "resType": 1*/
-         let obj = {
-           uid: 1,
-           rid: 440106,
-           ta: '山泉2',
-           rt: 1,
-           resname: '帝景山庄22',
-           resaddr: '广东省广州市天河区东圃镇悦景路11号',
-           latLng: '110.123;56.321'
-         }
-         this.recForm.uid = sessionStorage.getItem("uid")
-         this.recForm.latLng = this.recForm.lat+'；'+this.recForm.lng
-         delete this.recForm.lat
-         delete this.recForm.lng
-        /* api.postApi('https://beta.qinlinad.com/QADN/AddRes',this.recForm).then(res=>{//GetResList  AddRes
+      //  this.resetForm()
+        /*  AddRes
+           参数：  uid     int【必填】     UserID
+           rid     int             地区id
+           ta      String          商圈名称
+           rt      int             资源类型
+           resname String          资源名称
+           resaddr String          资源地址*/
+        /*"resID": 1,
+         "rID": 440106,
+         "resName": "帝景山庄",
+         "resAddress": "广东省广州市天河区东圃镇悦景路11号",
+         "tradingArea": "山泉",
+         "joinTime": "2018-04-03 16:21:45.0",
+         "resType": 1*/
+        let obj = {
+          uid: 1,
+          rid: 440106,
+          ta: '山泉3',
+          rt: 1,
+          resname: '帝景山庄33',
+          resaddr: '广东省广州市天河区东圃镇悦景路11号',
+          latLng: '110.123;56.321'
+        }
+        this.recForm.uid = sessionStorage.getItem("uid")
+        this.recForm.latLng = this.recForm.lat+';'+this.recForm.lng
+        delete this.recForm.lat
+        delete this.recForm.lng
+        console.log('this.recForm',this.recForm)
+          //'https://beta.qinlinad.com/QADN/AddRes'
+     /*    api.postApi('https://beta.qinlinad.com/QADN/AddRes',obj).then(res=>{//GetResList  AddRes
            console.log('资源数据：',res.data)
            let recData = res.data
-           let adsize = this.arrMedia[0].mediaForm.adSizeW + '*' +this.arrMedia[0].mediaForm.adSizeH
-           let adviewsize = this.arrMedia[0].mediaForm.visualW+'*'+ this.arrMedia[0].mediaForm.visualH
+           let arr_media = this.arrMedia[0].mediaForm
+           let adsize = arr_media.adSizeW + '*' +arr_media.adSizeH
+           let adviewsize = arr_media.visualW+'*'+ arr_media.visualH
            let mediaObj = {
                rid: recData.rID ,
                resid: recData.resID,
                uid: this.recForm.uid,
-               mtitle: this.arrMedia[0].mediaForm.mediaName,
-               pnum: this.arrMedia[0].mediaForm.usableNum,
+               mtitle: arr_media.mediaName,
+               pnum: arr_media.usableNum,
                adsize: adsize,
                adviewsize: adviewsize,
-               notpush: this.arrMedia[0].mediaForm.adLimit,
-               assettag: this.arrMedia[0].mediaForm.assetId,
-               mtype: this.arrMedia[0].mediaForm.mediaType,
+               notpush: arr_media.adLimit,
+               assettag: arr_media.assetId,
+               mtype: arr_media.mediaType,
                mimg: '',
                mvc: '',
-               mrk: this.arrMedia[0].mediaForm.mediaRemark
+               mrk: arr_media.mediaRemark
            }
            console.log('mediaObj',mediaObj)
            /!*arrMedia: [
@@ -568,27 +672,28 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
             },
           },
         ],*!/
+           // 'https://beta.qinlinad.com/QADN/CreateMedia'
            api.postApi('https://beta.qinlinad.com/QADN/CreateMedia',mediaObj).then(res=>{
                 console.log(res)
-                this.clearFromData()
+                this.resetForm() //请求成功后重置表单
            })
          }).catch(err=>{
            console.log(err)
          })*/
-          /* CreateMedia
-            rid         int【必填】     媒体所在地区ID
-            resid       int【必填】     资源ID
-            mtitle      String          媒体名称
-            pnum        int             广告位面数
-            adsize      String          广告位尺寸
-            adviewsize  String          广告可视画面
-            notpush     String          广告投放限制
-            assettag    String          资产编号
-            mtype       String          媒体类型
-            mimg        String          媒体照片
-            uid         int             安装工程师
-            mvc         String          媒介载体
-            mrk         String          媒体备注*/
+        /* CreateMedia
+          rid         int【必填】     媒体所在地区ID
+          resid       int【必填】     资源ID
+          mtitle      String          媒体名称
+          pnum        int             广告位面数
+          adsize      String          广告位尺寸
+          adviewsize  String          广告可视画面
+          notpush     String          广告投放限制
+          assettag    String          资产编号
+          mtype       String          媒体类型
+          mimg        String          媒体照片
+          uid         int             安装工程师
+          mvc         String          媒介载体
+          mrk         String          媒体备注*/
       },
       //缩略图
       handleRemove(file, fileList) {
@@ -599,17 +704,18 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         console.log(this.dialogImageUrl)
         this.dialogVisible = true;
       },
+
       //recUploadChange\mediaUploadChange图片文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
       recUploadChange(file){
         const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
         const isLt1M = file.size / 1024 / 1024 < 1;
 
         if (!isIMAGE) {
-          Message.error('只能上传jpg/png图片!');
+          this.$message.error('只能上传jpg/png图片!');
           return false;
         }
         if (!isLt1M) {
-          Message.error('上传文件大小不能超过 1MB!');
+          this.$message.error('上传文件大小不能超过 1MB!');
           return false;
         }
         let that = this
@@ -625,11 +731,11 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
         const isLt1M = file.size / 1024 / 1024 < 1;
 
         if (!isIMAGE) {
-          Message.error('只能上传jpg/png图片!');
+          this.$message.error('只能上传jpg/png图片!');
           return false;
         }
         if (!isLt1M) {
-          Message.error('上传文件大小不能超过 1MB!');
+          this.$message.error('上传文件大小不能超过 1MB!');
           return false;
         }
         let that = this
@@ -640,147 +746,49 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
           console.log(that.mediaFormImg)
         }
       },
-      //表单
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+
+      // 表单验证
+      submitForm(r_item,m_item) {
+        let r_boolean = false
+        let m_boolean = false
+        this.$refs[r_item].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            // this.createMedia()
+            //  alert('submit!');mediaRules
+            r_boolean = true
           } else {
             console.log('error submit!!');
             return false;
           }
         });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
-      //清空表单数据
-      clearFromData(){
-        let mediaFrom = this.arrMedia[0].mediaForm
-        for(let mkey in mediaFrom){
-          mediaFrom[mkey]  = ''
+        console.log('$refs',this.$refs)
+        for(let i=0;i<this.$refs[m_item].length;i++){
+          this.$refs[m_item][i].validate((valid) => {
+            if (valid) {
+              m_boolean = true
+              // this.createMedia()
+              //  alert('submit!');mediaRules
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          })
         }
-        let recForm = this.recForm
-        for(let rkey in recForm){
-          recForm[rkey]  = ''
+        if(r_boolean && m_boolean){ // 前台验证
+          this.createMedia()
         }
       },
-    },
-    mounted: function () {
-
+      //重置表单数据
+      resetForm() {
+        //  this.$refs[formName].resetFields();arrMedia.mediaForm
+        this.$refs['recForm'].resetFields();
+        for(let i=0;i<this.arrMedia.length;i++){
+          this.$refs['mediaForm'][i].resetFields();
+        }
+        //  this.$refs['mediaForm'][0].resetFields();
+      },
     },
   }
-
-
-  /*$(function () {
-    let titleIndex = 0;
-    let titleArr=['媒体一','媒体二','媒体三','媒体四','媒体五','媒体六','媒体七'];
-    $('.content_bottom_head').find('h2').text(titleArr[titleIndex]);
-    $('.addMediaBtn').click(function () {
-      alert('1')
-      titleIndex++;
-      let $mediaForm = $('.content_bottom_wrap').eq(0);
-      $('.addMediaBtn').before($mediaForm.clone(true));
-      $('.content_bottom_head').eq(titleIndex).find('h2').text(titleArr[titleIndex]);
-    });*/
-
-   /* $('.addMediaBtn').click(function () {
-      var template = '<div class="content_bottom_wrap">' +
-        '<div class="content_bottom_head">' +
-        '<h2>媒体一' +
-        '<el-button type="danger" size="small" class="media_deleBtn">删除</el-button>' +
-        '</h2>' +
-        '</div>' +
-        '<div class="content_bottom_form_wrap">' +
-        '<el-form :model="mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px" class="demo-ruleForm">' +
-        '<el-form-item label="媒体类型:" prop="mediaType">' +
-        '<el-select v-model="mediaForm.mediaType" placeholder="请选择媒体类型">' +
-        '<el-option label="区域一" value="shanghai"></el-option>' +
-        '<el-option label="区域二" value="beijing"></el-option>' +
-        '</el-select>' +
-        '</el-form-item>' +
-        '<el-form-item label="媒体名称:" prop="mediaName">' +
-        '<el-input v-model="mediaForm.mediaName" placeholder="例：东门"></el-input>' +
-        '</el-form-item>' +
-        '<el-form-item label="可投面数:" prop="usableNum">' +
-        '<el-input-number v-model="mediaForm.usableNum" controls-position="right" :min="1" :max="9999999"></el-input-number>' +
-        '</el-form-item>' +
-        '<el-form-item label="媒体状态:" prop="mediaStatus">' +
-        '<el-select v-model="mediaForm.mediaStatus" placeholder="请选择媒体状态">' +
-        '<el-option label="区域一" value="shanghai"></el-option>' +
-        '<el-option label="区域二" value="beijing"></el-option>' +
-        '</el-select>' +
-        '</el-form-item>' +
-        '<el-form-item label="资产编号:" prop="assetId">' +
-        '<el-input v-model="mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>' +
-        '</el-form-item>' +
-        '<el-form-item label="门体类型:" prop="doorType">' +
-        '<el-input v-model="mediaForm.doorType" placeholder="例:消防门"></el-input>' +
-        '</el-form-item>' +
-        '<el-form-item label="广告尺寸:"  prop="adSizeW" class="lngNlat" >' +
-        '<div class="mm">' +
-        '<el-input v-model.number="mediaForm.adSizeW" placeholder="宽度">' +
-        '</el-input>' +
-        '<span>mm</span>' +
-        '</div>' +
-        '</el-form-item>' +
-        '<el-form-item  prop="adSizeH" class="lngNlat  RlngNlat" >' +
-        '<div class="mm">' +
-        '<div>' +
-        '<el-input v-model.number="mediaForm.adSizeH" placeholder="高度" >\n' +
-        '</el-input>' +
-        '<span>mm</span>' +
-        '</div>' +
-        '</div>' +
-        '</el-form-item>' +
-        '<el-form-item label="可视画面:" prop="visualW" class="lngNlat" >\n' +
-        '<div class="mm">' +
-        '<el-input v-model.number="mediaForm.visualW" placeholder="宽度">\n' +
-        '</el-input>' +
-        '<span>mm</span>' +
-        '</div>' +
-        '</el-form-item>' +
-        '<el-form-item  prop="visualH" class="lngNlat  RlngNlat largeW" >\n' +
-        '<div class="mm">' +
-        '<div>' +
-        '<el-input v-model.number="mediaForm.visualH" placeholder="高度" >\n' +
-        '</el-input>' +
-        '<span>mm</span>' +
-        '</div>' +
-        '</div>' +
-        '</el-form-item>' +
-        '<el-form-item label="广告限制:">' +
-        '<el-select v-model="mediaForm.adLimit" placeholder="请选择广告限制">' +
-        '<el-option label="区域一" value="shanghai"></el-option>' +
-        '<el-option label="区域二" value="beijing"></el-option>' +
-        '</el-select>' +
-        '</el-form-item>' +
-        '<el-form-item label="备注:" prop="mediaRemark">' +
-        '<el-input type="textarea" v-model="mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>\n' +
-        '</el-form-item>' +
-        '<el-form-item label="门禁照片:">' +
-        '<div class="upload_img_wrap" style="width: 250px;">' +
-        '<el-upload\n' +
-        'action="https://jsonplaceholder.typicode.com/posts/"\n' +
-        'list-type="picture-card"\n' +
-        ':on-preview="handlePictureCardPreview"\n' +
-        ':on-remove="handleRemove">' +
-        '<i class="el-icon-plus"></i>' +
-        '</el-upload>' +
-        '<el-dialog :visible.sync="dialogVisible">' +
-        '<img width="100%" :src="dialogImageUrl" alt="">' +
-        '</el-dialog>' +
-        '</div>' +
-        '</el-form-item>' +
-        '</el-form>' +
-        '</div>'+
-        '</div>';
-
-      $('.addMedia').prepend(template);
-    });*/
-
-
- // })
 
 </script>
 
@@ -1083,7 +1091,7 @@ import { Form, FormItem, Select, Option, Button, Input, Table, TableColumn, Date
   .upload_img_wrap {
     width: 236px;
     height: 125px;
-   /* overflow:auto*/
+    /* overflow:auto*/
     overflow: hidden;
   }
   .el-checkbox-group {

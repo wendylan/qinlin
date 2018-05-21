@@ -31,6 +31,7 @@
     import index from "../../router";
 
     export default {
+        name:"headerBar",
         props:{
             pageData:{
                 type: Array,
@@ -45,11 +46,16 @@
 			},*/
         },
         data() {
+
             return {
                 showPassbox: false,
                 liIndex:0,
                 userName:'',
             }
+        },
+      // 实时监听路由变化
+        watch:{
+          '$route':'getPath'
         },
         mounted(){
             this.getPath()
@@ -64,24 +70,23 @@
         //      console.log(index)
               this.liIndex = index
             },
-            // 手动输入地址时，获取地址栏的url去判断导航高亮
+            // 判断导航高亮
             getPath(){
               console.log(this.$route.path)
               let urlPath = this.$route.path
-        //      alert(urlPath.indexOf('superOperate'))
               if(urlPath.indexOf('superOperate') !== -1){    //superOperate 超级运营
             //    alert('superOperate')
-                console.log(urlPath.substring(13,urlPath.length)) //mediaList
+                console.log(urlPath.substring(13,urlPath.length))
                 let supermOp = urlPath.substring(13,urlPath.length)
-                if(supermOp === '/mediaList'){
+                if(supermOp === '/mediaList' || supermOp === '/mediaInput'|| supermOp === '/mediaDetail'){
                   this.liIndex = 1
-                }else if(supermOp === '/clientList'){
+                }else if(supermOp === '/clientList'|| supermOp === '/clientDetail'){
                   this.liIndex = 2
                 }else if(supermOp === '/planList'){
                   this.liIndex = 3
                 }else if(supermOp === '/orderList'){
                   this.liIndex = 4
-                }else if(supermOp === '/createAccount'){
+                }else if(supermOp === '/createAccount' || supermOp === '/accountList'){
                   this.liIndex = 5
                 }else if(supermOp === '/ADlimitList'){
                   this.liIndex = 6
