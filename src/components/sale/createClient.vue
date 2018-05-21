@@ -323,18 +323,6 @@ export default {
 		},
 		// 创建
 		submitData(){
-			// let userInfo = {
-			// 	realname: 'wendy',
-			// 	sname: 'wendy',
-			// 	phone: 13612457899,
-			// 	telphone: '787-787',
-			// 	email: '3063766545@qq.com',
-			// 	position: '前端',
-			// 	rid: 440000,
-			// 	utype: 'AD',
-			// 	uwho: 1,
-			// 	puid: 2
-			// };
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
 			if(this.companyForm.cID){
 				// 如果有新填入品牌则新增品牌
@@ -346,38 +334,42 @@ export default {
 					}
 					this.companyTags = [];
 				}
-				this.$refs['clientForm'].validate((valid) => {
-					if (valid) {
-						// 注册用户
-						this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-						this.clientForm.uwho = this.companyForm.cID;
-						api.postApi('/RegUser', this.clientForm).then(res => {
-							console.log(res);
-						}).catch(res =>{
-							console.log(res);
-						});
-					} else {
-						console.log('error submit!!');
-						return false;
-					}
-				});
-
+				// 注册用户
+				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
+				let cid = this.companyForm.cID;
+				this.regUser(puid, cid);
 			}else{
-				// 注册公司
-				api.postApi('/addCompanyInfo', companyForm).then(res => {
-					console.log(res.data);
+				this.$refs['companyForm'].validate((valid) => {
+					// 注册公司
+					api.postApi('/addCompanyInfo', this.companyForm).then(res => {
+						console.log(res.data);
+						// 注册用户
+						let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
+						let cid = res.data.cID;
+						this.regUser(puid, cid);
+					}).catch(res => {
+						console.log(res);
+					});
+				});
+			}
+		},
+		// 注册用户
+		regUser(puid, cid){
+			this.$refs['clientForm'].validate((valid) => {
+				if (valid) {
 					// 注册用户
-					this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-					this.clientForm.uwho = res.data.cid;
+					this.clientForm.puid = puid;
+					this.clientForm.uwho = cid;
 					api.postApi('/RegUser', this.clientForm).then(res => {
 						console.log(res);
 					}).catch(res =>{
 						console.log(res);
 					});
-				}).catch(res => {
-					console.log(res);
-				});
-			}
+				} else {
+					console.log('error submit!!');
+					return false;
+				}
+			});
 		},
 		// 取消返回
 		goBack(){
