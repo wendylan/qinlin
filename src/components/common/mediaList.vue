@@ -10,9 +10,9 @@
       <div class="mediaList_container">
         <el-row>
           <div class="mediaList_handel">
-            <el-input v-model="input" placeholder="资源名称、商圈"></el-input>
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
-            <el-button plain>新建</el-button>
+            <el-input v-model="keyword" placeholder="资源名称、商圈" @change="initData"></el-input>
+            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+            <el-button plain @click="create">新建</el-button>
             <el-button plain>导入</el-button>
             <el-button plain>导出</el-button>
           </div>
@@ -20,7 +20,7 @@
         <div class="table_wrap">
           <el-table
             border
-            :data="planList"
+            :data="currentPlan"
             style="width: 100%"
             :default-sort="{prop: 'resName', order: 'descending'}"
           >
@@ -44,10 +44,7 @@
               min-width="7%"
               :filters="[
               { text: '社区', value: '社区' },
-              { text: '小区', value: '小区' },
-              { text: '别墅', value: '别墅' },
-              { text: '四合院', value: '四合院' },
-              { text: '街区', value: '街区' }
+              { text: '写字楼', value: '写字楼' },
               ]"
               :filter-method="filterRecType"
               :filter-multiple="true"
@@ -95,9 +92,6 @@
               min-width="7.4%"
               :filters="[
               { text: '广告门', value: '广告门' },
-              { text: '123', value: '123' },
-              { text: '1233', value: '1233' },
-              { text: '1234', value: '1234' },
               { text: '社区门', value: '社区门' }
               ]"
               :filter-method="filterMediaType"
@@ -182,7 +176,7 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
     data() {
       return {
         haveDetail:true,
-        input: '',
+        keyword: '',
         //表格
         /* planList: [
            {
@@ -210,7 +204,8 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
              usableNum: '2',
              ptStatus: '正常'
            }]*/
-        planList: [],
+		planList: [],
+		currentPlan: [],
       }
     },
     mounted: function () {
@@ -229,7 +224,30 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
       this.getData();
     },
     methods: {
-
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if(!this.keyword ){
+				this.currentPlan = this.planList;
+			}
+		},
+		// 搜索
+		search(){
+			let arr = [];
+			if(this.keyword){
+				for(let data of this.planList){
+					if(data.tradingArea.includes(this.keyword) || data.cType.includes(this.keyword)){
+						arr.push(data);
+					}
+				}
+				this.currentPlan = arr;
+				return;
+			}
+			this.currentPlan = this.planList;
+		},
+		// 新建媒体
+		create(){
+			this.$router.push('./mediaInput');
+		},
 
       //筛选
       filterRecType(value, row) {
@@ -311,12 +329,18 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
               dataArr[j].cType = res.data.cType;
               dataArr[j].resName = res.data.resName;
               dataArr[j].tradingArea = res.data.tradingArea;
+              if(res.data.rID.toString().indexOf('4401') === 0){
+                dataArr[j].city = '广州'
+              }
+              if(res.data.rID.toString().indexOf('106') > 0){
+                dataArr[j].region = '天河区'
+              }
             }
-            this.planList = dataArr;
+			this.planList = dataArr;
+			this.currentPlan = this.planList;
           }).catch(err => {
             console.log(err);
           });
-
         }).catch(err => {
           console.log(err);
         });

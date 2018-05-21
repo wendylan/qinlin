@@ -10,7 +10,7 @@
 			<div class="mediaList_container">
 				<el-row>
 					<div class="mediaList_handel">
-						<el-input  v-model="keyword" placeholder="公司名称、公司品牌"></el-input>
+						<el-input  v-model="keyword" placeholder="公司名称、公司品牌" @change="initData"></el-input>
 						<div class="block">
 							<el-date-picker
 							v-model="date"
@@ -133,6 +133,12 @@ export default {
 		this.GetCustomer();
 	},
 	methods: {
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if((!this.date) && (!this.keyword) ){
+				this.currentPlan = this.planList;
+			}
+		},
 		// 搜索
 		search(){
 			let rangeDate = this.date;
@@ -160,8 +166,10 @@ export default {
 						}
 					}
 				}
+				this.currentPlan = arr;
+				return;
 			}
-			this.currentPlan = arr;
+			this.currentPlan = this.planList;
 		},
 		// 时间格式化
 		formatTime(time){
@@ -184,8 +192,8 @@ export default {
 		GetCustomer() {
 			console.log(sessionStorage.getItem('uid'));
 			api.getApi('/GetCustomer', {
-				// puid:2
-				puid:sessionStorage.getItem("uid")
+				puid:2
+				// puid:sessionStorage.getItem("uid")
 			}).then(res=>{
 				if(res.data){
 					this.planList = res.data;

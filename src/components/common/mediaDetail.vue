@@ -183,9 +183,7 @@
 
         <div class="content_bottom_btn">
           <el-button type="primary">编辑</el-button>
-          <el-button type="default">
-			<router-link :to="{path:'/superOperate/mediaList'}">返回</router-link>
-          </el-button>
+          <el-button type="default" @click="goBack">返回</el-button>
         </div>
       </div>
     </div>
@@ -277,6 +275,9 @@
         this.getDataFun()
       },
       methods:{
+			goBack(){
+				this.$router.push('./mediaList');
+			},
         getDataFun(){
           let resID = sessionStorage.getItem('resID')
           api.getApi('/GetResCT',{resid:resID,info:'y'}).then(res=>{
