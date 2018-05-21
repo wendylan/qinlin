@@ -59,7 +59,7 @@
         },
         mounted(){
             this.getPath()
-            this.userName = sessionStorage.getItem('real_name')
+            this.userName = JSON.parse(sessionStorage.getItem('session_data')).realName;
             console.log(this.userName)
         },
         methods:{
