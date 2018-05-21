@@ -574,7 +574,7 @@
 </template>
 
 <script>
-import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message } from 'element-ui';
+import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message, InputNumber } from 'element-ui';
   export default {
 	name: "createPlan",
 	components:{
@@ -593,7 +593,8 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 		elSteps: Steps,
 		elStep: Step,
 		elBadge: Badge,
-		elCheckbox: Checkbox
+		elCheckbox: Checkbox,
+		elInputNumber: InputNumber
 	},
     data() {
       return {

@@ -935,7 +935,7 @@
                                         <div class="up-report-bottom-btns">
                                             <el-button type="primary">生成报告</el-button>
                                             <el-button plain>下载PDF</el-button>
-                                            <el-button plain>复制链接</el-button>
+                                            <el-button plain>查看H5</el-button>
                                         </div>
                                     </div>
                                 </div>
@@ -1347,7 +1347,7 @@
                                         <div class="up-report-bottom-btns">
                                             <el-button type="primary">生成报告</el-button>
                                             <el-button plain>下载PDF</el-button>
-                                            <el-button plain>复制链接</el-button>
+                                            <el-button plain>查看H5</el-button>
                                         </div>
                                     </div>
                                 </div>
@@ -2729,6 +2729,7 @@ export default {
 
   .up-loader-Imgpanel {
     width: 390px;
+    vertical-align: top;
     /*height: 270px;*/
     margin-top: 11px;
     display: inline-block;
@@ -2910,7 +2911,7 @@ export default {
   }
   /*添加点位对话框*/
   /deep/ .el-dialog{
-    width: 1246px !important;
+    /* width: 1246px !important; */
   }
   /*选择点位*/
   /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
@@ -3249,7 +3250,7 @@ export default {
     margin-right: 45px;
   }
   /deep/ .el-dialog{
-    width: 1000px;
+    /* width: 1000px; */
   }
 
   /deep/ .el-table_3_column_26  , /deep/ .el-table_3_column_27, /deep/ .el-table_1_column_9,  .el-table_1_column_18, /deep/ .el-table_2_column_19{
