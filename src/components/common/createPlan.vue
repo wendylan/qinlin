@@ -29,30 +29,43 @@
               </el-form-item>
               <el-form-item label="公司名称：" prop="companyName">
                 <el-select v-model="planForm.companyName" placeholder="请选择公司名称">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                  <el-option label="北京易盟天地信息技术股份有限公司" value="yimeng"></el-option>
+                  <el-option label="新光百货" value="xinguang"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="公司品牌：" prop="companyBrand">
                 <el-select v-model="planForm.companyBrand" placeholder="请选择公司品牌">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="投放城市：" prop="throwCity">
-                <el-select v-model="planForm.throwCity" multiple placeholder="请选择">
+                 <!-- <el-option label="区域一" value="shanghai"></el-option>
+                  <el-option label="区域二" value="beijing"></el-option>-->
                   <el-option
-                    v-for="item in throwCity"
+                    v-for="item in companyBrand"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="事业部：" prop="ownerBU">
-                <el-select v-model="planForm.ownerBU" placeholder="请选择所属事业部">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item label="投放城市：" prop="throwCity">
+              <!--  <el-select v-model="planForm.throwCity" multiple placeholder="请选择">
+                  <el-option
+                    v-for="item in throwCity"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>-->
+                <el-cascader
+                  :options="throwCity"
+                  v-model="planForm.throwCity"
+                  separator="-"
+                  :show-all-levels="false"
+                  @active-item-change="handleItemChange">
+                </el-cascader>
+              </el-form-item>
+              <el-form-item label="联系人：" prop="ownerBU">
+                <el-select v-model="planForm.ownerBU" placeholder="请选择所属联系人">
+                  <el-option label="产品研发" value="chanpin"></el-option>
+                  <el-option label="销售" value="xiaoshou"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="备注：" prop="planRemark">
@@ -88,9 +101,9 @@
                 <div class="shopcar" @click="dialogTableVisible = true">
                   <el-badge :value="badgeNumber" class="item">
                     <!-- <img src="../../assets/images/shopCar.png" alt=""> -->
-					<span class="cart_box">
-						<i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
-					</span>
+                  <span class="cart_box">
+                    <i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
+                  </span>
                   </el-badge>
                 </div>
               </div>
@@ -574,7 +587,9 @@
 </template>
 
 <script>
-import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message, InputNumber } from 'element-ui';
+import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, Cascader, DatePicker,
+          Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message,} from 'element-ui';
+import api from '../../api/api'
   export default {
 	name: "createPlan",
 	components:{
@@ -585,6 +600,7 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 		elTabPane: TabPane,
 		elTable: Table,
 		elTableColumn: TableColumn,
+    elCascader: Cascader,
 		elDatePicker: DatePicker,
 		elSelect: Select,
 		elOption: Option,
@@ -594,10 +610,10 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 		elStep: Step,
 		elBadge: Badge,
 		elCheckbox: Checkbox,
-		elInputNumber: InputNumber
 	},
     data() {
       return {
+        cType: ['社区','写字楼'],
         shopXY:{x:'',y:''},   // 动画起始坐标
         shoppingShow: false, //动画效果的显示隐藏
         selectAll:false, // 是否全选
@@ -620,20 +636,30 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
         cash:'￥88,000,000.00',
         zyzh:'￥2,000,000.00',
         other:'￥2,000,000.00',
-
+        //step1公司品牌
+        companyBrand:[{
+          value: '花世界',
+          label: '花世界'
+        },{
+          value: '樱雪',
+          label: '樱雪'
+        },{
+          value: '滋彩',
+          label: '滋彩'
+        },{
+          value: '芭菲',
+          label: '芭菲'
+        }],
         //step1投放城市
-        throwCity:[{
-          value: '广州',
-          label: '广州'
-        },{
-          value: '北京',
-          label: '北京'
-        },{
-          value: '上海',
-          label: '上海'
-        },{
-          value: '成都',
-          label: '成都'
+        throwCity: [{
+          value: '440100',
+          label: '广州',
+          children: [
+            {
+              value: '440106',
+              label: '天河区',
+            }
+          ]
         }],
         //购物车
         // carShow:false,
@@ -677,10 +703,11 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
           ownerSales: '',
           companyName: '',
           companyBrand: '',
-          throwCity:'',
+          throwCity:[],
           ownerBU: '',
           planRemark: '',
         },
+
         planRules: {
           planName: [
             {required: true, message: '方案名称不能为空', trigger: 'blur'},
@@ -695,6 +722,10 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
           companyBrand: [
             {required: true, message: '公司品牌不能为空', trigger: 'change'},
           ],
+
+        },
+        //step2选择面板
+        selectPanel:{
 
         },
         //step2列表
@@ -937,6 +968,8 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
 
     },
     mounted(){
+	    this.GetBrand()
+	    this.ShowRegion()// 获取城市接口
       // 注：window.onresize只能在项目内触发1次
       let that = this
       window.onresize = function windowResize () {    // 实时监控body的宽带。注：修改该方法后要重启项目并重新打开页面
@@ -962,6 +995,7 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
             $(this).addClass('active');
           }
         });
+
         //筛选输入框
         $('.content_top_wrap').on('focus', '.input', function () {
           $(this).parents('.input-wrap').addClass('focus');
@@ -981,6 +1015,57 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
       })
     },
     methods: {
+      // 获取公司品牌
+      GetBrand(){
+        let cidParams = { cid: 972 }
+        api.getApi('/GetBrand',cidParams).then(res=>{
+            console.log('公司品牌',res.data)
+        })
+      },
+      // 城市地区联动-省级
+      ShowRegion(){
+        api.getApi('/ShowRegion').then(res=>{
+          //      console.log('地区：',res.data)
+          let region = res.data
+          let arr = [];
+          for(let i=0;i<region.length;i++){
+            let opt = {label:'',value:'',children:[]}
+            opt.label = region[i].rName
+            opt.value = region[i].rID
+            arr.push(opt)
+          }
+          this.throwCity = arr;
+        })
+      },
+      // 城市地区联动，选择省级后去获取市级和区、县级
+      handleItemChange(val){
+        console.log('active item:', val);
+        let region = []
+        api.getApi('/ShowRegion',{rid: val[0]}).then(res=>{
+          let city = res.data
+      //    console.log('city：',city)
+          for(let j=0;j<this.throwCity.length;j++){
+            if(this.throwCity[j].value == val[0]){
+              this.throwCity[j].children = []
+              for(let i=0;i<city.length;i++){
+                let obj = {label:'',value:''}
+                obj.label = city[i].rName
+                obj.value = city[i].rID
+                if(city[i].rID.toString().substring(4,6) == '00' ){  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
+          //        console.log(city[i].rID.toString().substring(4,6))
+                  this.throwCity[j].children.push(obj)
+                }
+                // else{
+                //   region.push(obj)              // 三级，所属区域
+                // }
+              }
+        //      console.log('region',region)
+          //    this.regionOpt = region
+              break
+            }
+          }
+        })
+      },
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event){
         let e = event || window.event;
@@ -1093,12 +1178,27 @@ import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, DatePicker, S
         console.log(123);
       },
       next() {
+        console.log('planForm',this.planForm)
         this.active++;
         if (this.active > 2) {
           // this.active = 0;
         }
       },
       prev() {
+       /* let topWrap = $('.content_top_wrap dd')
+        for(let i=0;i<topWrap.length;i++){
+          if(topWrap.eq(i).hasClass('active')){
+            console.log('值',topWrap.eq(i).text())
+          }
+        }*/
+      /*  let topWrap = document.getElementsByClassName('content_top_wrap')[0]
+        let dd = topWrap.getElementsByTagName('dd')
+      //  console.log(dd.length)
+        for(let i=0;i<dd.length;i++){
+          if(dd[i].getAttribute('class') == 'active'){
+            console.log('值',dd[i].innerHTML)
+          }
+        }*/
         this.active--;
         if (this.active < 1) {
           this.active = 0;

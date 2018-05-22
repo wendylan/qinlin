@@ -239,6 +239,7 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
 						arr.push(data);
 					}
 				}
+				console.log('arr',arr)
 				this.currentPlan = arr;
 				return;
 			}
@@ -314,7 +315,35 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
       getData() {
         //请求
         let dataArr = [];
-        api.getApi('/GetMediaList', {resid: 1}).then(res => {
+        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        api.postApi('/GetResList',{uid:uid}).then(res=>{
+          let resList = [
+            {
+              resID: 1,
+              rID: 440106,
+              resName: "帝景山庄",
+              resAddress: "广东省广州市天河区东圃镇悦景路11号",
+              latLng: "113.428473;23.154321",
+              tradingArea: "山泉",
+              joinTime: "2018-04-03 16:21:45.0",
+              resType: 1
+            },
+            {
+              resID: 2,
+              rID: 440103,
+              resName: "周门小区",
+              resAddress: "广州市荔湾区周门路",
+              joinTime: "2018-05-03 19:07:34.0",
+              resType: 1
+            }
+          ]
+        //  let resList = res.data
+          for(let i=0;i<resList.length;i++){
+              this.getResInfo(resList[i].resID)
+          }
+          console.log('resList:',resList)
+        })
+        /*api.getApi('/GetMediaList', {resid: 1}).then(res => {
           for (let i = 0; i < res.data.length; i++) {
             //  console.log(this.planList);
             if (res.data[i].mState === 1) {
@@ -336,14 +365,53 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
                 dataArr[j].region = '天河区'
               }
             }
-			this.planList = dataArr;
-			this.currentPlan = this.planList;
+            this.planList = dataArr;
+            console.log('planList',this.planList)
+            this.currentPlan = this.planList;
           }).catch(err => {
             console.log(err);
           });
         }).catch(err => {
           console.log(err);
-        });
+        });*/
+      },
+      getResInfo(rid){
+        let dataArr = [];
+        console.log('rid',rid)
+        api.getApi('/GetMediaList', {resid: rid}).then(res => {
+          for (let i = 0; i < res.data.length; i++) {
+            //  console.log(this.planList);
+            if (res.data[i].mState === 1) {
+              res.data[i].mState = '正常'
+              //缺少待维修，待安装，禁用
+            }
+            //数据放入数组
+            dataArr.push(res.data[i]);
+          }
+          api.getApi('/GetResCT', {resid: rid, info: 'y'}).then(res => {
+            for (let j = 0; j < dataArr.length; j++) {
+              dataArr[j].cType = res.data.cType;
+              dataArr[j].resName = res.data.resName;
+              dataArr[j].tradingArea = res.data.tradingArea;
+              if(res.data.rID.toString().indexOf('4401') === 0){
+                dataArr[j].city = '广州'
+              }
+              if(res.data.rID.toString().indexOf('106') > 0){
+                dataArr[j].region = '天河区'
+              }
+            }
+            for(let t=0;t<dataArr.length;t++){
+              this.planList.push(dataArr[t])
+            }
+          //  this.planList = dataArr;
+            console.log('planList',this.planList)
+            this.currentPlan = this.planList;
+          }).catch(err => {
+            console.log(err);
+          })
+        }).catch(err => {
+          console.log(err);
+        })
       },
       mediaDetail(data){
         console.log(data.resID)

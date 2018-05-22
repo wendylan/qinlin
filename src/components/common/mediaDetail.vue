@@ -182,7 +182,7 @@
         </div>
 
         <div class="content_bottom_btn">
-          <el-button type="primary">编辑</el-button>
+          <el-button type="primary" @click="edit">编辑</el-button>
           <el-button type="default" @click="goBack">返回</el-button>
         </div>
       </div>
@@ -275,9 +275,16 @@
         this.getDataFun()
       },
       methods:{
+		  // 返回
 			goBack(){
 				this.$router.push('./mediaList');
 			},
+        // 编辑
+        edit(){
+			    sessionStorage.setItem('recDetail',JSON.stringify(this.obj))
+          sessionStorage.setItem('mediaList',JSON.stringify(this.mediaList))
+			    this.$router.push('./mediaInput?edit=y')
+        },
         getDataFun(){
           let resID = sessionStorage.getItem('resID')
           api.getApi('/GetResCT',{resid:resID,info:'y'}).then(res=>{
@@ -291,6 +298,8 @@
             this.obj.resName = res.data.resName
             this.obj.HouseNum = res.data.hNum
             this.obj.EntryExitNum = res.data.dNum
+            this.obj.buildingNum = res.data.fNum
+            this.obj.rid = res.data.rID
             if(res.data.rID.toString().indexOf('4401') === 0){
               this.obj.city = '广州'
             }

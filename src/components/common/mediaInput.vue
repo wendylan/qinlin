@@ -15,7 +15,7 @@
                      class="demo-ruleForm">
               <el-form-item label="资源类型:" prop="rt">
                 <div class="select_wrap">
-                  <el-select v-model="recForm.rt" placeholder="请选择资源类型">
+                  <el-select v-model="recForm.rt" placeholder="请选择资源类型" :disabled="PathHaveEdit">
                     <el-option label="写字楼" value="0"></el-option>
                     <el-option label="社区" value="1"></el-option>
                   </el-select>
@@ -25,14 +25,9 @@
                 <el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
               </el-form-item>
               <el-form-item label="所属城市:" prop="city">
-                <!--<el-select v-model="recForm.city" placeholder="请选择所属城市">
-                  <el-option label="广州" value="guangzhou"></el-option>
-                  <el-option label="上海" value="beijing"></el-option>
-                  <el-option label="深圳" value="shenzhen"></el-option>
-                </el-select>-->
                 <el-cascader
                   :options="cityOptions"
-                  v-model="recForm.city"
+                  v-model="selectedOptions"
                   separator="-"
                   :show-all-levels="false"
                   @change="handleChange"
@@ -41,8 +36,6 @@
               </el-form-item>
               <el-form-item label="所属区域:" prop="region">
                 <el-select v-model="recForm.region" placeholder="请选择所属区域" :clearable="true">
-                  <!--  <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>-->
                   <el-option v-for="item in regionOpt"
                              :key="item.value"
                              :label="item.label"
@@ -132,7 +125,7 @@
             <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
                      class="demo-ruleForm">
               <el-form-item label=" 媒介载体:" prop="mediaType">
-                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体">
+                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体" :disabled="PathHaveEdit">
                   <el-option label="" value="广告门"></el-option>
                 </el-select>
               </el-form-item>
@@ -141,7 +134,7 @@
               </el-form-item>
               <el-form-item label="可投面数:" prop="usableNum">
                 <el-input-number v-model="item.mediaForm.usableNum" controls-position="right" :min="1"
-                                 :max="9999999"></el-input-number>
+                                 :max="9999999" :disabled="PathHaveEdit"></el-input-number>
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mediaStatus">
                 <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态">
@@ -223,7 +216,7 @@
           <div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
         </div>
         <div class="content_bottom_btn">
-          <button class="create" @click="submitForm('recForm','mediaForm')">创建</button>
+          <button class="create" @click="submitForm('recForm','mediaForm')">{{PathHaveEdit?'保存':'创建'}}</button>
           <button class="cancel">取消</button>
         </div>
       </div>
@@ -298,12 +291,12 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         arrMedia: [
           { text: '媒体一' ,
             mediaForm:{
-              mediaType: '',   //媒体类型mtype
+              mediaType: '',   //媒体类型mVehicle
               mediaName: '',  //媒体名称mtitle
               usableNum: '1',   //广告位面数pnum
               mediaStatus: '',  //媒体状态
               assetId: '',      //资产编号assettag
-              doorType: '',     // 门类型
+              doorType: '',     // 门类型mType
               adSizeW: '',      //广告尺寸adsize
               adSizeH: '',     //广告尺寸
               visualW: '',      //可视画面adviewsize
@@ -361,17 +354,17 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         },*/
         recRules: {
           recType: [
-            {required: true, message: '资源类型不能为空', trigger: 'change'},
+            {required: true, message: '请选择资源类型', trigger: 'change'},
           ],
           recName: [
             {required: true, message: '资源名称不能为空', trigger: 'blur'},
             {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
           city: [
-            {required: true, message: '所属城市不能为空', trigger: 'change'},
+            {required: true, message: '请选择所属城市', trigger: 'change'},
           ],
           region: [
-            {required: true, message: '所属区域不能为空', trigger: 'change'},
+            {required: true, message: '请选择所属区域', trigger: 'change'},
           ],
           business: [
             {min: 0, max: 40, message: '最多只能输入40个字节', trigger: 'change'}
@@ -381,7 +374,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             {min: 0, max: 70, message: '最多只能输入70个字节', trigger: 'blur'}
           ],
           buildingType: [
-            {required: true, message: '楼盘类型不能为空', trigger: 'change'},
+            {required: true, message: '请选择楼盘类型', trigger: 'change'},
           ],
           /* doorway:[
              { validator: validateNum,trigger:'change'},
@@ -393,7 +386,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             /*{ min: 1, max: 9999999, type:'number', message: '只能输入数字', trigger: 'blur' }*/
           ],
           households: [
-            {validator: validateNum, trigger: 'blur'},
+          /*  {validator: validateNum, trigger: 'blur'},*/
             {required: true, message: '住户数量不能为空', trigger: 'blur'},
             // { min: 1, max: 9999999, type:'number', message: '只能输入数字', trigger: 'blur' }
           ],
@@ -406,7 +399,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             {type: 'number', message: '只能输入数字', trigger: 'blur'}
           ],
           lat: [
-            /* { required: true, message: '纬度不能为空', trigger: 'blur' },*/
+            { required: true, message: '纬度不能为空', trigger: 'blur' },
             {type: 'number', message: '只能输入数字', trigger: 'change'}
           ],
           recRemark: [
@@ -417,7 +410,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         },
         mediaRules: {
           mediaType: [
-            {required: true, message: '媒体类型不能为空', trigger: 'change'},
+            {required: true, message: '请选择媒介载体', trigger: 'change'},
           ],
           mediaName: [
             {required: true, message: '媒体名称不能为空', trigger: 'blur'},
@@ -429,7 +422,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             // { type:'number', min:1, max:26, message:'最多可投26面',trigger:'blur'},
           ],
           mediaStatus: [
-            {required: true, message: '媒体状态不能为空', trigger: 'change'},
+            {required: true, message: '请选择媒体状态', trigger: 'change'},
           ],
           assetId: [
             {validator: validateAssetId, trigger: 'blur'},
@@ -482,13 +475,16 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             }
           ]
         }],
-        regionOpt:[]
+        regionOpt:[],     // 地区
+        selectedOptions: [],    // 城市默认选项
+        PathHaveEdit: false,    //  新建/编辑
       };
     },
     beforeCreate: function(){
       //  this.ShowRegion()
     },
     mounted: function () {
+      this.editFun() // 编辑方法
       this.ShowRegion()
     },
     methods: {
@@ -528,19 +524,16 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           });
         }
       },
-      //删除
+      //删除媒体面板
       mediaDelBtnFun(index){
-        //  this.arrMedia.splice(this.arrMedia.length-1,1)
-        //  alert(index)
-
-        this.arrMedia.splice(index,1)
-        console.log('长度为',this.arrMedia.length,'index:',index)
-        if(index < this.arrMedia.length){
-          for(let i=0;i<this.arrMedia.length;i++){
-            this.arrMedia[i].text = this.titleArr[i]
+          this.arrMedia.splice(index,1)   // 删除指定下标媒体面板
+          console.log('长度为',this.arrMedia.length,'index:',index)
+          if(index < this.arrMedia.length){   // 修改面板title标签
+            for(let i=0;i<this.arrMedia.length;i++){
+              this.arrMedia[i].text = this.titleArr[i]
+            }
           }
-        }
-        this.titleIndex--
+          this.titleIndex--
       },
       // 城市地区联动-省级
       ShowRegion(){
@@ -587,7 +580,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
       },
       // 根据市级城市（rid前四位），筛选属于它的下属区、县
       handleChange(value){
-        console.log(value)
+        console.log('handleChange',value)
         //  console.log('value',value[1])
         let str = value[1].toString().substring(0,4)
         let arr = []
@@ -601,7 +594,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
       },
       //添加资源媒体
       createMedia(){
-        console.log(this.arrMedia[0].mediaForm)
+        console.log(this.arrMedia)
       //  this.resetForm()
         /*  AddRes
            参数：  uid     int【必填】     UserID
@@ -626,7 +619,8 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           resaddr: '广东省广州市天河区东圃镇悦景路11号',
           latLng: '110.123;56.321'
         }
-        this.recForm.uid = sessionStorage.getItem("uid")
+    //    this.recForm.uid = sessionStorage.getItem("uid")
+        this.recForm.uid = JSON.parse(sessionStorage.getItem('session_data')).uID
         this.recForm.latLng = this.recForm.lat+';'+this.recForm.lng
         delete this.recForm.lat
         delete this.recForm.lng
@@ -749,31 +743,31 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
 
       // 表单验证
       submitForm(r_item,m_item) {
-        let r_boolean = false
-        let m_boolean = false
-        this.$refs[r_item].validate((valid) => {
-          if (valid) {
-            // this.createMedia()
-            //  alert('submit!');mediaRules
-            r_boolean = true
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-        console.log('$refs',this.$refs)
-        for(let i=0;i<this.$refs[m_item].length;i++){
-          this.$refs[m_item][i].validate((valid) => {
-            if (valid) {
-              m_boolean = true
-              // this.createMedia()
-              //  alert('submit!');mediaRules
-            } else {
-              console.log('error submit!!');
-              return false;
+            let r_boolean = false
+            let m_boolean = false
+         this.$refs[r_item].validate((valid) => {
+              if (valid) {
+                // this.createMedia()
+                //  alert('submit!');mediaRules
+                r_boolean = true
+              } else {
+                console.log('error submit!!');
+                return false;
+              }
+            });
+            console.log('$refs',this.$refs)
+            for(let i=0;i<this.$refs[m_item].length;i++){
+              this.$refs[m_item][i].validate((valid) => {
+                if (valid) {
+                  m_boolean = true
+                  // this.createMedia()
+                  //  alert('submit!');mediaRules
+                } else {
+                  console.log('error submit!!');
+                  return false;
+                }
+              })
             }
-          })
-        }
         if(r_boolean && m_boolean){ // 前台验证
           this.createMedia()
         }
@@ -785,7 +779,71 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         for(let i=0;i<this.arrMedia.length;i++){
           this.$refs['mediaForm'][i].resetFields();
         }
-        //  this.$refs['mediaForm'][0].resetFields();
+      },
+      // 媒体详情跳转过来，获取信息并编辑
+      editFun(){
+        let inputPath = this.$route.fullPath //this.$route.path
+        console.log(inputPath)
+        if(inputPath.indexOf('edit=y') !== -1){
+          let recObj = JSON.parse(sessionStorage.getItem('recDetail'))
+          let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
+          if(recObj !== null || mediaObj !== null){
+            this.PathHaveEdit = true
+            let tempObj = {}
+            // 设置默认选中的城市
+            this.selectedOptions[0] = Number(recObj.rid.toString().substring(0,2) + '0000')
+            this.handleItemChange(this.selectedOptions)
+            this.selectedOptions[1] = Number(recObj.rid.toString().substring(0,4) + '00')
+            //    console.log('selectedOptions',this.selectedOptions)
+            // 获取设置资源信息
+            tempObj.rt = recObj.cType
+            tempObj.resname = recObj.resName
+            tempObj.city = this.selectedOptions[1] //440100
+            tempObj.region = recObj.cityArea   //
+            tempObj.business = recObj.tradingArea
+            tempObj.resaddr = recObj.resAddress
+            tempObj.buildingType = recObj.houseType
+            tempObj.doorwayNum = recObj.EntryExitNum
+            tempObj.buildingNum = recObj.buildingNum
+            tempObj.households = recObj.HouseNum
+            tempObj.buildingPrice = Number(recObj.housePrice.split('元')[0])
+            tempObj.liveTime = recObj.joinTime
+            tempObj.lat = Number(recObj.latLng.split(';')[0])
+            tempObj.lng = Number(recObj.latLng.split(';')[1])
+            tempObj.recRemark = recObj.remark
+            this.recForm = tempObj
+            console.log('recForm',this.recForm)
+            //设置媒体信息
+            console.log('mediaObj',mediaObj)
+            for(let i=0;i<mediaObj.length;i++){
+              let media = {}
+              if(i<mediaObj.length-1){ // 创建媒体面板，默认已有一个
+                this.mediaAddFun()
+              }
+              media.mediaType = mediaObj[i].mVehicle
+              media.mediaName = mediaObj[i].mTitle
+              media.usableNum = mediaObj[i].pNum
+              media.mediaStatus = mediaObj[i].mState
+              media.assetId = mediaObj[i].assetTag
+              media.doorType = mediaObj[i].mType
+              media.adSizeW = Number(mediaObj[i].adSize.split('*')[0])
+              media.adSizeH = Number(mediaObj[i].adSize.split('*')[1])
+              media.visualW = ''
+              media.visualH = ''
+              media.adLimit = mediaObj[i].notPush
+              media.mediaRemark = ''
+              console.log('media',media)
+              this.arrMedia[i].mediaForm = media
+            }
+          }else{
+            this.$router.push('./mediaInput')
+            this.PathHaveEdit = false
+          }
+        }else{
+          this.PathHaveEdit = false
+          sessionStorage.removeItem('recDetail')
+          sessionStorage.removeItem('mediaList')
+        }
       },
     },
   }
