@@ -351,32 +351,12 @@ export default {
 		},
 		// 创建
 		submitData(){
-			// let userInfo = {
-			// 	realName: 'wendy',
-			// 	sName: 'wendy',
-			// 	phone: 13612457899,
-			// 	telephone: '787-787',
-			// 	email: '3063766545@qq.com',
-			// 	position: '前端',
-			// 	rid: 440000,
-			// 	utype: 'AD',
-			// 	uwho: 1,
-			// 	puid: 2
-			// };
 			console.log(this.isChangeCom());
 			// 公司信息有修改
 			if(this.isChangeCom()){
 
 				// 如果有新填入品牌则新增品牌
 				if(this.companyTags.length){
-					// for(let brand of this.companyTags){
-					// 	api.getApi('/AddBrand', {bt: brand, cid: this.companyForm.cID}).then(res => {
-                    //         console.log(res);
-					// 		this.oldBrandTags.push(res.data);
-					// 	});
-					// }
-					// this.companyTags = [];
-
 					// 新增品牌
 					this.addBrand(this.companyTags, this.companyForm.cID);
 				}
@@ -385,33 +365,11 @@ export default {
 				let cid = this.companyForm.cID;
 				this.regUser(puid, cid);
 
-				// this.$refs['clientForm'].validate((valid) => {
-				// 	if (valid) {
-				// 		// 注册用户
-				// 		this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-				// 		this.clientForm.uwho = this.companyForm.cID;
-				// 		api.postApi('/RegUser', this.clientForm).then(res => {
-				// 			console.log(res);
-				// 		}).catch(res =>{
-				// 			console.log(res);
-				// 		});
-				// 	} else {
-				// 		console.log('error submit!!');
-				// 		return false;
-				// 	}
-				// });
-
 			}else{
+				
 				// 公司信息没有修改
 				// 如果有新填入品牌则新增品牌
 				if(this.companyTags.length){
-					// for(let brand of this.companyTags){
-					// 	api.getApi('/AddBrand', {bt: brand, cid: this.companyForm.cID}).then(res => {
-                    //         console.log(res);
-					// 		this.oldBrandTags.push(res.data);
-					// 	});
-					// }
-					// this.companyTags = [];
 					// 新增品牌
 					this.addBrand(this.companyTags, this.companyForm.cID);
 				}
@@ -419,22 +377,6 @@ export default {
 				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
 				let cid = this.companyForm.cID;
 				this.regUser(puid, cid);
-				// this.$refs['clientForm'].validate((valid) => {
-				// 	if (valid) {
-				// 		// 注册用户
-				// 		this.clientForm.puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-				// 		this.clientForm.uwho = this.companyForm.cID;
-				// 		api.postApi('/RegUser', this.clientForm).then(res => {
-				// 			console.log(res);
-				// 		}).catch(res =>{
-				// 			console.log(res);
-				// 		});
-				// 	} else {
-				// 		console.log('error submit!!');
-				// 		return false;
-				// 	}
-				// });
-
 			}
 		},
 		// 新增品牌
