@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="content_bottom_btn">
-			<el-button type="primary">编辑</el-button>
+			<el-button type="primary" @click="editClient">编辑</el-button>
 			<el-button @click="goBack">返回</el-button>
 		</div>
 	</div>
@@ -100,7 +100,6 @@ export default {
 			// 获取用户信息
 			let initdata = JSON.parse(sessionStorage.getItem('clientDetail_data'));
 			// 获取行业信息
-			let arr = JSON.parse(sessionStorage.getItem('industry'));
 			if(initdata){
 				this.userInfo = initdata;
 				api.getApi('/GetCompanyInfo', {
@@ -115,11 +114,10 @@ export default {
 					this.$set(this.companyInfo, 'iName', text);
 					// 公司信息所在城市
 					areaToText.province(data=>{
-						this.$set(this.companyInfo, 'rName', data);
+						this.$set(this.companyInfo, 'rName', data[0].rName);
 					}, res.data.rID);
 				});
 			}
-			
 		},
 		// 编辑信息
 		editClient(){

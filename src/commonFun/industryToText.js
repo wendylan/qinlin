@@ -21,4 +21,30 @@ industry.getText = function(iID){
 	}
 	return str;
 };
+
+// 获取行业的一级piId
+industry.getpiID = function(iID){
+	let piid = '';
+	for(let data of arr){
+		if(data.iID == iID){
+			piid = data.piID;
+		}
+	}
+	return piid;
+};
+// 获取所有行业信息，并且封装成cascader联动
+industry.cascader = function(){
+	let result = [];
+	for(let data of arr){
+		if(data.piID == 0){
+			result.push({piID: data.piID, iID: data.iID, value: data.iID, label: data.iName, children: [] });
+		}
+		for(let item of result){
+			if(data.piID == item.iID){
+				item.children.push({ piID: data.piID, iID: data.iID, value: data.iID, label: data.iName });
+			}
+		}
+	}
+	return result;
+}
 export default industry;
