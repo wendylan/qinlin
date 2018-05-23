@@ -11,9 +11,9 @@ export default {
     data(){
         return {
             containData:[
-                {path: '/media/mediaList', name: '媒体管理', smallOpera:'查看', operationName: '录入媒体', operationPath: '/media/mediaInput'},
-                {path: '/media/planList', name: '方案管理', smallOpera:'查看', operationName: '创建方案', operationPath: '/media/createPlan'},
-                {path: '/media/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: ''}
+                {path: '/media/mediaList', name: '媒体管理', smallOpera:'查看', operationName: '录入媒体', operationPath: '/media/mediaInput', classPar: 'media_box', class:'media'},
+                {path: '/media/planList', name: '方案管理', smallOpera:'查看', operationName: '创建方案', operationPath: '/media/createPlan', classPar:'editor_box', class: 'editor'},
+                {path: '/media/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: '', classPar:'order_box', class: 'order'}
             ],
         }
     },

@@ -219,13 +219,13 @@ export default {
 				],
 				cityArr :[
 					{required:true, message:'请选择所在地', trigger:'change'}
-				]
-				// telphone: [
+				],
+				// telephone: [
 				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
 				// ],
-				// division: [
-				// 	{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
-				// ],
+				division: [
+					{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
+				],
 			},
 			companyRules: {
 				cName: [
@@ -264,7 +264,7 @@ export default {
 				let industryResult = [industryToText.getpiID(this.companyForm.iID), this.companyForm.iID];
 				this.companyForm.industryIdArr = industryResult;
 				// 如果有市区id则cascader显示出对应的市区
-				let parStr = this.companyForm.rID.toString().substr(0, 2)+'0000'-0;
+				let parStr = Number(this.companyForm.rID.toString().substr(0, 2)+'0000');
 				let result = [parStr, this.companyForm.rID];
 				this.handleItemChange([parStr]);
 				this.companyForm.cityArr = [parStr, this.companyForm.rID];
@@ -277,7 +277,7 @@ export default {
 			if(clientInfo){
 				this.clientForm = clientInfo;
 				// 如果有市区id则cascader显示出对应的市区
-				let parStr = this.clientForm.rID.toString().substr(0, 2)+'0000'-0;
+				let parStr = Number(this.clientForm.rID.toString().substr(0, 2)+'0000');
 				let result = [parStr, this.clientForm.rID];
 				this.handleItemChange([parStr]);
 				this.clientForm.cityArr = [parStr, this.clientForm.rID];

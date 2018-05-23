@@ -5,8 +5,8 @@
                 <li v-for="(item, index) in containData" :key="index">
                   <router-link :to="{path: item.path}" class="mask"></router-link>
                     <div class="panel_top">
-                        <div class="panel_top_icon_wrap">
-                            <div class="panel_top_icon">
+                        <div class="panel_top_icon_wrap" :class="item.classPar">
+                            <div class="panel_top_icon" :class="item.class">
                             </div>
                         </div>
                         <div class="panel_top_right">
@@ -39,6 +39,45 @@
     }
 </script>
 <style>
+
+/* 背景图片 */
+.group{
+	background: #FFD04D url("../../assets/home/group.png") no-repeat center center;
+}
+.media{
+	background: #61A1F8 url("../../assets/home/media.png") no-repeat center center;
+}
+.editor{
+	background: #98ED8D url("../../assets/home/editor.png") no-repeat center center;
+}
+.order{
+	background: #EF818C url("../../assets/home/order.png") no-repeat center center;
+}
+.group_box{
+	border: 8px solid rgba(255,208,77,.3);
+    margin-left: 50px;
+    margin-top: 20px;
+    display: inline-block;
+}
+.media_box{
+	border: 8px solid rgba(97, 161, 248, 0.30);
+    margin-left: 50px;
+    margin-top: 20px;
+    display: inline-block;
+}
+.editor_box{
+	border: 8px solid rgba(152, 237, 141, 0.30);
+    margin-left: 50px;
+    margin-top: 20px;
+    display: inline-block;
+}
+.order_box{
+	border: 8px solid rgba(239, 129, 140, 0.30);
+    margin-left: 50px;
+    margin-top: 20px;
+    display: inline-block;
+}
+
 /*内容*/
 
 .ad_index_panel {
@@ -80,50 +119,6 @@
 	border-radius: 50%;
 	margin-bottom: 29px;
 	text-align: center;
-}
-
-.ad_index_panel li:nth-child(1) .panel_top_icon_wrap {
-	border: 8px solid rgba(255, 208, 77, 0.3);
-	margin-left: 50px;
-	margin-top: 20px;
-	display: inline-block;
-}
-
-.ad_index_panel li:nth-child(1) .panel_top_icon {
-	background: #FFD04D url("../../assets/home/group.png") no-repeat center center;
-}
-
-.ad_index_panel li:nth-child(2) .panel_top_icon_wrap {
-	border: 8px solid rgba(97, 161, 248, 0.30);;
-	margin-left: 50px;
-	margin-top: 20px;
-	display: inline-block;
-}
-
-.ad_index_panel li:nth-child(2) .panel_top_icon {
-	background: #61A1F8 url("../../assets/home/media.png") no-repeat center center;
-}
-
-.ad_index_panel li:nth-child(3) .panel_top_icon_wrap {
-	border: 8px solid rgba(152, 237, 141, 0.30);
-	margin-left: 50px;
-	margin-top: 20px;
-	display: inline-block;
-}
-
-.ad_index_panel li:nth-child(3) .panel_top_icon {
-	background: #98ED8D url("../../assets/home/editor.png") no-repeat center center;
-}
-
-.ad_index_panel li:nth-child(4) .panel_top_icon_wrap {
-	border: 8px solid rgba(239, 129, 140, 0.30);
-	margin-left: 50px;
-	margin-top: 20px;
-	display: inline-block;
-}
-
-.ad_index_panel li:nth-child(4) .panel_top_icon {
-	background: #EF818C url("../../assets/home/order.png") no-repeat center center;
 }
 
 .panel_top_right {

@@ -11,9 +11,9 @@ export default {
 	data(){
         return {
             containData:[
-                {path: '/sale/createClient', name: '客户管理', smallOpera: '创建', operationName: '客户列表', operationPath: '/sale/clientList'},
-                {path: '/sale/createPlan', name: '方案管理', smallOpera:'创建', operationName: '方案列表', operationPath: '/sale/planList'},
-                {path: '/sale/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: ''}
+                {path: '/sale/createClient', name: '客户管理', smallOpera: '创建', operationName: '客户列表', operationPath: '/sale/clientList', classPar: 'group_box', class:'group'},
+                {path: '/sale/createPlan', name: '方案管理', smallOpera:'创建', operationName: '方案列表', operationPath: '/sale/planList', classPar: 'editor_box', class:'editor'},
+                {path: '/sale/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: '', classPar: 'order_box', class:'order'}
             ],
         }
     },
