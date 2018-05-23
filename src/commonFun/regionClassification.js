@@ -1,31 +1,6 @@
 //作用： 
 // 使用方法：callback为一个函数,str为rid,它为空的时候返回所有的区域,否则返回相对应的区域
 import axios from 'axios';
-// var areaToText = {};
-// areaToText.province = function(callback, str=''){
-// 	if(str){
-// 		console.log(str);
-// 		str = str.toString().substr(0, 2);
-// 		str = str+'0000';
-// 	}
-// 	var result = '';
-// 	axios({
-// 		method: 'get',
-// 		url: '/ShowRegion',
-// 		// baseURL: '/api',
-// 		params: {
-// 			rid: str
-// 		} 
-// 	}).then(function(res) {
-// 		result = res.data;
-// 		typeof callback === 'function' && callback.call(window, result);
-// 		return result;
-// 	}).catch(err => {
-// 		console.log(err);
-// 	});
-// }
-// export default areaToText;
-
 var region = {};
 region.province = function(callback){
 	var result = {};
@@ -42,7 +17,6 @@ region.province = function(callback){
 			opt.value = tmp[i].rID
 			arr.push(opt)
 		}
-		// console.log(arr);
 		result.province = arr;
 		typeof callback === 'function' && callback.call(window, result);
 		return result;
@@ -52,15 +26,9 @@ region.province = function(callback){
 }
 
 region.cityArea = function(callback, str, provinceData){
-	console.log('123', provinceData);
-	console.log('str', str);
-// region.cityArea = function( str, provinceData){
-	// var pro = this.province();
-	// console.log(pro);
 	var result = {};
 	let area = [];
 	str = str.toString().substr(0, 2)+'0000';
-	// str = str+'0000';
 	axios({
 		method: 'get',
 		url: '/ShowRegion',
@@ -69,10 +37,7 @@ region.cityArea = function(callback, str, provinceData){
 			rid: str
 		} 
 	}).then((res) =>{
-		// console.log('province', this.province());
 		let citys = res.data;
-		// console.log(citys);
-		// citys.push({rID: 440302, rName: "南城区", rRank: 3, rSort: 1, pinYin: "SG"});
 		for(let province of provinceData){
 			if(province.value == str){
 				province.children = [];
