@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contain">
         <managebox :contain-data="containData"></managebox>
     </div>
 </template>
@@ -24,5 +24,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .contain{
+        min-height: 720px;
+    }
 </style>
