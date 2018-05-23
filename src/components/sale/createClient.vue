@@ -148,6 +148,7 @@
 <script>
 import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
+import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message } from 'element-ui';
 export default {
@@ -241,13 +242,13 @@ export default {
 					{ validator: validateEmail, trigger:'blur'},
 				],
 				cityArr :[
-					{required:true, message:'请选择所在地', trigger:'change'}
+					{required:true, message:'请选择所在地', trigger:'blur'}
 				]
 				// telphone: [
 				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
 				// ],
 				// division: [
-				// 	{ max: 40, message: '最多只能输入40个字节', trigger: 'change' }
+				// 	{ max: 40, message: '最多只能输入40个字节', trigger: 'blur' }
 				// ],
 			},
 			companyRules: {
@@ -260,13 +261,13 @@ export default {
 					{ max: 200, message: '最多只能输入200个字节', trigger: 'blur' }
 				],
 				cRemark:[
-					{ max: 200, message: '最多只能输入200个字符', trigger: 'change' }
+					{ max: 200, message: '最多只能输入200个字符', trigger: 'blur' }
 				],
 				industryIdArr :[
-					{required:true, message:'请选择行业分类', trigger:'change'}
+					{required:true, message:'请选择行业分类', trigger:'blur'}
 				],
 				cityArr :[
-					{required:true, message:'请选择所在城市', trigger:'change'}
+					{required:true, message:'请选择所在城市', trigger:'blur'}
 				]
 			}
 		}
@@ -291,37 +292,45 @@ export default {
 		},
 		// 获取所有区域信息
 		getAreaData(){
-			areaToText.province(data=>{
-				let region = data;
-				let arr = [];
-				for(let i=0; i<region.length; i++){
-					let opt = {label:'', value:'', children:[]}
-					opt.label = region[i].rName
-					opt.value = region[i].rID
-					arr.push(opt)
-				}
-				this.allProvince = arr;
+			// areaToText.province(data=>{
+			// 	let region = data;
+			// 	let arr = [];
+			// 	for(let i=0; i<region.length; i++){
+			// 		let opt = {label:'', value:'', children:[]}
+			// 		opt.label = region[i].rName
+			// 		opt.value = region[i].rID
+			// 		arr.push(opt)
+			// 	}
+			// 	this.allProvince = arr;
+			// });
+
+			region.province(data =>{
+				this.allProvince = data.province;
 			});
 		},
 		// 点击省级去显示其对应市级
 		handleItemChange(val){
 			console.log('select', val);
-			areaToText.province(data=>{
-				let citys = data;
-				for(let province of this.allProvince){
-					if(province.value == val[0]){
-						province.children = [];
-						for(let city of citys){
-							let obj = { label: '', value:'' };
-							obj.label = city.rName;
-							obj.value = city.rID;
-							if(city.rID.toString().substring(4, 6) == '00' ){
-								province.children.push(obj);
-							}
-						}
-					}
-				}
-			}, val[0]);
+			// areaToText.province(data=>{
+			// 	let citys = data;
+			// 	for(let province of this.allProvince){
+			// 		if(province.value == val[0]){
+			// 			province.children = [];
+			// 			for(let city of citys){
+			// 				let obj = { label: '', value:'' };
+			// 				obj.label = city.rName;
+			// 				obj.value = city.rID;
+			// 				if(city.rID.toString().substring(4, 6) == '00' ){
+			// 					province.children.push(obj);
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }, val[0]);
+
+			region.cityArea(data => {
+				console.log(data);
+			}, val[0], this.allProvince);
 		},
 		// 输入获取公司信息(远程搜索)
 		querySearchAsync(queryString, callback) {

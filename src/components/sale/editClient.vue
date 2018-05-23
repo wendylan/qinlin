@@ -130,7 +130,7 @@
 <script>
 import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
-import region from '../../commonFun/regionClassification.js';
+import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
 export default {
