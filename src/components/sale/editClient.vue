@@ -130,7 +130,7 @@
 <script>
 import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
-import region from '../../commonFun/regionClassification.js';
+// import region from '../../commonFun/regionClassification.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
 export default {
@@ -252,10 +252,9 @@ export default {
 	created() {
 		this.getIndustry();
 		this.getAreaData();
-		// 处理成所需要的数据格式或者说文本
-		this.getFormatData();
 	},
 	methods: {
+		// 处理成所需要的数据格式或者说文本
 		getFormatData(){
 			let companyInfo = JSON.parse(sessionStorage.getItem('companyInfo'));
 			let clientInfo = JSON.parse(sessionStorage.getItem('clientDetail_data'));
@@ -299,47 +298,41 @@ export default {
 		},
 		// 获取所有区域信息
 		getAreaData(){
-			// areaToText.province(data=>{
-			// 	// let region = data;
-			// 	// let arr = [];
-			// 	// for(let i=0; i<region.length; i++){
-			// 	// 	let opt = {label:'', value:'', children:[]}
-			// 	// 	opt.label = region[i].rName
-			// 	// 	opt.value = region[i].rID
-			// 	// 	arr.push(opt)
-			// 	// }
-			// 	this.allProvince = data.province;
-			// });
-			region.province(data => {
-				console.log('editClient', data);
-				this.allProvince = data.province;
+			areaToText.province(data=>{
+				let region = data;
+				let arr = [];
+				for(let i=0; i<region.length; i++){
+					let opt = {label:'', value:'', children:[]}
+					opt.label = region[i].rName
+					opt.value = region[i].rID
+					arr.push(opt)
+				}
+				this.allProvince = arr;
+				// 处理成所需要的数据格式或者说文本
+				this.getFormatData();
 			});
+
+
 		},
 		// 点击省级去显示其对应市级
 		handleItemChange(val){
-			
-			region.province(data => {
-				console.log('handle', data);
-				this.allProvince = data.province;
+			console.log('select', val);
+			areaToText.province(data => {
+				let citys = data;
+				for(let province of this.allProvince){
+					if(province.value == val[0]){
+						province.children = [];
+						for(let city of citys){
+							let obj = { label: '', value:'' };
+							obj.label = city.rName;
+							obj.value = city.rID;
+							if(city.rID.toString().substring(4, 6) == '00' ){
+								province.children.push(obj);
+							}
+						}
+					}
+				}
 			}, val[0]);
-
-			// console.log('select', val);
-			// areaToText.province(data => {
-			// 	let citys = data;
-			// 	for(let province of this.allProvince){
-			// 		if(province.value == val[0]){
-			// 			province.children = [];
-			// 			for(let city of citys){
-			// 				let obj = { label: '', value:'' };
-			// 				obj.label = city.rName;
-			// 				obj.value = city.rID;
-			// 				if(city.rID.toString().substring(4, 6) == '00' ){
-			// 					province.children.push(obj);
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// }, val[0]);
 		},
 		// 判断公司信息是否修改
 		isChangeCom(){
