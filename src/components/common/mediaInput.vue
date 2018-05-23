@@ -24,10 +24,10 @@
               <el-form-item label="资源名称:" prop="resname">
                 <el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
               </el-form-item>
-              <el-form-item label="所属城市:" prop="city">
+              <el-form-item label="所属城市:" prop="city"><!--selectedOptions-->
                 <el-cascader
                   :options="cityOptions"
-                  v-model="selectedOptions"
+                  v-model="recForm.city"
                   separator="-"
                   :show-all-levels="false"
                   @change="handleChange"
@@ -98,8 +98,8 @@
                   <el-upload
                     action=""
                     list-type="picture-card"
-                    :limit = '1'
-                    :auto-upload = 'false'
+                    :limit='1'
+                    :auto-upload='false'
                     :on-change="recUploadChange"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove">
@@ -137,7 +137,7 @@
                                  :max="9999999" :disabled="PathHaveEdit"></el-input-number>
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mediaStatus">
-                <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态">
+                <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态" :disabled="PathHaveEdit">
                   <el-option label="禁止" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
                   <el-option label="待安装" value="2"></el-option>
@@ -173,7 +173,7 @@
                   <span>mm</span>
                 </div>
               </el-form-item>
-              <el-form-item prop="visualH" class="lngNlat  RlngNlat largeW">
+              <el-form-item prop="visualH" class="lngNlat RlngNlat largeW">
                 <div class="mm">
                   <div>
                     <el-input v-model.number="item.mediaForm.visualH" placeholder="高度">
@@ -182,7 +182,7 @@
                   </div>
                 </div>
               </el-form-item>
-              <el-form-item label="广告限制:">
+              <el-form-item label="广告限制:" prop="adLimit">
                 <el-select v-model="item.mediaForm.adLimit" placeholder="请选择广告限制">
                   <el-option label="" value="地产1"></el-option>
                   <el-option label="" value="地产2"></el-option>
@@ -191,21 +191,19 @@
               <el-form-item label="备注:" prop="mediaRemark">
                 <el-input type="textarea" v-model="item.mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
               </el-form-item>
-              <el-form-item label="门禁照片:">
+              <el-form-item label="门禁照片:" pro="mImg">
                 <div class="upload_img_wrap" style="width: 120px;">
                   <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action=""
+                    v-model="item.mediaForm.mImg"
                     list-type="picture-card"
-                    :limit = '1'
-                    :auto-upload = 'false'
+                    :limit='1'
+                    :auto-upload='false'
                     :on-change="mediaUploadChange"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                  <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>
                 </div>
               </el-form-item>
             </el-form>
@@ -225,11 +223,28 @@
 </template>
 
 <script>
-import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableColumn, DatePicker, Dialog, Upload, InputNumber, MessageBox, Message } from 'element-ui';
+  import {
+    Form,
+    FormItem,
+    Select,
+    Cascader,
+    Option,
+    Button,
+    Input,
+    Table,
+    TableColumn,
+    DatePicker,
+    Dialog,
+    Upload,
+    InputNumber,
+    MessageBox,
+    Message
+  } from 'element-ui';
   import api from '../../api/api'
+
   export default {
     name: "mediaInput",
-    components:{
+    components: {
       elForm: Form,
       elFormItem: FormItem,
       // elSelect: Select,
@@ -237,7 +252,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
       elButton: Button,
       elSelect: Select,
       elOption: Option,
-      elCascader:Cascader,
+      elCascader: Cascader,
       elInput: Input,
       elTable: Table,
       elTableColumn: TableColumn,
@@ -272,9 +287,9 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         //缩略图
         dialogImageUrl: '',
         dialogVisible: false,
-        titleArr: ['媒体一','媒体二','媒体三','媒体四','媒体五'],
+        titleArr: ['媒体一', '媒体二', '媒体三', '媒体四', '媒体五', '媒体六', '媒体七', '媒体八', '媒体九', '媒体十'],
         titleIndex: 0,
-        /* CreateMedia
+        /* createRec
           rid         int【必填】     媒体所在地区ID
           resid       int【必填】     资源ID
           mtitle      String          媒体名称
@@ -289,8 +304,9 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           mvc         String          媒介载体
           mrk         String          媒体备注*/
         arrMedia: [
-          { text: '媒体一' ,
-            mediaForm:{
+          {
+            text: '媒体一',
+            mediaForm: {
               mediaType: '',   //媒体类型mVehicle
               mediaName: '',  //媒体名称mtitle
               usableNum: '1',   //广告位面数pnum
@@ -299,10 +315,11 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
               doorType: '',     // 门类型mType
               adSizeW: '',      //广告尺寸adsize
               adSizeH: '',     //广告尺寸
-              visualW: '',      //可视画面adviewsize
-              visualH: '',      //可视画面
+              visualW: 0,      //可视画面adviewsize
+              visualH: 0,      //可视画面
               mediaRemark: '',  //备注 mrk
-              adLimit: ''     //请选择广告限制 notpush
+              adLimit: '',     //请选择广告限制 notpush
+              mImg: ''
             },
           },
         ],
@@ -332,7 +349,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           doorwayNum: '1',  // 出入数
           buildingNum: '1',  // 楼栋数量
           households: '1',   // 住户数量
-          buildingPrice: '',  // 楼盘价格
+          buildingPrice: 0,  // 楼盘价格
           liveTime: '',
           lng: '',
           lat: '',
@@ -367,7 +384,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             {required: true, message: '请选择所属区域', trigger: 'change'},
           ],
           business: [
-            {min: 0, max: 40, message: '最多只能输入40个字节', trigger: 'change'}
+            {min: 0, max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
           address: [
             {required: true, message: '具体地址不能为空', trigger: 'blur'},
@@ -386,21 +403,21 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             /*{ min: 1, max: 9999999, type:'number', message: '只能输入数字', trigger: 'blur' }*/
           ],
           households: [
-          /*  {validator: validateNum, trigger: 'blur'},*/
+            /*  {validator: validateNum, trigger: 'blur'},*/
             {required: true, message: '住户数量不能为空', trigger: 'blur'},
             // { min: 1, max: 9999999, type:'number', message: '只能输入数字', trigger: 'blur' }
           ],
           buildingPrice: [
-            {min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'change'}
+            {min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'blur'}
           ],
           liveTime: [],
           lng: [
             {required: true, message: '经纬度不能为空', trigger: 'blur'},
-            {type: 'number', message: '只能输入数字', trigger: 'blur'}
+            // {type: 'number', message: '只能输入数字', trigger: 'change'}
           ],
           lat: [
-            { required: true, message: '纬度不能为空', trigger: 'blur' },
-            {type: 'number', message: '只能输入数字', trigger: 'change'}
+            {required: true, message: '纬度不能为空', trigger: 'blur'},
+            // {type: 'number', message: '只能输入数字', trigger: 'change'}
           ],
           recRemark: [
             /*{ validator: validateRemark,trigger:'change'},*/
@@ -430,32 +447,35 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
           doorType: [
-            {min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'change'}
+            {min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'blur'}
           ],
           adSizeW: [
             //  {validator: validateNum, trigger: 'change'},
-            {required: true,type:'number', message: '宽度不能为空且只能为数字', trigger: 'blur'},
-            // { type:'number', message: '只能输入数字',  trigger: 'blur' }
+            {required: true, type: 'number', message: '宽度不能为空且只能为数字', trigger: 'blur'},
+            // { type:'number', message: '只能输入数字',  trigger: 'change' }
           ],
           adSizeH: [
             //  {validator: validateNum, trigger: 'change'},
-            {required: true,type:'number', message: '高度不能为空且只能为数字', trigger: 'blur'},
-            // { type:'number', message: '只能输入数字', trigger: 'blur' }
+            {required: true, type: 'number', message: '高度不能为空且只能为数字', trigger: 'blur'},
+            // { type:'number', message: '只能输入数字', trigger: 'change' }
           ],
           visualW: [
-            //  {validator: validateNum, trigger: 'change'},
-            { type:'number', message: '宽度不能为空且只能输入数字',  trigger: 'change' }
+            {type: 'number', message: '只能输入数字', trigger: 'change'},
+            // { type:'number', message: '只能输入数字', trigger: 'change' }
           ],
           visualH: [
-            //  {validator: validateNum, trigger: 'change'},
-            { type:'number', message: '高度不能为空且只能输入数字', trigger: 'change' }
+            {type: 'number', message: '只能输入数字', trigger: 'change'},
+            // { type:'number', message: '只能输入数字', trigger: 'change' }
+          ],
+          adLimit: [
+            {message: '请选择媒体状态', trigger: 'change'},
           ],
           mediaRemark: [
-            {max: 200, message: '最多只能输入200个字符', trigger: 'change'}
+            {max: 200, message: '最多只能输入200个字符', trigger: 'blur'}
           ],
         },
-        recFormImg:'', // 资源图片
-        mediaFormImg:'',// 媒体图片
+        recFormImg: '', // 资源图片
+        mediaFormImg: '',// 媒体图片
         //城市数组
         cityOptions: [{
           value: 'zhinan',
@@ -475,12 +495,14 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             }
           ]
         }],
-        regionOpt:[],     // 地区
+        regionOpt: [],     // 地区
         selectedOptions: [],    // 城市默认选项
         PathHaveEdit: false,    //  新建/编辑
+        recImg: {},            // 上传的资源图片
+        mediaImg: {}          // 媒体图片
       };
     },
-    beforeCreate: function(){
+    beforeCreate: function () {
       //  this.ShowRegion()
     },
     mounted: function () {
@@ -489,11 +511,11 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
     },
     methods: {
       //新增媒体面板
-      mediaAddFun(){
-        console.log('点击成功')
-        //  let titleArr = ['媒体一','媒体二','媒体三','媒体四','媒体五']
-        let mediaArr=[
-          { text: '媒体二',mediaForm:{
+      mediaAddFun() {
+      //  console.log('点击成功')
+        let mediaArr = [
+          {
+            text: '媒体二', mediaForm: {
               mediaType: '',
               mediaName: '',
               usableNum: '1',
@@ -506,14 +528,19 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
               visualH: '',
               mediaRemark: '',
               adLimit: ''
-            } },
+            }
+          },
         ]
         //  console.log(mediaArr[this.titleIndex])
         mediaArr[0].text = this.titleArr[++this.titleIndex]
-        if(this.titleIndex < 5){
-          this.arrMedia.push(mediaArr[0]);
-        }else{
-          this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
+        if (this.titleIndex < 10) {
+          this.arrMedia.push(mediaArr[0])
+        } else {
+          Message({
+            message: '最多同时支持十个媒体面板的操作！',
+            type: 'warning'
+          })
+         /* this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
             confirmButtonText: '确定',
             callback: action => {
               this.$message({
@@ -521,28 +548,28 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
                 message: `action: ${ action }`
               });
             }
-          });
+          });*/
         }
       },
       //删除媒体面板
-      mediaDelBtnFun(index){
-          this.arrMedia.splice(index,1)   // 删除指定下标媒体面板
-          console.log('长度为',this.arrMedia.length,'index:',index)
-          if(index < this.arrMedia.length){   // 修改面板title标签
-            for(let i=0;i<this.arrMedia.length;i++){
-              this.arrMedia[i].text = this.titleArr[i]
-            }
+      mediaDelBtnFun(index) {
+        this.arrMedia.splice(index, 1)   // 删除指定下标媒体面板
+        console.log('长度为', this.arrMedia.length, 'index:', index)
+        if (index < this.arrMedia.length) {   // 修改面板title标签
+          for (let i = 0; i < this.arrMedia.length; i++) {
+            this.arrMedia[i].text = this.titleArr[i]
           }
-          this.titleIndex--
+        }
+        this.titleIndex--
       },
       // 城市地区联动-省级
-      ShowRegion(){
-        api.getApi('/ShowRegion').then(res=>{
+      ShowRegion() {
+        api.getApi('/ShowRegion').then(res => {
           //      console.log('地区：',res.data)
           let region = res.data
           let arr = [];
-          for(let i=0;i<region.length;i++){
-            let opt = {label:'',value:'',children:[]}
+          for (let i = 0; i < region.length; i++) {
+            let opt = {label: '', value: '', children: []}
             opt.label = region[i].rName
             opt.value = region[i].rID
             arr.push(opt)
@@ -551,27 +578,27 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         })
       },
       // 城市地区联动，选择省级后去获取市级和区、县级
-      handleItemChange(val){
-        console.log('active item:', val);
+      handleItemChange(val) {
+        //    console.log('active item:', val);
         let region = []
-        api.getApi('/ShowRegion',{rid: val[0]}).then(res=>{
+        api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
           let city = res.data
-          console.log('city：',city)
-          for(let j=0;j<this.cityOptions.length;j++){
-            if(this.cityOptions[j].value == val[0]){
+          console.log('city：', city)
+          for (let j = 0; j < this.cityOptions.length; j++) {
+            if (this.cityOptions[j].value == val[0]) {
               this.cityOptions[j].children = []
-              for(let i=0;i<city.length;i++){
-                let obj = {label:'',value:''}
+              for (let i = 0; i < city.length; i++) {
+                let obj = {label: '', value: ''}
                 obj.label = city[i].rName
                 obj.value = city[i].rID
-                if(city[i].rID.toString().substring(4,6) == '00' ){  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
-                  console.log(city[i].rID.toString().substring(4,6))
+                if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
+                  //            console.log(city[i].rID.toString().substring(4,6))
                   this.cityOptions[j].children.push(obj)
-                }else{
+                } else {
                   region.push(obj)              // 三级，所属区域
                 }
               }
-              console.log('region',region)
+              //        console.log('region',region)
               this.regionOpt = region
               break
             }
@@ -579,13 +606,13 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         })
       },
       // 根据市级城市（rid前四位），筛选属于它的下属区、县
-      handleChange(value){
-        console.log('handleChange',value)
+      handleChange(value) {
+        console.log('handleChange', value)
         //  console.log('value',value[1])
-        let str = value[1].toString().substring(0,4)
+        let str = value[1].toString().substring(0, 4)
         let arr = []
-        for(let i=0;i<this.regionOpt.length;i++){
-          if(this.regionOpt[i].value.toString().substring(0,4) === str){
+        for (let i = 0; i < this.regionOpt.length; i++) {
+          if (this.regionOpt[i].value.toString().substring(0, 4) === str) {
             //  console.log('找到区域',this.regionOpt[i].label)
             arr.push(this.regionOpt[i])
           }
@@ -593,9 +620,8 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
         this.regionOpt = arr
       },
       //添加资源媒体
-      createMedia(){
+      createRec() {
         console.log(this.arrMedia)
-      //  this.resetForm()
         /*  AddRes
            参数：  uid     int【必填】     UserID
            rid     int             地区id
@@ -610,71 +636,98 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
          "tradingArea": "山泉",
          "joinTime": "2018-04-03 16:21:45.0",
          "resType": 1*/
-        let obj = {
-          uid: 1,
-          rid: 440106,
-          ta: '山泉3',
-          rt: 1,
-          resname: '帝景山庄33',
-          resaddr: '广东省广州市天河区东圃镇悦景路11号',
-          latLng: '110.123;56.321'
-        }
-    //    this.recForm.uid = sessionStorage.getItem("uid")
+        /* let obj = {
+           uid: 1,
+           rid: 440106,
+           ta: '山泉3',
+           rt: 1,
+           resname: '帝景山庄33',
+           resaddr: '广东省广州市天河区东圃镇悦景路11号',
+           latLng: '110.123;56.321'
+         }*/
         this.recForm.uid = JSON.parse(sessionStorage.getItem('session_data')).uID
-        this.recForm.latLng = this.recForm.lat+';'+this.recForm.lng
+        this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
         delete this.recForm.lat
         delete this.recForm.lng
-        console.log('this.recForm',this.recForm)
-          //'https://beta.qinlinad.com/QADN/AddRes'
-     /*    api.postApi('https://beta.qinlinad.com/QADN/AddRes',obj).then(res=>{//GetResList  AddRes
-           console.log('资源数据：',res.data)
-           let recData = res.data
-           let arr_media = this.arrMedia[0].mediaForm
-           let adsize = arr_media.adSizeW + '*' +arr_media.adSizeH
-           let adviewsize = arr_media.visualW+'*'+ arr_media.visualH
-           let mediaObj = {
-               rid: recData.rID ,
-               resid: recData.resID,
-               uid: this.recForm.uid,
-               mtitle: arr_media.mediaName,
-               pnum: arr_media.usableNum,
-               adsize: adsize,
-               adviewsize: adviewsize,
-               notpush: arr_media.adLimit,
-               assettag: arr_media.assetId,
-               mtype: arr_media.mediaType,
-               mimg: '',
-               mvc: '',
-               mrk: arr_media.mediaRemark
-           }
-           console.log('mediaObj',mediaObj)
-           /!*arrMedia: [
-          { text: '媒体一' ,
-            mediaForm:{
-              mediaType: '',   //媒体类型mtype
-              mediaName: '',  //媒体名称mtitle
-              usableNum: '1',   //广告位面数pnum
-              mediaStatus: '',  //媒体状态
-              assetId: '',      //资产编号assettag
-              doorType: '',     // 门类型
-              adSizeW: '',      //广告尺寸adsize
-              adSizeH: '',     //广告尺寸
-              visualW: '',      //可视画面adviewsize
-              visualH: '',      //可视画面
-              mediaRemark: '',  //备注 mrk
-              adLimit: ''     //请选择广告限制 notpush
-            },
-          },
-        ],*!/
-           // 'https://beta.qinlinad.com/QADN/CreateMedia'
-           api.postApi('https://beta.qinlinad.com/QADN/CreateMedia',mediaObj).then(res=>{
+        console.log('this.recForm', this.recForm)
+        for (let i = 0; i < this.arrMedia.length; i++) {
+          console.log('arrMedia', i, this.arrMedia[i].mediaForm)
+        }
+        let recObj = {
+          uid: this.recForm.uid,
+          rid: this.recForm.city[1],
+          ta: this.recForm.business,        // 所属商圈
+          rt: this.recForm.rt,              // 资源类型
+          resname: this.recForm.resname,   // 资源名称
+          resaddr: this.recForm.resaddr,
+          latLng: this.recForm.latLng,
+        }
+        api.postApi('/AddRes', recObj).then(res => {
+          console.log('资源数据：', res.data)
+          let recData = res.data
+          if (!recData.SysCode) {
+            let mediaArr = this.arrMedia//[0].mediaForm
+            for (let j = 0; j < mediaArr.length; j++) {
+              let arr_media = mediaArr[j].mediaForm
+              let adsize = arr_media.adSizeW + '*' + arr_media.adSizeH
+              let adviewsize = arr_media.visualW + '*' + arr_media.visualH
+              let mediaObj = {
+                rid: recData.rID,
+                resid: recData.resID,
+                uid: this.recForm.uid,
+                mtitle: arr_media.mediaName,
+                pnum: arr_media.usableNum,
+                adsize: adsize,
+                adviewsize: adviewsize,
+                notpush: arr_media.adLimit,
+                assettag: arr_media.assetId,
+                mtype: arr_media.doorType,
+                mimg: '',
+                mvc: arr_media.mediaType,
+                mrk: arr_media.mediaRemark
+              }
+              console.log('mediaObj', mediaObj)
+              /*arrMedia: [
+             { text: '媒体一' ,
+               mediaForm:{
+                 mediaType: '',   //媒介载体mvc
+                 mediaName: '',  //媒体名称mtitle
+                 usableNum: '1',   //广告位面数pnum
+                 mediaStatus: '',  //媒体状态
+                 assetId: '',      //资产编号assettag
+                 doorType: '',     // 媒介类型
+                 adSizeW: '',      //广告尺寸adsize
+                 adSizeH: '',     //广告尺寸
+                 visualW: '',      //可视画面adviewsize
+                 visualH: '',      //可视画面
+                 mediaRemark: '',  //备注 mrk
+                 adLimit: ''     //请选择广告限制 notpush
+               },
+             },
+           ],*/
+              // 'https://beta.qinlinad.com/QADN/CreateMedia'
+              this.createMedia(mediaObj,j)
+              /*api.postApi('/CreateMedia', mediaObj).then(res => {
                 console.log(res)
-                this.resetForm() //请求成功后重置表单
-           })
-         }).catch(err=>{
-           console.log(err)
-         })*/
-        /* CreateMedia
+                if (j >= arr_media.length-1) {
+                  this.resetForm()  // 请求成功后重置表单
+                  Message({
+                    message: '资源媒体创建成功！',
+                    type: 'success'
+                  })
+                }
+              })*/
+            }
+          } else {
+            Message({
+              message: '资源创建失败！',
+              type: 'warning'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+        /* createRec
           rid         int【必填】     媒体所在地区ID
           resid       int【必填】     资源ID
           mtitle      String          媒体名称
@@ -689,6 +742,20 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           mvc         String          媒介载体
           mrk         String          媒体备注*/
       },
+      // 创建媒体
+      createMedia(mediaObj,n){
+        let temp = mediaObj
+        api.postApi('/CreateMedia', temp).then(res => {
+          console.log(res)
+          if (n >= this.arrMedia.length-1) {
+            this.resetForm()  // 请求成功后重置表单
+            Message({
+              message: '资源媒体创建成功！',
+              type: 'success'
+            })
+          }
+        })
+      },
       //缩略图
       handleRemove(file, fileList) {
         console.log(file, fileList);
@@ -700,7 +767,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
       },
 
       //recUploadChange\mediaUploadChange图片文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
-      recUploadChange(file){
+      recUploadChange(file) {
         const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
         const isLt1M = file.size / 1024 / 1024 < 1;
 
@@ -712,15 +779,15 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           this.$message.error('上传文件大小不能超过 1MB!');
           return false;
         }
-        let that = this
-        let reader = new FileReader();
-        reader.readAsDataURL(file.raw);
-        reader.onload = function(e){
-          console.log(this.result)//图片的base64数据
-          console.log(that.recFormImg)
-        }
+        /*  let that = this
+          let reader = new FileReader();
+          reader.readAsDataURL(file.raw);
+          reader.onload = function(e){
+            console.log(this.result)//图片的base64数据
+            console.log(that.recFormImg)
+          }*/
       },
-      mediaUploadChange(file){
+      mediaUploadChange(file) {
         const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
         const isLt1M = file.size / 1024 / 1024 < 1;
 
@@ -732,73 +799,86 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
           this.$message.error('上传文件大小不能超过 1MB!');
           return false;
         }
-        let that = this
-        let reader = new FileReader();
-        reader.readAsDataURL(file.raw);
-        reader.onload = function(e){
-          console.log(this.result)//图片的base64数据
-          console.log(that.mediaFormImg)
-        }
+        this.arrMedia[0].mediaForm.mImg = file.raw
+        /*  let that = this
+          let reader = new FileReader();
+          reader.readAsDataURL(file.raw);
+          reader.onload = function(e){
+            console.log(this.result)//图片的base64数据
+            console.log(that.mediaFormImg)
+          }*/
       },
 
       // 表单验证
-      submitForm(r_item,m_item) {
-            let r_boolean = false
-            let m_boolean = false
-         this.$refs[r_item].validate((valid) => {
-              if (valid) {
-                // this.createMedia()
-                //  alert('submit!');mediaRules
-                r_boolean = true
-              } else {
-                console.log('error submit!!');
-                return false;
-              }
-            });
-            console.log('$refs',this.$refs)
-            for(let i=0;i<this.$refs[m_item].length;i++){
-              this.$refs[m_item][i].validate((valid) => {
-                if (valid) {
-                  m_boolean = true
-                  // this.createMedia()
-                  //  alert('submit!');mediaRules
-                } else {
-                  console.log('error submit!!');
-                  return false;
-                }
-              })
+      submitForm(r_item, m_item) {
+        let r_boolean = false
+        let m_boolean = false
+        this.$refs[r_item].validate((valid) => {
+          if (valid) {
+            // this.createRec()
+            //  alert('submit!');mediaRules
+            r_boolean = true
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        //    console.log('$refs', this.$refs)
+        for (let i = 0; i < this.$refs[m_item].length; i++) {
+          this.$refs[m_item][i].validate((valid) => {
+            if (valid) {
+              m_boolean = true
+            } else {
+              m_boolean = false
+              console.log('error submit!!');
+              return false;
             }
-        if(r_boolean && m_boolean){ // 前台验证
-          this.createMedia()
+          })
+        }
+        if (r_boolean && m_boolean) { // 前台验证
+          if (this.PathHaveEdit) {   //判断是创建还是修改
+            this.postEditMsg()
+          } else {
+            this.createRec()
+          }
+        } else {
+          Message({
+            message: '信息填写有误！',
+            type: 'warning'
+          })
         }
       },
       //重置表单数据
       resetForm() {
         //  this.$refs[formName].resetFields();arrMedia.mediaForm
         this.$refs['recForm'].resetFields();
-        for(let i=0;i<this.arrMedia.length;i++){
+        for (let i = 0; i < this.arrMedia.length; i++) {
           this.$refs['mediaForm'][i].resetFields();
         }
       },
       // 媒体详情跳转过来，获取信息并编辑
-      editFun(){
+      editFun() {
         let inputPath = this.$route.fullPath //this.$route.path
-        console.log(inputPath)
-        if(inputPath.indexOf('edit=y') !== -1){
+        //    console.log(inputPath)
+        if (inputPath.indexOf('edit=y') !== -1) {
           let recObj = JSON.parse(sessionStorage.getItem('recDetail'))
           let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
-          if(recObj !== null || mediaObj !== null){
+          if (recObj !== null || mediaObj !== null) {
             this.PathHaveEdit = true
             let tempObj = {}
             // 设置默认选中的城市
-            this.selectedOptions[0] = Number(recObj.rid.toString().substring(0,2) + '0000')
-            this.handleItemChange(this.selectedOptions)
-            this.selectedOptions[1] = Number(recObj.rid.toString().substring(0,4) + '00')
-            //    console.log('selectedOptions',this.selectedOptions)
+            this.recForm.city[0] = Number(recObj.rid.toString().substring(0, 2) + '0000')
+            this.handleItemChange(this.recForm.city)
+            this.recForm.city[1] = Number(recObj.rid.toString().substring(0, 4) + '00')
+            //    console.log('this.recForm.city',this.recForm.city)
+            /*  this.selectedOptions[0] = Number(recObj.rid.toString().substring(0,2) + '0000')
+              this.handleItemChange(this.selectedOptions)
+              this.selectedOptions[1] = Number(recObj.rid.toString().substring(0,4) + '00')
+              console.log('selectedOptions',this.selectedOptions)*/
             // 获取设置资源信息
             tempObj.rt = recObj.cType
             tempObj.resname = recObj.resName
-            tempObj.city = this.selectedOptions[1] //440100
+            tempObj.city = this.recForm.city //this.selectedOptions[1] //440100
             tempObj.region = recObj.cityArea   //
             tempObj.business = recObj.tradingArea
             tempObj.resaddr = recObj.resAddress
@@ -812,14 +892,15 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
             tempObj.lng = Number(recObj.latLng.split(';')[1])
             tempObj.recRemark = recObj.remark
             this.recForm = tempObj
-            console.log('recForm',this.recForm)
+            console.log('recForm', this.recForm)
             //设置媒体信息
-            console.log('mediaObj',mediaObj)
-            for(let i=0;i<mediaObj.length;i++){
+            console.log('mediaObj', mediaObj)
+            for (let i = 0; i < mediaObj.length; i++) {
               let media = {}
-              if(i<mediaObj.length-1){ // 创建媒体面板，默认已有一个
+              if (i < mediaObj.length - 1) { // 创建媒体面板，默认已有一个
                 this.mediaAddFun()
               }
+              media.mid = mediaObj[i].mID
               media.mediaType = mediaObj[i].mVehicle
               media.mediaName = mediaObj[i].mTitle
               media.usableNum = mediaObj[i].pNum
@@ -832,17 +913,63 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
               media.visualH = ''
               media.adLimit = mediaObj[i].notPush
               media.mediaRemark = ''
-              console.log('media',media)
+              console.log('media', media)
               this.arrMedia[i].mediaForm = media
+              //    this.postEditMsg()
             }
-          }else{
+          } else {
             this.$router.push('./mediaInput')
             this.PathHaveEdit = false
           }
-        }else{
+        } else {
           this.PathHaveEdit = false
           sessionStorage.removeItem('recDetail')
           sessionStorage.removeItem('mediaList')
+        }
+      },
+      postEditMsg() {
+        /*mid         int【必填】     媒体ID
+            mtitle      String          媒体名称
+            adsize      String          广告位尺寸
+            adviewsize  String          广告可视画面
+            notpush     String          广告投放限制
+            assettag    String          资产编号
+            mimg        String          媒体照片
+            mtype       String          媒体类型
+            mrk         String          媒体备注*/
+        let mediaArr = this.arrMedia //this.arrMedia[0].mediaForm
+        for (let i = 0; i < mediaArr.length; i++) {
+          let tempObj = mediaArr[i].mediaForm
+          let temp_media = {
+            mid: tempObj.mid,
+            mtitle: tempObj.mediaName,
+            adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
+            adviewsize: tempObj.visualW + '*' + tempObj.visualH,
+            notpush: tempObj.adLimit,
+            assettag: tempObj.assetId,
+            mtype: tempObj.doorType,
+            mrk: tempObj.mediaRemark,
+            mimg: '',
+          }
+          console.log('temp_media', temp_media)
+          api.postApi('/SetMediaInfo', temp_media).then(res => {
+            console.log('SetMediaInfo', res)
+            let mediaInfo = res.data
+            if (!mediaInfo.SysCode){
+              if (i >= mediaArr.length-1) {
+                Message({
+                  message: '保存成功',
+                  type: 'success'
+                });
+                this.$router.push('./mediaDetail');
+              }
+            }else{
+              Message({
+                message: '媒体保存保存失败！',
+                type: 'warning'
+              });
+            }
+          })
         }
       },
     },
@@ -1152,6 +1279,7 @@ import { Form, FormItem, Select,Cascader, Option, Button, Input, Table, TableCol
     /* overflow:auto*/
     overflow: hidden;
   }
+
   .el-checkbox-group {
     position: relative;
     top: 5px;
