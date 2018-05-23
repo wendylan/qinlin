@@ -1,4 +1,3 @@
-//作用： 地区转换成中文
 // 使用方法：callback为一个函数,str为rid,它为空的时候返回所有的区域,否则返回相对应的区域
 import axios from 'axios';
 var areaToText = {};
