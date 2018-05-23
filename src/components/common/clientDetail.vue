@@ -118,12 +118,7 @@ export default {
 					// }, res.data.rID);
 					areaToText.toText(data=>{
 						console.log(data);
-						for(let item in data){
-							console.log(item, data[item]);
-						}
-						console.log('city', data.city);
-					//	alert(data.city)
-						this.$set(this.companyInfo, 'rName', data.city);
+						this.companyInfo.rName = data.city;
 					}, res.data.rID);
 					
 				});
