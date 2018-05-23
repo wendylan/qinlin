@@ -113,9 +113,14 @@ export default {
 					// 公司信息所在行业
 					this.$set(this.companyInfo, 'iName', text);
 					// 公司信息所在城市
-					areaToText.province(data=>{
-						this.$set(this.companyInfo, 'rName', data[0].rName);
+					// areaToText.province(data=>{
+					// 	this.$set(this.companyInfo, 'rName', data[0].rName);
+					// }, res.data.rID);
+					areaToText.toText(data=>{
+						console.log(data);
+						// this.$set(this.companyInfo, 'rName', data[0].rName);
 					}, res.data.rID);
+					
 				});
 			}
 		},

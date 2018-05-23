@@ -28,7 +28,7 @@ region.province = function(callback){
 region.cityArea = function(callback, str, provinceData){
 	var result = {};
 	let area = [];
-	str = str.toString().substr(0, 2)+'0000';
+	str = str.toString().substring(0, 2)+'0000';
 	axios({
 		method: 'get',
 		url: '/ShowRegion',
