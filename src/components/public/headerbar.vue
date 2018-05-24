@@ -16,7 +16,7 @@
             <div class="user_handel_list" v-if="showPassbox">
                 <ul>
                     <li>
-                        <a href="#">修改密码</a>
+                        <router-link :to="{path:'./changePwd'}">修改密码</router-link>
                     </li>
                     <li>
                         <router-link :to="{path:'/login'}">退出登陆</router-link>

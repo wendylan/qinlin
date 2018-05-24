@@ -32,6 +32,8 @@ import mediaIndex from '../components/media/media_index.vue';
 import mediaCommon from '../components/media/media_common.vue';
 //登录
 import login from '../components/home/login.vue';
+//修改密码
+import changePwd from '../components/home/changePwd.vue';
 
 Vue.use(Router);
 
@@ -61,6 +63,7 @@ export default new Router({
 				{path: '/superOperate/planDetail',  component: planDetail},
 				{path: '/superOperate/orderDetail',  component: orderDetail},
 				{path: '/superOperate/photoGallery',  component: photoGallery},
+				{path: '/superOperate/changePwd',  component: changePwd},
 			]
 		},
 		//普通运营
@@ -80,6 +83,7 @@ export default new Router({
 				{path: '/operate/publishPriceList',  component: publishPriceList},
 				{path: '/operate/mediaInput', component: mediaInput},
 				{path: '/operate/clientList',  component: clientList},
+				{path: '/operate/changePwd',  component: changePwd},
 			]
 		},
 		//媒介
@@ -99,6 +103,7 @@ export default new Router({
 				{path: '/media/planDetail', component: planDetail},
 				{path: '/media/orderDetail', component: orderDetail},
 				{path: '/media/photoGallery', component: photoGallery},
+				{path: '/media/changePwd', component: changePwd},
 			]
 		},
 		//销售
@@ -117,6 +122,7 @@ export default new Router({
 				{path: '/sale/createPlan', component: createPlan},
 				{path: '/sale/planDetail',  component: planDetail},
 				{path: '/sale/orderDetail',  component: orderDetail},
+				{path: '/sale/changePwd',  component: changePwd},
 			]
 		},
 
