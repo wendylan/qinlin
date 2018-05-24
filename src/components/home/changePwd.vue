@@ -2,8 +2,7 @@
 	<div style="flex: 1">
 		<h4>修改密码</h4>
 		<div class="changePwd-box">
-			<!-- <el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px" -->
-			<el-form :model="formChangePwd" status-icon ref="formChangePwd" label-width="100px"
+			<el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px"
 					class="demo-ruleForm">
 				<el-form-item label="" prop="currPwd">
 					<el-input type="password" v-model="formChangePwd.currPwd" auto-complete="off" placeholder="请输入当前密码"></el-input>
@@ -27,7 +26,7 @@
 
 <script>
 import api from '../../api/api.js';
-import {Form, FormItem, Button, Input } from 'element-ui';
+import {Form, FormItem, Button, Input, MessageBox } from 'element-ui';
 export default {
 	name: "changePwd",
 	components:{
@@ -38,16 +37,18 @@ export default {
 	},
 	data() {
 		let checkCurrPwd = (rule, value, callback) => {
-			if (!value) {
-				return callback(new Error('当前密码不能为空'));
+			if (value === '') {
+				callback(new Error('当前密码不能为空'));
+			}else{
+				callback();
 			}
 		};
 		let validatePass = (rule, value, callback) => {
-				if (value === '') {
-					callback(new Error('请输入新的密码'));
-				} else {
+			if (value === '') {
+				callback(new Error('请输入新的密码'));
+			} else {
 				if (this.formChangePwd.confirmPwd !== '') {
-					this.$refs.formChangePwd.validateField('newPwd');
+					this.$refs.formChangePwd.validateField('confirmPwd');
 				}
 				callback();
 			}
@@ -84,10 +85,9 @@ export default {
 	},
 	methods: {
 		submitForm(formName) {
-			// uid     int【必填】     UserID
-            // pwd     String【必填】  老的密码
-            // newpwd  String【必填】  新设置的密码
+			console.log(formName);
 			this.$refs[formName].validate((valid) => {
+				console.log(valid);
 			if (valid) {
 				let userInfo = {
 					uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
@@ -97,7 +97,15 @@ export default {
 				console.log(userInfo);
 				api.postApi('/SetPasswd', userInfo).then(res => {
 					console.log(res);
-
+					MessageBox.confirm('修改成功，请重新登录', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						this.$router.push('/login');
+					}).catch(() => {
+						console.log('cancel');
+					});
 				}).catch(res => {
 					console.log(res);
 				});
