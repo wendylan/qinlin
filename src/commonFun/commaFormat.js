@@ -1,7 +1,7 @@
 // 运用场景： 价格需要每三位加上逗号
 
 var comma = {};
-// 价格逗号
+// 价格逗号(返回两位小数)
 comma.init = function(price) {
 	var newStr = "";
 	var count = 0;
@@ -30,4 +30,20 @@ comma.init = function(price) {
 	return str;
 }
 
+// 价格逗号(整数)
+comma.format = function(price) {
+	var newStr = "";
+	var count = 0;
+	let str = price.toString();
+	for(let i=str.length-1; i>=0; i--){
+		if(count % 3 == 0 && count != 0){
+			newStr = str.charAt(i) + "," + newStr;
+		}else{
+			newStr = str.charAt(i) + newStr;
+		}
+		count++;
+	}
+	str = newStr;
+	return str;
+}
 export default comma;

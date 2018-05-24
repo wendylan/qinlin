@@ -65,12 +65,14 @@
 						>
 						</el-table-column>
 						<el-table-column
-							prop="apTotal"
 							label="方案价格"
 							sortable
 							class="tar"
 							min-width="8.3%"
 						>
+							<template slot-scope="scope">
+								<span>{{priceFormat(scope.row.apTotal)}}</span>
+							</template>
 						</el-table-column>
 						<el-table-column
 							prop="realName"
@@ -88,7 +90,6 @@
 						</el-table-column>
 						<el-table-column
 							label="创建日期"
-							sortable
 							min-width="7.3%"
 						>
 							<template slot-scope="scope">
@@ -155,6 +156,7 @@
 import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 import api  from '../../api/api.js';
 import dateFormat  from '../../commonFun/timeFormat.js';
+import commaFormat  from '../../commonFun/commaFormat.js';
 export default {
     name: "projectList",
 	components:{
@@ -254,6 +256,10 @@ export default {
 		// 时间格式规范
 		formatTime(val){
 			return dateFormat.date(val);
+		},
+		// 价格加上逗号
+		priceFormat(price){
+			return commaFormat.format(price);
 		},
 		// 新建方案
 		addOne(){
