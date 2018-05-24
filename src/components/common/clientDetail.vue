@@ -115,7 +115,7 @@ export default {
 					// 公司信息所在城市
 					areaToText.toText(data=>{
 						console.log(data);
-						this.companyInfo.rName = data.city;
+						this.$set(this.companyInfo, 'rName', data.city);
 					}, res.data.rID);
 					
 				});
