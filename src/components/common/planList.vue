@@ -11,7 +11,7 @@
 				<el-row>
 					<div class="mediaList_handel">
 						<div style="display:inline-block">
-						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
 							<el-select v-model="select" slot="prepend" placeholder="请选择">
 							<el-option label="方案名称" value="1"></el-option>
 							<el-option label="客户名称" value="2"></el-option>
@@ -21,9 +21,11 @@
 						</div>
 						<div class="block">
 						<el-date-picker
-							v-model="cDate"
+							v-model="rangeDate"
 							type="daterange"
 							range-separator="-"
+							format="yyyy-MM-dd" 
+							value-format="yyyy-MM-dd"
 							start-placeholder="创建日期"
 							end-placeholder="创建日期">
 						</el-date-picker>
@@ -35,7 +37,7 @@
 				<div class="table_wrap">
 					<el-table
 						border
-						:data="planList"
+						:data="currentPlan"
 						style="width: 100%"
 						:default-sort="{prop: 'date', order: 'descending'}"
 					>
@@ -90,7 +92,7 @@
 							min-width="7.3%"
 						>
 							<template slot-scope="scope">
-								<span>{{dateFormat(scope.row.apcTime)}}</span>
+								<span>{{formatTime(scope.row.apcTime)}}</span>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -152,7 +154,7 @@
 <script>
 import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 import api  from '../../api/api.js';
-import timeFormat  from '../../commonFun/timeFormat.js';
+import dateFormat  from '../../commonFun/timeFormat.js';
 export default {
     name: "projectList",
 	components:{
@@ -179,10 +181,22 @@ export default {
 		return {
 			dialogVisible: false,
 			cityChoose: [],
-			cDate: '',
+			rangeDate: '',
 			keyword: '',
 			select: '1',
-			//表格
+			// 表格数据
+			currentPlan: [{
+				apID: 1,
+				apName: "第一个投放方案",
+				cName: "新光百货",
+				bTitle: "新光百货",
+				apTotal: 465200,
+				realName: "黄启炜",
+				rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+				apcTime: "2018-05-09 18:29:47.0",
+				apState: 1
+			}],
+			//所有数据
 			planList: [{
 				apID: 1,
 				apName: "第一个投放方案",
@@ -216,6 +230,7 @@ export default {
 						item.cityArea = item.rIDs.split(',');
 						console.log(item.cityArea);
 					}
+					this.currentPlan = this.planList;
 				}
 			}).catch(res => {
 				console.log(res);
@@ -237,17 +252,69 @@ export default {
 			}
 		},
 		// 时间格式规范
-		dateFormat(val){
-			return timeFormat.date(val);
+		formatTime(val){
+			return dateFormat.date(val);
 		},
 		// 新建方案
 		addOne(){
 			this.$router.push('./createPlan');
 		},
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if((!this.rangeDate) && (!this.keyword) ){
+				this.currentPlan = this.planList;
+			}
+		},
 		// 搜索方案
 		search(){
 			console.log(this.select);
 			console.log(this.keyword);
+			console.log(this.rangeDate);
+			let range = this.rangeDate;
+			let arr = [];
+			let select = this.select;
+			let keyword = this.keyword;
+			if(range || this.keyword){
+				for(let data of this.planList){
+					if(range && keyword){
+						if(
+							dateFormat.date(data.apcTime) >= range[0] &&
+							dateFormat.date(data.apcTime) <= range[1]
+						){
+							if((select == '1') && data.apName.includes(keyword) ){
+								arr.push(data);
+							}
+							if((select == '2') && data.cName.includes(keyword)){
+								arr.push(data);
+							}
+							if((select == '3') && data.bTitle.includes(keyword)){
+								arr.push(data);
+							}
+						}
+					}else if(range){
+						if(
+							dateFormat.date(data.apcTime) >= range[0] &&
+							dateFormat.date(data.apcTime) <= range[1] 
+						){
+							arr.push(data);
+						}
+					}else if(keyword){
+						if((select == '1') && data.apName.includes(keyword) ){
+							arr.push(data);
+						}
+						if((select == '2') && data.cName.includes(keyword)){
+							arr.push(data);
+						}
+						if((select == '3') && data.bTitle.includes(keyword)){
+							arr.push(data);
+						}
+					}
+				}
+				this.currentPlan = arr;
+				console.log(arr);
+				return;
+			}
+			this.currentPlan = this.planList;
 		},
 		//筛选
 		filterStatus(value, row) {
