@@ -240,11 +240,11 @@ export default {
 		// 状态转换成文本
 		stateToText(val){
 			let state = [
+				{text: '已完成', state: 0},
 				{text: '进行中', state: 1},
-				{text: '预锁中', state: 2},
-				{text: '已完成', state: 3},
-				{text: '未投放', state: 4},
-				{text: '强行停止', state: 5}
+				{text: '未投放', state: 2},
+				{text: '投放中', state: 3},
+				{text: '强行结束', state: 5}
 			];
 			for(let data of state ){
 				if(val == data.state){
