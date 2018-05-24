@@ -119,13 +119,12 @@
 							min-width="8.4%"
 						>
 							<template slot-scope="scope">
-								<el-dropdown size="small" split-button trigger="click" @click="showStatus">
-								操作
+								<el-dropdown size="small" split-button trigger="click">操作
 									<el-dropdown-menu slot="dropdown">
 										<el-dropdown-item @click.native.prevent="preload">预锁</el-dropdown-item>
-										<el-dropdown-item>发布</el-dropdown-item>
+										<el-dropdown-item @click.native.prevent="release(scope.row)">发布</el-dropdown-item>
 										<el-dropdown-item disabled="disabled">解除预锁</el-dropdown-item>
-										<el-dropdown-item>删除</el-dropdown-item>
+										<el-dropdown-item @click="deleteOne(scope.row)">删除</el-dropdown-item>
 									</el-dropdown-menu>
 								</el-dropdown>
 							</template>
@@ -326,9 +325,29 @@ export default {
 		filterStatus(value, row) {
 			return row.Status === value;
 		},
-		//状态
-		showStatus() {
-			console.log(this.planList.Status);
+		// 删除
+		deleteOne(row){
+			console.log(row);
+		},
+		// 发布
+		release(row){
+			console.log(row);
+			MessageBox.prompt('合同编号:', {
+			  confirmButtonText: '是',
+			  cancelButtonText: '否',
+			  inputValue: this.keyword
+			}).then(() => {
+			  //确定
+			  Message({
+			    type: 'success',
+			    message: '成功更改状态'
+			  });
+			}).catch(() => {
+			  Message({
+			    type: 'info',
+			    message: '已取消操作'
+			  })
+			})
 		},
 		//确认框
 		preload(e) {

@@ -58,11 +58,33 @@
           '$route':'getPath'
         },
         mounted(){
-            this.getPath()
-            this.userName = JSON.parse(sessionStorage.getItem('session_data')).realName;
-            console.log(this.userName)
+            this.getPath();
+            this.getUserName();
         },
         methods:{
+            // 获取用户名称和角色
+            getUserName(){
+                let data = JSON.parse(sessionStorage.getItem('session_data'));
+                let utype = data.uType;
+                this.userName = this.uTypeToText(utype) +'-'+ data.realName;
+                console.log(this.userName)
+            },
+            uTypeToText(utype){
+                let uTypeText = [
+                    {text: '系统管理员', value: 'SA'},
+                    {text: '超级管理员', value: 'SM'},
+                    {text: '运营', value: 'OP'},
+                    {text: '媒介', value: 'MD'},
+                    {text: '销售', value: 'BD'},
+                    {text: '广告主', value: 'AD'},
+                    {text: '工程人员', value: 'EP'}
+                ];
+                for(let item of uTypeText){
+                    if(item.value == utype){
+                        return item.text;
+                    }
+                }
+            },
             showbox(){
                 this.showPassbox = !this.showPassbox;
             },
