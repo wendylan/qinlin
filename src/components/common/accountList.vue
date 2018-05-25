@@ -37,29 +37,44 @@
 						>
 						</el-table-column>
 						<el-table-column
-							prop="uWho"
+							prop="uWhoArr"
 							label="权限城市"
 							class="tar"
 							min-width="14.2%"
+							:filters="filterUWhoData"
+							:filter-method="filterUWho"
+							:filter-multiple="true"
 						>
+							<!-- <template slot-scope="scope">
+								<span>{{cityToText(scope.row.uWho)}}</span>
+							</template> -->
 						</el-table-column>
 						<el-table-column
 							prop="uType"
 							label="账号角色"
 							min-width="8.1%"
+							:filters="[
+								{text: '系统管理员', value: 'SA'},
+								{text: '超级管理员', value: 'SM'},
+								{text: '运营', value: 'OP'},
+								{text: '媒介', value: 'MD'},
+								{text: '销售', value: 'BD'},
+								{text: '广告主', value: 'AD'},
+								{text: '工程人员', value: 'EP'}
+							]"
+							:filter-method="filterUType"
+							:filter-multiple="false"
 						>
+							<template slot-scope="scope">
+								<span>{{roleToText(scope.row.uType)}}</span>
+							</template>
 						</el-table-column>
 						<el-table-column
-							prop="puid"
+							prop="puName"
 							label="上级"
 							min-width="7.8%"
 						>
 						</el-table-column>
-						<el-table-column
-							prop="puID"
-							label="创建者账号"
-							min-width="11.8%"
-						>
 						</el-table-column>
 						<el-table-column
 							label="创建日期"
@@ -71,17 +86,19 @@
 							</template>
 						</el-table-column>
 						<el-table-column
-							prop="uStatus"
+							prop="uState"
 							label="状态"
 							min-width="8.9%"
 							:filters="[
-							{ text: '正常', value: '正常' },
-							{ text: '禁用', value: '禁用' },
-
+							{ text: '正常', value: 1 },
+							{ text: '禁用', value: 0 },
 							]"
-							:filter-method="filterCity"
+							:filter-method="filterState"
 							:filter-multiple="false"
 						>
+							<template slot-scope="scope">
+								<span>{{stateToText(scope.row.uState)}}</span>
+							</template>
 						</el-table-column>
 
 						<el-table-column
@@ -89,8 +106,9 @@
 							min-width="7.1%"
 						>
 							<template slot-scope="scope">
-								<a href="#" style="color: #108EE9">权限</a>
-								<a href="#" style="color: #108EE9">禁用</a>
+								<!-- <a href="#" style="color: #108EE9">权限</a> -->
+								<a href="#" v-if="scope.row.uState ==1" style="color: #108EE9" @click="forbidden(scope.row)">禁用</a>
+								<a href="#" v-if="scope.row.uState ==0" style="color: #108EE9" @click="open(scope.row)">开通</a>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -105,6 +123,10 @@ import { Row, Input, Button, Table, TableColumn } from 'element-ui';
 import { api } from '../../api/api';
 // 时间控件格式化
 import dateFormat from '../../commonFun/timeFormat.js';
+// 角色转换为中文
+import uTypeToText from '../../commonFun/uTypeToText.js'
+// 城市转换为中文
+import areaToText from '../../commonFun/areaToText.js';
 export default {
 	name: "customList",
 	components:{
@@ -117,8 +139,41 @@ export default {
 	data() {
 		return {
 			keyword: '',
+			filterUWhoData: [],
 			//表格
-			accountList: []
+			accountList: [
+				{
+					division:"产品研发部",
+					joinTime:"2018-05-14 14:30:56.0",
+					position:"视觉总监",
+					puID:0,
+					puName:'wendy',
+					rID:440100,
+					rName:"广州市",
+					realName:"黄启炜",
+					sName:"Sneijder",
+					uID:7,
+					uState:1,
+					uType:"BD",
+					uWho:"0",
+					uWhoArr: ''
+				},
+				{
+					division:"产品研发部",
+					joinTime:"2018-05-14 14:30:56.0",
+					position:"视觉总监",
+					puID:0,
+					rID:440100,
+					rName:"广州市",
+					realName:"黄启炜",
+					sName:"Sneijder",
+					uID:7,
+					uState:1,
+					uType:"BD",
+					uWho:"440100,110000",
+					uWhoArr: ''
+				}
+			]
 		}
 	},
 	created(){
@@ -130,10 +185,27 @@ export default {
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 			api.postApi('/GetUserList', { uid: uid}).then(res => {
 				console.log(res.data);
-				let mes = res.data;
-				if(!mes.SysCode){
-					this.accountList = res.data;
-				}
+				// if(!res.data.SysCode){
+				// 	this.accountList = res.data;
+					for(let data of this.accountList){
+						let result = '';
+						let arr = data.uWho.split(',');
+						if(data.uWho==0){
+							this.$set(data, 'uWhoArr', '全国');
+						}else{
+							for(let i=0; i<arr.length; i++){
+								areaToText.toTextCity(res=>{
+									result = result +'/'+res;
+									console.log(result);
+									if(i >= arr.length-1){
+										this.$set(data, 'uWhoArr', result);
+										// data.uWhoArr = result;
+									}
+								}, Number(arr[i]));
+							}
+						}
+					}
+				// }
 			}).catch( res => {
 				console.log(res);
 			});
@@ -142,8 +214,38 @@ export default {
 		formatTime(time){
 			return dateFormat.date(time);
 		},
+		// 角色格式化
+		roleToText(role){
+			return uTypeToText.toText(role);
+		},
+		// 城市转换
+		cityToText(item){
+			console.log(item);
+			let arr = item.split(',');
+			let result = '';
+			for(let data of arr){
+				areaToText.toText(res=>{
+					result = res.city+'/'+ result;
+					console.log(result);
+				}, Number(data));
+			}
+			return result;
+		},
+		// 状态转换
+		stateToText(status){
+			let statusText = [
+				{text: '正常', status: 1},
+				{text: '禁用', status: 0}
+			];
+			for(let data of statusText){
+				if(data.status == status){
+					return data.text;
+				}
+			}
+		},
 		// 搜索
 		search(){
+			// 账号，姓名
 			console.log('search');
 		},
 		// 新建
@@ -151,9 +253,37 @@ export default {
 			this.$router.push('./createAccount');
 		},
 		//筛选
-		filterCity(value, row) {
-			return row.city === value;
+		filterState(value, row) {
+			return row.uState == value;
 		},
+		// 筛选权限城市
+		filterUWho(value, row){
+			return row.uWhoArr.includes(value);
+		},
+		// 筛选角色
+		filterUType(value, row){
+			return row.uType === value;
+		},
+		// 禁用：
+		forbidden(row){
+			console.log(row);
+			// uid         int【必填】     当前用户UserID
+            // toid        int【必填】     被操作的UserID
+            // ustate      int【必填】     用户状态值
+			let info = {};
+			info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			info.toid = row.uID;
+			info.ustate = row.uState;
+			api.postApi('/CtrlUser', info).then(res => {
+				console.log(res.data);
+			}).catch(res => {
+				console.log(res);
+			});
+		},
+		// 开通
+		open(row){
+			console.log(row);
+		}
 	}
 
 }
