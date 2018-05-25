@@ -190,10 +190,10 @@ export default {
 		},
 		// 获取客户列表
 		GetCustomer() {
-			console.log(sessionStorage.getItem('uid'));
-			api.getApi('/GetCustomer', {
-				puid:2
-				// puid:sessionStorage.getItem("uid")
+			console.log(JSON.parse(sessionStorage.getItem("session_data")).uID);
+			api.getApi('/MyCustomer', {
+				uid:3
+				// uid:JSON.parse(sessionStorage.getItem("session_data")).uID
 			}).then(res=>{
 				if(res.data){
 					this.planList = res.data;

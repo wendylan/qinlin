@@ -330,12 +330,32 @@ export default {
 			}
 			return false;
 		},
-		// 创建
+		// 修改
 		submitData(){
 			console.log(this.isChangeCom());
 			// 公司信息有修改
 			if(this.isChangeCom()){
-
+				// uid         int【必填】     当前用户UserID
+				// cid         int【必填】     要修改的公司ID
+				// cname       String          公司名
+				// caddress    String          公司地址
+				// rid         int             公司所在地城市ID
+				// iid         int             公司所属行业ID
+				// cremark     String          公司备注信息
+				console.log(this.companyForm);
+				let companyInfo = {};
+				companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+				companyInfo.cid = this.companyForm.cID;
+				companyInfo.cname = this.companyForm.cName;
+				companyInfo.caddress = this.companyForm.cAddress;
+				companyInfo.rid = this.companyForm.rID;
+				companyInfo.iid = this.companyForm.iid;
+				companyInfo.cremark = this.companyForm.cRemark;
+				api.postApi('/GetBrand', companyInfo).then(res => {
+					console.log(res.data);
+				}).catch( res => {
+					console.log(res);
+				});
 				// 如果有新填入品牌则新增品牌
 				if(this.companyTags.length){
 					// 新增品牌
@@ -344,7 +364,7 @@ export default {
 				// 修改客户
 				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
 				let cid = this.companyForm.cID;
-				this.regUser(puid, cid);
+				this.updateUser(puid, cid);
 
 			}else{
 				
@@ -357,7 +377,7 @@ export default {
 				// 修改客户
 				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
 				let cid = this.companyForm.cID;
-				this.regUser(puid, cid);
+				this.updateUser(puid, cid);
 			}
 		},
 		// 新增品牌
@@ -370,15 +390,15 @@ export default {
 			}
 			this.companyTags = [];
 		},
-		// 注册用户
-		regUser(puid, cid){
+		// 修改用户信息
+		updateUser(puid, cid){
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
 					// 注册客户
 					this.clientForm.puid = puid;
 					this.clientForm.uwho = cid;
 					this.clientForm.rid = this.clientForm.cityArr[1];
-					api.postApi('/RegUser', this.clientForm).then(res => {
+					api.postApi('/SetUserInfo', this.clientForm).then(res => {
 						console.log(res);
 						let userMsg = res.data;
 						if (!userMsg.SysCode) {

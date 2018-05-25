@@ -103,7 +103,7 @@ export default {
 			if(initdata){
 				this.userInfo = initdata;
 				api.getApi('/GetCompanyInfo', {
-					cid: initdata.uWho,
+					cid: initdata.cID,
 					uid: initdata.uID
 				}).then(res => {
 					console.log(res.data);

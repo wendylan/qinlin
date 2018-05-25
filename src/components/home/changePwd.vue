@@ -26,7 +26,7 @@
 
 <script>
 import api from '../../api/api.js';
-import {Form, FormItem, Button, Input, MessageBox } from 'element-ui';
+import {Form, FormItem, Button, Input, MessageBox, Message } from 'element-ui';
 export default {
 	name: "changePwd",
 	components:{
@@ -97,15 +97,20 @@ export default {
 				console.log(userInfo);
 				api.postApi('/SetPasswd', userInfo).then(res => {
 					console.log(res);
-					MessageBox.confirm('修改成功，请重新登录', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						this.$router.push('/login');
-					}).catch(() => {
-						console.log('cancel');
-					});
+					let result = res.data;
+					if(res.data.SysCode == 100200){
+						MessageBox.confirm('修改成功，请重新登录', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							this.$router.push('/login');
+						}).catch(() => {
+							console.log('cancel');
+						});
+					}else{
+						Message.warning(result.MSG);
+					}
 				}).catch(res => {
 					console.log(res);
 				});
