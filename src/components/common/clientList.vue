@@ -181,7 +181,36 @@ export default {
 		},
 		// 查看按钮
 		showDetail(data){
-			sessionStorage.setItem('clientDetail_data', JSON.stringify(data));
+			// 获取缓存信息
+			// let initdata = JSON.parse(sessionStorage.getItem('clientDetail_data'));
+			console.log(data);
+			// 用户信息
+			let userInfo = {};
+			userInfo.uID = data.uID;
+			userInfo.realName = data.realName;
+			userInfo.sName = data.sName;
+			userInfo.rID = data.rID;
+			userInfo.email = data.email;
+			userInfo.position = data.position;
+			userInfo.division = data.division;
+			userInfo.phone = data.phone;
+			userInfo.telephone = data.telephone;
+			userInfo.puName = data.puName;
+			// 公司信息
+			let companyInfo = {};
+			companyInfo.cID = data.cID;
+			companyInfo.cName = data.cName;
+			companyInfo.cBrand = data.cBrand;
+			companyInfo.iID = data.iID;
+
+			companyInfo.rName = data.rName;
+			companyInfo.rID = data.crID;
+			companyInfo.cAddress = data.cAddress;
+			companyInfo.cRemark = data.cRemark;
+
+			// sessionStorage.setItem('clientDetail_data', JSON.stringify(data));
+			sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+			sessionStorage.setItem('companyInfo', JSON.stringify(companyInfo));
 			this.$router.push('./clientDetail');
 		},
 		//筛选
@@ -192,8 +221,8 @@ export default {
 		GetCustomer() {
 			console.log(JSON.parse(sessionStorage.getItem("session_data")).uID);
 			api.getApi('/MyCustomer', {
-				uid:3
-				// uid:JSON.parse(sessionStorage.getItem("session_data")).uID
+				// uid:3
+				uid: JSON.parse(sessionStorage.getItem("session_data")).uID
 			}).then(res=>{
 				if(res.data){
 					this.planList = res.data;

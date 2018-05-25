@@ -22,6 +22,17 @@ industry.getText = function(iID){
 	return str;
 };
 
+// 由中文名称获取行业的子级iId
+industry.getiID = function(iName){
+	let iid = '';
+	for(let data of arr){
+		if(data.iName == iName){
+			iid = data.iID;
+		}
+	}
+	return iid;
+};
+
 // 获取行业的一级piId
 industry.getpiID = function(iID){
 	let piid = '';

@@ -98,37 +98,22 @@ export default {
 		// 获取公司的基本信息
 		getInitData(){
 			// 获取缓存信息
-			let initdata = JSON.parse(sessionStorage.getItem('clientDetail_data'));
-			if(initdata){
-				// 用户信息
-				let userInfo = this.userInfo;
-				userInfo.realName = initdata.realName;
-				userInfo.sName = initdata.sName;
-				userInfo.rID = initdata.rID;
-				areaToText.toText(data=>{
-					console.log(data);
-					userInfo.rName = data.city;
-				}, userInfo.rID);
-				userInfo.email = initdata.email;
-				userInfo.position = initdata.position;
-				userInfo.division = initdata.division;
-				userInfo.phone = initdata.phone;
-				userInfo.telephone = initdata.telephone;
-				userInfo.puName = initdata.puName;
-				// 公司信息
-				let companyInfo = this.companyInfo;
-				companyInfo.cID = initdata.cID;
-				companyInfo.cName = initdata.cName;
-				companyInfo.cBrand = initdata.cBrand;
-				companyInfo.iID = initdata.iID;
+			let companyInfo = JSON.parse(sessionStorage.getItem('companyInfo'));
+			let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+			if(companyInfo){
 				// 行业中文
 				let text = industryToText.getText(companyInfo.iID);
 				// 公司信息所在行业
 				companyInfo.iName = text;
-
-				companyInfo.rName = initdata.rName;
-				companyInfo.cAddress = initdata.cAddress;
-				companyInfo.cRemark = initdata.cRemark;
+				this.companyInfo = companyInfo;
+			}
+			if(userInfo){
+				areaToText.toText(data=>{
+					console.log(data);
+					// userInfo.rName = data.city;	
+					this.$set(this.userInfo, 'rName', data.city);
+				}, userInfo.rID);
+				this.userInfo = userInfo;
 			}
 		},
 		// 编辑信息

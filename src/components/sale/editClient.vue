@@ -15,10 +15,10 @@
 							<el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
 									class="demo-ruleForm">
 								<el-form-item label="联系人:" prop="realName">
-									<el-input v-model="clientForm.realName" placeholder="请输入联系人姓名"></el-input>
+									<el-input v-model="clientForm.realName" placeholder="请输入联系人姓名" disabled="disabled"></el-input>
 								</el-form-item>
 								<el-form-item label="账户名:" prop="sName">
-									<el-input v-model="clientForm.sName" placeholder="请输入账户名"></el-input>
+									<el-input v-model="clientForm.sName" placeholder="请输入账户名" disabled="disabled"></el-input>
 								</el-form-item>
 								<el-form-item label="职位:" prop="position">
 									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
@@ -40,7 +40,7 @@
 									<el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
 								</el-form-item>
 								<el-form-item label="固定电话:" prop="telephone">
-									<el-input v-model.number="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
+									<el-input v-model="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
 								</el-form-item>
 								<el-form-item label="事业部:" prop="division">
 									<el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
@@ -179,7 +179,6 @@ export default {
 				telephone: '',
 				division: '',
 				utype: 'AD',
-				uwho: '',
 				puid: ''
 			},
 			companyForm: {
@@ -203,9 +202,6 @@ export default {
 				realname: [
 					{required: true, message: '联系人不能为空', trigger: 'blur'},
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
-				],
-				sName: [
-					{required: true, message: '账户名不能为空', trigger: 'blur'}
 				],
 				position: [
 					{required: true, message: '职位不能为空', trigger: 'blur'},
@@ -257,30 +253,33 @@ export default {
 		// 处理成所需要的数据格式或者说文本
 		getFormatData(){
 			let companyInfo = JSON.parse(sessionStorage.getItem('companyInfo'));
-			let clientInfo = JSON.parse(sessionStorage.getItem('clientDetail_data'));
-			if(companyInfo){
-				// 如果有行业id则cascader显示出对应的行业
-				this.companyForm = companyInfo;
-				let industryResult = [industryToText.getpiID(this.companyForm.iID), this.companyForm.iID];
-				this.companyForm.industryIdArr = industryResult;
-				// 如果有市区id则cascader显示出对应的市区
-				let parStr = Number(this.companyForm.rID.toString().substr(0, 2)+'0000');
-				let result = [parStr, this.companyForm.rID];
-				this.handleItemChange([parStr]);
-				this.companyForm.cityArr = [parStr, this.companyForm.rID];
-				// 获取公司原有的品牌信息
-				api.getApi('/GetBrand', {cid: this.companyForm.cID}).then(res => {
-					console.log(res.data);
-					this.oldBrandTags = res.data;
-				});
-			}
+			// let clientInfo = JSON.parse(sessionStorage.getItem('clientDetail_data'));
+			let clientInfo = JSON.parse(sessionStorage.getItem('userInfo'));
 			if(clientInfo){
 				this.clientForm = clientInfo;
+				this.clientForm.phone = Number(clientInfo.phone);
 				// 如果有市区id则cascader显示出对应的市区
 				let parStr = Number(this.clientForm.rID.toString().substr(0, 2)+'0000');
 				let result = [parStr, this.clientForm.rID];
 				this.handleItemChange([parStr]);
 				this.clientForm.cityArr = [parStr, this.clientForm.rID];
+			}
+			if(companyInfo){
+				this.companyForm = companyInfo;
+				// 获取公司原有的品牌信息
+				api.getApi('/GetBrand', {cid: this.companyForm.cID}).then(res => {
+					console.log(res.data);
+					this.oldBrandTags = res.data;
+				});
+				// 如果有行业id则cascader显示出对应的行业
+				let industryResult = [industryToText.getpiID(this.companyForm.iID), this.companyForm.iID];
+				this.companyForm.industryIdArr = industryResult;
+				// 如果有市区id则cascader显示出对应的市区
+
+				let parStr = Number(this.companyForm.rID.toString().substr(0, 2)+'0000');
+				let result = [parStr, this.companyForm.rID];
+				this.handleItemChange([parStr]);
+				this.companyForm.cityArr = [parStr, this.companyForm.rID];
 			}
 		},
 		handleChange(val){
@@ -314,6 +313,7 @@ export default {
 		// 判断公司信息是否修改
 		isChangeCom(){
 			let companyInfo = JSON.parse(sessionStorage.getItem('companyInfo'));
+			console.log(companyInfo);
 			for(let data of [this.companyForm]){
 				for(let item of [companyInfo]){
 					if(
@@ -321,7 +321,7 @@ export default {
 						data.cAddress != item.cAddress ||
 						data.cName != item.cName ||
 						data.cRemark != item.cRemark || 
-						(this.companyForm.industryIdArr[1] != item.iID) || 
+						(this.companyForm.industryIdArr[1] != item.iID) ||
 						(this.companyForm.cityArr[1] != item. rID)
 					){
 						return true;
@@ -333,39 +333,38 @@ export default {
 		// 修改
 		submitData(){
 			console.log(this.isChangeCom());
+			let client_bool = false;
+			let company_bool = false;
+			this.$refs['clientForm'].validate((valid) => {
+				if (valid) {
+					client_bool = true;
+				}else{
+					return false;
+				}
+			});
+			this.$refs['companyForm'].validate((valid) => {
+				if (valid) {
+					company_bool = true;
+				}else{
+					return false;
+				}
+			});
 			// 公司信息有修改
 			if(this.isChangeCom()){
-				// uid         int【必填】     当前用户UserID
-				// cid         int【必填】     要修改的公司ID
-				// cname       String          公司名
-				// caddress    String          公司地址
-				// rid         int             公司所在地城市ID
-				// iid         int             公司所属行业ID
-				// cremark     String          公司备注信息
 				console.log(this.companyForm);
-				let companyInfo = {};
-				companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-				companyInfo.cid = this.companyForm.cID;
-				companyInfo.cname = this.companyForm.cName;
-				companyInfo.caddress = this.companyForm.cAddress;
-				companyInfo.rid = this.companyForm.rID;
-				companyInfo.iid = this.companyForm.iid;
-				companyInfo.cremark = this.companyForm.cRemark;
-				api.postApi('/GetBrand', companyInfo).then(res => {
-					console.log(res.data);
-				}).catch( res => {
-					console.log(res);
-				});
+				// 更新公司信息
+				if(company_bool){
+					this.updateCompany();
+				}
 				// 如果有新填入品牌则新增品牌
 				if(this.companyTags.length){
 					// 新增品牌
 					this.addBrand(this.companyTags, this.companyForm.cID);
 				}
 				// 修改客户
-				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-				let cid = this.companyForm.cID;
-				this.updateUser(puid, cid);
-
+				if(client_bool){
+					this.updateUser();
+				}
 			}else{
 				
 				// 公司信息没有修改
@@ -375,10 +374,32 @@ export default {
 					this.addBrand(this.companyTags, this.companyForm.cID);
 				}
 				// 修改客户
-				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-				let cid = this.companyForm.cID;
-				this.updateUser(puid, cid);
+				if(client_bool){
+					this.updateUser();
+				}
 			}
+		},
+		// 更新公司信息
+		updateCompany(){
+			// 组装数据
+			let companyInfo = {};
+			companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			companyInfo.cid = this.companyForm.cID;
+			companyInfo.cname = this.companyForm.cName;
+			companyInfo.caddress = this.companyForm.cAddress;
+			companyInfo.rid = this.companyForm.rID;
+			companyInfo.iid = this.companyForm.iID;
+			companyInfo.cremark = this.companyForm.cRemark;
+			console.log('companyInfo', res.data);
+			// 修改公司信息
+			api.postApi('/SetMyCom', companyInfo).then(res => {
+				let mes = res.data;
+				if(mes.SysCode == 100200){
+					Message.success('修改公司信息成功');
+				}
+			}).catch( res => {
+				console.log(res);
+			});
 		},
 		// 新增品牌
 		addBrand(arr, cID){
@@ -391,26 +412,26 @@ export default {
 			this.companyTags = [];
 		},
 		// 修改用户信息
-		updateUser(puid, cid){
-			this.$refs['clientForm'].validate((valid) => {
-				if (valid) {
-					// 修改客户
-					this.clientForm.puid = puid;
-					this.clientForm.uwho = cid;
-					this.clientForm.rid = this.clientForm.cityArr[1];
-					api.postApi('/SetUserInfo', this.clientForm).then(res => {
-						console.log(res);
-						let userMsg = res.data;
-						if (!userMsg.SysCode) {
-							Message.success('创建客户成功');
-						}
-					}).catch(res =>{
-						console.log(res);
-					});
-				} else {
-					console.log('error submit!!');
-					return false;
+		updateUser(){
+			// 组装客户信息
+			let userInfo = {};
+			userInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			userInfo.toid = this.clientForm.uID;
+			userInfo.phone = this.clientForm.phone;
+			userInfo.telephone = this.clientForm.telephone;
+			userInfo.email = this.clientForm.email;
+			userInfo.position = this.clientForm.position;
+			userInfo.division = this.clientForm.division;
+			// console.log('userinfo', userInfo);
+			// 修改客户信息
+			api.postApi('/SetUserInfo', userInfo).then(res => {
+				console.log(res);
+				let userMsg = res.data;
+				if (userMsg.SysCode == 100200) {
+					Message.success('修改客户信息成功');
 				}
+			}).catch(res =>{
+				console.log(res);
 			});
 		},
 		// 取消返回

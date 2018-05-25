@@ -64,6 +64,10 @@ export default new Router({
 				{path: '/superOperate/orderDetail',  component: orderDetail},
 				{path: '/superOperate/photoGallery',  component: photoGallery},
 				{path: '/superOperate/changePwd',  component: changePwd},
+
+
+				{path: '/media/accountList', component: accountList},
+				{path: '/superOperate/editClient',  component: editClient},
 			]
 		},
 		//普通运营

@@ -126,7 +126,7 @@ export default {
                 {path: '/superOperate/clientList', name: '客户管理', smallOpera: '查看', operationName: '', operationPath: '', classPar: 'group_box', class:'group'},
                 {path: '/superOperate/mediaList', name: '媒体管理', smallOpera:'查看', operationName: '录入媒体', operationPath: '/superOperate/mediaInput', classPar: 'media_box', class:'media'},
                 {path: '/superOperate/planList', name: '方案管理', smallOpera:'查看', operationName: '', operationPath: '', classPar: 'editor_box', class:'editor'},
-                {path: '/superOperate/orderList', name: '订单管理', smallOpera:'查看', operationName: '', operationPath: '', classPar: 'order_box', class:'order'},
+                {path: '/superOperate/orderList', name: '订单管理', smallOpera:'查看', operationName: '账号列表', operationPath: '/superOperate/accountList', classPar: 'order_box', class:'order'},
             ],
             isActive1: true,
             isActive2: true,

@@ -10,10 +10,10 @@
 			<div class="mediaList_container">
 				<el-row>
 					<div class="mediaList_handel">
-						<el-input  v-model="input" placeholder="公司名称、公司品牌"></el-input>
+						<el-input  v-model="keyword" placeholder="公司名称、公司品牌"></el-input>
 						<div class="block">
-							<el-button type="primary" icon="el-icon-search">搜索</el-button>
-							<el-button plain>新建</el-button>
+							<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+							<el-button plain @click="addAccount()">新建</el-button>
 						</div>
 					</div>
 				</el-row>
@@ -25,52 +25,53 @@
 						:default-sort = "{prop: 'date', order: 'descending'}"
 					>
 						<el-table-column
-							prop="account"
+							prop="sName"
 							label="账号"
 							min-width="11.8%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="name"
+							prop="realName"
 							label="姓名"
 							min-width="7.8%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="PermissionCity"
+							prop="uWho"
 							label="权限城市"
 							class="tar"
 							min-width="14.2%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="role"
+							prop="uType"
 							label="账号角色"
 							min-width="8.1%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="boss"
+							prop="puid"
 							label="上级"
 							min-width="7.8%"
 						>
 						</el-table-column>
 						<el-table-column
-							prop="username"
+							prop="puID"
 							label="创建者账号"
 							min-width="11.8%"
-
 						>
 						</el-table-column>
 						<el-table-column
-								prop="cDate"
-								label="创建日期"
-								sortable
-								min-width="9.8%"
+							label="创建日期"
+							sortable
+							min-width="9.8%"
 						>
+							<template slot-scope="scope">
+								<span>{{formatTime(scope.row.joinTime)}}</span>
+							</template>
 						</el-table-column>
 						<el-table-column
-							prop="Status"
+							prop="uStatus"
 							label="状态"
 							min-width="8.9%"
 							:filters="[
@@ -100,7 +101,10 @@
 </template>
 
 <script>
-import { Row, Input, Button, Table, TableColumn, } from 'element-ui';
+import { Row, Input, Button, Table, TableColumn } from 'element-ui';
+import { api } from '../../api/api';
+// 时间控件格式化
+import dateFormat from '../../commonFun/timeFormat.js';
 export default {
 	name: "customList",
 	components:{
@@ -112,147 +116,40 @@ export default {
 	},
 	data() {
 		return {
-			input: '',
+			keyword: '',
 			//表格
-			accountList: [{
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			},  {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, {
-				account: '13621370000',
-				name: '王玉敏',
-				PermissionCity: '广州亲邻/深圳亲邻/成都亲邻/北京亲邻',
-				role:'运营',
-				boss:'曾俊超',
-				username:'liudehua123',
-				cDate:'2018.03.08',
-				Status:'正常',
-			}, ]
+			accountList: []
 		}
 	},
+	created(){
+		this.getAccountList();
+	},
 	methods: {
+		// 初始数据
+		getAccountList(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			api.postApi('/GetUserList', { uid: uid}).then(res => {
+				console.log(res.data);
+				let mes = res.data;
+				if(!mes.SysCode){
+					this.accountList = res.data;
+				}
+			}).catch( res => {
+				console.log(res);
+			});
+		},
+		// 时间格式化
+		formatTime(time){
+			return dateFormat.date(time);
+		},
+		// 搜索
+		search(){
+			console.log('search');
+		},
+		// 新建
+		addAccount(){
+			this.$router.push('./createAccount');
+		},
 		//筛选
 		filterCity(value, row) {
 			return row.city === value;
