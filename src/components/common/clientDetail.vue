@@ -97,28 +97,38 @@ export default {
 		},
 		// 获取公司的基本信息
 		getInitData(){
-			// 获取用户信息
+			// 获取缓存信息
 			let initdata = JSON.parse(sessionStorage.getItem('clientDetail_data'));
-			// 获取行业信息
 			if(initdata){
-				this.userInfo = initdata;
-				api.getApi('/GetCompanyInfo', {
-					cid: initdata.cID,
-					uid: initdata.uID
-				}).then(res => {
-					console.log(res.data);
-					this.companyInfo = res.data;
-					// 行业中文
-					let text = industryToText.getText(res.data.iID);
-					// 公司信息所在行业
-					this.$set(this.companyInfo, 'iName', text);
-					// 公司信息所在城市
-					areaToText.toText(data=>{
-						console.log(data);
-						this.$set(this.companyInfo, 'rName', data.city);
-					}, res.data.rID);
-					
-				});
+				// 用户信息
+				let userInfo = this.userInfo;
+				userInfo.realName = initdata.realName;
+				userInfo.sName = initdata.sName;
+				userInfo.rID = initdata.rID;
+				areaToText.toText(data=>{
+					console.log(data);
+					userInfo.rName = data.city;
+				}, userInfo.rID);
+				userInfo.email = initdata.email;
+				userInfo.position = initdata.position;
+				userInfo.division = initdata.division;
+				userInfo.phone = initdata.phone;
+				userInfo.telephone = initdata.telephone;
+				userInfo.puName = initdata.puName;
+				// 公司信息
+				let companyInfo = this.companyInfo;
+				companyInfo.cID = initdata.cID;
+				companyInfo.cName = initdata.cName;
+				companyInfo.cBrand = initdata.cBrand;
+				companyInfo.iID = initdata.iID;
+				// 行业中文
+				let text = industryToText.getText(companyInfo.iID);
+				// 公司信息所在行业
+				companyInfo.iName = text;
+
+				companyInfo.rName = initdata.rName;
+				companyInfo.cAddress = initdata.cAddress;
+				companyInfo.cRemark = initdata.cRemark;
 			}
 		},
 		// 编辑信息

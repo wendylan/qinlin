@@ -394,7 +394,7 @@ export default {
 		updateUser(puid, cid){
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
-					// 注册客户
+					// 修改客户
 					this.clientForm.puid = puid;
 					this.clientForm.uwho = cid;
 					this.clientForm.rid = this.clientForm.cityArr[1];
