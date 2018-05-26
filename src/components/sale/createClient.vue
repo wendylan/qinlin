@@ -24,7 +24,7 @@
 									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
 								</el-form-item>
 								<el-form-item label="手机号码:" prop="phone">
-									<el-input v-model.number="clientForm.phone" placeholder="请输入联系人手机号码"></el-input>
+									<el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
 								</el-form-item>
 								<el-form-item label="所在地:" prop="cityArr">
 									<!-- <el-select v-model="clientForm.rid" placeholder="请选择活动区域">
@@ -62,7 +62,7 @@
 							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
 									class="demo-ruleForm">
 								<el-form-item label="公司名称:" prop="cName">
-									<span v-if="isFill">{{companyForm.cName}}</span>
+									<span v-if="isFill">{{companyForm.cName}} <el-button @click="selectAnother" size="mini">重选</el-button></span>
 									<el-autocomplete
 										v-else
 										v-model="companyForm.cName"
@@ -136,7 +136,7 @@
 						</div>
 					</div>
 					<div class="content_bottom_btn">
-						<el-button type="primary" @click="submitData">创建</el-button>
+						<el-button type="primary" @click="submitData" :disabled="isAdd">创建</el-button>
 						<el-button @click="goBack">取消</el-button>
 					</div>
 				</div>
@@ -150,7 +150,7 @@ import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
 import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
-import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message } from 'element-ui';
+import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message, MessageBox } from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -167,10 +167,32 @@ export default {
 	},
 	data() {
 		var validateEmail=(rule, value, callback)=>{
-			var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
-			if (!reg.test(value)){
-				callback(new Error('邮箱格式有误'));
+			// var reg = new RegExp("^[a-zA-Z0-9]+([._\\-]*[a-zA-Z0-9])*@([a-zA-Z0-9]+[-a-zA-Z0-9]*[a-zA-Z0-9]+.){1,63}[a-zA-Z0-9]+$");
+			// var reg = new RegExp("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$");
+			var reg = new RegExp("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$");
+			if(value){
+				if (!reg.test(value)){
+					callback(new Error('邮箱格式有误'));
+				}else{
+					callback();
+				}
 			}else{
+				callback();
+			}
+		};
+		var validatePhone = (rule, value, callback) => {
+			let szReg= /^1[34578]\d{9}$/;
+			if (!(szReg.test(value))) {
+				callback(new Error('请输入正确的手机号码'));
+			} else {
+				callback();
+			}
+		};
+		var validatesSname = (rule, value, callback) => {
+			let szReg= /^[^\u4e00-\u9fa5]{0,}$/;
+			if (!(szReg.test(value))) {
+				callback(new Error('只能输入字母,数字,符号'));
+			} else {
 				callback();
 			}
 		};
@@ -186,6 +208,7 @@ export default {
 			allCompany: [],
 			// 公司所对应的原来的品牌
 			oldBrandTags: [],
+			isAdd: false,
 			//tags
 			companyTags: [],
 			inputVisible: false,
@@ -228,7 +251,8 @@ export default {
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
 				],
 				sname: [
-					{required: true, message: '账户名不能为空', trigger: 'blur'}
+					{required: true, message: '账户名不能为空', trigger: 'blur'},
+					{validator: validatesSname, trigger: 'blur'}
 				],
 				position: [
 					{required: true, message: '职位不能为空', trigger: 'blur'},
@@ -237,13 +261,16 @@ export default {
 				phone: [
 					{required: true, message: '手机号码不能为空', trigger: 'blur'},
 					{ type:'number', message:'只能输入数字', trigger:'blur'},
+					{validator: validatePhone, trigger: 'blur'}
 				],
 				email: [
+					// {required: false, trigger: 'blur'},
 					{ validator: validateEmail, trigger:'blur'},
+					{ type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
 				],
-				cityArr :[
-					{required:true, message:'请选择所在地', trigger:'blur'}
-				]
+				// cityArr :[
+				// 	{required:true, message:'请选择所在地', trigger:'blur'}
+				// ]
 				// telphone: [
 				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
 				// ],
@@ -266,9 +293,9 @@ export default {
 				industryIdArr :[
 					{required:true, message:'请选择行业分类', trigger:'blur'}
 				],
-				cityArr :[
-					{required:true, message:'请选择所在城市', trigger:'blur'}
-				]
+				// cityArr :[
+				// 	{required:true, message:'请选择所在城市', trigger:'blur'}
+				// ]
 			}
 		}
 	},
@@ -326,7 +353,7 @@ export default {
 			this.companyForm.cName = item.cName;
 			this.companyForm.cAddress = item.cAddress;
 			this.companyForm.cRemark = item.cRemark;
-			
+
 			// 获取公司所在地的中文名称
 			areaToText.toText(data=>{
 				console.log(data);
@@ -345,10 +372,25 @@ export default {
 
 			// 保存cID以便在创建客户的时候进行使用
 			this.companyForm.cID = item.cID;
+			this.$refs['companyForm'].clearValidate();
 			this.isFill = true;
+		},
+		selectAnother(){
+			this.isFill = false;
 		},
 		// 创建
 		submitData(){
+			let client_bool = false;
+			this.$refs['clientForm'].validate((valid) => {
+				if (valid) {
+					client_bool = true;
+				}else{
+					return false;
+				}
+			});
+			// 邮箱变成小写
+			this.clientForm.email = this.clientForm.email.toLowerCase();
+			console.log(this.companyForm.cID);
 			// 先搜索公司，如果有则不添加，没有则提交信息添加公司
 			if(this.companyForm.cID){
 				// 如果有新填入品牌则新增品牌
@@ -360,43 +402,30 @@ export default {
 					}
 					this.companyTags = [];
 				}
-				// 注册用户
-				let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-				let cid = this.companyForm.cID;
-				this.regUser(puid, cid);
+				console.log('comCli', client_bool);
+				// console.log('clientForm', this.validateForm('clientForm'));
+				if(client_bool){
+					this.isAdd = true;
+					// 注册用户
+					let puid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+					let cid = this.companyForm.cID;
+					this.regUser(puid, cid);
+				}
 			}else{
+				let company_bool = false;
 				this.$refs['companyForm'].validate((valid) => {
-					if(valid){
-						let companyInfo = {};
-						companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-						companyInfo.cname = this.companyForm.cName;
-						companyInfo.iid = this.companyForm.industryIdArr[1];
-						companyInfo.rid = this.companyForm.cityArr[1];
-						companyInfo.cbrand = this.companyTags.join(',');
-						companyInfo.caddr = this.companyForm.cAddress;
-						companyInfo.cremark = this.companyForm.cRemark;
-						console.log(companyInfo);
-						// 注册公司
-						api.getApi('/AddCom', companyInfo).then(res => {
-							console.log(res.data);
-							let userMsg = res.data;
-							if (!userMsg.SysCode) {
-								// 新增品牌
-								if(this.companyTags.length){
-									this.addBrand(this.companyTags, res.data.cID);
-								}
-								// 注册客户
-								let puid = JSON.parse(sessionStorage.getItem('session_data')).puID;
-								let cid = res.data.cID;
-								this.regUser(puid, cid);
-							}
-						}).catch(res => {
-							console.log(res);
-						});
+					if (valid) {
+						company_bool = true;
 					}else{
 						return false;
 					}
 				});
+				console.log('nocom', company_bool, client_bool);
+				if(client_bool && company_bool){
+					this.isAdd = true;
+					// 创建公司和用户
+					this.createCompany();
+				}
 			}
 		},
 		// 新增品牌
@@ -407,29 +436,58 @@ export default {
 				});
 			}
 		},
+		// 创建公司
+		createCompany(){
+			let companyInfo = {};
+			companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			companyInfo.cname = this.companyForm.cName;
+			companyInfo.iid = this.companyForm.industryIdArr[1];
+			companyInfo.rid = this.companyForm.cityArr[1];
+			companyInfo.cbrand = this.companyTags.join(',');
+			companyInfo.caddr = this.companyForm.cAddress;
+			companyInfo.cremark = this.companyForm.cRemark;
+			console.log(companyInfo);
+			// 注册公司
+			api.getApi('/AddCom', companyInfo).then(res => {
+				console.log(res.data);
+				
+				let userMsg = res.data;
+				if (!userMsg.SysCode) {
+					// 新增品牌
+					if(this.companyTags.length){
+						this.addBrand(this.companyTags, res.data.cID);
+					}
+					// 注册客户
+					let puid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+					let cid = res.data.cID;
+					this.regUser(puid, cid);
+				}
+			}).catch(res => {
+				console.log(res);
+			});
+		},
 		// 注册用户
 		regUser(puid, cid){
-			this.clientForm.email = this.clientForm.email.toLowerCase();
-			this.$refs['clientForm'].validate((valid) => {
-				if (valid) {
-					// 注册客户
-					this.clientForm.puid = puid;
-					this.clientForm.uwho = cid;
-					this.clientForm.rid = this.clientForm.cityArr[1];
-					api.postApi('/RegUser', this.clientForm).then(res => {
-						console.log(res);
-						let userMsg = res.data;
-						if (!userMsg.SysCode) {
-							Message.success('创建客户成功');
-							this.$router.push('./clientList');
-						}
-					}).catch(res =>{
-						console.log(res);
+			// 注册客户
+			this.clientForm.puid = puid;
+			this.clientForm.uwho = cid;
+			this.clientForm.rid = this.clientForm.cityArr[1];
+			api.postApi('/RegUser', this.clientForm).then(res => {
+				console.log(res);
+				let userMsg = res.data;
+				if (!userMsg.SysCode) {
+					MessageBox.confirm(`创建成功,是否跳转到列表页面`, '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						this.$router.push('./clientList');
+					}).catch(() => {
+						Message.info('已取消操作');
 					});
-				} else {
-					console.log('error submit!!');
-					return false;
 				}
+			}).catch(res =>{
+				console.log(res);
 			});
 		},
 		// 取消返回

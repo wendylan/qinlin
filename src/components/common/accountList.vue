@@ -12,7 +12,7 @@
 					<div class="mediaList_handel">
 						<!-- <el-input  v-model="keyword" placeholder="公司名称、公司品牌"></el-input> -->
 						<div style="display:inline-block">
-							<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+							<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
 								<el-select v-model="select" slot="prepend" placeholder="请选择">
 									<el-option label="姓名" value="1"></el-option>
 									<el-option label="账号" value="2"></el-option>
@@ -28,7 +28,7 @@
 				<div class="table_wrap">
 					<el-table
 						border
-						:data="accountList"
+						:data="currAccount"
 						style="width: 100%"
 						:default-sort = "{prop: 'date', order: 'descending'}"
 					>
@@ -152,7 +152,8 @@ export default {
 			select: '1',
 			filterUWhoData: [],
 			//表格
-			accountList: []
+			accountList: [],
+			currAccount: [],
 		}
 	},
 	created(){
@@ -198,6 +199,8 @@ export default {
 							}
 						}
 					}
+
+					this.currAccount = this.accountList;
 				}
 			}).catch( res => {
 				console.log(res);
@@ -236,10 +239,35 @@ export default {
 				}
 			}
 		},
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if(!this.keyword){
+				this.currAccount = this.accountList;
+			}
+		},
 		// 搜索
 		search(){
 			// 账号，姓名
-			console.log('search');
+			console.log(this.select);
+			console.log(this.keyword);
+			if(this.keyword){
+				let arr = [];
+				for(let data of this.accountList){
+					if(this.select=='1'){
+						if(data.realName== this.keyword){
+							arr.push(data);
+						}
+					}
+					if(this.select =='2'){
+						if(data.sName == this.keyword){
+							arr.push(data);
+						}
+					}
+				}
+				this.currAccount = arr;
+				return;
+			}
+			this.currAccount = this.accountList;
 		},
 		// 新建
 		addAccount(){

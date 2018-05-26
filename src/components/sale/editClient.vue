@@ -24,7 +24,7 @@
 									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
 								</el-form-item>
 								<el-form-item label="手机号码:" prop="phone">
-									<el-input v-model.number="clientForm.phone" placeholder="请输入联系人手机号码"></el-input>
+									<el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
 								</el-form-item>
 								<el-form-item label="所在地:" prop="cityArr">
 									<el-cascader
@@ -148,10 +148,20 @@ export default {
 	},
 	data() {
 		var validateEmail=(rule, value, callback)=>{
-			var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+			// var reg = new RegExp("^[a-zA-Z0-9]+([._\\-]*[a-zA-Z0-9])*@([a-zA-Z0-9]+[-a-zA-Z0-9]*[a-zA-Z0-9]+.){1,63}[a-z0-9]+$");
+			// var reg = new RegExp("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$");
+			var reg = new RegExp("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$");
 			if (!reg.test(value)){
 				callback(new Error('邮箱格式有误'));
 			}else{
+				callback();
+			}
+		};
+		var validatePhone = (rule, value, callback) => {
+			let szReg= /^1[34578]\d{9}$/;
+			if (!(szReg.test(value))) {
+				callback(new Error('请输入正确的手机号码'));
+			} else {
 				callback();
 			}
 		};
@@ -208,8 +218,9 @@ export default {
 					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
 				],
 				phone: [
-					{required: true, message: '手机号码不能为空', trigger: 'blur'},
-					{ type:'number', message:'只能输入数字', trigger:'blur'},
+					{required: true, message: '手机号码不能为空', trigger: 'change'},
+					{ type:'number', message:'只能输入数字', trigger:'change'},
+					{validator: validatePhone, trigger: 'blur'}
 				],
 				email: [
 					{ validator: validateEmail, trigger:'blur'},
