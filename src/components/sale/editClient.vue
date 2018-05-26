@@ -148,11 +148,27 @@ export default {
 	},
 	data() {
 		var validateEmail=(rule, value, callback)=>{
-			// var reg = new RegExp("^[a-zA-Z0-9]+([._\\-]*[a-zA-Z0-9])*@([a-zA-Z0-9]+[-a-zA-Z0-9]*[a-zA-Z0-9]+.){1,63}[a-z0-9]+$");
+			// var reg = new RegExp("^[a-zA-Z0-9]+([._\\-]*[a-zA-Z0-9])*@([a-zA-Z0-9]+[-a-zA-Z0-9]*[a-zA-Z0-9]+.){1,63}[a-zA-Z0-9]+$");
 			// var reg = new RegExp("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$");
 			var reg = new RegExp("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$");
-			if (!reg.test(value)){
-				callback(new Error('邮箱格式有误'));
+			if(value){
+				if (!reg.test(value)){
+					callback(new Error('邮箱格式有误'));
+				}else{
+					callback();
+				}
+			}else{
+				callback();
+			}
+		};
+		var validateFixphone=(rule, value, callback)=>{
+			var reg = new RegExp("^[0-9-]*$");
+			if(value){
+				if (!reg.test(value)){
+					callback(new Error('只能输入"-",数字'));
+				}else{
+					callback();
+				}
 			}else{
 				callback();
 			}
@@ -225,12 +241,12 @@ export default {
 				email: [
 					{ validator: validateEmail, trigger:'blur'},
 				],
-				cityArr :[
-					{required:true, message:'请选择所在地', trigger:'blur'}
-				],
-				// telephone: [
-				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
+				// cityArr :[
+				// 	{required:true, message:'请选择所在地', trigger:'blur'}
 				// ],
+				telephone: [
+					{ validator: validateFixphone, trigger:'blur'},
+				],
 				division: [
 					{ max: 40, message: '最多只能输入40个字节', trigger: 'blur' }
 				],
@@ -238,7 +254,7 @@ export default {
 			companyRules: {
 				cName: [
 					{required: true, message: '公司名称不能为空', trigger: 'blur'},
-					{ max: 50, message: '最多只能输入40个字节', trigger: 'blur' }
+					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' }
 				],
 				cAddress:[
 					{required: true, message:'公司地址不能为空', trigger:'blur'},
