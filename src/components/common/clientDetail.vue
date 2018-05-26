@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="content_bottom_btn">
-			<el-button type="primary" @click="editClient">编辑</el-button>
+			<el-button type="primary" @click="editClient" v-if="role=='BD'">编辑</el-button>
 			<el-button @click="goBack">返回</el-button>
 		</div>
 	</div>
@@ -88,9 +88,15 @@ export default {
 		}
 	},
 	created(){
+		this.getRole();
 		this.getInitData();
 	},
 	methods: {
+		// 获取角色
+		getRole(){
+			this.role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+			console.log(this.role);
+		},
 		// 返回
 		goBack(){
 			this.$router.push('./clientList');
@@ -108,11 +114,13 @@ export default {
 				this.companyInfo = companyInfo;
 			}
 			if(userInfo){
-				areaToText.toText(data=>{
-					console.log(data);
-					// userInfo.rName = data.city;	
-					this.$set(this.userInfo, 'rName', data.city);
-				}, userInfo.rID);
+				if(userInfo.rID){
+					areaToText.toText(data=>{
+						console.log(data);
+						// userInfo.rName = data.city;	
+						this.$set(this.userInfo, 'rName', data.city);
+					}, userInfo.rID);
+				}
 				this.userInfo = userInfo;
 			}
 		},

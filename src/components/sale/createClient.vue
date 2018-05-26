@@ -43,7 +43,7 @@
 									<el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
 								</el-form-item>
 								<el-form-item label="固定电话:" prop="telphone">
-									<el-input v-model.number="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
+									<el-input v-model="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
 								</el-form-item>
 								<el-form-item label="事业部:" prop="division">
 									<el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
@@ -180,6 +180,18 @@ export default {
 				callback();
 			}
 		};
+		var validateFixphone=(rule, value, callback)=>{
+			var reg = new RegExp("^[0-9-]*$");
+			if(value){
+				if (!reg.test(value)){
+					callback(new Error('只能输入"-",数字'));
+				}else{
+					callback();
+				}
+			}else{
+				callback();
+			}
+		};
 		var validatePhone = (rule, value, callback) => {
 			let szReg= /^1[34578]\d{9}$/;
 			if (!(szReg.test(value))) {
@@ -221,7 +233,6 @@ export default {
 				sname: '',
 				position: '',
 				phone: '',
-				rid: '',
 				email: '',
 				telphone: '',
 				division: '',
@@ -252,6 +263,7 @@ export default {
 				],
 				sname: [
 					{required: true, message: '账户名不能为空', trigger: 'blur'},
+					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' },
 					{validator: validatesSname, trigger: 'blur'}
 				],
 				position: [
@@ -271,17 +283,17 @@ export default {
 				// cityArr :[
 				// 	{required:true, message:'请选择所在地', trigger:'blur'}
 				// ]
-				// telphone: [
-				// 	{ type:'number', message:'只能输入数字', trigger:'change'},
-				// ],
-				// division: [
-				// 	{ max: 40, message: '最多只能输入40个字节', trigger: 'blur' }
-				// ],
+				telphone: [
+					{ validator: validateFixphone, trigger:'blur'},
+				],
+				division: [
+					{ max: 40, message: '最多只能输入40个字节', trigger: 'blur' }
+				],
 			},
 			companyRules: {
 				cName: [
 					{required: true, message: '公司名称不能为空', trigger: 'blur'},
-					{ max: 50, message: '最多只能输入40个字节', trigger: 'blur' }
+					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' }
 				],
 				cAddress:[
 					{required: true, message:'公司地址不能为空', trigger:'blur'},
@@ -293,9 +305,9 @@ export default {
 				industryIdArr :[
 					{required:true, message:'请选择行业分类', trigger:'blur'}
 				],
-				// cityArr :[
-				// 	{required:true, message:'请选择所在城市', trigger:'blur'}
-				// ]
+				cityArr :[
+					{required:true, message:'请选择所在城市', trigger:'blur'}
+				]
 			}
 		}
 	},
@@ -471,7 +483,9 @@ export default {
 			// 注册客户
 			this.clientForm.puid = puid;
 			this.clientForm.uwho = cid;
-			this.clientForm.rid = this.clientForm.cityArr[1];
+			if(this.clientForm.cityArr[1]){
+				this.clientForm.rid = this.clientForm.cityArr[1];
+			}
 			api.postApi('/RegUser', this.clientForm).then(res => {
 				console.log(res);
 				let userMsg = res.data;
