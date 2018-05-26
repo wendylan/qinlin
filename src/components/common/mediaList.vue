@@ -353,9 +353,9 @@
               }else if(RMList[i].mState == '3'){
                 RMList[i].mState = '投放中'
               }
-              areaToText.toText(data => {
+              areaToText.toTextCity(data => {
                console.log('公司信息所在城市', data);
-                RMList[i].city = data.city
+                RMList[i].city = data
                 if(i >= RMList.length-1){
                   this.planList = RMList
                 }

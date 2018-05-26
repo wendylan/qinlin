@@ -409,6 +409,7 @@ export default {
 		},
 		// 注册用户
 		regUser(puid, cid){
+			this.clientForm.email = this.clientForm.email.toLowerCase();
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
 					// 注册客户
@@ -420,6 +421,7 @@ export default {
 						let userMsg = res.data;
 						if (!userMsg.SysCode) {
 							Message.success('创建客户成功');
+							this.$router.push('./clientList');
 						}
 					}).catch(res =>{
 						console.log(res);

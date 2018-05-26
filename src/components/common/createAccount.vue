@@ -21,21 +21,26 @@
 							</el-form-item>
 							<el-form-item label="角色" prop="role">
 								<el-select v-model="accountForm.role" placeholder="请选择角色">
-									<el-option label="管理员" value="SM"></el-option>
+									<el-option label="超级管理员" value="SM"></el-option>
 									<el-option label="媒介" value="MD"></el-option>
-									<el-option label="销售" value="AD"></el-option>
+                  <el-option label="工程人员" value="EP"></el-option>
+                  <el-option label="销售" value="BD"></el-option>
+                  <el-option label="运营" value="OP"></el-option><!-- EP 工程人员-->
 								</el-select>
 							</el-form-item>
 							<el-form-item label="权限城市:" prop="PermissionCity">
 								<el-select v-model="accountForm.PermissionCity" multiple placeholder="请选择权限城市(多选)">
 									<el-option
-										v-for="item in options"
+										v-for="item in throwCity"
 										:key="item.value"
 										:label="item.label"
 										:value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
+              <el-form-item label="部门:" prop="division">
+                <el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
+              </el-form-item>
 							<el-form-item label="上级:" prop="boss">
 								<el-select v-model="accountForm.boss" placeholder="请选择上级">
 									<el-option label="管理员" value="admin"></el-option>
@@ -57,8 +62,8 @@
 				</div>
 			</div>
 			<div class="content_bottom_btn">
-				<el-button type="primary" @click="submitForm('accountForm')">创建</el-button>
-				<el-button type="default">取消</el-button>
+				<el-button  @click="submitForm('accountForm')">创建</el-button>
+				<el-button type="default" @click="resetForm()">取消</el-button>
 			</div>
 		</div>
 	</div>
@@ -78,9 +83,17 @@ export default {
 		elButton: Button,
 	},
 	data() {
-		var validateBoss=(rule, value, callback)=>{
-
-		};
+   /* var validateBoss=(rule,value,callback)=>{
+        callback();
+    };*/
+    var validateAssetId = (rule, value, callback) => {
+      let szReg= /^1[34578]\d{9}$/;
+      if (!(szReg.test(value))) {
+        callback(new Error('请输入正确的手机号码'));
+      } else {
+        callback();
+      }
+    };
 
 		return {
 			//表单
@@ -95,23 +108,19 @@ export default {
 				division: '',
 				email:'',
 			},
-			options: [{
-				value: '广州',
+      throwCity: [{
+				value: '440100',
 				label: '广州'
 			}, {
-				value: '上海',
+				value: '310100',
 				label: '上海'
 			}, {
-				value: '北京',
+				value: '110100',
 				label: '北京'
 			}, {
-				value: '深圳',
+				value: '440300',
 				label: '深圳'
-			}, {
-				value: '成都',
-				label: '成都'
 			}],
-
 			accountRules: {
 				account: [
 					{required: true, message: '账号不能为空', trigger: 'blur'},
@@ -128,40 +137,100 @@ export default {
 				PermissionCity: [
 					{required: true, message: '请选择权限城市', trigger:'blur'},
 				],
-
-				boss: [
-					{ validator: validateBoss, trigger:'blur'},
-				],
 				phone:[
-					{required: true, message: '请输入手机号码',trigger:'blur'}
-				]
+					{required: true, message: '请输入手机号码',trigger:'blur'},
+          {validator: validateAssetId, trigger: 'blur'}
+				],
+        email:[
+          {type:'email',message:'请输入正确的邮箱地址',trigger:'blur'}
+        ]
 			},
 		}
 	},
+  mounted(){
+	//  this.ShowRegion()
+  },
 	methods: {
-      submitForm(item){
-        console.log('item',item)
-        this.$refs[item].validate((valid) => {
+     // 城市地区联动-省级
+   /*    ShowRegion() {
+         api.getApi('/ShowRegion').then(res => {
+           //      console.log('地区：',res.data)
+           let region = res.data
+           let arr = [];
+           for (let i = 0; i < region.length; i++) {
+             let opt = {label: '', value: '', children: []}
+             opt.label = region[i].rName
+             opt.value = region[i].rID
+             arr.push(opt)
+           }
+           this.throwCity = arr;
+         })
+       },
+       // 城市地区联动，选择省级后去获取市级和区、县级
+       handleItemChange(val) {
+         console.log('active item:', val);
+         let region = []
+         api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
+           let city = res.data
+           //    console.log('city：',city)
+           for (let j = 0; j < this.throwCity.length; j++) {
+             if (this.throwCity[j].value == val[0]) {
+               this.throwCity[j].children = []
+               for (let i = 0; i < city.length; i++) {
+                 let obj = {label: '', value: ''}
+                 obj.label = city[i].rName
+                 obj.value = city[i].rID
+                 if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
+                   //        console.log(city[i].rID.toString().substring(4,6))
+                   this.throwCity[j].children.push(obj)
+                 }
+                 // else{
+                 //   region.push(obj)              // 三级，所属区域
+                 // }
+               }
+               //      console.log('region',region)
+               //    this.regionOpt = region
+               break
+             }
+           }
+         })
+       },*/
+      submitForm(formName){
+        console.log('item',formName)
+        /*console.log('this.$refs',this.$refs)
+        this.$refs['accountForm'].validate((valid) => {
           if (valid) {
-
+            console.log('submit!');
+          //  this.active++;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });*/
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
             alert('submit!');
+            this.createFun()
           } else {
             console.log('error submit!!');
             return false;
           }
         });
-      // 手机号码验证
+
+  /*    // 手机号码验证
         let szReg=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
       //  console.log('this.accountForm.phone',this.accountForm.phone)
-      //  if(this.accountForm.phone != '' && this.accountForm.phone != null){
+       if(this.accountForm.phone != '' && this.accountForm.phone != null){
           if(!(/^1[34578]\d{9}$/.test(this.accountForm.phone))){
             Message({
               message: '手机号码有误，请重填！',
               type: 'warning'
             })
-            return false;
+          //  return false;
+          }else{
+            b2 = true
           }
-      //  }
+       }
         //邮箱验证
         if(this.accountForm.email != '' && this.accountForm.email != null){
           console.log('邮箱',this.accountForm.email)
@@ -170,10 +239,14 @@ export default {
               message: '邮箱格式不正确，请修改！',
               type: 'warning'
             })
-            return false;
+          //  return false;
+          }else{
+            b2 = true
           }
         }
-        this.createFun()
+        if(b1&&b2&&b3){
+         this.createFun()
+        }*/
       },
       //注册接口
       createFun(){
@@ -216,6 +289,7 @@ export default {
       },
       //重置表单
       resetForm() {
+        console.log('表单清空')
         this.$refs['accountForm'].resetFields();
       },
     }
