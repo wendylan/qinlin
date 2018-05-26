@@ -1,7 +1,7 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-      <p><a href="#" style="color: #999">媒体管理</a><em> / </em><a href="#">媒体列表</a></p>
+      <p><a href="#" style="color: #666">媒体管理</a></p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -10,9 +10,17 @@
       <div class="mediaList_container">
         <el-row>
           <div class="mediaList_handel">
-            <el-input v-model="keyword" placeholder="资源名称、商圈" @change="initData"></el-input>
-            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-            <el-button plain @click="create">新建</el-button>
+            <!--<el-input v-model="input" placeholder="资源名称、商圈"></el-input>-->
+            <div style="display:inline-block">
+              <el-input placeholder="请输入内容" v-model="input" class="input-with-select">
+                <el-select v-model="select" slot="prepend" placeholder="请选择">
+                  <el-option label="资源名称" value="1"></el-option>
+                  <el-option label="商圈" value="2"></el-option>
+                </el-select>
+              </el-input>
+            </div>
+            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+            <el-button plain @click="newMedia" v-if="showNewBtn">新建</el-button>
             <el-button plain>导入</el-button>
             <el-button plain>导出</el-button>
           </div>
@@ -20,7 +28,7 @@
         <div class="table_wrap">
           <el-table
             border
-            :data="currentPlan"
+            :data="planList"
             style="width: 100%"
             :default-sort="{prop: 'resName', order: 'descending'}"
           >
@@ -30,21 +38,26 @@
             >
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="dark" :content="scope.row.resName" placement="bottom">
-                  <a href="#" @click="mediaDetail(scope.row)"  v-if="haveDetail">
-                    <router-link :to="{path:'/superOperate/mediaDetail'}" class="nav_fast">{{scope.row.resName}}</router-link>
-                  </a>
+                  <span @click="mediaDetail(scope.row)" v-if="haveDetail" style="color: #1890ff;cursor: pointer">
+                   <!-- <router-link :to="{path:'/'+rootPath+'/mediaDetail'}" class="nav_fast">{{scope.row.resName}}
+                    </router-link>-->
+                    {{scope.row.resName}}
+                  </span>
                   <span v-else>{{scope.row.resName}}</span>
                 </el-tooltip>
 
               </template>
             </el-table-column>
             <el-table-column
-              prop="cType"
+              prop="rtName"
               label="资源类型"
               min-width="7%"
               :filters="[
               { text: '社区', value: '社区' },
-              { text: '写字楼', value: '写字楼' },
+              { text: '小区', value: '小区' },
+              { text: '别墅', value: '别墅' },
+              { text: '四合院', value: '四合院' },
+              { text: '街区', value: '街区' }
               ]"
               :filter-method="filterRecType"
               :filter-multiple="true"
@@ -66,7 +79,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="region"
+              prop="rName"
               label="区域"
               min-width="6.1%"
               :filters="[
@@ -87,7 +100,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="mType"
+              prop="mVehicle"
               label="媒体类型"
               min-width="7.4%"
               :filters="[
@@ -122,10 +135,10 @@
               label="点位状态"
               min-width="7.7%"
               :filters="[
-              { text: '待安装', value: '待安装' },
-              { text: '正常', value: '正常' },
-              { text: '待维修', value: '待维修' },
-              { text: '禁用', value: '禁用' },
+              { text: '投放中', value: '3' },
+              { text: '被锁定', value: '2' },
+              { text: '正常', value: '1' },
+              { text: '被删除', value: '0' },
               ]"
               :filter-method="filterPTStatus"
               :filter-multiple="false"
@@ -139,10 +152,14 @@
                 <el-dropdown size="small" split-button class="handel_btn" trigger="click" :hide-on-click="true">
                   操作
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="confirmBox">待安装</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox">正常</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox">待维修</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox">禁用</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">待安装
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">正常
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">待维修
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">禁用
+                    </el-dropdown-item>
                     <el-dropdown-item @click.native.prevent="deleteRow(scope.$index, planList)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -156,27 +173,50 @@
 </template>
 
 <script>
-import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip, MessageBox, Message } from 'element-ui';
+  import {
+    Form,
+    FormItem,
+    Table,
+    TableColumn,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    Input,
+    Row,
+    Button,
+    Tooltip,
+    MessageBox,
+    Message,
+    Select,
+    Option
+  } from 'element-ui';
   import api from '../../api/api'
+  import areaToText from '../../commonFun/areaToText.js';
   export default {
-	name: "mediaList",
-	components:{
-		elForm: Form,
-		elFormItem: FormItem,
-		elTable: Table,
-		elTableColumn: TableColumn,
-		elDropdown: Dropdown,
-		elDropdownMenu: DropdownMenu,
-		elDropdownItem: DropdownItem,
-		elInput: Input,
-		elRow: Row,
-		elButton: Button,
-		elTooltip: Tooltip,
-	},
+    name: "mediaList",
+    components: {
+      elForm: Form,
+      elFormItem: FormItem,
+      elTable: Table,
+      elTableColumn: TableColumn,
+      elDropdown: Dropdown,
+      elDropdownMenu: DropdownMenu,
+      elDropdownItem: DropdownItem,
+      elInput: Input,
+      elRow: Row,
+      elButton: Button,
+      elTooltip: Tooltip,
+      elSelect: Select,
+      elOption: Option,
+    },
     data() {
       return {
-        haveDetail:true,
-        keyword: '',
+        rootPath: '',
+        showNewBtn: true,
+        haveDetail: true,
+        //搜索框和下拉列表
+        input: '',
+        select: '资源名称',
         //表格
         /* planList: [
            {
@@ -204,15 +244,19 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
              usableNum: '2',
              ptStatus: '正常'
            }]*/
-		planList: [],
-		currentPlan: [],
+        planList: [],
+        currentPlan: [],
       }
     },
     mounted: function () {
-      let nowPath = this.$route.path // /media/mediaList
-      console.log(nowPath)
-      console.log(nowPath.indexOf('/media/'))
-      if(nowPath.indexOf('/media/') !== -1){
+      let path = this.$route.path.split('/')[1];
+      if (path != 'media' && path != 'superOperate') {
+        this.showNewBtn = false;
+      }
+
+      let nowPath = this.$route.path; // /media/mediaList
+
+      if (nowPath.indexOf('/media/') !== -1) {
         this.haveDetail = false
       }
       $(function () {
@@ -224,31 +268,10 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
       this.getData();
     },
     methods: {
-		// 当搜索框为空的时候进行重置显示
-		initData(){
-			if(!this.keyword ){
-				this.currentPlan = this.planList;
-			}
-		},
-		// 搜索
-		search(){
-			let arr = [];
-			if(this.keyword){
-				for(let data of this.planList){
-					if(data.tradingArea.includes(this.keyword) || data.cType.includes(this.keyword)){
-						arr.push(data);
-					}
-				}
-				console.log('arr',arr)
-				this.currentPlan = arr;
-				return;
-			}
-			this.currentPlan = this.planList;
-		},
-		// 新建媒体
-		create(){
-			this.$router.push('./mediaInput');
-		},
+      //新建跳转
+      newMedia() {
+        this.$router.push('./mediaInput');
+      },
 
       //筛选
       filterRecType(value, row) {
@@ -267,7 +290,7 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
         return row.ptStatus === value;
       },
       //确认框
-      confirmBox(e) {
+      confirmBox(e, index, rows) {
         let Status = e.target.innerText;
         MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
           confirmButtonText: '确定',
@@ -280,6 +303,7 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
             type: 'success',
             message: '成功更改状态'
           });
+          this.planList[index].mState = Status;
         }).catch(() => {
           Message({
             type: 'info',
@@ -314,107 +338,63 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
       },
       getData() {
         //请求
-        let dataArr = [];
-        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
-        api.postApi('/GetResList',{uid:uid}).then(res=>{
-          let resList = [
-            {
-              resID: 1,
-              rID: 440106,
-              resName: "帝景山庄",
-              resAddress: "广东省广州市天河区东圃镇悦景路11号",
-              latLng: "113.428473;23.154321",
-              tradingArea: "山泉",
-              joinTime: "2018-04-03 16:21:45.0",
-              resType: 1
-            },
-            {
-              resID: 2,
-              rID: 440103,
-              resName: "周门小区",
-              resAddress: "广州市荔湾区周门路",
-              joinTime: "2018-05-03 19:07:34.0",
-              resType: 1
+        let dataArr = []
+        api.getApi('/GetRMList', {uid: 3}).then(res => {
+          console.log('资源媒体列表：', res.data)
+          let RMList = res.data
+          if(!RMList.SysCode){
+            for(let i=0;i<RMList.length;i++){
+              if(RMList[i].mState == '1'){
+                RMList[i].mState = '正常'
+              }else if(RMList[i].mState){
+                RMList[i].mState = '被删除'
+              }else if(RMList[i].mState == '2'){
+                RMList[i].mState = '被锁定'
+              }else if(RMList[i].mState == '3'){
+                RMList[i].mState = '投放中'
+              }
+              areaToText.toText(data => {
+               console.log('公司信息所在城市', data);
+                RMList[i].city = data.city
+                if(i >= RMList.length-1){
+                  this.planList = RMList
+                }
+              }, RMList[i].rID);
             }
-          ]
-        //  let resList = res.data
-          for(let i=0;i<resList.length;i++){
-              this.getResInfo(resList[i].resID)
+          }else{
+            Message({
+              type: 'warning',
+              message:  RMList.MSG
+            });
           }
-          console.log('resList:',resList)
         })
-        /*api.getApi('/GetMediaList', {resid: 1}).then(res => {
-          for (let i = 0; i < res.data.length; i++) {
-            //  console.log(this.planList);
-            if (res.data[i].mState === 1) {
-              res.data[i].mState = '正常'
-              //缺少待维修，待安装，禁用
-            }
-            //数据放入数组
-            dataArr.push(res.data[i]);
-          }
-          api.getApi('/GetResCT', {resid: 1, info: 'y'}).then(res => {
-            for (let j = 0; j < dataArr.length; j++) {
-              dataArr[j].cType = res.data.cType;
-              dataArr[j].resName = res.data.resName;
-              dataArr[j].tradingArea = res.data.tradingArea;
-              if(res.data.rID.toString().indexOf('4401') === 0){
-                dataArr[j].city = '广州'
+        /*  let dataArr = [];
+          api.getApi('/GetMediaList', {resid: 1}).then(res => {
+            for (let i = 0; i < res.data.length; i++) {
+              //  console.log(this.planList);
+              if (res.data[i].mState === 1) {
+                res.data[i].mState = '正常'
+                //缺少待维修，待安装，禁用
               }
-              if(res.data.rID.toString().indexOf('106') > 0){
-                dataArr[j].region = '天河区'
-              }
+              //数据放入数组
+              dataArr.push(res.data[i]);
             }
-            this.planList = dataArr;
-            console.log('planList',this.planList)
-            this.currentPlan = this.planList;
+            api.getApi('/GetResCT', {resid: 1, info: 'y'}).then(res => {
+              for (let j = 0; j < dataArr.length; j++) {
+                dataArr[j].cType = res.data.cType;
+                dataArr[j].resName = res.data.resName;
+                dataArr[j].tradingArea = res.data.tradingArea;
+              }
+              this.planList = dataArr;
+            }).catch(err => {
+              console.log(err);
+            });
           }).catch(err => {
             console.log(err);
-          });
-        }).catch(err => {
-          console.log(err);
-        });*/
+          });*/
       },
-      getResInfo(rid){
-        let dataArr = [];
-        console.log('rid',rid)
-        api.getApi('/GetMediaList', {resid: rid}).then(res => {
-          for (let i = 0; i < res.data.length; i++) {
-            //  console.log(this.planList);
-            if (res.data[i].mState === 1) {
-              res.data[i].mState = '正常'
-              //缺少待维修，待安装，禁用
-            }
-            //数据放入数组
-            dataArr.push(res.data[i]);
-          }
-          api.getApi('/GetResCT', {resid: rid, info: 'y'}).then(res => {
-            for (let j = 0; j < dataArr.length; j++) {
-              dataArr[j].cType = res.data.cType;
-              dataArr[j].resName = res.data.resName;
-              dataArr[j].tradingArea = res.data.tradingArea;
-              if(res.data.rID.toString().indexOf('4401') === 0){
-                dataArr[j].city = '广州'
-              }
-              if(res.data.rID.toString().indexOf('106') > 0){
-                dataArr[j].region = '天河区'
-              }
-            }
-            for(let t=0;t<dataArr.length;t++){
-              this.planList.push(dataArr[t])
-            }
-          //  this.planList = dataArr;
-            console.log('planList',this.planList)
-            this.currentPlan = this.planList;
-          }).catch(err => {
-            console.log(err);
-          })
-        }).catch(err => {
-          console.log(err);
-        })
-      },
-      mediaDetail(data){
-        console.log(data.resID)
+      mediaDetail(data) {
+        this.$router.push('./mediaDetail');
         sessionStorage.setItem("resID", data.resID);
       }
     }
@@ -484,7 +464,7 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
     font-size: 16px;
     color: #2C313C;
     height: 24px;
-    border-left: 2px solid #465D89;
+
     padding-left: 14px;
     font-weight: bold;
   }
@@ -494,28 +474,40 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
     padding: 18px 18px 31px 18px;
   }
 
+  /*下拉搜索框*/
+  /deep/ .el-input-group__prepend {
+    width: 64px;
+    position: relative;
+    background-color: #fff;
+    /*   border-top-right-radius: 4px;
+       border-bottom-right-radius: 4px;*/
+  }
+
+  /deep/ .el-input-group--prepend .el-select {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+  }
+
   .el-input {
-    width: 180px;
+
     height: 34px !important;
     border-radius: 4px;
   }
 
   /deep/ .el-input__inner {
     height: 34px;
-    position: relative;
-    top: -1px;
-  }
-
-  .el-button--primary {
-    background: #108EE9;
-    border-radius: 4px;
+    /*position: relative;
+    top: -1px;*/
   }
 
   .el-button {
     width: 76px;
     height: 34px;
     text-align: center;
-    line-height: 34px;
+    /*line-height: 34px;*/
     padding: 0;
     margin-left: 2px
   }
@@ -624,6 +616,12 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
     width: 65px;
   }
 
+  /deep/ button.el-button.el-button--default.el-button--small:hover {
+    color: #666;
+    border-color: #d8d8d8;
+    background-color: #fff;
+  }
+
   .tar {
     text-align: right !important;
     padding-right: 10px;
@@ -631,18 +629,6 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
 
   /deep/ .el-table_1_column_9 {
     text-align: right;
-  }
-
-  /*
-    /deep/ .el-dropdown .el-button-group .el-button{
-      height: 28px;
-    }*/
-
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
-
   }
 
   /*提示框*/
@@ -667,11 +653,20 @@ import { Form, FormItem, Table, TableColumn, Dropdown, DropdownMenu, DropdownIte
     display: none;
   }
 
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
+  /*按钮*/
+  /deep/ .el-button--default:focus, .el-button--default:hover {
+    color: #606266;
+    border-color: #dcdfe6;
+    background-color: #fcfcfc;
+  }
 
+  .content_bottom_btn /deep/ .el-button span {
+    position: relative;
+    top: -2px;
+  }
+
+  .content_bottom_btn /deep/ .el-button span a {
+    color: #606266;
   }
 
   .handel_btn {

@@ -23,20 +23,30 @@
               </el-form-item>
               <el-form-item label="所属销售：" prop="ownerSales">
                 <el-select v-model="planForm.ownerSales" placeholder="请选择所属销售">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                  <!--<el-option label="销售" value="BD"></el-option>
+                  <el-option label="媒介" value="MD"></el-option>-->
+                  <el-option
+                    v-for="item in ownerSales"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="公司名称：" prop="companyName">
-                <el-select v-model="planForm.companyName" placeholder="请选择公司名称">
-                  <el-option label="北京易盟天地信息技术股份有限公司" value="yimeng"></el-option>
-                  <el-option label="新光百货" value="xinguang"></el-option>
+                <el-select v-model="planForm.companyName" @change="GetBrandByCid" placeholder="请选择公司名称">
+                  <el-option
+                    v-for="item in companyName"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="公司品牌：" prop="companyBrand">
                 <el-select v-model="planForm.companyBrand" placeholder="请选择公司品牌">
-                 <!-- <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>-->
                   <el-option
                     v-for="item in companyBrand"
                     :key="item.value"
@@ -46,29 +56,33 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="投放城市：" prop="throwCity">
-              <!--  <el-select v-model="planForm.throwCity" multiple placeholder="请选择">
+                <el-select v-model="planForm.throwCity" multiple placeholder="请选择">
                   <el-option
                     v-for="item in throwCity"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                   </el-option>
-                </el-select>-->
-                <el-cascader
-                  :options="throwCity"
-                  v-model="planForm.throwCity"
-                  separator="-"
-                  :show-all-levels="false"
-                  @active-item-change="handleItemChange">
-                </el-cascader>
+                </el-select>
+                <!--  <el-cascader
+                    :options="throwCity"
+                    v-model="planForm.throwCity"
+                    separator="-"
+                    :show-all-levels="false"
+                    @active-item-change="handleItemChange">
+                  </el-cascader>-->
               </el-form-item>
               <el-form-item label="联系人：" prop="ownerBU">
                 <el-select v-model="planForm.ownerBU" placeholder="请选择所属联系人">
-                  <el-option label="产品研发" value="chanpin"></el-option>
-                  <el-option label="销售" value="xiaoshou"></el-option>
+                  <el-option
+                    v-for="item in ownerBU"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="备注：" prop="planRemark">
+              <el-form-item label="方案备注：" prop="planRemark">
                 <el-input type="textarea" v-model="planForm.planRemark" placeholder="请填写备注信息"></el-input>
               </el-form-item>
             </el-form>
@@ -100,10 +114,10 @@
                 <el-button type="primary" icon="el-icon-location-outline" class="map">地图</el-button>
                 <div class="shopcar" @click="dialogTableVisible = true">
                   <el-badge :value="badgeNumber" class="item">
-                    <!-- <img src="../../assets/images/shopCar.png" alt=""> -->
-                  <span class="cart_box">
-                    <i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>
-                  </span>
+                    <img src="../../assets/images/shopCar.png" alt="">
+                    <!--<span class="cart_box">-->
+                    <!--<i class="fa fa-shopping-cart fa-2x" style="margin-top:8px;"></i>-->
+                    <!--</span>-->
                   </el-badge>
                 </div>
               </div>
@@ -173,9 +187,7 @@
                 <li>
                   <span>楼盘价格:</span>
                   <div class="input-wrap">
-                    <input type="text" class="input">
-                    -
-                    <input type="text" class="input">
+                    <input type="text" class="input"> - <input type="text" class="input">
                     <el-button size="mini">清除</el-button>
                     <el-button size="mini" type="primary">确定</el-button>
                   </div>
@@ -200,30 +212,6 @@
                 </li>
               </ul>
             </div>
-           <!-- &lt;!&ndash;筛选标签&ndash;&gt;
-            <div class="filter-tags">
-              <div class="tags">
-                <span>资源类型：</span>
-                <em>社区</em>
-                <i class="close-tags">×</i>
-              </div>
-              <div class="tags">
-                <span>媒体类型：</span>
-                <em>社区广告门</em>
-                <i class="close-tags">×</i>
-              </div>
-              <div class="tags">
-                <span>城市区域：</span>
-                <em>广州<em>全市</em></em>
-                <i class="close-tags">×</i>
-              </div>
-              <div class="tags">
-                <span>住户数量：</span>
-                <em>300<em>-</em>3000</em>
-                <i class="close-tags">×</i>
-              </div>
-              <el-button type="text" style="margin-left: -10px" class="clear-filter">清空筛选</el-button>
-            </div>-->
             <!--表格-->
             <div class="table_wrap">
               <el-table
@@ -256,12 +244,11 @@
                       </el-form-item>
                     </el-form>
                   </template>
-                </el-table-column>
+                </el-table-column><!-- @click.native="alertFun()"  scope="scope"-->
                 <el-table-column
                   type="selection"
                   width="41px"
-                  scope="scope"
-                   >
+                >
 
                 </el-table-column>
 
@@ -318,117 +305,121 @@
                 <el-table-column width="132px">
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.checkBox.A" label="A面" @change="changeA(scope.row)"></el-checkbox>
-                    <el-checkbox  v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)"></el-checkbox>
+                    <el-checkbox v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)"></el-checkbox>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
             <!--购物车-->
             <el-dialog title="购物车" :visible.sync="dialogTableVisible">
-                <template slot-scope="scope">
-                  <div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
-                    <div class="car-title">
-                      <h4>已选1000个媒体 <p>投放2000面</p> <span>清空已选</span></h4>
-                    </div>
-                    <el-table
-                      border
-                      :data="planList"
-                      style="width: 100%"
-                      :default-sort="{prop: 'recName', order: 'descending'}"
-                    >
-                      <el-table-column type="expand">
-                        <template slot-scope="props">
-                          <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="商圈：">
-                              <span>{{ props.row.businessOrigin}}</span>
-                            </el-form-item>
-                            <el-form-item label="资产编号：">
-                              <span>{{ props.row.assetID }}</span>
-                            </el-form-item>
-                            <el-form-item label="入住年份：">
-                              <span>{{ props.row.liveYear }}</span>
-                            </el-form-item>
-                            <el-form-item label="广告限制：">
-                              <span>{{ props.row.adLimit }}</span>
-                            </el-form-item>
-
-                          </el-form>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        label="资源名称"
-                        min-width="11.5%"
-                        prop="recName"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="mediaName"
-                        label="媒体名称"
-                        min-width="8.9%"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="city"
-                        label="城市"
-                        min-width="6.5%"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="origin"
-                        label="区域"
-                        min-width="7.4%"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="buildType"
-                        label="楼盘类型"
-                        min-width="8.8%"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="houseNum"
-                        label="小区户数"
-                        min-width="7.8%"
-                      >
-                      </el-table-column>
-                      <el-table-column
-                        prop="buildPrice"
-                        label="楼盘价格"
-                        min-width="8.3%"
-                      >
-                      </el-table-column>
-
-
-                      <el-table-column
-                        prop="schedules"
-                        label="排期"
-                        min-width="16.2%"
-                      >
-                      </el-table-column>
-                      <el-table-column width="52px">
-                        <template slot-scope="scope">
-                          <span>B面</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column width="52px">
-                        <template slot-scope="scope">
-                          <span style="cursor: pointer;color: #1890ff">删除</span>
-                        </template>
-                      </el-table-column>
-                    </el-table>
+              <template slot-scope="scope">
+                <div class="table_wrap car-list" style="margin-top: 60px">
+                  <div class="car-title">
+                    <h4>已选1000个媒体 <p>投放2000面</p> <span>清空已选</span></h4>
                   </div>
-                </template>
+                  <el-table
+                    border
+                    :data="shopingList"
+                    style="width: 100%"
+                    :default-sort="{prop: 'recName', order: 'descending'}"
+                  >
+                    <el-table-column type="expand">
+                      <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                          <el-form-item label="商圈：">
+                            <span>{{ props.row.businessOrigin}}</span>
+                          </el-form-item>
+                          <el-form-item label="资产编号：">
+                            <span>{{ props.row.assetID }}</span>
+                          </el-form-item>
+                          <el-form-item label="入住年份：">
+                            <span>{{ props.row.liveYear }}</span>
+                          </el-form-item>
+                          <el-form-item label="广告限制：">
+                            <span>{{ props.row.adLimit }}</span>
+                          </el-form-item>
+
+                        </el-form>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="资源名称"
+                      width="120"
+                      prop="recName"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="mediaName"
+                      label="媒体名称"
+                      width="130"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="city"
+                      label="城市"
+                      width="80"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="origin"
+                      label="区域"
+                      width="80"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="buildType"
+                      label="楼盘类型"
+                      width="80"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="houseNum"
+                      label="小区户数"
+                      width="80"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      prop="buildPrice"
+                      label="楼盘价格"
+                      width="80"
+                    >
+                    </el-table-column>
+
+
+                    <el-table-column
+                      prop="schedules"
+                      label="排期"
+                      width="160"
+                    >
+                    </el-table-column>
+                    <el-table-column width="52px">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.A_B}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="52px">
+                      <template slot-scope="scope">
+                        <span style="cursor: pointer;color: #1890ff"
+                              @click="deleteRow(scope.row)">删除</span>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <div style="text-align: center;margin-bottom: 10px">
+                    <el-button style="margin-top: 12px;" @click="next" type="primary">下一步</el-button>
+                  </div>
+                </div>
+              </template>
             </el-dialog>
           </div>
         </div>
         <div class="step3" v-if="active==2">
           <div class="confirmBox">
             <div class="bill-title">
-               <div class="bill-title-left">
-                  <h4>珠江帝景地产三月份投放</h4>
-                  <p>广州市视传文化传播有限公司</p>
-                  <p>珠江帝景</p>
-               </div>
+              <div class="bill-title-left">
+                <h4>珠江帝景地产三月份投放</h4>
+                <p>广州市视传文化传播有限公司</p>
+                <p>珠江帝景</p>
+              </div>
               <div class="bill-title-right">
                 <ul>
                   <li><p><em>现金结算：</em><span>￥88,000,000.00</span></p></li>
@@ -448,7 +439,9 @@
                     </div>
                     <div class="price">
                       <div class="price-left">
-                        <h4>广告费 <el-button type="text" @click="changeAD = true">修改</el-button></h4>
+                        <h4>广告费
+                          <el-button type="text" @click="changeAD = true">修改</el-button>
+                        </h4>
                         <ul>
                           <li>刊例价(面/周) <span>{{ADPrice}}</span></li>
                           <li>投放量(面·天) <span>{{tfl}}</span></li>
@@ -458,7 +451,9 @@
                         </ul>
                       </div>
                       <div class="price-right">
-                        <h4>制作费<el-button type="text" @click="changeMake = true">修改</el-button></h4>
+                        <h4>制作费
+                          <el-button type="text" @click="changeMake = true">修改</el-button>
+                        </h4>
                         <ul>
                           <li>制作费单价<span>￥100</span></li>
                           <li>广告画数量(张)<span>35</span></li>
@@ -525,7 +520,7 @@
                 title="修改结算方式"
                 :visible.sync="changeBill"
                 width="30%"
-                >
+              >
                 <div class="changeBill">
                   <h4>{{totalPrice}}</h4>
                   <p>现金结算</p>
@@ -539,7 +534,7 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
     <el-button @click="changeBill = false">取 消</el-button>
-    <el-button type="primary"  @click="handleClose">确 定</el-button>
+    <el-button type="primary" @click="handleClose">确 定</el-button>
   </span>
               </el-dialog>
 
@@ -549,7 +544,8 @@
         <div class="step4" v-if="active==3">
           <div class="createSuccess">
             <div class="successIcon">
-			  <i class="fa fa-check-circle fa-4x" style="color:#67C23A;"></i>
+              <img src="../../assets/images/createSuccess.png" alt="">
+              <!--<i class="fa fa-check-circle fa-4x" style="color:#67C23A;"></i>-->
               <h2>创建成功</h2>
               <p>创建时间：2018年3月18日</p>
             </div>
@@ -566,14 +562,17 @@
       </div>
     </div>
     <div class="content_bottom_btn">
-      <el-button style="margin-top: 12px; background-color: #fff; color: #666666; border: 1px solid #d9d9d9"
-                 @click="prev" v-if="active!=3" type="primary">上一步
-      </el-button>
+
+      <el-button @click="prev" v-if="active!=3&&active!=0" type="default">上一步</el-button>
+      <el-button @click="prev" v-if="active===0" type="default">取消</el-button>
       <el-button style="margin-top: 12px;" @click="next" v-if="active!=3" type="primary">下一步</el-button>
 
       <div class="finishBtn" v-if="active==3">
-        <button class="create" @click="continueCreate">继续创建</button>
-        <button class="cancel">查看订单</button>
+        <el-button type="primary" @click="continueCreate">继续创建</el-button>
+        <el-button type="default">
+          <router-link to="{path='/orderPlan'}"></router-link>
+          查看订单
+        </el-button>
       </div>
     </div>
     <!--添加商品到购物车的动画效果-->
@@ -581,91 +580,78 @@
       <img src="../../assets/images/select.png" alt="">
     </div>
     <div class="shopAnimateAll" v-show="selectAll">
-      <img  src="../../assets/images/allselect.png" alt="">
+      <img src="../../assets/images/allselect.png" alt="">
     </div>
   </div>
 </template>
 
 <script>
-import { Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, Cascader, DatePicker,
-          Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message,} from 'element-ui';
-import api from '../../api/api'
+  import {
+    Input, Dialog, Button, Tabs, TabPane, Table, TableColumn, Cascader, DatePicker,
+    Select, Option, Form, FormItem, Steps, Step, Badge, Checkbox, Message, InputNumber
+  } from 'element-ui';
+  import api from '../../api/api'
+  import areaToText from '../../commonFun/areaToText.js';
+
   export default {
-	name: "createPlan",
-	components:{
-		elInput: Input,
-		elDialog: Dialog,
-		elButton: Button,
-		elTabs: Tabs,
-		elTabPane: TabPane,
-		elTable: Table,
-		elTableColumn: TableColumn,
-    elCascader: Cascader,
-		elDatePicker: DatePicker,
-		elSelect: Select,
-		elOption: Option,
-		elForm: Form,
-		elFormItem: FormItem,
-		elSteps: Steps,
-		elStep: Step,
-		elBadge: Badge,
-		elCheckbox: Checkbox,
-	},
+    name: "createPlan",
+    components: {
+      elInput: Input,
+      elDialog: Dialog,
+      elButton: Button,
+      elTabs: Tabs,
+      elTabPane: TabPane,
+      elTable: Table,
+      elTableColumn: TableColumn,
+      elCascader: Cascader,
+      elDatePicker: DatePicker,
+      elSelect: Select,
+      elOption: Option,
+      elForm: Form,
+      elFormItem: FormItem,
+      elSteps: Steps,
+      elStep: Step,
+      elBadge: Badge,
+      elCheckbox: Checkbox,
+      elInputNumber: InputNumber,
+    },
     data() {
       return {
-        cType: ['社区','写字楼'],
-        shopXY:{x:'',y:''},   // 动画起始坐标
+        cType: ['社区', '写字楼'],
+        shopXY: {x: '', y: ''},   // 动画起始坐标
         shoppingShow: false, //动画效果的显示隐藏
-        selectAll:false, // 是否全选
-        badgeNumber: 11,    // 购物车数量
+        selectAll: false, // 是否全选
+        badgeNumber:0,    // 购物车数量
         bodyWidth: 1920,
         //step2修改弹框
-        changeAD:false,
-        changeMake:false,
-        changeBill:false,
+        changeAD: false,
+        changeMake: false,
+        changeBill: false,
         //step2制作费
-        makePrice:'￥3,000',
+        makePrice: '￥3,000',
         //广告费
-        ADPrice:'￥3,000,000',
+        ADPrice: '￥3,000,000',
         //投放量
-        tfl:'235',
+        tfl: '235',
         //总价
-        totalPrice:'￥90,000,000.00',
+        totalPrice: '￥90,000,000.00',
         //备注
-        remark:'无',
-        cash:'￥88,000,000.00',
-        zyzh:'￥2,000,000.00',
-        other:'￥2,000,000.00',
-        //step1公司品牌
-        companyBrand:[{
-          value: '花世界',
-          label: '花世界'
-        },{
-          value: '樱雪',
-          label: '樱雪'
-        },{
-          value: '滋彩',
-          label: '滋彩'
-        },{
-          value: '芭菲',
-          label: '芭菲'
-        }],
+        remark: '无',
+        cash: '￥88,000,000.00',
+        zyzh: '￥2,000,000.00',
+        other: '￥2,000,000.00',
+        ownerSales: [], // step1所属销售
+        customer: [],  // step1公司客户
+        companyName: [], //step1公司名称
+        companyBrand: [], //step1公司品牌
+        ownerBU: [],  //step1联系人
         //step1投放城市
-        throwCity: [{
-          value: '440100',
-          label: '广州',
-          children: [
-            {
-              value: '440106',
-              label: '天河区',
-            }
-          ]
-        }],
+        throwCity: [],
         //购物车
         // carShow:false,
         dialogTableVisible: false,
         //选中
-        checkAB:true,
+        checkAB: true,
         //搜索类型
         typeSelect: [{
           value: '资源名称',
@@ -690,7 +676,7 @@ import api from '../../api/api'
           buildValue: '城市',
           buildlabel: '城市'
         }],
-        buildValue:'',
+        buildValue: '',
         //搜索框
         searchInput: '',
         planSelect: '',
@@ -700,11 +686,11 @@ import api from '../../api/api'
         //setp1创建方案表单
         planForm: {
           planName: '',
-          ownerSales: '',
+          ownerSales: '',   // 所属销售
           companyName: '',
           companyBrand: '',
-          throwCity:[],
-          ownerBU: '',
+          throwCity: [],
+          ownerBU: '',    // 所属联系人
           planRemark: '',
         },
 
@@ -713,277 +699,313 @@ import api from '../../api/api'
             {required: true, message: '方案名称不能为空', trigger: 'blur'},
             {max: 50, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
+          concat: [
+            {required: true, message: '请选择联系人', trigger: 'change'},
+          ],
           ownerSales: [
-            {required: true, message: '所属销售不能为空', trigger: 'change'},
+            {required: true, message: '请选择所属销售', trigger: 'change'},
           ],
           companyName: [
-            {required: true, message: '公司名称不能为空', trigger: 'change'},
+            {required: true, message: '请选择公司名称', trigger: 'change'},
           ],
           companyBrand: [
-            {required: true, message: '公司品牌不能为空', trigger: 'change'},
+            {required: true, message: '请选择公司品牌', trigger: 'change'},
           ],
-
+          throwCity: [
+            {required: true, message: '请选择投放城市(可多选)', trigger: 'change'},
+          ],
         },
-        //step2选择面板
-        selectPanel:{
-
-        },
+        // 购物车列表
+        shopingList: [
+         /* {
+            id: 1,
+            recName: '珠江帝景花园1',
+            city: '广州1',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道1',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            A_B: 'B面'
+          }*/
+        ],
         //step2列表
-        planList: [{
-          id:1,
-          recName: '珠江帝景花园111111',
-          city: '广州1',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
-          id:2,
-          recName: '珠江帝景花园2222222222',
-          city: '广州2',
-          origin: '白云区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
-          id:3,
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: { A:false,B:false },
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        },{
-          recName: '珠江帝景花园',
-          city: '广州',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName:'广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024',
-          liveYear: '1999年',
-          adLimit: '地产/医药/汽车',
-          checkBox: {A:false,B:false},
-        }],
+        planList: [
+          {
+            rid: 1,
+            recName: '珠江1',
+            city: '广州1',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          },
+          {
+            rid: 2,
+            recName: '珠江2',
+            city: '广州2',
+            origin: '白云区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          },
+          {
+            rid: 3,
+            recName: '珠江3',
+            city: '广州3',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            rid: 4,
+            recName: '珠江4',
+            city: '广州4',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          },
+          {
+            rid: 5,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          },
+          /*{
+            id: 6,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 7,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 8,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 9,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 10,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 11,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 12,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 13,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 14,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }, {
+            id: 15,
+            recName: '珠江帝景花园',
+            city: '广州',
+            origin: '海珠区',
+            buildType: '高端住宅',
+            houseNum: '600',
+            buildPrice: '￥30,000',
+            mediaName: '广州市中山大道',
+            buildNum: '12',
+            schedules: '2017.08.30-2017.09.30',
+            businessOrigin: '白云万达广场',
+            assetID: 'GZ201871024',
+            liveYear: '1999年',
+            adLimit: '地产/医药/汽车',
+            checkBox: {A: false, B: false},
+          }*/],
 
       };
     },
-    created:function () {
+    created: function () {
 
     },
-    computed:{
-
-    },
-    mounted(){
-	    this.GetBrand()
-	    this.ShowRegion()// 获取城市接口
+    computed: {},
+    mounted() {
+      this.Get_cName()
+      //  this.GetBrand()
+      //  this.ShowRegion()// 获取城市接口
       // 注：window.onresize只能在项目内触发1次
-      let that = this
-      window.onresize = function windowResize () {    // 实时监控body的宽带。注：修改该方法后要重启项目并重新打开页面
+      let that = this;
+      window.onresize = function windowResize() {    // 实时监控body的宽带。注：修改该方法后要重启项目并重新打开页面
         // 通过捕获系统的onresize事件触发我们需要执行的事件
-        that.bodyWidth = document.body.offsetWidth
-        that.shopXY.x = that.bodyWidth - 170
+        that.bodyWidth = document.body.offsetWidth;
+        that.shopXY.x = that.bodyWidth - 170;
         shopAnimate.style.right = this.shopXY.x + 'px'
-      //  console.log('bodyWidth',that.bodyWidth)
-      //  console.log('shopXY',that.shopXY.x)
-      }
-     // let Right = document.body.offsetWidth - 170
+
+      };
+      // let Right = document.body.offsetWidth - 170
       let Right = document.body.offsetWidth - 835
       this.shopXY.x = Right
-  //    this.shopXY.x = this.bodyWidth - 170
+      //    this.shopXY.x = this.bodyWidth - 170
       let shopAnimate = document.getElementsByClassName('shopAnimate')[0]
       shopAnimate.style.right = this.shopXY.x + 'px'
       $(function () {
@@ -995,7 +1017,6 @@ import api from '../../api/api'
             $(this).addClass('active');
           }
         });
-
         //筛选输入框
         $('.content_top_wrap').on('focus', '.input', function () {
           $(this).parents('.input-wrap').addClass('focus');
@@ -1015,65 +1036,182 @@ import api from '../../api/api'
       })
     },
     methods: {
-      // 获取公司品牌
-      GetBrand(){
-        let cidParams = { cid: 972 }
-        api.getApi('/GetBrand',cidParams).then(res=>{
-            console.log('公司品牌',res.data)
-        })
-      },
-      // 城市地区联动-省级
-      ShowRegion(){
-        api.getApi('/ShowRegion').then(res=>{
-          //      console.log('地区：',res.data)
-          let region = res.data
-          let arr = [];
-          for(let i=0;i<region.length;i++){
-            let opt = {label:'',value:'',children:[]}
-            opt.label = region[i].rName
-            opt.value = region[i].rID
-            arr.push(opt)
+      //获取公司名称列表MyCustomer
+      Get_cName() {
+        let userInfo = JSON.parse(sessionStorage.getItem('session_data'))
+        //Type:"BD"
+        let uType = userInfo.uType
+        if (uType == 'BD') {
+          //    alert('销售') //ownerSales
+          let sales = {
+            label: '销售',
+            value: userInfo.uID
           }
-          this.throwCity = arr;
-        })
-      },
-      // 城市地区联动，选择省级后去获取市级和区、县级
-      handleItemChange(val){
-        console.log('active item:', val);
-        let region = []
-        api.getApi('/ShowRegion',{rid: val[0]}).then(res=>{
-          let city = res.data
-      //    console.log('city：',city)
-          for(let j=0;j<this.throwCity.length;j++){
-            if(this.throwCity[j].value == val[0]){
-              this.throwCity[j].children = []
-              for(let i=0;i<city.length;i++){
-                let obj = {label:'',value:''}
-                obj.label = city[i].rName
-                obj.value = city[i].rID
-                if(city[i].rID.toString().substring(4,6) == '00' ){  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
-          //        console.log(city[i].rID.toString().substring(4,6))
-                  this.throwCity[j].children.push(obj)
-                }
-                // else{
-                //   region.push(obj)              // 三级，所属区域
-                // }
-              }
-        //      console.log('region',region)
-          //    this.regionOpt = region
-              break
+          this.ownerSales.push(sales)
+        }
+        console.log('this.ownerSales', this.ownerSales)
+        this.planForm.ownerSales = userInfo.uID //
+        api.getApi('/MyCustomer', {uid: 3}).then(res => {
+          console.log('MyCustomer:', res.data)
+          let customerList = res.data
+          this.customer = res.data    //保存所有信息，方便后面的过滤使用
+          //companyName ownerBU customer
+          let companyList = []      // 公司名称
+          let ownerList = []      // 联系人
+          for (let i = 0; i < customerList.length; i++) {
+            let companyObj = {
+              label: customerList[i].cName,
+              value: customerList[i].cID,
+            }
+            let owner = {
+              label: customerList[i].realName,
+              value: customerList[i].uID,
+            }
+            ownerList.push(owner)
+            if (i == 0) {
+              companyList.push(companyObj)
+            } else if (JSON.stringify(companyList).indexOf(JSON.stringify(companyObj)) === -1) { //判断是否有重复的公司
+              companyList.push(companyObj)
             }
           }
+          console.log('companyList:', companyList)
+          console.log('联系人列表:', ownerList)
+          this.companyName = companyList  // 公司名称列表
+          this.ownerBU = ownerList // 联系人列表
         })
+        // 公司信息所在城市
+        let uWho =  '440100,110100'//userInfo.uWho //
+        let uWhoArr = uWho.split(',') // ['440100','110100']
+        let cityList = []
+        console.log()
+        for (let j = 0; j < uWhoArr.length; j++) {
+          console.log('公司uWho', uWhoArr[j])
+          areaToText.toText(data => {
+            console.log('公司信息所在城市', data);
+            let cityObj = {
+              label: data.city,
+              value: uWhoArr[j],
+            }
+            console.log('cityObj', cityObj)
+            cityList.push(cityObj);
+            if (j >= uWhoArr.length - 1) {
+              console.log('cityListcityList玩玩', cityList)
+              this.throwCity = cityList
+            }
+          }, uWhoArr[j]);
+
+        }
       },
+      // 获取公司品牌
+      GetBrandByCid(val) {
+        console.log('所选公司的ID', val)
+        let cidParams = {cid: val}
+        api.getApi('/GetBrand', cidParams).then(res => {
+          console.log('公司品牌', res.data)
+          let CBrand = res.data
+          let BrandList = []
+          for (let i = 0; i < CBrand.length; i++) {
+            let brandObj = {
+              label: CBrand[i].bTitle,
+              value: CBrand[i].bID
+            }
+            BrandList.push(brandObj)
+          }
+          this.companyBrand = BrandList
+        })
+        // 选择公司后过滤联系人列表customer
+        let customerList = this.customer
+        let ownerList = []   // 联系人
+        let BrandList = []  // 公司品牌
+        for (let j = 0; j < customerList.length; j++) {
+          if (customerList[j].cID == val) {
+            let owner = {
+              label: customerList[j].realName,
+              value: customerList[j].uID,
+            }
+            ownerList.push(owner)
+          }
+        }
+        this.ownerBU = ownerList
+      },
+      // 创建方案
+      creatAdPlan() {
+        /*  uid         int【必填】     当前账户UserID
+            bid         int             品牌ID
+            apname      String【必填】  方案名称
+            adcid       int【必填】     公司对应方案的客户UserID
+            rid         String【必填】  方案投放的目标城市rID【例如：440100,110100】
+            planForm: {
+          planName: '',
+          ownerSales: '',   // 所属销售
+          companyName: '',
+          companyBrand: '',
+          throwCity: [],
+          ownerBU: '',    // 所属联系人
+          planRemark: '',
+        },*/
+        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        let fangAnParams = {
+          uid: 3,
+          bid: this.planForm.companyBrand,
+          apname: this.planForm.planName,
+          adcid: '',
+          rid: this.planForm.throwCity[1],
+        }
+
+      },
+      /* // 城市地区联动-省级
+       ShowRegion() {
+         api.getApi('/ShowRegion').then(res => {
+           //      console.log('地区：',res.data)
+           let region = res.data
+           let arr = [];
+           for (let i = 0; i < region.length; i++) {
+             let opt = {label: '', value: '', children: []}
+             opt.label = region[i].rName
+             opt.value = region[i].rID
+             arr.push(opt)
+           }
+           this.throwCity = arr;
+         })
+       },
+       // 城市地区联动，选择省级后去获取市级和区、县级
+       handleItemChange(val) {
+         console.log('active item:', val);
+         let region = []
+         api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
+           let city = res.data
+           //    console.log('city：',city)
+           for (let j = 0; j < this.throwCity.length; j++) {
+             if (this.throwCity[j].value == val[0]) {
+               this.throwCity[j].children = []
+               for (let i = 0; i < city.length; i++) {
+                 let obj = {label: '', value: ''}
+                 obj.label = city[i].rName
+                 obj.value = city[i].rID
+                 if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
+                   //        console.log(city[i].rID.toString().substring(4,6))
+                   this.throwCity[j].children.push(obj)
+                 }
+                 // else{
+                 //   region.push(obj)              // 三级，所属区域
+                 // }
+               }
+               //      console.log('region',region)
+               //    this.regionOpt = region
+               break
+             }
+           }
+         })
+       },*/
       //获取mouseEnter屏幕时的坐标像素
-      mouseEnter(row, column, cell, event){
+      mouseEnter(row, column, cell, event) {
         let e = event || window.event;
-        this.shopXY.y =  e.clientY
+        this.shopXY.y = e.clientY
         // console.log('this.shopXY.y',this.shopXY.y)
       },
-     // 行选中打钩
-      handleSelect(selection,row){
+      // 行选中打钩
+      handleSelect(selection, row) {
         /*  if(row.checkBox.B === false){
             row.checkBox.A = !row.checkBox.A
         }/*else{
@@ -1085,124 +1223,132 @@ import api from '../../api/api'
           row.checkBox.B = false
           this.badgeNumber--
         }*/
-        if(!row.checkBox.B && !row.checkBox.A){
+        if (!row.checkBox.B && !row.checkBox.A) {
           row.checkBox.A = true
-          this.shopShow_hide()
-        }else if(row.checkBox.A || row.checkBox.B){
-          if(row.checkBox.A && row.checkBox.B){
+          this.shopShow_hide()   // 动画效果
+          this.AddShopingInfo(row) // 添加到购物车
+        } else if (row.checkBox.A || row.checkBox.B) {
+          if (row.checkBox.A && row.checkBox.B) {
             this.badgeNumber -= 2
-          }else{
+          } else {
             this.badgeNumber--
           }
           row.checkBox.A = false
           row.checkBox.B = false
-        }else{
+        } else {
           row.checkBox.A = false
         }
+        console.log('选中selection',selection)
+        console.log('选中row',row)
       },
       // 选中A、B面的时候
-      /*changeAB(row){
-          let check = row
-          let that = this
-          if(check.checkBox.A == true || check.checkBox.B == true){
-            this.$refs.multipleTable.toggleRowSelection(check,true);
-
-            if(check.checkBox.A == false || check.checkBox.B == false){
-              this.shoppingShow = true
-              setTimeout(function () {
-                that.shoppingShow = false
-              },1000)
-            }
-          }else{
-            this.$refs.multipleTable.toggleRowSelection(check,false);
-          }
-      },*/
-      changeA(row){
+      changeA(row) {
         let check = row
-        if(check.checkBox.A === true || check.checkBox.B === true){
-          this.$refs.multipleTable.toggleRowSelection(check,true);
-          if(check.checkBox.A){
-             this.shopShow_hide()
-          }else{
-             this.badgeNumber--
+        if (check.checkBox.A === true || check.checkBox.B === true) {
+          this.$refs.multipleTable.toggleRowSelection(check, true);
+          if (check.checkBox.A) {
+            this.shopShow_hide()      // 动画效果
+            this.AddShopingInfo(row,'A') // 添加到购物车
+          } else {
+            this.badgeNumber--
           }
-        }else{
-          this.$refs.multipleTable.toggleRowSelection(check,false);
+        } else {
+          this.$refs.multipleTable.toggleRowSelection(check, false);
           this.badgeNumber--
         }
       },
-      changeB(row){
+      changeB(row) {
         let check = row
-        if(check.checkBox.A === true || check.checkBox.B === true){
-          this.$refs.multipleTable.toggleRowSelection(check,true);
-          if(check.checkBox.B === true){
+        if (check.checkBox.A === true || check.checkBox.B === true) {
+          this.$refs.multipleTable.toggleRowSelection(check, true);
+          if (check.checkBox.B === true) {
             this.shopShow_hide()
-          }else{
+            this.AddShopingInfo(row,'B') // 添加到购物车
+          } else {
             this.badgeNumber--
           }
-        }else{
-          this.$refs.multipleTable.toggleRowSelection(check,false);
+        } else {
+          this.$refs.multipleTable.toggleRowSelection(check, false);
           this.badgeNumber--
         }
       },
       //点击全选按钮
-      handleSelectAll(selection){
+      handleSelectAll(selection) {
         console.log(selection)
         let number = 0    // 统计全选后取消的行数或A/B面
-        if(selection.length !== 0){
-          console.log('number:',number)
-          for(let i=0;i<selection.length;i++){
-            if(selection[i].checkBox.A){
+        if (selection.length !== 0) {
+          console.log('number:', number)
+          for (let i = 0; i < selection.length; i++) {
+            if (selection[i].checkBox.A) {
               console.log('a')
               number++
             }
-            if(selection[i].checkBox.B){
+            if (selection[i].checkBox.B) {
               console.log('b')
               number++
             }
             selection[i].checkBox.A = true
             selection[i].checkBox.B = true
           }
-          this.shopShow_hide('all',number)
-        //  this.badgeNumber += (this.planList.length *2) - number
-        }else{
-          for(let i=0;i<this.planList.length;i++){
+          this.shopShow_hide('all', number)
+          //  this.badgeNumber += (this.planList.length *2) - number
+        } else {
+          for (let i = 0; i < this.planList.length; i++) {
             this.planList[i].checkBox.A = false
             this.planList[i].checkBox.B = false
           }
-          this.badgeNumber -= (this.planList.length *2)
+          this.badgeNumber -= (this.planList.length * 2)
         }
       },
       // 点击确认框后显示详情
-      showDetail(){
+      showDetail() {
         console.log(123);
       },
+      // 下一步
       next() {
-        console.log('planForm',this.planForm)
-        this.active++;
+        console.log('planForm', this.planForm)
+        if (this.active === 0) {
+          this.submitForm('planForm')
+        } else if (this.active === 1) {
+          this.active++
+        }
         if (this.active > 2) {
           // this.active = 0;
         }
       },
+      // 上一步
       prev() {
-       /* let topWrap = $('.content_top_wrap dd')
-        for(let i=0;i<topWrap.length;i++){
-          if(topWrap.eq(i).hasClass('active')){
-            console.log('值',topWrap.eq(i).text())
-          }
-        }*/
-      /*  let topWrap = document.getElementsByClassName('content_top_wrap')[0]
-        let dd = topWrap.getElementsByTagName('dd')
-      //  console.log(dd.length)
-        for(let i=0;i<dd.length;i++){
-          if(dd[i].getAttribute('class') == 'active'){
-            console.log('值',dd[i].innerHTML)
-          }
-        }*/
+        /* let topWrap = $('.content_top_wrap dd')
+         for(let i=0;i<topWrap.length;i++){
+           if(topWrap.eq(i).hasClass('active')){
+             console.log('值',topWrap.eq(i).text())
+           }
+         }*/
+        /*  let topWrap = document.getElementsByClassName('content_top_wrap')[0]
+          let dd = topWrap.getElementsByTagName('dd')
+        //  console.log(dd.length)
+          for(let i=0;i<dd.length;i++){
+            if(dd[i].getAttribute('class') == 'active'){
+              console.log('值',dd[i].innerHTML)
+            }
+          }*/
         this.active--;
         if (this.active < 1) {
           this.active = 0;
         }
+      },
+      // 表单验证
+      submitForm(formName) {
+        this.active++;
+        /*this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log('submit!');
+            this.active++;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });*/
       },
       continueCreate() {
         this.active = 0;
@@ -1210,7 +1356,7 @@ import api from '../../api/api'
         /*this.planForm.resetFields();*/
       },
       //step3确认修改
-      handleClose(){
+      handleClose() {
         this.$message({
           message: '修改成功',
           type: 'success'
@@ -1219,11 +1365,86 @@ import api from '../../api/api'
         this.changeMake = false;
         this.changeAD = false;
       },
+      // 添加到购物车
+      AddShopingInfo(info,letter) {
+        //  alert('1')
+        console.log('选中的row信息', info)
+        let selectInfo = {
+              rid: info.rid,
+              recName: info.recName,
+              city: info.city,
+              origin: info.origin,
+              buildType: info.buildType,
+              houseNum: info.houseNum,
+              buildPrice: info.buildPrice,
+              mediaName: info.mediaName,
+              buildNum: info.buildNum,
+              schedules: info.schedules,
+              businessOrigin: info.businessOrigin,
+              assetID: info.assetID,
+              liveYear:info.liveYear,
+              adLimit: info.adLimit,
+              checkBox: {A: info.checkBox.A, B: info.checkBox.B},
+        }
+       console.log(letter)
+        if(letter == 'B'){
+        //  alert('B')
+          selectInfo.A_B = 'B面'
+          this.shopingList.push(selectInfo)
+        }else{
+          selectInfo.A_B = 'A面'
+          this.shopingList.push(selectInfo)
+        }
+      },
+      // 购物车删除行
+      deleteRow(rows) {
+      //  console.log('购物车列表：',list)
+      //  this.$refs.multipleTable.toggleRowSelection(rows, false)
+        console.log('购物车删除行', rows)
+        console.log('删除行id', rows.rid)
+        for (let i = 0; i < this.planList.length; i++) {
+          if (rows.rid === this.planList[i].rid) {
+            console.log('相等的rid', rows.rid)
+            if (rows.A_B == 'A面') {
+              this.planList[i].checkBox.A = false
+              console.log('删除行的 this.planList', this.planList[i])
+              if(!this.planList[i].checkBox.B){
+                alert('1')
+                this.$refs.multipleTable.toggleRowSelection(this.planList[i], false)
+              }
+              console.log('相等的rid的checkBox.A', this.planList[i].checkBox.A)
+              // 删除
+              for(let j=0;j<this.shopingList.length;j++){
+                if(this.shopingList[j].rid === rows.rid && this.shopingList[j].A_B == 'A面'){
+                  this.shopingList.splice(j,1)
+                  this.badgeNumber--
+                  break
+                }
+              }
+            }else if(rows.A_B == 'B面'){
+              this.planList[i].checkBox.B = false
+              if(!this.planList[i].checkBox.A){
+                alert('2')
+                this.$refs.multipleTable.toggleRowSelection(this.planList[i], false)
+              }
+              // 删除
+              for(let j=0;j<this.shopingList.length;j++){
+                if(this.shopingList[j].rid === rows.rid  && this.shopingList[j].A_B == 'B面'){
+                  this.shopingList.splice(j,1)
+                  this.badgeNumber--
+                  break
+                }
+              }
+            }
+            break
+          }
+        }
+      },
       //修改动画效果及显示隐藏
-      shopShow_hide(all,num){
+      shopShow_hide(all, num) {
         let R = this.shopXY.x
         let T = this.shopXY.y
-        console.log('Right:',R ,',Top:',T)
+        console.log('Right:', R, ',Top:', T)
         let shopAnimate = document.getElementsByClassName('shopAnimate')[0]
         let animateAll = document.getElementsByClassName('shopAnimateAll')[0]
 
@@ -1233,18 +1454,18 @@ import api from '../../api/api'
         animateAll.style.top = this.shopXY.y + 'px'
         animateAll.style.right = (this.shopXY.x - 140) + 'px'
         let that = this
-        if(all === 'all'){
+        if (all === 'all') {
           this.selectAll = true
-           $(".shopAnimateAll").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
-              $(".shopAnimateAll").css({'top': T,'right': R,width:'790px',height:'386px'})
-              that.selectAll = false
-              that.badgeNumber += (that.planList.length *2) - num
-           //   that.badgeNumber++
-           })
-        }else{
+          $(".shopAnimateAll").animate({right: '37px', top: '77px', width: '18px', height: '18px'}, 700, function () {
+            $(".shopAnimateAll").css({'top': T, 'right': R, width: '790px', height: '386px'})
+            that.selectAll = false
+            that.badgeNumber += (that.planList.length * 2) - num
+            //   that.badgeNumber++
+          })
+        } else {
           this.shoppingShow = true
-          $(".shopAnimate").animate({ right: '37px',top:'77px',width:'18px',height:'18px'},700,function(){
-            $(".shopAnimate").css({'top': T,'right': R,width:'650px',height:'49px'})
+          $(".shopAnimate").animate({right: '37px', top: '77px', width: '18px', height: '18px'}, 700, function () {
+            $(".shopAnimate").css({'top': T, 'right': R, width: '650px', height: '49px'})
             that.shoppingShow = false
             that.badgeNumber++
           })
@@ -1256,10 +1477,14 @@ import api from '../../api/api'
 
 <style scoped>
 
-    .shopAnimate,.shopAnimateAll{
-      position: fixed;
-      top: 574px;
-      right:170px;
+  .el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: auto !important;
+  }
+
+  .shopAnimate, .shopAnimateAll {
+    position: fixed;
+    top: 574px;
+    right: 170px;
     /*
       font-weight: bold;
       font-size: 18px;
@@ -1269,11 +1494,12 @@ import api from '../../api/api'
       text-align: center;
       line-height: 18px;
       */
-      width: auto;
-      height: auto;
-      color: #fff;
-      z-index: 1000;
-    }
+    width: auto;
+    height: auto;
+    color: #fff;
+    z-index: 1000;
+  }
+
   /*面包屑导航*/
   .ad_mediaMana_nav {
     position: relative;
@@ -1338,7 +1564,7 @@ import api from '../../api/api'
     font-weight: bold;
     padding-left: 16px;
     height: 24px;
-    border-left: 2px solid #465D89;
+
     margin-top: 8px;
   }
 
@@ -1357,9 +1583,9 @@ import api from '../../api/api'
     margin-bottom: 22px;
     text-align: center;
     /* left: 45.3%; */
-   /* display: flex;
-    justify-content: center;
-    align-items: center;*/
+    /* display: flex;
+     justify-content: center;
+     align-items: center;*/
   }
 
   .content_bottom_btn button {
@@ -1371,7 +1597,7 @@ import api from '../../api/api'
 
   .content_bottom_btn button.create {
     background: #108EE9;
-    border-radius: 2px;
+    border-radius: 4px;
     font-size: 14px;
     border: none;
     color: #ffffff;
@@ -1382,17 +1608,13 @@ import api from '../../api/api'
     font-size: 14px;
     color: #666666;
     border: 1px solid #D9D9D9;
-    border-radius: 2px;
+    border-radius: 4px;
     margin-left: 10px;
   }
 
   /*下一步按钮*/
-  /deep/ .el-button--primary {
-    background-color: #108EE9;
-    border-color: #108EE9;
-  }
 
-  /deep/ .map.el-button--primary{
+  /deep/ .map.el-button--primary {
     background: #FF7721;
     border-color: #FF7721;
   }
@@ -1463,9 +1685,10 @@ import api from '../../api/api'
     align-items: center;
     flex-wrap: wrap;*/
   }
-  /deep/ .el-form.demo-ruleForm{
+
+  /deep/ .el-form.demo-ruleForm {
     width: 416px;
-    margin:  0 auto;
+    margin: 0 auto;
   }
 
   .el-input {
@@ -1484,8 +1707,11 @@ import api from '../../api/api'
     resize: vertical;
   }
 
-
   /*选择点位*/
+  /deep/ .el-checkbox, .el-checkbox__input {
+
+  }
+
   /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
     width: 95px;
     position: relative;
@@ -1505,16 +1731,16 @@ import api from '../../api/api'
   .searchInput /deep/ .el-input__inner, .searchInput {
     width: 224px !important;
     position: relative;
-    left: -7px;
+    left: -8px;
     top: 0;
     height: 34px;
-    border-left: none !important;
+    /*border-left: none !important;*/
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
   }
 
   /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
-    width: 180px;
+    width: 215px;
     margin-left: -6px;
   }
 
@@ -1525,10 +1751,20 @@ import api from '../../api/api'
     left: -5px;
   }
 
+  /deep/ .plan-select /deep/ .el-input__suffix {
+
+    right: 10px;
+  }
+
   /deep/ .el-date-editor .el-range__icon {
     position: relative;
     top: -2px;
     left: -3px;
+  }
+
+  /*日期*/
+  /deep/ .el-date-editor .el-range__close-icon {
+    line-height: 29px;
   }
 
   .searchBtn, .map {
@@ -1548,6 +1784,57 @@ import api from '../../api/api'
     left: -5px;
   }
 
+  /*下拉搜索框*/
+  /deep/ .el-input-group__prepend {
+    width: 64px;
+    background-color: #fff;
+  }
+
+  /deep/ .el-input-group--prepend .el-select .el-input__inner {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    width: 104px;
+  }
+
+  /deep/ .el-input-group--prepend .el-input__inner {
+    width: 185px;
+  }
+
+  .el-input {
+
+    height: 34px !important;
+    border-radius: 4px;
+  }
+
+  /deep/ .el-input__inner {
+    height: 34px;
+    /*position: relative;
+    top: -1px;*/
+  }
+
+  /*按钮*/
+  /deep/ .el-button--default:focus, .el-button--default:hover {
+    color: #606266;
+    border-color: #dcdfe6;
+    background-color: #fcfcfc;
+  }
+
+  .content_bottom_btn /deep/ .el-button span {
+    position: relative;
+    top: -2px;
+  }
+
+  .content_bottom_btn /deep/ .el-button span a {
+    color: #606266;
+  }
+
+  .finishBtn /deep/ .el-button span {
+    left: -8px;
+  }
+
   .map {
     width: 76px;
     height: 34px;
@@ -1558,6 +1845,7 @@ import api from '../../api/api'
     text-align: center;
     font-size: 14px;
   }
+
   /deep/ .map .el-icon-location-outline {
     position: relative;
     top: -2px;
@@ -1584,17 +1872,18 @@ import api from '../../api/api'
     z-index: 999;
   }
 
-	.cart_box{
-		color:#fff;
-		background:#108EE9;
-		border-radius:50%;
-		display:inline-block;
-		width:50px;
-		height:50px;
-		vertial-align:middle;
-		text-align:center;
-		line-height:50px;
-	}
+  .cart_box {
+    color: #fff;
+    background: #108EE9;
+    border-radius: 50%;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    vertial-align: middle;
+    text-align: center;
+    line-height: 50px;
+  }
+
   /deep/ .shopcar .el-badge__content.is-fixed {
     position: absolute;
     top: 10px;
@@ -1602,7 +1891,7 @@ import api from '../../api/api'
   }
 
   .shopcar img {
-    width:59px;
+    width: 59px;
     height: 59px;
     border-radius: 50%;
   }
@@ -1615,7 +1904,7 @@ import api from '../../api/api'
   }
 
   .dw-panel dl {
-    border-bottom: 2px dashed #D8D8D8;
+    border-bottom: 1px dashed #D8D8D8;
     line-height: 40px;
   }
 
@@ -1663,7 +1952,7 @@ import api from '../../api/api'
   .filter-input input {
     border: 1px solid #C2C2C2;
     border-radius: 4px;
-    width: 50px;
+    width: 64px;
     height: 26px;
     outline: none;
     text-indent: 1em;
@@ -1678,11 +1967,12 @@ import api from '../../api/api'
 
   .filter-input ul li {
     float: left;
-    margin-left: 33px;
+    margin-left: 22px;
     position: relative;
-    width: 189px;
+    width: 218px;
     top: 4px;
   }
+
   .filter-input ul li:last-child {
     float: left;
     margin-left: 33px;
@@ -1690,7 +1980,6 @@ import api from '../../api/api'
     width: 189px;
     top: 1px;
   }
-
 
   /deep/ .buildType .el-input, /deep/ .buildType .el-input__inner {
     width: 95px;
@@ -1734,10 +2023,12 @@ import api from '../../api/api'
     left: -5px;
   }
 
-  .el-button + .el-button {
-    margin-left: 28px;
+  .input-wrap .el-button + .el-button {
+    float: right;
+    margin-right: 2px;
   }
-  .searchBtn.el-button + .el-button{
+
+  .searchBtn.el-button + .el-button {
     margin-left: 0;
   }
 
@@ -1778,30 +2069,36 @@ import api from '../../api/api'
   }
 
   /*表格*/
-  /deep/ .el-table th, .el-table tr{
+  /deep/ .el-table th, .el-table tr {
     background: #F7F7F7;
     padding: 10px 0;
   }
-  /deep/ .el-table th>.cell{
+
+  /deep/ .el-table th > .cell {
     color: #666666;
     line-height: 14px;
     font-weight: bold;
   }
-  /deep/ .el-checkbox+.el-checkbox{
+
+  /deep/ .el-checkbox + .el-checkbox {
     margin-left: 10px;
   }
-  /deep/ .el-table__expanded-cell[class*=cell]{
+
+  /deep/ .el-table__expanded-cell[class*=cell] {
     padding: 0 86px;
     background-color: #F7F7F7;;
   }
-  /deep/ .el-table__expanded-cell[class*=cell] .el-form{
+
+  /deep/ .el-table__expanded-cell[class*=cell] .el-form {
     height: 44px;
     line-height: 44px;
   }
-  /deep/ .el-form-item__content{
+
+  /deep/ .el-form-item__content {
     line-height: 46px;
   }
-  /deep/ .el-form-item__label{
+
+  /deep/ .el-form-item__label {
     padding: 0 0 0 12px;
   }
 
@@ -1809,71 +2106,80 @@ import api from '../../api/api'
     text-align: right !important;
     padding-right: 10px;
   }
+
   /*滚动条*/
-  /deep/ .el-table__body-wrapper{
+  /deep/ .el-table__body-wrapper {
     height: 480px;
     overflow-y: scroll;
     overflow-x: hidden;
   }
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar{
+
+  /deep/ .el-table__body-wrapper::-webkit-scrollbar {
     width: 4px;
     background: #FAFAFA;
 
   }
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
 
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: #C1C1C1;
     border-radius: 4px;
   }
-  /deep/ .el-form--inline .el-form-item{
+
+  /deep/ .el-form--inline .el-form-item {
     margin-right: 45px;
   }
-  /deep/ .el-dialog{
+
+  /deep/ .el-dialog {
     width: 1000px;
   }
 
-
-
   /*购物车列表*/
-  .car-title{
+  .car-title {
     margin-bottom: 10px;
   }
-  .car-title h4{
+
+  .car-title h4 {
     font-size: 16px;
     font-weight: bold;
     display: inline-block;
   }
-  .car-title p{
+
+  .car-title p {
     font-size: 14px;
     font-weight: normal;
     display: inline-block;
     margin-left: 10px;
   }
-  .car-title span{
+
+  .car-title span {
     font-size: 14px;
     font-weight: normal;
     margin-left: 10px;
     cursor: pointer;
     color: #1890ff;
   }
-  .car-del{
+
+  .car-del {
     text-align: center;
     cursor: pointer;
     color: #1890ff;
   }
-  /deep/.car-list .el-table__expanded-cell[class*=cell]{
+
+  /deep/ .car-list .el-table__expanded-cell[class*=cell] {
     padding: 0 46px;
     background-color: #F7F7F7;;
   }
 
-  /deep/ .el-table_1_column_7, /deep/ .el-table_1_column_8, /deep/ .el-table_1_column_9,  .el-table_1_column_18, /deep/ .el-table_2_column_19{
+  /deep/ .el-table_1_column_7, /deep/ .el-table_1_column_8, /deep/ .el-table_1_column_9, .el-table_1_column_18, /deep/ .el-table_2_column_19 {
     text-align: right;
   }
 
-  /deep/.table_wrap.car-list{
+  /deep/ .table_wrap.car-list {
     margin-top: 0 !important;
   }
+
   /*超出省略*/
   /deep/ .el-table .cell {
     overflow-x: hidden;
@@ -1881,12 +2187,16 @@ import api from '../../api/api'
     white-space: nowrap;
   }
 
+  /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
+    background-color: #ecf5ff;
+  }
+
   /*确认报价单*/
-  .step3{
+  .step3 {
     padding: 0 105px;
   }
 
-  .bill-title{
+  .bill-title {
     width: 100%;
     height: 181px;
     box-sizing: border-box;
@@ -1894,47 +2204,56 @@ import api from '../../api/api'
     margin-bottom: 10px;
     padding: 22px 60px;
   }
-  .bill-title h4{
+
+  .bill-title h4 {
     font-size: 18px;
     color: #333333;
     font-weight: bold;
     margin-bottom: 12px;
   }
-  .bill-title p{
+
+  .bill-title p {
     margin-bottom: 12px;
     font-size: 14px;
     color: #666666;
   }
 
-  .bill-title-left{
+  .bill-title-left {
     float: left;
   }
-  .bill-title-right{
+
+  .bill-title-right {
     float: right;
   }
-  .bill-title-right{
+
+  .bill-title-right {
     font-size: 14px;
     color: #666666;
   }
-  .bill-title-right p{
-      text-align: right;
+
+  .bill-title-right p {
+    text-align: right;
     position: relative;
   }
-  .bill-title-right em{
+
+  .bill-title-right em {
     float: right;
     position: absolute;
     right: 225px;
     top: 0;
     width: 100px;
   }
-  .bill-title-right .totalPrice{
+
+  .bill-title-right .totalPrice {
     font-size: 22px;
     color: #333333;
   }
-  /deep/.el-tabs--border-card>.el-tabs__content{
+
+  /deep/ .el-tabs--border-card > .el-tabs__content {
     padding: 40px;
   }
-  .tab-info h4{
+
+  .tab-info h4 {
     width: 100%;
     background: #FAFAFA;
     border-radius: 2px;
@@ -1945,7 +2264,8 @@ import api from '../../api/api'
     padding-left: 20px;
     font-weight: bold;
   }
-  .tab-info p{
+
+  .tab-info p {
     margin-bottom: 40px;
     margin-top: 20px;
     margin-left: 20px;
@@ -1953,27 +2273,31 @@ import api from '../../api/api'
     color: #666666;
   }
 
-  .price{
+  .price {
     width: 100%;
     height: 300px;
   }
-  .price-left{
+
+  .price-left {
     box-sizing: border-box;
     padding-right: 66px;
     width: 49%;
     float: left;
-    border-right: 2px dashed #D8D8D8;
+    border-right: 1px dashed #D8D8D8;
   }
-  .price-right{
+
+  .price-right {
     width: 49%;
     float: right;
     padding-left: 66px;
     box-sizing: border-box;
   }
-  .tab-info .price h4{
+
+  .tab-info .price h4 {
     width: 90%;
   }
-  .tab-info .price h4 button{
+
+  .tab-info .price h4 button {
     width: 50px;
     height: 24px;
     background: #E6F1FC;
@@ -1987,60 +2311,72 @@ import api from '../../api/api'
     right: 10px;
     outline: none;
   }
-  /deep/ .el-button.el-button--text span{
+
+  /deep/ .el-button.el-button--text span {
     position: relative;
     top: -5px;
   }
-  .price ul li{
+
+  .price ul li {
     font-size: 14px;
     color: #666666;
-    border-bottom: 1px solid  #D8D8D8;
+    border-bottom: 1px solid #D8D8D8;
     height: 50px;
     line-height: 50px;
     margin-left: 19px;
     margin-right: 28px;
   }
-  .price ul li:last-child{
+
+  .price ul li:last-child {
     text-align: right;
     border-bottom: none;
     font-size: 18px;
     color: #333333;
     font-weight: bold;
   }
-  .price ul li span{
+
+  .price ul li span {
     float: right;
   }
-  .bottom{
+
+  .bottom {
     width: 100%;
     height: 181px;
     background: #FAFAFA;
     box-sizing: border-box;
     padding: 21px;
   }
-  .tab-info .bottom p{
+
+  .tab-info .bottom p {
     margin: 0;
   }
-  .bottom .remark{
+
+  .bottom .remark {
     display: inline-block;
     width: 60%;
     height: 105px;
   }
-  .bottom .bill-title-right li{
+
+  .bottom .bill-title-right li {
     font-size: 18px;
     color: #666666;
     margin-bottom: 8px;
   }
-  .bottom .bill-title-right li em{
+
+  .bottom .bill-title-right li em {
     font-size: 14px;
     color: #666666;
   }
-  .bottom-detail{
-    border-bottom: 2px dashed #D8D8D8;
+
+  .bottom-detail {
+    border-bottom: 1px dashed #D8D8D8;
   }
-  .bottom-fin{
+
+  .bottom-fin {
     margin-top: 15px;
   }
-  .bottom-fin button{
+
+  .bottom-fin button {
     background: #E6F1FC;
     border: 1px solid #A3D0FD;
     border-radius: 4px;
@@ -2050,30 +2386,35 @@ import api from '../../api/api'
     height: 24px;
     outline: none;
   }
-  .bottom-fin p{
+
+  .bottom-fin p {
     float: right;
   }
-  .bottom-fin span{
+
+  .bottom-fin span {
     font-size: 22px;
     color: #333333;
     font-weight: bold;
   }
+
   /*确认报价单修改框*/
-  /deep/ .el-dialog__body{
+  /deep/ .el-dialog__body {
     padding: 8px 20px;
   }
-  .changeBill h4{
+
+  .changeBill h4 {
     font-size: 20px;
     color: #303133;
   }
-  .changeBill p{
+
+  .changeBill p {
     margin-top: 20px;
     margin-bottom: 6px;
   }
-  /deep/ .step3 .el-input__inner,/deep/ .step3 .el-textarea__inner{
+
+  /deep/ .step3 .el-input__inner, /deep/ .step3 .el-textarea__inner {
     width: 348px;
   }
-
 
   /*计数器*/
   /deep/ .el-input-number__decrease, /deep/ .el-input-number__increase {
@@ -2093,28 +2434,29 @@ import api from '../../api/api'
     position: relative;
     top: 2px;
   }
-  /deep/ .el-input-number{
+
+  /deep/ .el-input-number {
     width: 348px;
   }
 
-  /deep/.el-table th>.cell.highlight{
+  /deep/ .el-table th > .cell.highlight {
     color: #409EFF !important;
   }
-  .changeMakePrice .el-input__inner{
+
+  .changeMakePrice .el-input__inner {
     width: 352px;
     height: 34px;
     margin-top: 6px;
   }
-  /deep/ .el-input-number.is-controls-right .el-input__inner{
+
+  /deep/ .el-input-number.is-controls-right .el-input__inner {
     text-align: left;
   }
 
-  /deep/.el-tabs--border-card{
+  /deep/ .el-tabs--border-card {
     box-shadow: none;
     border: 1px solid #D8D8D8;
   }
-
-
 
   /*完成创建*/
   .successIcon img {
@@ -2126,6 +2468,7 @@ import api from '../../api/api'
     color: #333333;
     margin-top: 24px;
     margin-bottom: 8px;
+    font-weight: bold;
   }
 
   .successIcon p {
@@ -2185,6 +2528,7 @@ import api from '../../api/api'
       font-size: 14px;
       color: #666;
     }
+
     .filter-input ul li {
       float: left;
       margin-left: 33px;
@@ -2195,11 +2539,6 @@ import api from '../../api/api'
     .filter-input .input-wrap .el-button--mini {
       left: 1px;
     }
-
-    .el-button + .el-button {
-      margin-left: 40px;
-    }
-
 
     .tbody .tr li:nth-of-type(1) {
       width: 3.25%;
@@ -2250,7 +2589,7 @@ import api from '../../api/api'
       left: 896px;
     }
 
-    .tab-info .price h4{
+    .tab-info .price h4 {
       width: 94%;
     }
 
@@ -2278,10 +2617,6 @@ import api from '../../api/api'
       position: relative;
       top: -1px;
       left: -3px;
-    }
-
-    .filter-input .input-wrap .el-button--mini {
-      left: 43px;
     }
 
     .tbody .tr li:nth-of-type(1) {
