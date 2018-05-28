@@ -192,7 +192,7 @@
 <script>
     import api from '../../api/api'
     import commentFun from '../../js/commentFun'
-    import { Button, Table, TableColumn, Row, Col} from 'element-ui';
+    import { Button, Table, TableColumn, Row, Col, Message} from 'element-ui';
     export default {
 		name: "mediaDetail",
 		components:{
@@ -289,6 +289,12 @@
           let resID = sessionStorage.getItem('resID')
           api.getApi('/GetResCT',{resid:resID,info:'y'}).then(res=>{
             console.log('mediaDetail res.data',res.data) //fNum楼栋数量 dNum出入数量 hNum住户数量
+            if(res.data === null){
+              Message({
+                type: 'warning',
+                message: '媒体资源信息为空'
+              });
+            }
             this.obj.cType = res.data.cType
             this.obj.housePrice = res.data.hPrice + '元/平方米'
             this.obj.joinTime = commentFun.spliceFun(res.data.joinTime)
@@ -310,7 +316,7 @@
           }).catch(err=>{
             console.log(err);
           });
-          api.getApi('/GetMediaList',{resid:1}).then(res=>{
+          api.getApi('/GetMediaList',{resid:resID}).then(res=>{
             console.log('res.data',res.data)
             let MediaList = res.data
           //  this.mediaList = MediaList
@@ -327,6 +333,8 @@
               }*/
               if(MediaList[i].mState === 1){
                 MediaList[i].mState = '正常'
+              }else if(MediaList[i].mState === 0){
+                MediaList[i].mState = '被删除'
               }
             //  this.mediaList[i] = MediaList[i]
               this.mediaList.push(MediaList[i])

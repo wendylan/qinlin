@@ -1047,10 +1047,15 @@
             label: '销售',
             value: userInfo.uID
           }
+        //  this.planForm.ownerSales = userInfo.uID
           this.ownerSales.push(sales)
+        }else{
+          this.ownerSales = [
+            { label: '销售',value: '7' },
+            { label: '媒体',value: userInfo.uID }
+          ]
         }
         console.log('this.ownerSales', this.ownerSales)
-        this.planForm.ownerSales = userInfo.uID //
         api.getApi('/MyCustomer', {uid: 3}).then(res => {
           console.log('MyCustomer:', res.data)
           let customerList = res.data
@@ -1070,7 +1075,7 @@
             ownerList.push(owner)
             if (i == 0) {
               companyList.push(companyObj)
-            } else if (JSON.stringify(companyList).indexOf(JSON.stringify(companyObj)) === -1) { //判断是否有重复的公司
+            } else if (JSON.stringify(companyList).indexOf(JSON.stringify(companyObj)) === -1) { //判断是否有重复的公司JSON.stringify(companyObj)
               companyList.push(companyObj)
             }
           }
@@ -1104,6 +1109,8 @@
       },
       // 获取公司品牌
       GetBrandByCid(val) {
+        this.planForm.companyBrand = ''
+        this.planForm.ownerBU = ''
         console.log('所选公司的ID', val)
         let cidParams = {cid: val}
         api.getApi('/GetBrand', cidParams).then(res => {

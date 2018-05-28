@@ -23,9 +23,8 @@
 								<el-select v-model="accountForm.role" placeholder="请选择角色">
 									<el-option label="超级管理员" value="SM"></el-option>
 									<el-option label="媒介" value="MD"></el-option>
-                  <el-option label="工程人员" value="EP"></el-option>
-                  <el-option label="销售" value="BD"></el-option>
-                  <el-option label="运营" value="OP"></el-option><!-- EP 工程人员-->
+									<el-option label="销售" value="AD"></el-option>
+                  <el-option label="运营" value="OP"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="权限城市:" prop="PermissionCity">
@@ -108,19 +107,24 @@ export default {
 				division: '',
 				email:'',
 			},
-      throwCity: [{
-				value: '440100',
-				label: '广州'
-			}, {
-				value: '310100',
-				label: '上海'
-			}, {
-				value: '110100',
-				label: '北京'
-			}, {
-				value: '440300',
-				label: '深圳'
-			}],
+      throwCity: [
+        {
+          value: '0',
+          label: '全国'
+        },
+        {
+          value: '440100',
+          label: '广州'
+			  }, {
+          value: '310100',
+          label: '上海'
+			  }, {
+          value: '110100',
+          label: '北京'
+			  }, {
+          value: '440300',
+          label: '深圳'
+			  }],
 			accountRules: {
 				account: [
 					{required: true, message: '账号不能为空', trigger: 'blur'},
@@ -197,19 +201,9 @@ export default {
        },*/
       submitForm(formName){
         console.log('item',formName)
-        /*console.log('this.$refs',this.$refs)
-        this.$refs['accountForm'].validate((valid) => {
-          if (valid) {
-            console.log('submit!');
-          //  this.active++;
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });*/
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            // alert('submit!');
             this.createFun()
           } else {
             console.log('error submit!!');
@@ -289,7 +283,6 @@ export default {
       },
       //重置表单
       resetForm() {
-        console.log('表单清空')
         this.$refs['accountForm'].resetFields();
       },
     }

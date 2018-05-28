@@ -15,7 +15,7 @@
                      class="demo-ruleForm">
               <el-form-item label="资源类型:" prop="rt">
                 <div class="select_wrap">
-                  <el-select v-model="recForm.rt" placeholder="请选择资源类型" :disabled="PathHaveEdit">
+                  <el-select v-model="recForm.rt" @change="selectRec" placeholder="请选择资源类型" :disabled="PathHaveEdit">
                     <el-option label="写字楼" value="0"></el-option>
                     <el-option label="社区" value="1"></el-option>
                   </el-select>
@@ -50,13 +50,14 @@
               <el-form-item label="具体地址:" prop="resaddr">
                 <el-input v-model="recForm.resaddr" placeholder="例：工业大道53号"></el-input>
               </el-form-item>
-              <el-form-item label="楼盘类型:" prop="buildingType">
+              <el-form-item :label="rt_village?'楼盘类型:':'写字楼类型:'" prop="buildingType">
                 <el-select v-model="recForm.buildingType" placeholder="请选择楼盘类型">
-                  <el-option label="高端住宅" value="0"></el-option>
-                  <el-option label="中端住宅" value="1"></el-option>
-                  <el-option label="一般住宅" value="2"></el-option>
-                  <el-option label="洋房" value="3"></el-option>
-                  <el-option label="别墅" value="4"></el-option>
+                  <el-option v-for="item in buildingType"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="出入口数:" prop="doorway">
@@ -67,7 +68,7 @@
                 <el-input-number v-model="recForm.buildingNum" controls-position="right" :min="1"
                                  :max="9999999"></el-input-number>
               </el-form-item>
-              <el-form-item label="住户数量:" prop="households">
+              <el-form-item :label="rt_village?'住户数量:':'办公室数量:'" prop="households">
                 <el-input-number v-model="recForm.households" controls-position="right" :min="1"
                                  :max="9999999"></el-input-number>
               </el-form-item>
@@ -77,7 +78,7 @@
                   <span style="left: 15px">￥</span>
                 </div>
               </el-form-item>
-              <el-form-item label="入住时间:" prop="liveTime">
+              <el-form-item :label="rt_village?'入住时间:':'建成年份:'" prop="liveTime">
                 <el-date-picker
                   v-model="recForm.liveTime"
                   type="datetime"
@@ -138,10 +139,10 @@
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mediaStatus">
                 <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态" :disabled="PathHaveEdit">
-                  <el-option label="禁止" value="0"></el-option>
+                  <el-option label="被删除" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
-                  <el-option label="待安装" value="2"></el-option>
-                  <el-option label="待维修" value="3"></el-option>
+                  <el-option label="被锁定" value="2"></el-option>
+                  <el-option label="投放中" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="资产编号:" prop="assetId">
@@ -184,8 +185,9 @@
               </el-form-item>
               <el-form-item label="广告限制:" prop="adLimit">
                 <el-select v-model="item.mediaForm.adLimit" placeholder="请选择广告限制">
-                  <el-option label="" value="地产1"></el-option>
-                  <el-option label="" value="地产2"></el-option>
+                  <el-option label="" value="地产"></el-option>
+                  <el-option label="" value="医学"></el-option>
+                  <el-option label="" value="汽车"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="备注:" prop="mediaRemark">
@@ -323,7 +325,7 @@
             },
           },
         ],
-        //表单
+        //资源表单
         /*"chDay": "2013-01-03",
           "hPrice": 60000,
           "fNum": 175,
@@ -339,14 +341,14 @@
           "joinTime": "2018-04-03 16:21:45.0",
           "resType": 1*/
         recForm: {
-          rt: '',     //资源类型
-          resname: '',  // 资源名称
+          rt: '',                //资源类型
+          resname: '',          // 资源名称
           city: [],
-          region: '',  // 所属区域
-          business: '', // 所属商圈
-          resaddr: '',  // 资源地址
-          buildingType: '', // 楼盘类型
-          doorwayNum: '1',  // 出入数
+          region: '',          // 所属区域
+          business: '',       // 所属商圈
+          resaddr: '',        // 资源地址
+          buildingType: '',  // 楼盘类型
+          doorwayNum: '1',   // 出入数
           buildingNum: '1',  // 楼栋数量
           households: '1',   // 住户数量
           buildingPrice: 0,  // 楼盘价格
@@ -474,32 +476,34 @@
             {max: 200, message: '最多只能输入200个字符', trigger: 'blur'}
           ],
         },
-        recFormImg: '', // 资源图片
-        mediaFormImg: '',// 媒体图片
-        //城市数组
-        cityOptions: [{
-          value: 'zhinan',
-          label: '指南',
-          children: [
-            {
-              value: 'shejiyuanze',
-              label: '设计原则',
-            },
-            {
-              value: 'daohang',
-              label: '导航'
-            },
-            {
-              value: 'daohang2',
-              label: '导航2'
-            }
-          ]
-        }],
-        regionOpt: [],     // 地区
-        selectedOptions: [],    // 城市默认选项
-        PathHaveEdit: false,    //  新建/编辑
-        recImg: {},            // 上传的资源图片
-        mediaImg: {}          // 媒体图片
+        recFormImg: '',              // 资源图片
+        mediaFormImg: '',            // 媒体图片
+        cityOptions: [],             //城市数组
+        rt_village: true,           // 资源类型是否是社区
+        regionOpt: [],              // 地区
+        buildingType:[              // 楼盘类型或写字楼类型
+          { label: '高端住宅',value: '高端住宅' },
+          { label: '中段住宅',value: '中端住宅' },
+          { label: '一般住宅',value: '一般住宅' },
+          { label: '洋房',value: '洋房'},
+          { label: '别墅',value: '别墅' },
+        ],
+        village:[                   // 社区楼盘
+          { label: '高端住宅',value: '高端住宅' },
+          { label: '中段住宅',value: '中端住宅' },
+          { label: '一般住宅',value: '一般住宅' },
+          { label: '洋房',value: '洋房'},
+          { label: '别墅',value: '别墅' },
+        ],
+        officeBuilding: [           // 写字楼类型
+          {lable:'单纯性写字楼',value:'单纯性写字楼'},
+          {lable:'商住型写字楼',value:'商住型写字楼'},
+          {lable:'综合型写字楼',value:'综合型写字楼'},
+        ],
+        selectedOptions: [],        // 城市默认选项
+        PathHaveEdit: false,        //  新建/编辑
+        recImg: {},                 // 上传的资源图片
+        mediaImg: {}                // 媒体图片
       };
     },
     beforeCreate: function () {
@@ -618,6 +622,22 @@
           }
         }
         this.regionOpt = arr
+      },
+      // 选择资源类型时的修改资源字段显示
+      selectRec(val){
+        this.recForm.buildingType = ''
+        if(val === '1'){    // 社区
+          this.rt_village = true
+          this.buildingType = this.village
+        }else if(val === '0'){    // 写字楼
+          this.rt_village = false
+         /* let officeBuilding = [
+            {lable:'单纯性写字楼',value:'单纯性写字楼'},
+            {lable:'商住型写字楼',value:'商住型写字楼'},
+            {lable:'综合型写字楼',value:'综合型写字楼'},
+          ];*/
+          this.buildingType = this.officeBuilding
+        }
       },
       //添加资源媒体
       createRec() {
@@ -928,6 +948,40 @@
         }
       },
       postEditMsg() {
+        // 修改资源
+        /*  uid     int【必填】     UserID
+            resid   int【必填】     资源ID
+            rid     int             地区id
+            ta      String          商圈名称
+            resname String          资源名称
+            resaddr String          资源地址
+            ct      String          楼盘类型
+            cd      String          入住时间 urlSetResCT
+            hp      int             楼盘价格
+            fn      int             楼栋数量
+            dn      int             出入口数量
+            hn      int             小区户数*/
+          this.recForm.uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+          let rID = sessionStorage.getItem('resID')
+      //    this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
+          let recObj = this.recForm
+          let SetResCTObj = {
+            uid: recObj.uid,
+            resid: rID,
+            rid: recObj.city[1],
+            ta: recObj.business,
+            resname: recObj.resname,
+            resaddr: recObj.resaddr,
+            ct: '别墅',//recObj.buildingType,
+            cd: recObj.liveTime,
+            hp: recObj.buildingPrice,
+            fn: recObj.buildingNum,
+            dn: recObj.doorwayNum,
+            hn: recObj.households,
+          }
+        api.postApi('/SetResCT',SetResCTObj).then(res=>{
+          console.log('修改信息',res)
+        })
         /*mid         int【必填】     媒体ID
             mtitle      String          媒体名称
             adsize      String          广告位尺寸

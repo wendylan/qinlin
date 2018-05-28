@@ -67,31 +67,31 @@
               prop="city"
               label="城市"
               min-width="5%"
-              :filters="[
+              :filters="filtersCity"
+              :filter-method="filterCity"
+              :filter-multiple="false"
+            ><!--[
               { text: '石家庄', value: '石家庄' },
               { text: '广州', value: '广州' },
               { text: '上海', value: '上海' },
               { text: '北京', value: '北京' },
               { text: '深圳', value: '深圳' }
-              ]"
-              :filter-method="filterCity"
-              :filter-multiple="false"
-            >
+              ]-->
             </el-table-column>
             <el-table-column
               prop="rName"
               label="区域"
               min-width="6.1%"
-              :filters="[
+              :filters="filtersRName"
+              :filter-method="filterRegion"
+              :filter-multiple="false"
+            ><!--[
               { text: '天河区', value: '天河区' },
               { text: '越秀区', value: '越秀区' },
               { text: '海珠区', value: '海珠区' },
               { text: '黄浦区', value: '黄浦区' },
               { text: '白云区', value: '白云区' }
-              ]"
-              :filter-method="filterRegion"
-              :filter-multiple="false"
-            >
+              ]-->
             </el-table-column>
             <el-table-column
               prop="tradingArea"
@@ -212,7 +212,7 @@
     data() {
       return {
         rootPath: '',
-        showNewBtn: true,
+        showNewBtn: true,   // 新建按钮
         haveDetail: true,
         //搜索框和下拉列表
         input: '',
@@ -246,6 +246,8 @@
            }]*/
         planList: [],
         currentPlan: [],
+        filtersCity: [],    // 城市头部筛选
+        filtersRName: [], // 区域头部筛选
       }
     },
     mounted: function () {
@@ -256,7 +258,7 @@
 
       let nowPath = this.$route.path; // /media/mediaList
 
-      if (nowPath.indexOf('/media/') !== -1) {
+      if (nowPath.indexOf('/operate/') !== -1) {
         this.haveDetail = false
       }
       $(function () {
@@ -281,7 +283,7 @@
         return row.city === value;
       },
       filterRegion(value, row) {
-        return row.region === value;
+        return row.rName === value;
       },
       filterMediaType(value, row) {
         return row.mediaType === value;
@@ -337,6 +339,30 @@
 
       },
       getData() {
+
+//       let reclist =  [
+// {resID: 1,rID: 440106,city:'广州',rName: "天河区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
+// {resID: 2,rID: 440106,city:'上海',rName: "白云区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000002,mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "1"},
+// {resID: 3,rID: 440106,city:'广州',rName: "越秀区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},
+// {resID: 17,rID: 440106,city:'深圳',rName: "越秀区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},]
+//         this.planList = reclist
+//         for(let i=0;i<this.planList.length;i++){
+//           let rName = {
+//             text: this.planList[i].rName,
+//             value: this.planList[i].rName
+//           }
+//           let rCity = {
+//             text: this.planList[i].city,
+//             value: this.planList[i].city
+//           }
+//         //  this.filtersRName.push(rName)
+//           if(JSON.stringify(this.filtersRName).indexOf(rName.value) === -1){
+//             this.filtersRName.push(rName)
+//           }
+//           if(JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1){
+//             this.filtersCity.push(rCity)
+//           }
+//         }
         //请求
         let dataArr = []
         api.getApi('/GetRMList', {uid: 3}).then(res => {
@@ -353,11 +379,28 @@
               }else if(RMList[i].mState == '3'){
                 RMList[i].mState = '投放中'
               }
-              areaToText.toTextCity(data => {
+              areaToText.toText(data => {
                console.log('公司信息所在城市', data);
-                RMList[i].city = data
+                RMList[i].city = data.city
                 if(i >= RMList.length-1){
                   this.planList = RMList
+                  for(let j=0;j<this.planList.length;j++){    // 表头区域和城市选项
+                    let rName = {
+                      text: this.planList[j].rName,
+                      value: this.planList[j].rName
+                    }
+                    let rCity = {
+                      text: this.planList[j].city,
+                      value: this.planList[j].city
+                    }
+                    //  this.filtersRName.push(rName)
+                    if(JSON.stringify(this.filtersRName).indexOf(rName.value) === -1){
+                      this.filtersRName.push(rName)
+                    }
+                    if(JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1){
+                      this.filtersCity.push(rCity)
+                    }
+                  }
                 }
               }, RMList[i].rID);
             }
