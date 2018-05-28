@@ -41,11 +41,19 @@
 								<el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
 							</el-form-item>
 							<el-form-item label="上级:" prop="boss">
-								<el-select v-model="accountForm.boss" placeholder="请选择上级">
+								<!-- <el-select v-model="accountForm.boss" placeholder="请选择上级">
 									<el-option label="管理员" value="admin"></el-option>
 									<el-option label="媒介" value="media"></el-option>
 									<el-option label="销售" value="sale"></el-option>
-								</el-select>
+								</el-select> -->
+
+								<el-autocomplete
+									v-model="accountForm.boss"
+									:fetch-suggestions="querySearchAsync"
+									placeholder="请输入账号"
+									@select="handleSelect"
+									>
+								</el-autocomplete>
 							</el-form-item>
 							<el-form-item label="职务:" prop="position">
 								<el-input v-model="accountForm.position" placeholder="请输入职务"></el-input>
@@ -69,7 +77,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message } from 'element-ui';
+import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message, Autocomplete } from 'element-ui';
 import areaToText from '../../commonFun/areaToText.js';
 import api from '../../api/api'
 export default {
@@ -81,6 +89,7 @@ export default {
 		elOption: Option,
 		elInput: Input,
 		elButton: Button,
+		elAutocomplete: Autocomplete
 	},
 	data() {
 		var validateAccount=(rule,value,callback)=>{
@@ -100,6 +109,7 @@ export default {
 			}
 		};
 		return {
+			timeout:  null,
 			//表单
 			accountForm: {
 				account: '',
@@ -168,7 +178,28 @@ export default {
 		this.getUhwo()
 	},
 	methods: {
-	// 根据登录用户的权限设置创建新帐号的权限
+		// 输入获取账户信息(远程搜索)
+		querySearchAsync(queryString, callback) {
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			if(queryString){
+				api.postApi('/CheckUserName', {uid: uid, sname: queryString}).then(res => {
+					if(res.data){
+						res.data.value  = res.data.realName;
+						this.accountForm.boss = res.data.realName;
+						this.accountForm.puID = res.data.uID;
+						var results = [res.data];
+						clearTimeout(this.timeout);
+						this.timeout = setTimeout(() => {
+							callback(results);
+						}, 3000 * Math.random());
+					}
+				});
+			}  
+		},
+		handleSelect(item){
+			console.log(item);
+		},
+		// 根据登录用户的权限设置创建新帐号的权限
 		getUhwo(){
 			let sessionData = JSON.parse(sessionStorage.getItem('session_data'))
 			let uWho = sessionData.uWho // ['440100','110100']
