@@ -129,7 +129,6 @@ export default {
 
 <style scoped>
   h4{
-    font-family: PingFangSC-Regular;
     font-size: 20px;
     color: #666666;
     width: 100%;

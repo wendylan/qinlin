@@ -574,7 +574,6 @@ export default {
 	}
 
 	.content_top_wrap .content_top_head h2, .content_bottom_wrap .content_bottom_head h2 {
-		font-family: PingFangSC-Semibold;
 		font-size: 16px;
 		color: #2C313C;
 		font-weight: bold;

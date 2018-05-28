@@ -31,7 +31,7 @@
 						</el-date-picker>
 						</div>
 						<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-						<el-button plain @click="addOne">新建</el-button>
+						<el-button plain v-if="showNewBtn" @click="addOne">新建</el-button>
 					</div>
 				</el-row>
 				<div class="table_wrap">
@@ -184,6 +184,7 @@ export default {
 			cityChoose: [],
 			rangeDate: '',
 			keyword: '',
+			showNewBtn:true,
 			select: '1',
 			// 表格数据
 			currentPlan: [{
@@ -389,6 +390,13 @@ export default {
 			message: '成功更改状态'
 			});
 		},
+	},
+	mounted(){
+		let path = this.$route.path.split('/')[1];
+		console.log(path);
+		if(path !='media' && path !='sale'){
+			this.showNewBtn = false;
+		}
     },
     //实时计算  数据发生变化时执行相应函数
     /*computed: {

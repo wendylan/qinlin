@@ -21,7 +21,7 @@
 						</div>
 						<div class="block">
 							<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-							<el-button plain @click="addAccount()">新建</el-button>
+							<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
 						</div>
 					</div>
 				</el-row>
@@ -114,7 +114,7 @@
 							min-width="7.1%"
 						>
 							<template slot-scope="scope">
-								<!-- <a href="#" style="color: #108EE9">权限</a> -->
+								<a href="#" style="color: #108EE9" @click="authority">权限</a>
 								<a href="#" v-if="scope.row.uState ==1" style="color: #108EE9" @click="isForbidden(scope.row)">禁用</a>
 								<a href="#" v-if="scope.row.uState ==0" style="color: #108EE9" @click="isForbidden(scope.row)">开通</a>
 							</template>
@@ -150,6 +150,7 @@ export default {
 		return {
 			keyword: '',
 			select: '1',
+			showNewBtn:true,
 			filterUWhoData: [],
 			//表格
 			accountList: [],
@@ -171,11 +172,16 @@ export default {
 						text:'全国',
 						value:'全国'
 					}];
-					for(let data of this.accountList){
+					let userUid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+					let account = this.accountList;
+					for(let index=0; index< account.length; index++){
+						if(account[index].uID == userUid){
+							account.splice(index, 1);
+						}
 						let result = '';
-						let uWhoArr = data.uWho.split(',');
-						if(data.uWho==0){
-							this.$set(data, 'uWhoArr', '全国');
+						let uWhoArr = account[index].uWho.split(',');
+						if(account[index].uWho==0){
+							this.$set(account[index], 'uWhoArr', '全国');
 						}else{
 							for(let i=0; i<uWhoArr.length; i++){
 								areaToText.toTextCity(res=>{
@@ -191,7 +197,7 @@ export default {
 									if(i >= uWhoArr.length-1){
 										console.log('result', result);
 										// data.uWhoArr = result;
-										this.$set(data, 'uWhoArr', result);
+										this.$set(account[index], 'uWhoArr', result);
 										this.filterUWhoData = cityList;
 										console.log('cityList', cityList);
 									}
@@ -270,8 +276,8 @@ export default {
 			this.currAccount = this.accountList;
 		},
 		// 新建
-		addAccount(){
-			this.$router.push('./createAccount');
+		newAccount(){
+			this.$router.push('./createAccount')
 		},
 		//筛选
 		filterState(value, row) {
@@ -289,13 +295,20 @@ export default {
 		filterUType(value, row){
 			return row.uType === value;
 		},
+		//权限功能暂未开放
+		authority(){
+			this.$message({
+				message: '该功能暂未开放',
+				type: 'warning'
+			});
+		},
 		// 开通或者禁用：
 		isForbidden(row){
 			console.log(row);
 			// uid         int【必填】     当前用户UserID
             // toid        int【必填】     被操作的UserID
 			// ustate      int【必填】     用户状态值
-			MessageBox.confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
+			this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'
@@ -317,12 +330,17 @@ export default {
 				Message.info('已取消操作');
 			});
 		},
-	}
-
+	},
+	mounted(){
+		let path = this.$route.path.split('/')[1];
+		console.log(path);
+		if(path !='admin' && path !='superOperate'){
+			this.showNewBtn = false;
+		}
+    },
 }
 
 </script>
-
 <style scoped>
   /*筛选*/
   .el-checkbox + .el-checkbox {
@@ -679,4 +697,5 @@ export default {
       width: 1764px !important;
     }
   }
+
 </style>
