@@ -303,11 +303,12 @@ export default {
 				let info = {};
 				info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 				info.toid = row.uID;
-				info.ustate = row.uState;
+				info.ustate = row.uState?0:1;
 				api.postApi('/CtrlUser', info).then(res => {
 					console.log(res.data);
 					if(res.data.SysCode ==100200){
 						Message.success('操作成功');
+						row.uState = row.uState?0:1;
 					}
 				}).catch(res => {
 					console.log(res);

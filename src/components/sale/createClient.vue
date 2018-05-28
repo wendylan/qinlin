@@ -296,7 +296,7 @@ export default {
 					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' }
 				],
 				cAddress:[
-					{required: true, message:'公司地址不能为空', trigger:'blur'},
+					// {required: true, message:'公司地址不能为空', trigger:'blur'},
 					{ max: 200, message: '最多只能输入200个字节', trigger: 'blur' }
 				],
 				cRemark:[

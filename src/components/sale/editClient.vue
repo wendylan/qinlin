@@ -257,7 +257,7 @@ export default {
 					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' }
 				],
 				cAddress:[
-					{required: true, message:'公司地址不能为空', trigger:'blur'},
+					// {required: true, message:'公司地址不能为空', trigger:'blur'},
 					{ max: 200, message: '最多只能输入200个字节', trigger: 'blur' }
 				],
 				cRemark:[
@@ -361,6 +361,7 @@ export default {
 		submitData(){
 			console.log(this.isChangeCom());
 			let client_bool = false;
+			let company_bool = false;
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
 					client_bool = true;
@@ -368,16 +369,15 @@ export default {
 					return false;
 				}
 			});
+			this.$refs['companyForm'].validate((valid) => {
+				if (valid) {
+					company_bool = true;
+				}else{
+					return false;
+				}
+			});
 			// 公司信息有修改
 			if(this.isChangeCom()){
-				let company_bool = false;
-				this.$refs['companyForm'].validate((valid) => {
-					if (valid) {
-						company_bool = true;
-					}else{
-						return false;
-					}
-				});
 				console.log(this.companyForm);
 				// 更新公司信息
 				if(company_bool){
@@ -417,7 +417,6 @@ export default {
 			companyInfo.rid = this.companyForm.rID;
 			companyInfo.iid = this.companyForm.iID;
 			companyInfo.cremark = this.companyForm.cRemark;
-			console.log('companyInfo', res.data);
 			// 修改公司信息
 			api.postApi('/SetMyCom', companyInfo).then(res => {
 				let mes = res.data;
@@ -455,7 +454,15 @@ export default {
 				console.log(res);
 				let userMsg = res.data;
 				if (userMsg.SysCode == 100200) {
-					Message.success('修改客户信息成功');
+					MessageBox.confirm(`修改客户信息成功,是否跳转到列表页面`, '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						this.$router.push('./clientList');
+					}).catch(() => {
+						Message.info('已取消操作');
+					});
 				}
 			}).catch(res =>{
 				console.log(res);
