@@ -361,7 +361,6 @@ export default {
 		submitData(){
 			console.log(this.isChangeCom());
 			let client_bool = false;
-			let company_bool = false;
 			this.$refs['clientForm'].validate((valid) => {
 				if (valid) {
 					client_bool = true;
@@ -369,15 +368,16 @@ export default {
 					return false;
 				}
 			});
-			this.$refs['companyForm'].validate((valid) => {
-				if (valid) {
-					company_bool = true;
-				}else{
-					return false;
-				}
-			});
 			// 公司信息有修改
 			if(this.isChangeCom()){
+				let company_bool = false;
+				this.$refs['companyForm'].validate((valid) => {
+					if (valid) {
+						company_bool = true;
+					}else{
+						return false;
+					}
+				});
 				console.log(this.companyForm);
 				// 更新公司信息
 				if(company_bool){
@@ -427,7 +427,7 @@ export default {
 			}).catch( res => {
 				console.log(res);
 			});
-		},
+		}, 
 		// 新增品牌
 		addBrand(arr, cID){
 			for(let brand of arr){
