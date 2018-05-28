@@ -31,11 +31,14 @@ areaToText.toText = function(callback, str){
 			}
 		}).then(res => {
 			let cityArr = res.data;
-			result.city = cityArr[0].rName;
+			// result.city = cityArr[0].rName;
 			for(let city of cityArr){
+				if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+					console.log('所在城市', city.rID);
+					result.city = city.rName;
+				}
 				if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
 					result.area = city.rName;
-					break;
 				}
 			}
 			typeof callback === 'function' && callback.call(window, result);
@@ -59,11 +62,15 @@ areaToText.toTextCityArea = function(callback, str){
 		}
 	}).then(res => {
 		let cityArr = res.data;
-		result.city = cityArr[0].rName;
+		// result.city = cityArr[0].rName;
 		for(let city of cityArr){
+			if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+				console.log('所在城市', city.rID);
+				result.city = city.rName;
+			}
 			if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
+				console.log('所在城市', city.rID);
 				result.area = city.rName;
-				break;
 			}
 		}
 		typeof callback === 'function' && callback.call(window, result);
@@ -84,7 +91,14 @@ areaToText.toTextCity = function(callback, str){
 		}
 	}).then(res => {
 		let cityArr = res.data;
-		result = cityArr[0].rName;
+	//	result = cityArr[0].rName;
+		for(let i=0;i<cityArr.length;i++){
+			if(cityArr[i].rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+				console.log('所在城市', cityArr[i].rID);
+				result = cityArr[i].rName
+				break
+			}
+		}
 		typeof callback === 'function' && callback.call(window, result);
 		return result;
 	});

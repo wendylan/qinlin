@@ -24,7 +24,7 @@
 									<el-option label="超级管理员" value="SM"></el-option>
 									<el-option label="媒介" value="MD"></el-option>
 									<el-option label="销售" value="AD"></el-option>
-                  <el-option label="运营" value="OP"></el-option>
+									<el-option label="运营" value="OP"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="权限城市:" prop="PermissionCity">
@@ -37,9 +37,9 @@
 									</el-option>
 								</el-select>
 							</el-form-item>
-              <el-form-item label="部门:" prop="division">
-                <el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
-              </el-form-item>
+							<el-form-item label="部门:" prop="division">
+								<el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
+							</el-form-item>
 							<el-form-item label="上级:" prop="boss">
 								<el-select v-model="accountForm.boss" placeholder="请选择上级">
 									<el-option label="管理员" value="admin"></el-option>
@@ -70,6 +70,7 @@
 
 <script>
 import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message } from 'element-ui';
+import areaToText from '../../commonFun/areaToText.js';
 import api from '../../api/api'
 export default {
 	name: "createClient",
@@ -82,18 +83,22 @@ export default {
 		elButton: Button,
 	},
 	data() {
-   /* var validateBoss=(rule,value,callback)=>{
-        callback();
-    };*/
-    var validateAssetId = (rule, value, callback) => {
-      let szReg= /^1[34578]\d{9}$/;
-      if (!(szReg.test(value))) {
-        callback(new Error('请输入正确的手机号码'));
-      } else {
-        callback();
-      }
-    };
-
+		var validateAccount=(rule,value,callback)=>{
+			let  reg = /^[^\u4e00-\u9fa5]{0,}$/;
+			if (!(reg.test(value))) {
+				callback(new Error('只能输入字母、数字、符号'));
+			} else {
+				callback();
+			}
+		};
+		var validateAssetId = (rule, value, callback) => {
+			let szReg= /^1[34578]\d{9}$/;
+			if (!(szReg.test(value))) {
+				callback(new Error('请输入正确的手机号码'));
+			} else {
+				callback();
+			}
+		};
 		return {
 			//表单
 			accountForm: {
@@ -107,32 +112,33 @@ export default {
 				division: '',
 				email:'',
 			},
-      throwCity: [
-        {
-          value: '0',
-          label: '全国'
-        },
-        {
-          value: '440100',
-          label: '广州'
-			  }, {
-          value: '310100',
-          label: '上海'
-			  }, {
-          value: '110100',
-          label: '北京'
-			  }, {
-          value: '440300',
-          label: '深圳'
-			  }],
+			throwCity: [
+			/* {
+				value: '0',
+				label: '全国'
+				},
+				{
+				value: '440100',
+				label: '广州'
+					}, {
+				value: '310100',
+				label: '上海'
+					}, {
+				value: '110100',
+				label: '北京'
+					}, {
+				value: '440300',
+				label: '深圳'
+					}*/],
 			accountRules: {
 				account: [
 					{required: true, message: '账号不能为空', trigger: 'blur'},
-					// { max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
+					{ max: 50, message: '最多只能输入50个字节', trigger: 'blur' },
+					{validator: validateAccount, trigger: 'blur'}
 				],
 				realName: [
 					{required: true, message: '职位不能为空', trigger: 'blur'},
-					// { max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
+					{ max: 30, message: '最多只能输入30个字节', trigger: 'blur' }
 				],
 				role: [
 					{required: true, message: '角色不能为空', trigger: 'blur'},
@@ -141,150 +147,153 @@ export default {
 				PermissionCity: [
 					{required: true, message: '请选择权限城市', trigger:'blur'},
 				],
+				position: [
+				{ max: 20, message: '最多只能输入20个字节', trigger: 'blur' }
+				],
+				division: [
+				{ max: 20, message: '最多只能输入20个字节', trigger: 'blur' }
+				],
 				phone:[
 					{required: true, message: '请输入手机号码',trigger:'blur'},
-          {validator: validateAssetId, trigger: 'blur'}
+					{validator: validateAssetId, trigger: 'blur'}
 				],
-        email:[
-          {type:'email',message:'请输入正确的邮箱地址',trigger:'blur'}
-        ]
+				email:[
+					{type:'email',message:'请输入正确的邮箱地址',trigger:'blur'}
+				]
 			},
 		}
 	},
-  mounted(){
-	//  this.ShowRegion()
-  },
+	mounted(){
+		//  this.ShowRegion()
+		this.getUhwo()
+	},
 	methods: {
-     // 城市地区联动-省级
-   /*    ShowRegion() {
-         api.getApi('/ShowRegion').then(res => {
-           //      console.log('地区：',res.data)
-           let region = res.data
-           let arr = [];
-           for (let i = 0; i < region.length; i++) {
-             let opt = {label: '', value: '', children: []}
-             opt.label = region[i].rName
-             opt.value = region[i].rID
-             arr.push(opt)
-           }
-           this.throwCity = arr;
-         })
-       },
-       // 城市地区联动，选择省级后去获取市级和区、县级
-       handleItemChange(val) {
-         console.log('active item:', val);
-         let region = []
-         api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
-           let city = res.data
-           //    console.log('city：',city)
-           for (let j = 0; j < this.throwCity.length; j++) {
-             if (this.throwCity[j].value == val[0]) {
-               this.throwCity[j].children = []
-               for (let i = 0; i < city.length; i++) {
-                 let obj = {label: '', value: ''}
-                 obj.label = city[i].rName
-                 obj.value = city[i].rID
-                 if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
-                   //        console.log(city[i].rID.toString().substring(4,6))
-                   this.throwCity[j].children.push(obj)
-                 }
-                 // else{
-                 //   region.push(obj)              // 三级，所属区域
-                 // }
-               }
-               //      console.log('region',region)
-               //    this.regionOpt = region
-               break
-             }
-           }
-         })
-       },*/
-      submitForm(formName){
-        console.log('item',formName)
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            // alert('submit!');
-            this.createFun()
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+	// 根据登录用户的权限设置创建新帐号的权限
+		getUhwo(){
+			let sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+			let uWho = sessionData.uWho // ['440100','110100']
+			// let uWho =  '440100,110100'
+			if(uWho == '0'){
+				this.throwCity = [
+				{ value: '0',label: '全国' },
+				{ value: '440100', label: '广州'},
+				{value: '310100',label: '上海'},
+				{value: '110100',label: '北京'},
+				{value: '440300',label: '深圳'}
+				]
+			}else{
+				let uWhoArr = uWho.split(',') // ['440100','110100']
+				let cityList = []
+				console.log()
+				for (let j = 0; j < uWhoArr.length; j++) {
+				console.log('公司uWho', uWhoArr[j])
+				areaToText.toText(data => {
+					console.log('用户权限城市', data);
+					let cityObj = {
+					label: data.city,
+					value: uWhoArr[j],
+					}
+					console.log('cityObj', cityObj)
+					cityList.push(cityObj);
+					if (j >= uWhoArr.length - 1) {
+					console.log('cityListcityList玩玩', cityList)
+					this.throwCity = cityList
+					}
+				}, uWhoArr[j]);
+				}
+			}
+		},
+		//根据登录用户的权限设置创建新帐号的上级
+		submitForm(formName){
+			console.log('item',formName)
+			this.$refs[formName].validate((valid) => {
+				if (valid) {
+					// alert('submit!');
+					this.createFun()
+				} else {
+					console.log('error submit!!');
+					return false;
+				}
+			});
 
-  /*    // 手机号码验证
-        let szReg=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
-      //  console.log('this.accountForm.phone',this.accountForm.phone)
-       if(this.accountForm.phone != '' && this.accountForm.phone != null){
-          if(!(/^1[34578]\d{9}$/.test(this.accountForm.phone))){
-            Message({
-              message: '手机号码有误，请重填！',
-              type: 'warning'
-            })
-          //  return false;
-          }else{
-            b2 = true
-          }
-       }
-        //邮箱验证
-        if(this.accountForm.email != '' && this.accountForm.email != null){
-          console.log('邮箱',this.accountForm.email)
-          if(szReg.test(this.accountForm.email)){
-            Message({
-              message: '邮箱格式不正确，请修改！',
-              type: 'warning'
-            })
-          //  return false;
-          }else{
-            b2 = true
-          }
-        }
-        if(b1&&b2&&b3){
-         this.createFun()
-        }*/
-      },
-      //注册接口
-      createFun(){
-        console.log('accountForm',this.accountForm)
-        let actFrom = this.accountForm
-        /*realname    String【必填】      用户真实姓名
-            sname       String【必填】      账户名
-            phone       int【必填】         用户手机号码
-            telphone    String【选填】      固定电话
-            email       String【选填】      电子邮箱
-            position    String【选填】      职务
-            division    String【选填】      部门
-            rid         int【选填】         地区ID
-            utype       String【选填】      用户类型：SM、OP、BD、MD、AD
-            uwho        String【选填】      所属公司ID，新增客户这里必填
-            puid        int                 所属所属销售uID，当utype是AD时必填
-       accountForm: {account: '',realName: '',role: '',PermissionCity: '',boss: '',position:'',phone: '',division: '',email:'',},*/
-        let account = {realname:'',sname:'',utype:'',uwho:'', division:'',position:'',phone:'',email:'',rID: 440100,}
-        account.realname = actFrom.realName   // 姓名
-        account.sname = actFrom.account
-        account.utype = actFrom.role    // 用户类型：SM、OP、BD、MD、AD
-        account.uwho = actFrom.PermissionCity[0]   // 所属公司ID，新增客户这里必填
-        account.division = actFrom.division     // 职务
-        account.position = actFrom.position     // 部门
-        account.phone = actFrom.phone
-        account.email = actFrom.email
-        console.log(account)
-        api.postApi('/RegUser',account).then(res=>{
-          console.log(res)
-          let data = res.data
-          this.resetForm()
-          MessageBox.alert(data.MSG+'<br>'+'用户ID：'+data.uID, '注册用户', {
-          showClose: false,
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: '确定',
-        });
-        }).catch(err=>{
-          console.log(err)
-        })
-      },
-      //重置表单
-      resetForm() {
-        this.$refs['accountForm'].resetFields();
-      },
+			/*    // 手机号码验证
+					let szReg=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+				//  console.log('this.accountForm.phone',this.accountForm.phone)
+				if(this.accountForm.phone != '' && this.accountForm.phone != null){
+					if(!(/^1[34578]\d{9}$/.test(this.accountForm.phone))){
+						Message({
+						message: '手机号码有误，请重填！',
+						type: 'warning'
+						})
+					//  return false;
+					}else{
+						b2 = true
+					}
+				}
+					//邮箱验证
+					if(this.accountForm.email != '' && this.accountForm.email != null){
+					console.log('邮箱',this.accountForm.email)
+					if(szReg.test(this.accountForm.email)){
+						Message({
+						message: '邮箱格式不正确，请修改！',
+						type: 'warning'
+						})
+					//  return false;
+					}else{
+						b2 = true
+					}
+					}
+					if(b1&&b2&&b3){
+					this.createFun()
+					}*/
+		},
+		//注册接口
+		createFun(){
+			console.log('accountForm',this.accountForm)
+			let actFrom = this.accountForm
+			/*realname    String【必填】      用户真实姓名
+				sname       String【必填】      账户名
+				phone       int【必填】         用户手机号码
+				telphone    String【选填】      固定电话
+				email       String【选填】      电子邮箱
+				position    String【选填】      职务
+				division    String【选填】      部门
+				rid         int【选填】         地区ID
+				utype       String【选填】      用户类型：SM、OP、BD、MD、AD
+				uwho        String【选填】      所属公司ID，新增客户这里必填
+				puid        int                 所属所属销售uID，当utype是AD时必填
+		accountForm: {account: '',realName: '',role: '',PermissionCity: '',boss: '',position:'',phone: '',division: '',email:'',},*/
+			let account = {realname:'',sname:'',utype:'',uwho:'', division:'',position:'',phone:'',email:'',rID: 440100,puid:''}
+			account.realname = actFrom.realName   // 姓名
+			account.sname = actFrom.account
+			account.utype = actFrom.role    // 用户类型：SM、OP、BD、MD、AD
+			account.uwho = actFrom.PermissionCity[0]   // 所属公司ID，新增客户这里必填
+			account.division = actFrom.division     // 职务
+			account.position = actFrom.position     // 部门
+			account.phone = actFrom.phone
+			account.email = actFrom.email
+			account.puid = actFrom.boss
+			console.log(account)
+			api.postApi('/RegUser',account).then(res=>{
+				console.log(res)
+				let data = res.data
+				this.resetForm()
+				MessageBox.alert(data.MSG+'<br>'+'用户ID：'+data.uID, '注册用户', {
+					showClose: false,
+					dangerouslyUseHTMLString: true,
+					confirmButtonText: '确定',
+				});
+				// accountList
+				this.$router.push('./accountList')
+			}).catch(err=>{
+				console.log(err)
+			})
+		},
+		//重置表单
+		resetForm() {
+			this.$refs['accountForm'].resetFields();
+			window.history.go(-1);
+		},
     }
 }
 </script>

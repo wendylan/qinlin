@@ -490,6 +490,7 @@ export default {
 				console.log(res);
 				let userMsg = res.data;
 				if (!userMsg.SysCode) {
+					this.resetForm()
 					MessageBox.confirm(`创建成功,是否跳转到列表页面`, '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
@@ -503,6 +504,11 @@ export default {
 			}).catch(res =>{
 				console.log(res);
 			});
+		},
+		//重置表单
+		resetForm() {
+			this.$refs['companyForm'].resetFields();
+			this.$refs['clientForm'].resetFields();
 		},
 		// 取消返回
 		goBack(){

@@ -156,32 +156,52 @@ export default {
 		},
 		// 搜索
 		search(){
-			let rangeDate = this.date;
+			// 搜索
+			console.log(this.select);
+			console.log(this.keyword);
+			// console.log(this.date);
+			let range = this.date;
 			let arr = [];
-			if(rangeDate || this.keyword){
+			let select = this.select;
+			let keyword = this.keyword;
+			if(range || this.keyword){
 				for(let data of this.planList){
-					if(rangeDate && this.keyword){
+					if(range && keyword){
 						if(
-							dateFormat.date(data.joinTime) >= rangeDate[0] &&
-							dateFormat.date(data.joinTime) <= rangeDate[1] &&
-							(data.cBrand.includes(this.keyword) || data.cName.includes(this.keyword))
+							dateFormat.date(data.joinTime) >= range[0] &&
+							dateFormat.date(data.joinTime) <= range[1]
+						){
+							if((select == '1') && data.cBrand.includes(keyword) ){
+								arr.push(data);
+							}
+							if((select == '2') && data.cName.includes(keyword)){
+								arr.push(data);
+							}
+							if((select == '3') && data.realName.includes(keyword)){
+								arr.push(data);
+							}
+						}
+					}else if(range){
+						if(
+							dateFormat.date(data.joinTime) >= range[0] &&
+							dateFormat.date(data.joinTime) <= range[1] 
 						){
 							arr.push(data);
 						}
-					}else if(rangeDate){
-						if(
-							dateFormat.date(data.joinTime) >= rangeDate[0] &&
-							dateFormat.date(data.joinTime) <= rangeDate[1] 
-						){
+					}else if(keyword){
+						if((select == '1') && data.cBrand.includes(keyword) ){
 							arr.push(data);
 						}
-					}else if(this.keyword){
-						if(data.cBrand.includes(this.keyword) || data.cName.includes(this.keyword)){
+						if((select == '2') && data.cName.includes(keyword)){
+							arr.push(data);
+						}
+						if((select == '3') && data.realName.includes(keyword)){
 							arr.push(data);
 						}
 					}
 				}
 				this.currentPlan = arr;
+				console.log(arr);
 				return;
 			}
 			this.currentPlan = this.planList;
