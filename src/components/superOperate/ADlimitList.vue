@@ -113,6 +113,8 @@ export default {
 						data.typeUpdate = false;
 						data.detailUpdate = false;
 					}
+				}else{
+					Message.warning(res.data.MSG);
 				}
 			}).catch(res => {
 				console.log(res);
@@ -168,7 +170,6 @@ export default {
 			this.$set(rows, 'changeBtn', !rows.changeBtn);
 			this.ADlist.push();
 			console.log(rows);
-			
 		},
 		//保存
 		saveAD(rows, index){
@@ -180,10 +181,10 @@ export default {
 				return;
 			}
 			if(!rows.nID){
-			// 新增广告限制
-			// uid     int【必填】     UserID
-			// nt      String          限制行业名称
-			// nd      String          限制理由或描述
+				// 新增广告限制
+				// uid     int【必填】     UserID
+				// nt      String          限制行业名称
+				// nd      String          限制理由或描述
 				console.log('addRows', rows);
 				let info = {};
 				info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
@@ -234,9 +235,7 @@ export default {
 			this.ADlist[index].showInput = !this.ADlist[index].showInput;
 			this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
 			}
-
 		}
-
 	}
 }
 </script>

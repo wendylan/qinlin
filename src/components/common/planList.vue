@@ -177,6 +177,7 @@ export default {
 	},
 	created(){
 		this.getPlanListData();
+		this.getRole();
 	},
     data() {
 		return {
@@ -213,6 +214,14 @@ export default {
 		}
     },
     methods: {
+		// 判断角色是否有新建按钮(媒介和销售有)
+		getRole(){
+			let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+			console.log(role);
+			if(role != 'BD' && role != 'MD'){
+				this.showNewBtn = false;
+			}
+		},
 		// 获取方案列表初始数据
 		getPlanListData(){
 			// 本地测试
@@ -233,6 +242,8 @@ export default {
 						console.log(item.cityArea);
 					}
 					this.currentPlan = this.planList;
+				}else{
+					Message.warning(info.MSG);
 				}
 			}).catch(res => {
 				console.log(res);
@@ -271,7 +282,7 @@ export default {
 				this.currentPlan = this.planList;
 			}
 		},
-		// 搜索方案
+		// 搜索方案 
 		search(){
 			console.log(this.select);
 			console.log(this.keyword);
@@ -391,13 +402,6 @@ export default {
 			});
 		},
 	},
-	mounted(){
-		let path = this.$route.path.split('/')[1];
-		console.log(path);
-		if(path !='media' && path !='sale'){
-			this.showNewBtn = false;
-		}
-    },
     //实时计算  数据发生变化时执行相应函数
     /*computed: {
       searchDate: function () {

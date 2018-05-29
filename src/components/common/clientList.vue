@@ -114,7 +114,7 @@ import api from '../../api/api.js';
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
-import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, } from 'element-ui';
+import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, Message, } from 'element-ui';
 export default {
 	name: "customList",
 	components:{
@@ -141,13 +141,17 @@ export default {
 	},
 	mounted:function(){
 		this.GetCustomer();
-		//超运没有新建按钮
-		let path = this.$route.path.split('/')[1];
-		if(path !='sale'){
-			this.showNewBtn = false;
-		}
+		this.getRole();
 	},
 	methods: {
+		// 判断角色是否有新建按钮(销售有)
+		getRole(){
+			let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+			console.log(role);
+			if(role != 'BD'){
+				this.showNewBtn = false;
+			}
+		},
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if((!this.date) && (!this.keyword) ){
@@ -259,10 +263,12 @@ export default {
 				// uid:3
 				uid: JSON.parse(sessionStorage.getItem("session_data")).uID
 			}).then(res=>{
-				if(res.data){
+				if(!res.data.SysCode){
 					this.planList = res.data;
 					this.currentPlan = this.planList;
 					this.filtCity = filterFormat(this.planList, 'rName');
+				}else{
+					Message.warning(res.data.MSG);
 				}
 			}).catch(res =>{
 				console.log(res);

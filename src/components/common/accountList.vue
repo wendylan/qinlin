@@ -33,10 +33,12 @@
 						:default-sort = "{prop: 'date', order: 'descending'}"
 					>
 						<el-table-column
-							prop="sName"
 							label="账号"
 							min-width="11.8%"
 						>
+							<template slot-scope="scope">
+								<span @click="ToEdit(scope.row)">{{scope.row.sName}}</span>
+							</template>
 						</el-table-column>
 						<el-table-column
 							prop="realName"
@@ -159,6 +161,7 @@ export default {
 	},
 	created(){
 		this.getAccountList();
+		this.getRole();
 	},
 	methods: {
 		// 初始数据
@@ -207,6 +210,8 @@ export default {
 					}
 
 					this.currAccount = this.accountList;
+				}else{
+					Message.warning(res.data.MSG);
 				}
 			}).catch( res => {
 				console.log(res);
@@ -330,14 +335,20 @@ export default {
 				Message.info('已取消操作');
 			});
 		},
+		ToEdit(row){
+			console.log(row);
+			sessionStorage.setItem('account_detail', row);
+			this.$router.push('./createAccount?edit=y');
+		},
+		// 判断角色是否有新建按钮(系统管理员和超级管理员有)
+		getRole(){
+			let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+			console.log(role);
+			if(role != 'SA' && role != 'SM'){
+				this.showNewBtn = false;
+			}
+		},
 	},
-	mounted(){
-		let path = this.$route.path.split('/')[1];
-		console.log(path);
-		if(path !='admin' && path !='superOperate'){
-			this.showNewBtn = false;
-		}
-    },
 }
 
 </script>
