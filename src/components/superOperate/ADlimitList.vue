@@ -61,15 +61,18 @@
 </template>
 
 <script>
+import { Table, TableColumn, Input, Button, MessageBox, Message } from 'element-ui';
 import api from '../../api/api.js';
 export default {
 	name: "ADlimit",
+	components: {
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elInput: Input,
+		elButton: Button,
+	},
 	data() {
 		return {
-			/*showInput:false,
-			changeBtn:false,
-			typeUpdate:'',
-			detailUpdate:'',*/
 			//表格
 			ADlist: [
 				{
@@ -161,13 +164,7 @@ export default {
 			this.$set(rows, 'detailUpdate', rows.ndescript);
 			this.$set(rows, 'showInput', !rows.showInput);
 			this.$set(rows, 'changeBtn', !rows.changeBtn);
-			console.log(rows.showInput);
 			this.ADlist.push();
-			// rows.typeUpdate = rows.nTitle;
-			// rows.detailUpdate = rows.ndescript;
-			// //切换输入框和操作类型的显示
-			// rows.showInput = !rows.showInput;
-			// rows.changeBtn = !rows.changeBtn;
 			console.log(rows);
 			
 		},
@@ -217,39 +214,11 @@ export default {
 					console.log(res);
 				});
 			}
-
 			this.$set(rows, 'nTitle', rows.typeUpdate);
 			this.$set(rows, 'ndescript', rows.detailUpdate);
 			this.$set(rows, 'showInput', !rows.showInput);
 			this.$set(rows, 'changeBtn', !rows.changeBtn);
 			this.ADlist.push();
-			//前端显示
-			// this.ADlist[index].nTitle = this.ADlist[index].typeUpdate;
-			// this.ADlist[index].ndescript = this.ADlist[index].detailUpdate;
-
-			// //切换输入框和操作类型的显示
-			// this.ADlist[index].showInput = !this.ADlist[index].showInput;
-			// this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
-
-			// if(rows.typeUpdate === ''){
-			// 	this.$message({
-			// 		type:'error',
-			// 		message:'请填写限制类型后再保存'
-			// 	});
-			// //前端显示
-			// this.ADlist[index].limitType = this.ADlist[index].typeUpdate;
-			// this.ADlist[index].detail = this.ADlist[index].detailUpdate;
-
-			// }else{
-			// //前端显示
-			// this.ADlist[index].limitType = this.ADlist[index].typeUpdate;
-			// this.ADlist[index].detail = this.ADlist[index].detailUpdate;
-
-			// //切换输入框和操作类型的显示
-			// this.ADlist[index].showInput = !this.ADlist[index].showInput;
-			// this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
-			// }
-
 		},
 		//取消
 		cancelAD(index,rows){
