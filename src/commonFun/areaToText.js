@@ -31,14 +31,22 @@ areaToText.toText = function(callback, str){
 			}
 		}).then(res => {
 			let cityArr = res.data;
-			// result.city = cityArr[0].rName;
-			for(let city of cityArr){
-				if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
-					console.log('所在城市', city.rID);
-					result.city = city.rName;
+			if(str.toString().substring(2, 6)=='0000'){
+				result.city = cityArr[0].rName;
+			}else{
+				for(let city of cityArr){
+					if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+						console.log('所在城市', city.rID);
+						result.city = city.rName;
+						break;
+					}
 				}
-				if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
-					result.area = city.rName;
+				for(let city of cityArr){
+					if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
+						console.log('所在区域', city.rID);
+						result.area = city.rName;
+						break;
+					}
 				}
 			}
 			typeof callback === 'function' && callback.call(window, result);
@@ -51,7 +59,7 @@ areaToText.toText = function(callback, str){
 }
 // 市区返回数据格式： {city: '广州市', area: '越秀区'}
 areaToText.toTextCityArea = function(callback, str){
-	let result = {};
+	let result = {city: '', area: ''};
 	let cityStr = str.toString().substring(0, 2);
 	axios({
 		method: 'get',
@@ -62,15 +70,22 @@ areaToText.toTextCityArea = function(callback, str){
 		}
 	}).then(res => {
 		let cityArr = res.data;
-		// result.city = cityArr[0].rName;
-		for(let city of cityArr){
-			if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
-				console.log('所在城市', city.rID);
-				result.city = city.rName;
+		if(str.toString().substring(2, 6)=='0000'){
+			result.city = cityArr[0].rName;
+		}else{
+			for(let city of cityArr){
+				if(city.rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+					console.log('所在城市', city.rID);
+					result.city = city.rName;
+					break;
+				}
 			}
-			if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
-				console.log('所在城市', city.rID);
-				result.area = city.rName;
+			for(let city of cityArr){
+				if((city.rID == str) && (str.toString().substring(4, 6)!='00')){
+					console.log('所在区域', city.rID);
+					result.area = city.rName;
+					break;
+				}
 			}
 		}
 		typeof callback === 'function' && callback.call(window, result);
@@ -91,7 +106,6 @@ areaToText.toTextCity = function(callback, str){
 		}
 	}).then(res => {
 		let cityArr = res.data;
-	//	result = cityArr[0].rName;
 		for(let i=0;i<cityArr.length;i++){
 			if(cityArr[i].rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
 				console.log('所在城市', cityArr[i].rID);
