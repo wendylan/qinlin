@@ -449,8 +449,9 @@ export default {
 			userInfo.position = this.clientForm.position;
 			userInfo.division = this.clientForm.division;
 			// console.log('userinfo', userInfo);
-			// 修改客户信息
-			api.postApi('/SetUserInfo', userInfo).then(res => {
+			// 修改客户信息(后台修改了接口名称，没修改接口名称之前是ok的，现在待测试)
+			// api.postApi('/SetUserInfo', userInfo).then(res => {
+			api.postApi('/SetMyCustomer', userInfo).then(res => {
 				console.log(res);
 				let userMsg = res.data;
 				if (userMsg.SysCode == 100200) {

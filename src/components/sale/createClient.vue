@@ -492,13 +492,11 @@ export default {
 				if (!userMsg.SysCode) {
 					this.resetForm()
 					MessageBox.confirm(`创建成功,是否跳转到列表页面`, '提示', {
+						showClose: false,
 						confirmButtonText: '确定',
-						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
 						this.$router.push('./clientList');
-					}).catch(() => {
-						Message.info('已取消操作');
 					});
 				}
 			}).catch(res =>{

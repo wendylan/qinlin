@@ -37,7 +37,7 @@
 							min-width="11.8%"
 						>
 							<template slot-scope="scope">
-								<span @click="ToEdit(scope.row)">{{scope.row.sName}}</span>
+								<a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -155,13 +155,115 @@ export default {
 			showNewBtn:true,
 			filterUWhoData: [],
 			//表格
-			accountList: [],
-			currAccount: [],
+			accountList: [{
+				division:"产品研发部",
+				email:"kacent@qq.com",
+				joinTime:"2018-04-09 15:46:00.0",
+				phone:"13924447488",
+				position:"开发经理",
+				puID:1,
+				puName:"梁晓君",
+				rID:440100,
+				rName:"广州市",
+				realName:"林郑伟",
+				sName:"Kacent",
+				uID:2,
+				uState:1,
+				uType:"SA",
+				uWho:"440100"
+			},{
+				division:"产品研发部",
+				email:"kacent@qq.com",
+				joinTime:"2018-04-09 15:46:00.0",
+				phone:"13924447488",
+				position:"开发经理",
+				puID:1,
+				puName:"梁晓君",
+				rID:440100,
+				rName:"广州市",
+				realName:"林郑伟",
+				sName:"Kacent2",
+				uID:3,
+				uState:1,
+				uType:"SA",
+				uWho:"440000,440200"
+			}],
+			currAccount: [{
+				division:"产品研发部",
+				email:"kacent@qq.com",
+				joinTime:"2018-04-09 15:46:00.0",
+				phone:"13924447488",
+				position:"开发经理",
+				puID:1,
+				puName:"梁晓君",
+				rID:440100,
+				rName:"广州市",
+				realName:"林郑伟",
+				sName:"Kacent",
+				uID:2,
+				uState:1,
+				uType:"SA",
+				uWho:"440100"
+			},{
+				division:"产品研发部",
+				email:"kacent@qq.com",
+				joinTime:"2018-04-09 15:46:00.0",
+				phone:"13924447488",
+				position:"开发经理",
+				puID:1,
+				puName:"梁晓君",
+				rID:440100,
+				rName:"广州市",
+				realName:"林郑伟",
+				sName:"Kacent2",
+				uID:3,
+				uState:1,
+				uType:"SA",
+				uWho:"440000,440200"
+			}],
 		}
 	},
 	created(){
 		this.getAccountList();
 		this.getRole();
+		// let account = this.currAccount;
+		// let cityList = [{
+		// 	text:'全国',
+		// 	value:'全国'
+		// }];
+		// for(let index=0; index< account.length; index++){
+		// 	// if(account[index].uID == userUid){
+		// 	// 	account.splice(index, 1);
+		// 	// }
+		// 	let result = '';
+		// 	let uWhoArr = account[index].uWho.split(',');
+		// 	console.log(uWhoArr);
+		// 	if(account[index].uWho==0){
+		// 		this.$set(account[index], 'uWhoArr', '全国');
+		// 	}else{
+		// 		for(let i=0; i<uWhoArr.length; i++){
+		// 			areaToText.toTextCity(res=>{
+		// 				console.log('res', res);
+		// 				result = result +'/'+res;
+		// 				let cityObj = {
+		// 					text: res,
+		// 					value: res,
+		// 				}
+		// 				// 去重城市
+		// 				// if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
+		// 				// 	cityList.push(cityObj);
+		// 				// }
+		// 				if(i >= uWhoArr.length-1){
+		// 					console.log('result', result);
+		// 					// data.uWhoArr = result;
+		// 					this.$set(account[index], 'uWhoArr', result);
+		// 					// this.filterUWhoData = cityList;
+		// 					// console.log('cityList', cityList);
+		// 				}
+		// 			}, Number(uWhoArr[i]));
+		// 		}
+		// 	}
+		// }
 	},
 	methods: {
 		// 初始数据
@@ -337,7 +439,7 @@ export default {
 		},
 		ToEdit(row){
 			console.log(row);
-			sessionStorage.setItem('account_detail', row);
+			sessionStorage.setItem('account_detail', JSON.stringify(row));
 			this.$router.push('./createAccount?edit=y');
 		},
 		// 判断角色是否有新建按钮(系统管理员和超级管理员有)

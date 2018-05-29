@@ -2,7 +2,10 @@
   <div class="bottom">
       <div class="ad_mediaMana_wrap">
         <div class="ad_mediaMana_nav clearfix">
-          <p><a href="#">账号管理</a><em> / </em><a href="#">创建账号</a></p>
+          <p><a href="#">账号管理</a><em> / </em>
+			<a href="#" v-if="!isEdit">创建账号</a>
+			<a href="#" v-else>修改账号</a>
+		  </p>
         </div>
         <!--客户信息-->
         <div class="mediaMana_content_top">
@@ -14,13 +17,13 @@
               <el-form :model="accountForm" status-icon :rules="accountRules" ref="accountForm" label-width="100px"
                        class="demo-ruleForm">
                 <el-form-item label="账号:" prop="account">
-                  <el-input v-model="accountForm.account" placeholder="请输入账号"></el-input>
+                  <el-input v-model="accountForm.account" placeholder="请输入账号" :disabled="isEdit"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名:" prop="realName">
                   <el-input v-model="accountForm.realName" placeholder="请输入真实姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="角色" prop="role">
-					<el-select v-model="accountForm.role" placeholder="请选择角色">
+					<el-select v-model="accountForm.role" placeholder="请选择角色" :disabled="isEdit">
 						<el-option label="超级管理员" value="SM"></el-option>
 						<el-option label="媒介" value="MD"></el-option>
 						<el-option label="销售" value="AD"></el-option>
@@ -40,14 +43,7 @@
                 <el-form-item label="部门:" prop="division">
 					<el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
 				</el-form-item>
-				<el-form-item label="上级:" prop="boss">
-					<!-- <el-select v-model="accountForm.boss" placeholder="请选择上级">
-						<el-option label="管理员" value="admin"></el-option>
-						<el-option label="媒介" value="media"></el-option>
-						<el-option label="销售" value="sale"></el-option>
-					</el-select> -->
-
-					<!-- <span v-if="isFill">{{companyForm.cName}} <el-button @click="selectAnother" size="mini">重选</el-button></span> -->
+				<el-form-item label="上级:" prop="boss" v-if="!isEdit">
 					<el-autocomplete
 						v-model="accountForm.boss"
 						:fetch-suggestions="querySearchAsync"
@@ -55,6 +51,9 @@
 						@select="handleSelect"
 						>
 					</el-autocomplete>
+				</el-form-item>
+				<el-form-item label="上级:" v-if="isEdit">
+					<el-input disabled="disabled" :value="accountForm.boss"></el-input>
 				</el-form-item>
 				<el-form-item label="职务:" prop="position">
 					<el-input v-model="accountForm.position" placeholder="请输入职务"></el-input>
@@ -70,7 +69,7 @@
           </div>
         </div>
         <div class="content_bottom_btn">
-			<el-button  @click="submitForm('accountForm')">创建</el-button>
+			<el-button  @click="submitForm('accountForm')">{{isEdit?'保存':'创建'}}</el-button>
 			<el-button type="default" @click="resetForm()">取消</el-button>
 		</div>
       </div>
@@ -78,7 +77,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message } from 'element-ui';
+import { Form, FormItem, Select, Option, Input, Button, MessageBox, Message, Autocomplete } from 'element-ui';
 import areaToText from '../../commonFun/areaToText.js';
 import api from '../../api/api'
 export default {
@@ -90,6 +89,7 @@ export default {
 		elOption: Option,
 		elInput: Input,
 		elButton: Button,
+		elAutocomplete: Autocomplete,
 	},
 	data() {
 		var validateAccount=(rule,value,callback)=>{
@@ -121,6 +121,7 @@ export default {
 		};
 		return {
 			timeout:  null,
+			isEdit: false, //新建/修改
 			//表单
 			accountForm: {
 				account: '',
@@ -189,7 +190,8 @@ export default {
 	},
 	mounted(){
 		//  this.ShowRegion()
-		this.getUhwo()
+		this.getUhwo();
+		this.getInitEditInfo();
 	},
 	methods: {
 		// 输入获取公司信息(远程搜索)
@@ -253,8 +255,11 @@ export default {
 			console.log('item',formName)
 			this.$refs[formName].validate((valid) => {
 				if (valid) {
-					// alert('submit!');
-					this.createFun()
+					if(this.isEdit){
+						this.postEditInfo();
+					}else{
+						this.createFun()
+					}
 				} else {
 					console.log('error submit!!');
 					return false;
@@ -291,6 +296,44 @@ export default {
 					if(b1&&b2&&b3){
 					this.createFun()
 					}*/
+		},
+		// 修改账户信息接口
+		postEditInfo(){
+			// uid         int【必填】     当前用户UserID
+            // toid        int【必填】     被操作的UserID
+            // rn          String          真实姓名
+            // uwho        String          城市权限:110100,440100
+            // phone       String          移动电话
+            // telephone   String          固定电话
+            // email       String          电子邮箱
+            // position    String          职务
+            // division    String          所属部门
+			let accForm = this.accountForm;
+			let account = {
+				uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+				toid: accForm.uID,
+				rn: accForm.realName,
+				uwho: accForm.PermissionCity.join(','),
+				phone: accForm.phone,
+				email: accForm.email,
+				position: accForm.position,
+				division: accForm.division
+			};
+			console.log(account);
+			api.postApi('/SetUserInfo', account).then(res=>{
+				console.log(res)
+				let data = res.data;
+				MessageBox.alert(data.MSG+'<br>', '修改用户', {
+					showClose: false,
+					dangerouslyUseHTMLString: true,
+					confirmButtonText: '确定',
+				}).then(res =>{
+					// accountList
+					this.$router.push('./accountList');
+				});
+			}).catch(err=>{
+				console.log(err)
+			})
 		},
 		//注册接口
 		createFun(){
@@ -338,8 +381,52 @@ export default {
 		},
 		//重置表单
 		resetForm() {
-			this.$refs['accountForm'].resetFields();
-			window.history.go(-1);
+			if(this.isEdit){
+				this.$router.push('./accountList');
+			}else{
+				this.$refs['accountForm'].resetFields();
+				window.history.go(-1);
+			}
+		},	
+		// 获取修改账户初始信息
+		getInitEditInfo(){
+			let inputPath = this.$route.fullPath //this.$route.path
+			//    console.log(inputPath)
+			if (inputPath.indexOf('edit=y') !== -1) {
+				let accountInfo = JSON.parse(sessionStorage.getItem('account_detail'));
+				console.log(accountInfo);
+				if(accountInfo){
+					// account: '',
+					// realName: '',
+					// role: '',
+					// PermissionCity: '',
+					// boss: '',
+					// position:'',
+					// phone: '',
+					// division: '',
+					// email:'',
+					this.isEdit = true;
+					let editInfo = {
+						uID: accountInfo.uID,
+						account: accountInfo.sName,
+						realName: accountInfo.realName,
+						role: accountInfo.uType,
+						PermissionCity: accountInfo.uWho.split(','),
+						boss: accountInfo.puName,
+						position: accountInfo.position,
+						phone: accountInfo.phone,
+						division: accountInfo.division,
+						email: accountInfo.email
+					};
+					this.accountForm = editInfo;
+				}else{
+					this.$router.push('./createAccount');
+					this.isEdit = false;
+				}
+			}else{
+				this.isEdit = false;
+				sessionStorage.removeItem('account_detail');
+			}
 		},
     }
 }
