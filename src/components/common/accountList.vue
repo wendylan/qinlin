@@ -226,44 +226,6 @@ export default {
 	created(){
 		this.getAccountList();
 		this.getRole();
-		// let account = this.currAccount;
-		// let cityList = [{
-		// 	text:'全国',
-		// 	value:'全国'
-		// }];
-		// for(let index=0; index< account.length; index++){
-		// 	// if(account[index].uID == userUid){
-		// 	// 	account.splice(index, 1);
-		// 	// }
-		// 	let result = '';
-		// 	let uWhoArr = account[index].uWho.split(',');
-		// 	console.log(uWhoArr);
-		// 	if(account[index].uWho==0){
-		// 		this.$set(account[index], 'uWhoArr', '全国');
-		// 	}else{
-		// 		for(let i=0; i<uWhoArr.length; i++){
-		// 			areaToText.toTextCity(res=>{
-		// 				console.log('res', res);
-		// 				result = result +'/'+res;
-		// 				let cityObj = {
-		// 					text: res,
-		// 					value: res,
-		// 				}
-		// 				// 去重城市
-		// 				// if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
-		// 				// 	cityList.push(cityObj);
-		// 				// }
-		// 				if(i >= uWhoArr.length-1){
-		// 					console.log('result', result);
-		// 					// data.uWhoArr = result;
-		// 					this.$set(account[index], 'uWhoArr', result);
-		// 					// this.filterUWhoData = cityList;
-		// 					// console.log('cityList', cityList);
-		// 				}
-		// 			}, Number(uWhoArr[i]));
-		// 		}
-		// 	}
-		// }
 	},
 	methods: {
 		// 初始数据
