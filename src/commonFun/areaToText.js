@@ -106,11 +106,15 @@ areaToText.toTextCity = function(callback, str){
 		}
 	}).then(res => {
 		let cityArr = res.data;
-		for(let i=0;i<cityArr.length;i++){
-			if(cityArr[i].rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
-				console.log('所在城市', cityArr[i].rID);
-				result = cityArr[i].rName
-				break
+		if(str.toString().substring(2, 6)=='0000'){
+			result = cityArr[0].rName;
+		}else{
+			for(let i=0;i<cityArr.length;i++){
+				if(cityArr[i].rID.toString().substring(0, 4) == str.toString().substring(0, 4)){
+					console.log('所在城市', cityArr[i].rID);
+					result = cityArr[i].rName
+					break
+				}
 			}
 		}
 		typeof callback === 'function' && callback.call(window, result);
