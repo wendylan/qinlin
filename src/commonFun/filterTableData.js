@@ -1,19 +1,19 @@
 // 运用场景：过滤去重，主要使用在table表头需要过滤筛选功能
-
 var filterData = function(dataArr, key){
-	let arr = [];
-	let door = 1;
-	for(let data of dataArr){
-		for(let item of arr){
-			if(data[key] == item.value){
-				door = 0;
+	let dataList = [];
+	for(let item of dataArr){
+		let Obj = {
+			text: item[key],
+			value: item[key],
+		}
+		if(item[key]){
+			// 去重城市
+			if(JSON.stringify(dataList).indexOf(JSON.stringify(Obj)) === -1){
+				dataList.push(Obj);
 			}
 		}
-		if(door) {
-			arr.push({text: data[key], value: data[key]});
-		}
-		console.log(arr);
-		return arr;
 	}
+	console.log(dataList);
+	return dataList;
 }
 export default filterData;
