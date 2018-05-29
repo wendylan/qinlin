@@ -19,10 +19,10 @@
                 </el-select>
               </el-input>
             </div>
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
-            <el-button plain @click="newMedia" v-if="showNewBtn">新建</el-button>
-            <el-button plain>导入</el-button>
-            <el-button plain>导出</el-button>
+            <span><el-button type="primary" icon="el-icon-search">搜索</el-button></span>
+            <span><el-button plain @click="newMedia" v-if="showNewBtn">新建</el-button></span>
+            <span><el-button plain>导入</el-button></span>
+            <span><el-button plain>导出</el-button></span>
           </div>
         </el-row>
         <div class="table_wrap">
@@ -132,7 +132,7 @@
             </el-table-column>
             <el-table-column
               prop="mState"
-              label="点位状态"
+              label="媒体状态"
               min-width="7.7%"
               :filters="[
               { text: '投放中', value: '3' },
@@ -152,15 +152,15 @@
                 <el-dropdown size="small" split-button class="handel_btn" trigger="click" :hide-on-click="true">
                   操作
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">待安装
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, scope.row)">待安装
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">正常
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, scope.row)">正常
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">待维修
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, scope.row)">待维修
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, planList)">禁用
+                    <el-dropdown-item @click.native.prevent="confirmBox($event,scope.$index, scope.row)">禁用
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="deleteRow(scope.$index, planList)">删除</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -294,22 +294,41 @@
       //确认框
       confirmBox(e, index, rows) {
         let Status = e.target.innerText;
-        MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          dangerouslyUseHTMLString: true,
-          type: 'warning'
-        }).then(() => {
-          //确定
-          Message({
-            type: 'success',
-            message: '成功更改状态'
-          });
-          this.planList[index].mState = Status;
-        }).catch(() => {
-          Message({
-            type: 'info',
-            message: '已取消操作'
+        let mstate = ''
+        console.log('状态',Status)
+        console.log('行内容',rows)
+        if(Status == '正常'){
+          mstate = '1'
+        }else if(Status == '禁用'){
+          mstate = '0'
+        }else if(Status == '待安装'){
+          mstate = '2'
+        }else if(Status == '待维修'){
+          mstate = '3'
+        }else if(Status == '删除'){
+          mstate = '-1'
+        }
+        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        let mid = rows.mID
+        api.postApi('/CtrlMedia',{uid:uid, mid:mid, mstate:mstate}).then(res=>{
+          console.log('修改状态：',res)
+          MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            //确定
+            Message({
+              type: 'success',
+              message: '成功更改状态'
+            });
+            this.planList[index].mState = Status;
+          }).catch(() => {
+            Message({
+              type: 'info',
+              message: '已取消操作'
+            })
           })
         })
       },
@@ -339,12 +358,11 @@
 
       },
       getData() {
-
 //       let reclist =  [
-// {resID: 1,rID: 440106,city:'广州',rName: "天河区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-// {resID: 2,rID: 440106,city:'上海',rName: "白云区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000002,mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "1"},
-// {resID: 3,rID: 440106,city:'广州',rName: "越秀区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},
-// {resID: 17,rID: 440106,city:'深圳',rName: "越秀区",resName: "帝景山庄",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},]
+// {resID: 1,rID: 440106,rName: "越秀区",resName: "帝景山庄1",tradingArea: "山泉",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
+// {resID: 2,rID: 110101,rName: "东城区",resName: "帝景山庄2",tradingArea: "山泉",rtName: "社区",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "1"},
+// {resID: 3,rID: 440106,rName: "越秀区",resName: "帝景山庄3",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},
+// {resID: 17,rID: 440303,rName: "南山区",resName: "帝景山庄4",tradingArea: "山泉",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},]
 //         this.planList = reclist
 //         for(let i=0;i<this.planList.length;i++){
 //           let rName = {
@@ -369,40 +387,51 @@
           console.log('资源媒体列表：', res.data)
           let RMList = res.data
           if(!RMList.SysCode){
-            for(let i=0;i<RMList.length;i++){
-              if(RMList[i].mState == '1'){
-                RMList[i].mState = '正常'
-              }else if(RMList[i].mState){
-                RMList[i].mState = '被删除'
-              }else if(RMList[i].mState == '2'){
-                RMList[i].mState = '被锁定'
-              }else if(RMList[i].mState == '3'){
-                RMList[i].mState = '投放中'
-              }
-              areaToText.toText(data => {
-               console.log('公司信息所在城市', data);
-                RMList[i].city = data.city
-                if(i >= RMList.length-1){
-                  this.planList = RMList
-                  for(let j=0;j<this.planList.length;j++){    // 表头区域和城市选项
-                    let rName = {
-                      text: this.planList[j].rName,
-                      value: this.planList[j].rName
-                    }
-                    let rCity = {
-                      text: this.planList[j].city,
-                      value: this.planList[j].city
-                    }
-                    //  this.filtersRName.push(rName)
-                    if(JSON.stringify(this.filtersRName).indexOf(rName.value) === -1){
-                      this.filtersRName.push(rName)
-                    }
-                    if(JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1){
-                      this.filtersCity.push(rCity)
+            // let RMList = reclist
+            if(RMList){
+              for(let i=0;i<RMList.length;i++){
+                if(RMList[i].mState == '1'){
+                  RMList[i].mState = '正常'
+                }else if(RMList[i].mState == '0'){
+                  RMList[i].mState = '禁止'
+                }else if(RMList[i].mState == '2'){
+                  RMList[i].mState = '待安装'
+                }else if(RMList[i].mState == '3'){
+                  RMList[i].mState = '待维修'
+                }
+                areaToText.toTextCity(data => {
+                  // console.log('公司信息所在城市', data);
+                  // RMList[i].city = data.city
+                  // RMList[i].city = data
+                  this.$set(RMList[i], 'city', data);
+                  if(i >= RMList.length-1){
+                    this.planList = RMList
+                    console.log('planList',this.planList)
+                    for(let j=0;j<this.planList.length;j++){    // 表头区域和城市选项
+                      let rName = {
+                        text: this.planList[j].rName,
+                        value: this.planList[j].rName
+                      }
+                      let rCity = {
+                        text: this.planList[j].city,
+                        value: this.planList[j].city
+                      }
+                      //  this.filtersRName.push(rName)
+                      if(JSON.stringify(this.filtersRName).indexOf(rName.value) === -1){
+                        this.filtersRName.push(rName)
+                      }
+                      if(JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1){
+                        this.filtersCity.push(rCity)
+                      }
                     }
                   }
-                }
-              }, RMList[i].rID);
+                }, RMList[i].rID);
+              }
+            }else{
+              Message({
+                type: 'warning',
+                message: '数据为空'
+              });
             }
           }else{
             Message({

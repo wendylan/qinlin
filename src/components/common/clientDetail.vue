@@ -146,13 +146,12 @@ export default {
 		position: absolute;
 		left: 0;
 		top: 12px;
-		font-family: PingFangSC-Regular;
-		font-size: 14px;
+
 		line-height: 18px;
 	}
 
 	.ad_mediaDetail_nav p em{
-		font-family: PingFangSC-Regular;
+
 		font-size: 14px;
 		color: #D9D9D9;
 		line-height: 18px;
@@ -175,8 +174,7 @@ export default {
 	/*客户信息*/
 	.ad_mediaInfo{
 		width: 1246px;
-		/* height: 346px; */
-		height: 360px;
+		height: 346px;
 		background: #FFFFFF;
 		border: 1px solid #E6E7E9;
 		margin: 10px auto;
@@ -209,10 +207,6 @@ export default {
 		font-weight: bold;
 	}
 
-	.ad_mediaInfo .ad_mediaInfoPanel ul{
-		margin-top: 8px;
-
-	}
 	.ad_mediaInfo .ad_mediaInfoPanel ul.ml157{
 		margin-left: 20%;
 	}
@@ -221,7 +215,7 @@ export default {
 		width: 33.2%;
 		font-size: 14px;
 		color: #666666;
-		margin-top: 16px;
+		margin-top: 14px;
 	}
 
 	.clientInfo{
@@ -264,15 +258,29 @@ export default {
 		color: #333333;
 	}
 
-	/*按钮*/
-	.content_bottom_btn{
-		margin-top: 30px;
-		text-align: center;
-	}
+  /*按钮*/
+  /deep/ .el-button--default:focus, .el-button--default:hover{
+    color: #606266;
+    border-color: #dcdfe6;
+    background-color: #fcfcfc;
+  }
+  .content_bottom_btn{
+    text-align: center;
+    margin-top: 40px;
+  }
+  .content_bottom_btn /deep/ .el-button{
+    width: 76px;
+    height: 34px;
+  }
 
-	.content_bottom_btn button{
-		margin: 20px;
-	}
+  .content_bottom_btn /deep/ .el-button span{
+    position: relative;
+    top: -2px;
+  }
+  .content_bottom_btn /deep/ .el-button span a{
+    color: #606266;
+  }
+
 
 /*1440*/
 @media screen and (min-width: 1440px) {
@@ -284,7 +292,9 @@ export default {
 		position: relative;
 	}
 
+
 }
+
 
 /*1920*/
 @media screen and (min-width: 1920px) {

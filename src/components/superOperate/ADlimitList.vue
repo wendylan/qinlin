@@ -137,12 +137,14 @@ export default {
 				cancelButtonText:'取消',
 				type:'warning'
 			}).then(()=>{
-				//后台
+				// uid     int【必填】     UserID
+				// nid     int【必填】     广告限制nID
 				let info = {};
 				info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-				info.nID = row.nID;
+				info.nid = row.nID;
+
 				// 删除接口待文档更新
-				api.postApi('/delPush', info).then(res =>{
+				api.postApi('/DelNP', info).then(res =>{
 					console.log(res.data);
 					this.ADlist.splice(index, 1);
 					this.$message({

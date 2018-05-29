@@ -463,6 +463,8 @@ export default {
 					}).catch(() => {
 						Message.info('已取消操作');
 					});
+				}else{
+					MessageBox.warning(userMsg.MSG);
 				}
 			}).catch(res =>{
 				console.log(res);

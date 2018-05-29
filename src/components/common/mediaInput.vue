@@ -16,7 +16,7 @@
               <el-form-item label="资源类型:" prop="rt">
                 <div class="select_wrap">
                   <el-select v-model="recForm.rt" @change="selectRec" placeholder="请选择资源类型" :disabled="PathHaveEdit">
-                    <el-option label="写字楼" value="0"></el-option>
+                    <el-option label="写字楼" value="2"></el-option>
                     <el-option label="社区" value="1"></el-option>
                   </el-select>
                 </div>
@@ -78,10 +78,13 @@
                   <span style="left: 15px">￥</span>
                 </div>
               </el-form-item>
-              <el-form-item :label="rt_village?'入住时间:':'建成年份:'" prop="liveTime">
+              <el-form-item :label="rt_village?'入住时间:':'建成年份:'" prop="liveTime"><!-- v-model="recForm.liveTime"-->
                 <el-date-picker
-                  v-model="recForm.liveTime"
-                  type="datetime"
+                  v-model="liveTime"
+                  type="date"
+                  @change="getTime"
+                  format="yyyy 年 MM 月 dd 日"
+                  value-format="yyyy-MM-dd"
                   placeholder="选择日期时间">
                 </el-date-picker>
               </el-form-item>
@@ -99,16 +102,16 @@
                   <el-upload
                     action=""
                     list-type="picture-card"
-                    :limit='1'
-                    :auto-upload='false'
+                    :limit = '1'
+                    :auto-upload = 'false'
                     :on-change="recUploadChange"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                  <!-- <el-dialog :visible.sync="dialogVisible">
-                     <img width="100%" :src="dialogImageUrl" alt="">
-                   </el-dialog>-->
+                 <!-- <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                  </el-dialog>-->
                 </div>
               </el-form-item>
             </el-form>
@@ -137,12 +140,12 @@
                 <el-input-number v-model="item.mediaForm.usableNum" controls-position="right" :min="1"
                                  :max="9999999" :disabled="PathHaveEdit"></el-input-number>
               </el-form-item>
-              <el-form-item label="媒体状态:" prop="mediaStatus">
-                <el-select v-model="item.mediaForm.mediaStatus" placeholder="请选择媒体状态" :disabled="PathHaveEdit">
-                  <el-option label="被删除" value="0"></el-option>
+              <el-form-item label="媒体状态:" prop="mstate">
+                <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态">
+                  <el-option label="禁止" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
-                  <el-option label="被锁定" value="2"></el-option>
-                  <el-option label="投放中" value="3"></el-option>
+                  <el-option label="待安装" value="2"></el-option>
+                  <el-option label="待维修" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="资产编号:" prop="assetId">
@@ -185,9 +188,14 @@
               </el-form-item>
               <el-form-item label="广告限制:" prop="adLimit">
                 <el-select v-model="item.mediaForm.adLimit" placeholder="请选择广告限制">
-                  <el-option label="" value="地产"></el-option>
-                  <el-option label="" value="医学"></el-option>
-                  <el-option label="" value="汽车"></el-option>
+                  <el-option label="地产" value="地产"></el-option>
+                  <el-option label="医学" value="医学"></el-option>
+                  <el-option label="汽车" value="汽车"></el-option>
+                  <el-option label="美容" value="美容"></el-option>
+                  <el-option label="餐饮" value="餐饮"></el-option>
+                  <el-option label="食品" value="食品"></el-option>
+                  <el-option label="金融" value="金融"></el-option>
+                  <el-option label="汽车" value="汽车"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="备注:" prop="mediaRemark">
@@ -312,7 +320,7 @@
               mediaType: '',   //媒体类型mVehicle
               mediaName: '',  //媒体名称mtitle
               usableNum: '1',   //广告位面数pnum
-              mediaStatus: '',  //媒体状态
+              mstate: '',  //媒体状态mstate
               assetId: '',      //资产编号assettag
               doorType: '',     // 门类型mType
               adSizeW: '',      //广告尺寸adsize
@@ -361,7 +369,7 @@
           mediaType: '',
           mediaName: '',
           usableNum: '1',
-          mediaStatus: '',
+          mstate: '',
           assetId: '',
           doorType: '',
           adSizeW: '',
@@ -440,7 +448,7 @@
             {required: true, message: '可投面数不能为空', trigger: 'blur'},
             // { type:'number', min:1, max:26, message:'最多可投26面',trigger:'blur'},
           ],
-          mediaStatus: [
+          mstate: [
             {required: true, message: '请选择媒体状态', trigger: 'change'},
           ],
           assetId: [
@@ -483,7 +491,7 @@
         regionOpt: [],              // 地区
         buildingType:[              // 楼盘类型或写字楼类型
           { label: '高端住宅',value: '高端住宅' },
-          { label: '中段住宅',value: '中端住宅' },
+          { label: '中端住宅',value: '中端住宅' },
           { label: '一般住宅',value: '一般住宅' },
           { label: '洋房',value: '洋房'},
           { label: '别墅',value: '别墅' },
@@ -503,7 +511,8 @@
         selectedOptions: [],        // 城市默认选项
         PathHaveEdit: false,        //  新建/编辑
         recImg: {},                 // 上传的资源图片
-        mediaImg: {}                // 媒体图片
+        mediaImg: {},                // 媒体图片
+        liveTime:'',                // 资源时间
       };
     },
     beforeCreate: function () {
@@ -516,14 +525,14 @@
     methods: {
       //新增媒体面板
       mediaAddFun() {
-      //  console.log('点击成功')
+        //  console.log('点击成功')
         let mediaArr = [
           {
             text: '媒体二', mediaForm: {
               mediaType: '',
               mediaName: '',
               usableNum: '1',
-              mediaStatus: '',
+              mstate: '',
               assetId: '',
               doorType: '',
               adSizeW: '',
@@ -544,15 +553,15 @@
             message: '最多同时支持十个媒体面板的操作！',
             type: 'warning'
           })
-         /* this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
-            confirmButtonText: '确定',
-            callback: action => {
-              this.$message({
-                type: 'info',
-                message: `action: ${ action }`
-              });
-            }
-          });*/
+          /* this.$alert('最多同时支持五个媒体面板的操作！', '新增媒体', {
+             confirmButtonText: '确定',
+             callback: action => {
+               this.$message({
+                 type: 'info',
+                 message: `action: ${ action }`
+               });
+             }
+           });*/
         }
       },
       //删除媒体面板
@@ -631,13 +640,21 @@
           this.buildingType = this.village
         }else if(val === '0'){    // 写字楼
           this.rt_village = false
-         /* let officeBuilding = [
-            {lable:'单纯性写字楼',value:'单纯性写字楼'},
-            {lable:'商住型写字楼',value:'商住型写字楼'},
-            {lable:'综合型写字楼',value:'综合型写字楼'},
-          ];*/
+          /* let officeBuilding = [
+             {lable:'单纯性写字楼',value:'单纯性写字楼'},
+             {lable:'商住型写字楼',value:'商住型写字楼'},
+             {lable:'综合型写字楼',value:'综合型写字楼'},
+           ];*/
           this.buildingType = this.officeBuilding
         }
+      },
+      // 选择入住时间,修改时间格式
+      getTime(date){
+        this.recForm.liveTime = date;
+        console.log('入住时间',date);
+        console.log('入住时间',typeof(date));
+
+        console.log(this.recForm.liveTime)
       },
       //添加资源媒体
       createRec() {
@@ -675,13 +692,25 @@
         }
         let recObj = {
           uid: this.recForm.uid,
-          rid: this.recForm.city[1],
+          rid: this.recForm.region,
           ta: this.recForm.business,        // 所属商圈
           rt: this.recForm.rt,              // 资源类型
           resname: this.recForm.resname,   // 资源名称
           resaddr: this.recForm.resaddr,
-          latLng: this.recForm.latLng,
+          //    latLng: this.recForm.latLng,
+          ct: this.recForm.buildingType,
+          // cd: this.recForm.liveTime,
+          hp: (this.recForm.buildingPrice * 100),
+          fn: this.recForm.buildingNum,
+          dn: this.recForm.doorwayNum,
+          hn: this.recForm.households,
         }
+        /* ct      String          楼盘类型
+            cd      String          入住时间
+            hp      int             楼盘价格
+            fn      int             楼栋数量
+            dn      int             出入口数量
+            hn      int             小区户数*/
         api.postApi('/AddRes', recObj).then(res => {
           console.log('资源数据：', res.data)
           let recData = res.data
@@ -704,7 +733,8 @@
                 mtype: arr_media.doorType,
                 mimg: '',
                 mvc: arr_media.mediaType,
-                mrk: arr_media.mediaRemark
+                mrk: arr_media.mediaRemark,
+                mstate: arr_media.mstate
               }
               console.log('mediaObj', mediaObj)
               /*arrMedia: [
@@ -713,7 +743,7 @@
                  mediaType: '',   //媒介载体mvc
                  mediaName: '',  //媒体名称mtitle
                  usableNum: '1',   //广告位面数pnum
-                 mediaStatus: '',  //媒体状态
+                 mstate: '',  //媒体状态
                  assetId: '',      //资产编号assettag
                  doorType: '',     // 媒介类型
                  adSizeW: '',      //广告尺寸adsize
@@ -766,7 +796,7 @@
       createMedia(mediaObj,n){
         let temp = mediaObj
         api.postApi('/CreateMedia', temp).then(res => {
-          console.log(res)
+          console.log('创建媒体返回信息',res)
           if (n >= this.arrMedia.length-1) {
             this.resetForm()  // 请求成功后重置表单
             Message({
@@ -908,8 +938,11 @@
             tempObj.households = recObj.HouseNum
             tempObj.buildingPrice = Number(recObj.housePrice.split('元')[0])
             tempObj.liveTime = recObj.joinTime
-            tempObj.lat = Number(recObj.latLng.split(';')[0])
-            tempObj.lng = Number(recObj.latLng.split(';')[1])
+        //    console.log('经纬度',typeof(recObj.latLng),recObj.latLng)
+            if(recObj.latLng != null && recObj.latLng != '' && recObj.latLng != undefined){
+                tempObj.lat = Number(recObj.latLng.split(';')[0])
+                tempObj.lng = Number(recObj.latLng.split(';')[1])
+            }
             tempObj.recRemark = recObj.remark
             this.recForm = tempObj
             console.log('recForm', this.recForm)
@@ -924,13 +957,13 @@
               media.mediaType = mediaObj[i].mVehicle
               media.mediaName = mediaObj[i].mTitle
               media.usableNum = mediaObj[i].pNum
-              media.mediaStatus = mediaObj[i].mState
+              media.mstate = mediaObj[i].mState
               media.assetId = mediaObj[i].assetTag
               media.doorType = mediaObj[i].mType
               media.adSizeW = Number(mediaObj[i].adSize.split('*')[0])
               media.adSizeH = Number(mediaObj[i].adSize.split('*')[1])
-              media.visualW = ''
-              media.visualH = ''
+              media.visualW = Number(mediaObj[i].adViewSize.split('*')[0])
+              media.visualH = Number(mediaObj[i].adViewSize.split('*')[1])
               media.adLimit = mediaObj[i].notPush
               media.mediaRemark = ''
               console.log('media', media)
@@ -961,26 +994,27 @@
             fn      int             楼栋数量
             dn      int             出入口数量
             hn      int             小区户数*/
-          this.recForm.uid = JSON.parse(sessionStorage.getItem('session_data')).uID
-          let rID = sessionStorage.getItem('resID')
-      //    this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
-          let recObj = this.recForm
-          let SetResCTObj = {
-            uid: recObj.uid,
-            resid: rID,
-            rid: recObj.city[1],
-            ta: recObj.business,
-            resname: recObj.resname,
-            resaddr: recObj.resaddr,
-            ct: '别墅',//recObj.buildingType,
-            cd: recObj.liveTime,
-            hp: recObj.buildingPrice,
-            fn: recObj.buildingNum,
-            dn: recObj.doorwayNum,
-            hn: recObj.households,
-          }
+        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        this.recForm.uid =  uid
+        let rID = sessionStorage.getItem('resID')
+        //    this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
+        let recObj = this.recForm
+        let SetResCTObj = {
+          uid: recObj.uid,
+          resid: rID,
+          rid: recObj.region,
+          ta: recObj.business,
+          resname: recObj.resname,
+          resaddr: recObj.resaddr,
+          ct: recObj.buildingType, //
+        //  cd: toString(recObj.liveTime),
+          hp: (recObj.buildingPrice * 100),
+          fn: recObj.buildingNum,
+          dn: recObj.doorwayNum,
+          hn: recObj.households,
+        }
         api.postApi('/SetResCT',SetResCTObj).then(res=>{
-          console.log('修改信息',res)
+          console.log('修改资源信息',res)
         })
         /*mid         int【必填】     媒体ID
             mtitle      String          媒体名称
@@ -995,6 +1029,7 @@
         for (let i = 0; i < mediaArr.length; i++) {
           let tempObj = mediaArr[i].mediaForm
           let temp_media = {
+            uid: uid,
             mid: tempObj.mid,
             mtitle: tempObj.mediaName,
             adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
@@ -1003,6 +1038,7 @@
             assettag: tempObj.assetId,
             mtype: tempObj.doorType,
             mrk: tempObj.mediaRemark,
+        //    mstate: tempObj.mstate,
             mimg: '',
           }
           console.log('temp_media', temp_media)
@@ -1019,7 +1055,7 @@
               }
             }else{
               Message({
-                message: '媒体保存保存失败！',
+                message: '媒体保存失败！',
                 type: 'warning'
               });
             }
@@ -1055,13 +1091,11 @@
     position: absolute;
     left: 0;
     top: 12px;
-    font-family: PingFangSC-Regular;
     font-size: 14px;
     line-height: 18px;
   }
 
   .ad_mediaMana_nav p em {
-    font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #D9D9D9;
     line-height: 18px;
@@ -1119,7 +1153,6 @@
     padding-left: 16px;
     height: 24px;
     width: 70%;
-    border-left: 2px solid #465D89;
     margin-top: 8px;
   }
 
@@ -1330,10 +1363,9 @@
   .upload_img_wrap {
     width: 236px;
     height: 125px;
-    /* overflow:auto*/
+   /* overflow:auto*/
     overflow: hidden;
   }
-
   .el-checkbox-group {
     position: relative;
     top: 5px;
