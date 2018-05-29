@@ -132,7 +132,7 @@ import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
 import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
-import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag } from 'element-ui';
+import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, MessageBox, Message } from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -464,7 +464,7 @@ export default {
 						Message.info('已取消操作');
 					});
 				}else{
-					MessageBox.warning(userMsg.MSG);
+					Message.warning(userMsg.MSG);
 				}
 			}).catch(res =>{
 				console.log(res);

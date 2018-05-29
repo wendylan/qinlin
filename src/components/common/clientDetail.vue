@@ -115,10 +115,10 @@ export default {
 			}
 			if(userInfo){
 				if(userInfo.rID){
-					areaToText.toText(data=>{
+					areaToText.toTextCity(data=>{
 						console.log(data);
 						// userInfo.rName = data.city;	
-						this.$set(this.userInfo, 'rName', data.city);
+						this.$set(this.userInfo, 'rName', data);
 					}, userInfo.rID);
 				}
 				this.userInfo = userInfo;

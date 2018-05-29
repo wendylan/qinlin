@@ -367,9 +367,9 @@ export default {
 			this.companyForm.cRemark = item.cRemark;
 
 			// 获取公司所在地的中文名称
-			areaToText.toText(data=>{
+			areaToText.toTextCity(data=>{
 				console.log(data);
-				this.companyForm.rName = data.city;
+				this.companyForm.rName = data;
 			}, item.rID);
 
 			// 获取公司原有的品牌信息

@@ -226,8 +226,8 @@ export default {
 			let arr = item.split(',');
 			let result = '';
 			for(let data of arr){
-				areaToText.toText(res=>{
-					result = res.city+'/'+ result;
+				areaToText.toTextCity(res=>{
+					result = res+'/'+ result;
 					console.log(result);
 				}, Number(data));
 			}
