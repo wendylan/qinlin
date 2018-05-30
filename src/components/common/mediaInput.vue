@@ -78,15 +78,25 @@
                   <span style="left: 15px">￥</span>
                 </div>
               </el-form-item>
-              <el-form-item :label="rt_village?'入住时间:':'建成年份:'" prop="liveTime"><!-- v-model="recForm.liveTime"-->
-                <el-date-picker
+              <el-form-item :label="rt_village?'入住年份:':'建成年份:'" prop="liveTime"><!-- v-model="recForm.liveTime"-->
+               <!-- <el-date-picker
                   v-model="liveTime"
                   type="date"
                   @change="getTime"
                   format="yyyy 年 MM 月 dd 日"
                   value-format="yyyy-MM-dd"
                   placeholder="选择日期时间">
+                </el-date-picker>-->
+                <el-date-picker
+                  v-model="recForm.liveTime"
+                  type="year"
+                  @change="getTime"
+                  value-format="yyyy"
+                  format="yyyy 年"
+                  :editable="false"
+                  placeholder="选择年">
                 </el-date-picker>
+                <!--<el-input  v-model="recForm.liveTime" placeholder="请输入年份"></el-input>-->
               </el-form-item>
               <el-form-item label="经纬度:" prop="lng" class="lngNlat">
                 <el-input v-model.number="recForm.lng" placeholder="经度"></el-input>
@@ -137,18 +147,17 @@
                 <el-input v-model="item.mediaForm.mediaName" placeholder="例：东门"></el-input>
               </el-form-item>
               <el-form-item label="可投面数:" prop="usableNum">
-                <el-input-number v-model="item.mediaForm.usableNum" controls-position="right" :min="1"
-                                 :max="9999999" :disabled="PathHaveEdit"></el-input-number>
+                <el-input-number v-model.number="item.mediaForm.usableNum" controls-position="right" :disabled="PathHaveEdit"></el-input-number>
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mstate">
-                <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态">
+                <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态" @change="selectMstate">
                   <el-option label="禁止" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
                   <el-option label="待安装" value="2"></el-option>
                   <el-option label="待维修" value="3"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="资产编号:" prop="assetId">
+              <el-form-item label="资产编号:" prop="assetId" :rules="assetIdBolean ? assetIdRules: mediaRules.assetId">
                 <el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>
               </el-form-item>
               <el-form-item label=" 媒体类型:" prop="doorType">
@@ -281,7 +290,7 @@
           callback();
         }
       };
-      var validateNum = (rule, value, callback) => {
+      var validateNum = (rule, value, callback) => {/*validatePrice*/
         if (value !== '' && !Number.isInteger(value)) {
           callback(new Error('只能输入整数值'));
         } else {
@@ -292,10 +301,24 @@
           }
         }
       };
+      let validatePrice = (rule, value, callback) => {/*validatePrice*/
+        // let reg = /^[0-9]*$/
+        let reg = /^\d+(\.\d+)?$/
+        // let reg = /^\d+(\.\d{1,2})?$/
+        if (value !== '' && !(reg.test(value))) {
+          callback(new Error('只能输入数字'));
+        } else {
+          if (value > 9999999) {
+            callback(new Error('不得大于9999999'));
+          } else {
+            callback();
+          }
+        }
+      };
 
       return {
-        //缩略图
-        dialogImageUrl: '',
+        assetIdBolean: false,
+        dialogImageUrl: '',//缩略图
         dialogVisible: false,
         titleArr: ['媒体一', '媒体二', '媒体三', '媒体四', '媒体五', '媒体六', '媒体七', '媒体八', '媒体九', '媒体十'],
         titleIndex: 0,
@@ -325,8 +348,8 @@
               doorType: '',     // 门类型mType
               adSizeW: '',      //广告尺寸adsize
               adSizeH: '',     //广告尺寸
-              visualW: 0,      //可视画面adviewsize
-              visualH: 0,      //可视画面
+              visualW: '',      //可视画面adviewsize
+              visualH: '',      //可视画面
               mediaRemark: '',  //备注 mrk
               adLimit: '',     //请选择广告限制 notpush
               mImg: ''
@@ -359,7 +382,7 @@
           doorwayNum: '1',   // 出入数
           buildingNum: '1',  // 楼栋数量
           households: '1',   // 住户数量
-          buildingPrice: 0,  // 楼盘价格
+          buildingPrice: '',  // 楼盘价格
           liveTime: '',
           lng: '',
           lat: '',
@@ -380,10 +403,10 @@
           adLimit: []
         },*/
         recRules: {
-          recType: [
+          rt: [
             {required: true, message: '请选择资源类型', trigger: 'change'},
           ],
-          recName: [
+          resname: [
             {required: true, message: '资源名称不能为空', trigger: 'blur'},
             {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
@@ -396,7 +419,7 @@
           business: [
             {min: 0, max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
-          address: [
+          resaddr: [
             {required: true, message: '具体地址不能为空', trigger: 'blur'},
             {min: 0, max: 70, message: '最多只能输入70个字节', trigger: 'blur'}
           ],
@@ -418,16 +441,21 @@
             // { min: 1, max: 9999999, type:'number', message: '只能输入数字', trigger: 'blur' }
           ],
           buildingPrice: [
-            {min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'blur'}
+            { validator: validatePrice,trigger:'change'},
+           /* { min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'blur'}*/
           ],
-          liveTime: [],
+          liveTime: [
+            // {type: 'number', min: 1970, max: 2018,message: '只能输入数字(1970-2018)', trigger: 'blur'},
+          ],
           lng: [
             {required: true, message: '经纬度不能为空', trigger: 'blur'},
-            // {type: 'number', message: '只能输入数字', trigger: 'change'}
+            {type: 'number', min:0, max:180, message: '只能输入数字(0-180)', trigger: 'change'},
+            // {min:0, max:180,message: '经度范围0-180', trigger: 'blur'}
           ],
           lat: [
             {required: true, message: '纬度不能为空', trigger: 'blur'},
-            // {type: 'number', message: '只能输入数字', trigger: 'change'}
+            {type: 'number',min:0, max:90, message: '只能输入数字(0-90)', trigger: 'change'},
+            // {min:0, max:90,message: '纬度范围0-90', trigger: 'blur'}
           ],
           recRemark: [
             /*{ validator: validateRemark,trigger:'change'},*/
@@ -435,6 +463,11 @@
           ],
 
         },
+        assetIdRules:[
+          {validator: validateAssetId, trigger: 'blur'},
+          { message: '资产编号不能为空', trigger: 'blur'},
+          {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
+          ],
         mediaRules: {
           mediaType: [
             {required: true, message: '请选择媒介载体', trigger: 'change'},
@@ -443,7 +476,7 @@
             {required: true, message: '媒体名称不能为空', trigger: 'blur'},
             {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
-          doorNum: [
+          usableNum: [
             {validator: validateNum, trigger: 'blur'},
             {required: true, message: '可投面数不能为空', trigger: 'blur'},
             // { type:'number', min:1, max:26, message:'最多可投26面',trigger:'blur'},
@@ -457,25 +490,25 @@
             {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
           ],
           doorType: [
-            {min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'blur'}
+            {required: true,min: 1, max: 20, message: '最多只能输入20个字节', trigger: 'blur'}
           ],
           adSizeW: [
-            //  {validator: validateNum, trigger: 'change'},
+            //  {validator: validateNum, trigger: 'change'},4096 2160
             {required: true, type: 'number', message: '宽度不能为空且只能为数字', trigger: 'blur'},
-            // { type:'number', message: '只能输入数字',  trigger: 'change' }
+            {type: 'number',min: 1,max: 9999999, message: '最大值9999999', trigger: 'blur'}
           ],
           adSizeH: [
             //  {validator: validateNum, trigger: 'change'},
             {required: true, type: 'number', message: '高度不能为空且只能为数字', trigger: 'blur'},
-            // { type:'number', message: '只能输入数字', trigger: 'change' }
+            {type: 'number',min: 1,max: 9999999, message: '最大值9999999', trigger: 'blur'}
           ],
           visualW: [
-            {type: 'number', message: '只能输入数字', trigger: 'change'},
-            // { type:'number', message: '只能输入数字', trigger: 'change' }
+            {required: true, type: 'number', message: '不能为空且只能输入数字', trigger: 'change'},
+            {type: 'number',min: 1,max: 9999999, message: '最大值9999999', trigger: 'blur'}
           ],
           visualH: [
-            {type: 'number', message: '只能输入数字', trigger: 'change'},
-            // { type:'number', message: '只能输入数字', trigger: 'change' }
+            {required: true,type: 'number', message: '不能为空且只能输入数字', trigger: 'change'},
+            {type: 'number',min: 1,max: 9999999, message: '最大值9999999', trigger: 'blur'}
           ],
           adLimit: [
             {message: '请选择媒体状态', trigger: 'change'},
@@ -650,11 +683,19 @@
       },
       // 选择入住时间,修改时间格式
       getTime(date){
-        this.recForm.liveTime = date;
+      //  this.recForm.liveTime = date;
         console.log('入住时间',date);
         console.log('入住时间',typeof(date));
-
-        console.log(this.recForm.liveTime)
+        console.log('this.recForm.liveTime',this.recForm.liveTime,'数据类型为:',typeof(this.recForm.liveTime))
+      },
+      // 选择媒体状态为待安装时修改资源编号的验为非必填
+      selectMstate(val){
+        // alert(val)
+        if(val === '2'){
+          this.assetIdBolean = true
+        }else{
+          this.assetIdBolean = false
+        }
       },
       //添加资源媒体
       createRec() {
@@ -698,14 +739,20 @@
           resname: this.recForm.resname,   // 资源名称
           resaddr: this.recForm.resaddr,
           //    latLng: this.recForm.latLng,
-          ct: this.recForm.buildingType,
-          // cd: this.recForm.liveTime,
-          hp: (this.recForm.buildingPrice * 100),
-          fn: this.recForm.buildingNum,
-          dn: this.recForm.doorwayNum,
-          hn: this.recForm.households,
+          ct: this.recForm.buildingType,    //楼盘类型
+          cd: this.recForm.liveTime,        // 入住时间 '2017'
+          hp: (this.recForm.buildingPrice * 100),   // 楼盘价格
+          fn: this.recForm.buildingNum,     // 楼栋数量
+          dn: this.recForm.doorwayNum,      // 出入口数量
+          hn: this.recForm.households,      // 小区户数
         }
-        /* ct      String          楼盘类型
+        /* uid     int【必填】     UserID
+            rid     int             地区id
+            ta      String          商圈名称
+            rt      int             资源类型
+            resname String          资源名称
+            resaddr String          资源地址
+            ct      String          楼盘类型
             cd      String          入住时间
             hp      int             楼盘价格
             fn      int             楼栋数量
@@ -920,12 +967,8 @@
             this.recForm.city[0] = Number(recObj.rid.toString().substring(0, 2) + '0000')
             this.handleItemChange(this.recForm.city)
             this.recForm.city[1] = Number(recObj.rid.toString().substring(0, 4) + '00')
-            //    console.log('this.recForm.city',this.recForm.city)
-            /*  this.selectedOptions[0] = Number(recObj.rid.toString().substring(0,2) + '0000')
-              this.handleItemChange(this.selectedOptions)
-              this.selectedOptions[1] = Number(recObj.rid.toString().substring(0,4) + '00')
-              console.log('selectedOptions',this.selectedOptions)*/
             // 获取设置资源信息
+        //    tempObj.rID = recObj.rid
             tempObj.rt = recObj.cType
             tempObj.resname = recObj.resName
             tempObj.city = this.recForm.city //this.selectedOptions[1] //440100
@@ -967,6 +1010,9 @@
               media.adLimit = mediaObj[i].notPush
               media.mediaRemark = ''
               console.log('media', media)
+              if(media.mstate == '待安装'){
+                this.assetIdBolean = true
+              }
               this.arrMedia[i].mediaForm = media
               //    this.postEditMsg()
             }
@@ -1002,16 +1048,22 @@
         let SetResCTObj = {
           uid: recObj.uid,
           resid: rID,
-          rid: recObj.region,
+          rid: '',//recObj.region,
           ta: recObj.business,
           resname: recObj.resname,
           resaddr: recObj.resaddr,
           ct: recObj.buildingType, //
-        //  cd: toString(recObj.liveTime),
+          cd: recObj.liveTime,//'2010',
           hp: (recObj.buildingPrice * 100),
           fn: recObj.buildingNum,
           dn: recObj.doorwayNum,
           hn: recObj.households,
+        }
+        let recDetail = JSON.parse(sessionStorage.getItem('recDetail'))
+        if(recObj.region === recDetail.cityArea){    // 地区没有修改的时候
+          SetResCTObj.rid = recDetail.rid
+        }else{
+          SetResCTObj.rid = recObj.region
         }
         api.postApi('/SetResCT',SetResCTObj).then(res=>{
           console.log('修改资源信息',res)
@@ -1038,10 +1090,19 @@
             assettag: tempObj.assetId,
             mtype: tempObj.doorType,
             mrk: tempObj.mediaRemark,
-        //    mstate: tempObj.mstate,
             mimg: '',
           }
           console.log('temp_media', temp_media)
+          if(tempObj.mstate === '正常'){
+            tempObj.mstate = '1'
+          }else if(tempObj.mstate === '禁止'){
+            tempObj.mstate = '0'
+          }else if(tempObj.mstate === '待安装'){
+            tempObj.mstate = '2'
+          }else if(tempObj.mstate === '待维修'){
+            tempObj.mstate = '3'
+          }
+          this.editMState(uid,tempObj.mid,tempObj.mstate)
           api.postApi('/SetMediaInfo', temp_media).then(res => {
             console.log('SetMediaInfo', res)
             let mediaInfo = res.data
@@ -1061,6 +1122,19 @@
             }
           })
         }
+      },
+      // 修改媒体状态
+      editMState(uid,mid,mstate){
+        api.postApi('/CtrlMedia',{uid:uid, mid:mid, mstate:mstate}).then(res=>{
+          console.log('修改媒体状态',res)
+          let data = res.data
+          if(!data.SysCode){
+            Message({
+              type: 'success',
+              message: '成功更改状态'
+            });
+          }
+        })
       },
     },
   }

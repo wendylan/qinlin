@@ -257,12 +257,6 @@
             this.obj.city= data.city
             this.obj.cityArea = data.area
           }, res.data.rID);
-         /* if(res.data.rID.toString().indexOf('4401') === 0){
-            this.obj.city = '广州'
-          }
-          if(res.data.rID.toString().indexOf('106') > 0){
-            this.obj.cityArea = '天河区'
-          }*/
           console.log('this.obj',this.obj)
         }).catch(err=>{
           console.log(err);
@@ -285,7 +279,7 @@
             if(MediaList[i].mState === 1){
               MediaList[i].mState = '正常'
             }else if(MediaList[i].mState === 0){
-              MediaList[i].mState = '被删除'
+              MediaList[i].mState = '禁止'
             }else if(MediaList[i].mState === 2){
               MediaList[i].mState =  '待安装'
             }else if(MediaList[i].mState === 3){

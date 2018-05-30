@@ -1,63 +1,63 @@
 <template>
-  <div class="ad_mediaDetail_wrap clearfix">
-    <div class="ad_mediaDetail_nav ">
-      <p class="clearfix"><a href="#">广告限制</a></p>
-    </div>
-    <div class="mediaList_wrap">
-      <div class="mediaList_head">
-        <h2>广告限制列表</h2>
-      </div>
-      <div class="mediaList_container">
-        <div class="table_wrap">
-          <el-table
-            border
-            :data="ADlist"
-            style="width: 100%"
-            :default-sort = "{prop: 'date', order: 'descending'}"
-          >
-            <el-table-column
-              label="限制类型"
-              min-width="11.6%"
-            >
-              <template slot-scope="scope">
-                <span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
-                <el-input v-model="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="描述"
-              min-width="62.2%"
-            >
-              <template slot-scope="scope">
-                <span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
-                <el-input v-model="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="操作"
-              min-width="7.1%"
-            >
-              <template slot-scope="scope">
-                <div v-if="!scope.row.changeBtn">
-                  <el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
-                  <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)" >删除</el-button>
-                </div>
-                <div v-if="scope.row.changeBtn">
-                  <el-button type="text" size="small" class="saveAD"  @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
-                  <el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.$index, ADlist)">取消</el-button>
-                </div>
+	<div class="ad_mediaDetail_wrap clearfix">
+		<div class="ad_mediaDetail_nav ">
+			<p class="clearfix"><a href="#">广告限制</a></p>
+		</div>
+		<div class="mediaList_wrap">
+			<div class="mediaList_head">
+				<h2>广告限制列表</h2>
+			</div>
+		<div class="mediaList_container">
+			<div class="table_wrap">
+			<el-table
+				border
+				:data="ADlist"
+				style="width: 100%"
+				:default-sort = "{prop: 'date', order: 'descending'}"
+			>
+				<el-table-column
+				label="限制类型"
+				min-width="11.6%"
+				>
+					<template slot-scope="scope">
+						<span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
+						<el-input v-model="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
+					</template>
+				</el-table-column>
+				<el-table-column
+					label="描述"
+					min-width="62.2%"
+				>
+					<template slot-scope="scope">
+						<span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
+						<el-input v-model="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
+					</template>
+				</el-table-column>
+				<el-table-column
+					v-if="role=='SM'"
+					label="操作"
+					min-width="7.1%"
+				>
+					<template slot-scope="scope">
+						<div v-if="!scope.row.changeBtn">
+							<el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
+							<el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)" >删除</el-button>
+						</div>
+						<div v-if="scope.row.changeBtn">
+							<el-button type="text" size="small" class="saveAD"  @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
+							<el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.row, scope.$index)">取消</el-button>
+						</div>
+					</template>
+				</el-table-column>
+			</el-table>
+			<div v-if="role=='SM'">
+				<div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
+			</div>
+			</div>
 
-              </template>
-            </el-table-column>
-          </el-table>
-          <div>
-            <div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
+		</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -73,6 +73,7 @@ export default {
 	},
 	data() {
 		return {
+			role: '',
 			//表格
 			ADlist: [
 				{
@@ -97,6 +98,7 @@ export default {
 		}
 	},
 	created(){
+		this.role = JSON.parse(sessionStorage.getItem('session_data')).uType;
 		this.getInitData();
 	},
 	methods:{
@@ -110,8 +112,8 @@ export default {
 					for(let data of this.ADlist){
 						data.showInput = false;
 						data.changeBtn = false;
-						data.typeUpdate = false;
-						data.detailUpdate = false;
+						data.typeUpdate = '';
+						data.detailUpdate = '';
 					}
 				}else{
 					Message.warning(res.data.MSG);
@@ -145,14 +147,15 @@ export default {
 				info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 				info.nid = row.nID;
 
-				// 删除接口待文档更新
+				// 删除接口
 				api.postApi('/DelNP', info).then(res =>{
 					console.log(res.data);
-					this.ADlist.splice(index, 1);
-					this.$message({
-						type:'success',
-						message:'删除成功！'
-					});
+					if(res.data.SysCode ==200200){
+						this.ADlist.splice(index, 1);
+						Message.success(res.data.MSG);
+					}else{
+						Message.warning(res.data.MSG);
+					}
 				});
 			}).catch(()=>{
 				this.$message({
@@ -194,6 +197,16 @@ export default {
 
 				api.postApi('/AddNotPush', info).then(res => {
 					console.log(res);
+					if(res.data.SysCode ==200200){
+						Message.success(res.data.MSG);
+						this.$set(rows, 'nTitle', rows.typeUpdate);
+						this.$set(rows, 'ndescript', rows.detailUpdate);
+						this.$set(rows, 'showInput', !rows.showInput);
+						this.$set(rows, 'changeBtn', !rows.changeBtn);
+						this.ADlist.push();
+					}else{
+						Message.warning(res.data.MSG);
+					}
 				}).catch(res =>{
 					console.log(res);
 				});
@@ -213,27 +226,35 @@ export default {
 				console.log('editinfo', info);
 				api.postApi('/SetNotPush', info).then(res =>{
 					console.log(res);
+					if(res.data.SysCode ==200200){
+						Message.success(res.data.MSG);
+						this.$set(rows, 'nTitle', rows.typeUpdate);
+						this.$set(rows, 'ndescript', rows.detailUpdate);
+						this.$set(rows, 'showInput', !rows.showInput);
+						this.$set(rows, 'changeBtn', !rows.changeBtn);
+						this.ADlist.push();
+					}else{
+						Message.warning(res.data.MSG);
+					}
 				}).catch(res =>{
 					console.log(res);
 				});
 			}
-			this.$set(rows, 'nTitle', rows.typeUpdate);
-			this.$set(rows, 'ndescript', rows.detailUpdate);
-			this.$set(rows, 'showInput', !rows.showInput);
-			this.$set(rows, 'changeBtn', !rows.changeBtn);
-			this.ADlist.push();
 		},
 		//取消
-		cancelAD(index,rows){
-			if(rows[index].typeUpdate === ''){
-				rows.splice(index,1);
+		cancelAD(rows, index){
+			if(!rows.nID){
+				this.ADlist.splice(index,1);
 			}else{
 			//前端显示
-			this.ADlist[index].nTitle = this.ADlist[index].nTitle;
-			this.ADlist[index].ndescript = this.ADlist[index].ndescript;
-			//切换输入框和操作类型的显示
-			this.ADlist[index].showInput = !this.ADlist[index].showInput;
-			this.ADlist[index].changeBtn = !this.ADlist[index].changeBtn;
+				// this.ADlist[index].nTitle = this.ADlist[index].nTitle;
+				// this.ADlist[index].ndescript = this.ADlist[index].ndescript;
+				this.$set(rows, 'nTitle', rows.nTitle);
+				this.$set(rows, 'ndescript', rows.ndescript);
+				//切换输入框和操作类型的显示
+				this.$set(rows, 'showInput', !rows.showInput);
+				this.$set(rows, 'changeBtn', !rows.changeBtn);
+				this.ADlist.push();
 			}
 		}
 	}

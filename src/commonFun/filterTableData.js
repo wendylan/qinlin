@@ -7,7 +7,7 @@ var filterData = function(dataArr, key){
 			value: item[key],
 		}
 		if(item[key]){
-			// 去重城市
+			// 去重
 			if(JSON.stringify(dataList).indexOf(JSON.stringify(Obj)) === -1){
 				dataList.push(Obj);
 			}

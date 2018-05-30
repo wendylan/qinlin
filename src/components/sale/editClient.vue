@@ -3,7 +3,7 @@
 		<div>
 			<div class="ad_mediaMana_wrap">
 				<div class="ad_mediaMana_nav clearfix">
-					<p><a href="#">媒体管理</a><em> / </em><a href="#">修改客户信息</a></p>
+					<p><a href="#">客户管理</a><em> / </em><a href="#">修改客户信息</a></p>
 				</div>
 				<!--客户信息-->
 				<div class="mediaMana_content_top">
@@ -132,7 +132,7 @@ import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
 import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
-import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, MessageBox, Message } from 'element-ui';
+import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, MessageBox, Message,} from 'element-ui';
 export default {
 	name: "createClient",
 	components:{
@@ -408,20 +408,39 @@ export default {
 		},
 		// 更新公司信息
 		updateCompany(){
+			// uid         int【必填】     当前用户UserID
+            // cid         int【必填】     要修改的公司ID
+            // cname       String          公司名
+            // caddress    String          公司地址
+            // rid         int             公司所在地城市ID
+            // iid         int             公司所属行业ID
+			// cremark     String          公司备注信息
+			let cForm = this.companyForm;
+			let companyInfo ={
+				uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+				cid: cForm.cID,
+				cname: cForm.cName,
+				caddress: cForm.cAddress,
+				rid: cForm.cityArr[1],
+				iid: cForm.industryIdArr[1],
+				cremark: cForm.cRemark,
+			};
 			// 组装数据
-			let companyInfo = {};
-			companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			companyInfo.cid = this.companyForm.cID;
-			companyInfo.cname = this.companyForm.cName;
-			companyInfo.caddress = this.companyForm.cAddress;
-			companyInfo.rid = this.companyForm.rID;
-			companyInfo.iid = this.companyForm.iID;
-			companyInfo.cremark = this.companyForm.cRemark;
+			// let companyInfo = {};
+			// companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// companyInfo.cid = this.companyForm.cID;
+			// companyInfo.cname = this.companyForm.cName;
+			// companyInfo.caddress = this.companyForm.cAddress;
+			// companyInfo.rid = this.companyForm.rID;
+			// companyInfo.iid = this.companyForm.iID;
+			// companyInfo.cremark = this.companyForm.cRemark;
 			// 修改公司信息
 			api.postApi('/SetMyCom', companyInfo).then(res => {
 				let mes = res.data;
 				if(mes.SysCode == 100200){
 					Message.success('修改公司信息成功');
+				}else{
+					Message.warning(mes.MSG);
 				}
 			}).catch( res => {
 				console.log(res);
@@ -439,15 +458,35 @@ export default {
 		},
 		// 修改用户信息
 		updateUser(){
+			// uid         int【必填】     当前用户UserID
+            // toid        int【必填】     被操作的UserID
+            // rid         int             地区rID
+            // rn          String          真实姓名
+            // phone       String          移动电话
+            // telephone   String          固定电话
+            // email       String          电子邮箱
+            // position    String          职务
+            // division    String          所属部门
+			let clForm = this.clientForm;
+			let userInfo = {
+				uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+				toid: clForm.uID,
+				rid: clForm.cityArr[1]?clForm.cityArr[1]:'',
+				phone: clForm.phone,
+				telephone: clForm.telephone,
+				email: clForm.email,
+				position: clForm.position,
+				division: clForm.division,
+			};
 			// 组装客户信息
-			let userInfo = {};
-			userInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			userInfo.toid = this.clientForm.uID;
-			userInfo.phone = this.clientForm.phone;
-			userInfo.telephone = this.clientForm.telephone;
-			userInfo.email = this.clientForm.email;
-			userInfo.position = this.clientForm.position;
-			userInfo.division = this.clientForm.division;
+			// let userInfo = {};
+			// userInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// userInfo.toid = this.clientForm.uID;
+			// userInfo.phone = this.clientForm.phone;
+			// userInfo.telephone = this.clientForm.telephone;
+			// userInfo.email = this.clientForm.email;
+			// userInfo.position = this.clientForm.position;
+			// userInfo.division = this.clientForm.division;
 			// console.log('userinfo', userInfo);
 			// 修改客户信息(后台修改了接口名称，没修改接口名称之前是ok的，现在待测试)
 			// api.postApi('/SetUserInfo', userInfo).then(res => {
@@ -488,7 +527,15 @@ export default {
 		handleInputConfirm() {
 			let inputValue = this.inputValue;
 			if (inputValue) {
-				this.companyTags.push(inputValue);
+				let temp = [];
+				for(let item of this.oldBrandTags){
+					temp.push(item.bTitle);
+				}
+				let comBol = this.companyTags.includes(inputValue);
+				let tempBol = temp.includes(inputValue);
+				if( (!comBol)&& (!tempBol)){
+					this.companyTags.push(inputValue);
+				}
 			}
 			this.inputVisible = false;
 			this.inputValue = '';

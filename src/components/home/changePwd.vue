@@ -1,27 +1,29 @@
 <template>
-	<div style="flex: 1">
-		<h4>修改密码</h4>
-		<div class="changePwd-box">
-			<el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px"
-					class="demo-ruleForm">
-				<el-form-item label="" prop="currPwd">
-					<el-input type="password" v-model="formChangePwd.currPwd" auto-complete="off" placeholder="请输入当前密码"></el-input>
-				</el-form-item>
-				<el-form-item label="" prop="newPwd">
-					<el-input type="password" v-model="formChangePwd.newPwd" auto-complete="off" placeholder="请输入新的密码"></el-input>
-				</el-form-item>
-				<el-form-item label="" prop="confirmPwd">
-					<el-input type="password" v-model.number="formChangePwd.confirmPwd" placeholder="请再次输入密码"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="submitForm('formChangePwd')">确定</el-button>
-				</el-form-item>
-			</el-form>
-		</div>
-		<div class="changePwd-btn">
-			<el-button type="text" @click="goBack">取消</el-button>
-		</div>
-	</div>
+  <div style="flex: 1">
+    <h4>修改密码</h4>
+    <div class="changePwd-box">
+      <el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px"
+               class="demo-ruleForm">
+        <el-form-item label="" prop="currPwd">
+          <el-input type="password" v-model="formChangePwd.currPwd" auto-complete="off"
+                    placeholder="请输入当前密码"></el-input>
+        </el-form-item>
+        <el-form-item label="" prop="newPwd">
+          <el-input type="password" v-model="formChangePwd.newPwd" auto-complete="off" placeholder="请输入新的密码"></el-input>
+        </el-form-item>
+        <el-form-item label="" prop="confirmPwd">
+          <el-input type="password" v-model.number="formChangePwd.confirmPwd" placeholder="请再次输入密码"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('formChangePwd')">确定</el-button>
+        </el-form-item>
+
+      </el-form>
+    </div>
+    <div class="changePwd-btn">
+      <el-button type="text" @click="goBack">取消</el-button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -84,11 +86,15 @@ export default {
 
 	},
 	methods: {
+		// 修改密码
 		submitForm(formName) {
 			console.log(formName);
 			this.$refs[formName].validate((valid) => {
 				console.log(valid);
 			if (valid) {
+				// uid     int【必填】     UserID
+				// pwd     String【必填】  旧密码
+				// newpwd  String【必填】  新设置的密码
 				let userInfo = {
 					uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
 					pwd: this.formChangePwd.currPwd,
@@ -120,6 +126,7 @@ export default {
 			}
 			});
 		},
+		// 返回
 		goBack(){
 			this.$router.go(-1)
 		}
@@ -128,6 +135,7 @@ export default {
 </script>
 
 <style scoped>
+
   h4{
     font-size: 20px;
     color: #666666;

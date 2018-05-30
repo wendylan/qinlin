@@ -55,6 +55,16 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="联系人：" prop="ownerBU">
+                <el-select v-model="planForm.ownerBU" placeholder="请选择所属联系人">
+                  <el-option
+                    v-for="item in ownerBU"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
               <el-form-item label="投放城市：" prop="throwCity">
                 <el-select v-model="planForm.throwCity" multiple placeholder="请选择">
                   <el-option
@@ -71,16 +81,6 @@
                     :show-all-levels="false"
                     @active-item-change="handleItemChange">
                   </el-cascader>-->
-              </el-form-item>
-              <el-form-item label="联系人：" prop="ownerBU">
-                <el-select v-model="planForm.ownerBU" placeholder="请选择所属联系人">
-                  <el-option
-                    v-for="item in ownerBU"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
               </el-form-item>
               <el-form-item label="方案备注：" prop="planRemark">
                 <el-input type="textarea" v-model="planForm.planRemark" placeholder="请填写备注信息"></el-input>
@@ -112,7 +112,7 @@
                 </el-date-picker>
                 <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
                 <el-button type="primary" icon="el-icon-location-outline" class="map">地图</el-button>
-                <div class="shopcar" @click="dialogTableVisible = true">
+                <div class="shopcar" @click="dialogVisible()"><!--dialogTableVisible = true-->
                   <el-badge :value="badgeNumber" class="item">
                     <img src="../../assets/images/shopCar.png" alt="">
                     <!--<span class="cart_box">-->
@@ -244,10 +244,11 @@
                       </el-form-item>
                     </el-form>
                   </template>
-                </el-table-column><!-- @click.native="alertFun()"  scope="scope"-->
+                </el-table-column>
                 <el-table-column
                   type="selection"
                   width="41px"
+                  scope="scope"
                 >
 
                 </el-table-column>
@@ -311,9 +312,9 @@
               </el-table>
             </div>
             <!--购物车-->
-            <el-dialog title="购物车" :visible.sync="dialogTableVisible">
+            <el-dialog title="已选点位" :visible.sync="dialogTableVisible">
               <template slot-scope="scope">
-                <div class="table_wrap car-list" style="margin-top: 60px">
+                <div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
                   <div class="car-title">
                     <h4>已选1000个媒体 <p>投放2000面</p> <span>清空已选</span></h4>
                   </div>
@@ -404,9 +405,7 @@
                       </template>
                     </el-table-column>
                   </el-table>
-                  <div style="text-align: center;margin-bottom: 10px">
-                    <el-button style="margin-top: 12px;" @click="next" type="primary">下一步</el-button>
-                  </div>
+                 <div style="text-align: center;margin-bottom: 10px"> <el-button style="margin-top: 12px;" @click="next" type="primary">下一步</el-button></div>
                 </div>
               </template>
             </el-dialog>
@@ -569,10 +568,7 @@
 
       <div class="finishBtn" v-if="active==3">
         <el-button type="primary" @click="continueCreate">继续创建</el-button>
-        <el-button type="default">
-          <router-link to="{path='/orderPlan'}"></router-link>
-          查看订单
-        </el-button>
+        <el-button type="default"><router-link to="{path='/orderPlan'}"></router-link>查看订单</el-button>
       </div>
     </div>
     <!--添加商品到购物车的动画效果-->
@@ -717,23 +713,23 @@
         },
         // 购物车列表
         shopingList: [
-         /* {
-            id: 1,
-            recName: '珠江帝景花园1',
-            city: '广州1',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道1',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            A_B: 'B面'
-          }*/
+          /* {
+             id: 1,
+             recName: '珠江帝景花园1',
+             city: '广州1',
+             origin: '海珠区',
+             buildType: '高端住宅',
+             houseNum: '600',
+             buildPrice: '￥30,000',
+             mediaName: '广州市中山大道1',
+             buildNum: '12',
+             schedules: '2017.08.30-2017.09.30',
+             businessOrigin: '白云万达广场',
+             assetID: 'GZ201871024',
+             liveYear: '1999年',
+             adLimit: '地产/医药/汽车',
+             A_B: 'B面'
+           }*/
         ],
         //step2列表
         planList: [
@@ -1047,7 +1043,7 @@
             label: '销售',
             value: userInfo.uID
           }
-        //  this.planForm.ownerSales = userInfo.uID
+          //  this.planForm.ownerSales = userInfo.uID
           this.ownerSales.push(sales)
         }else{
           this.ownerSales = [
@@ -1167,50 +1163,10 @@
         }
 
       },
-      /* // 城市地区联动-省级
-       ShowRegion() {
-         api.getApi('/ShowRegion').then(res => {
-           //      console.log('地区：',res.data)
-           let region = res.data
-           let arr = [];
-           for (let i = 0; i < region.length; i++) {
-             let opt = {label: '', value: '', children: []}
-             opt.label = region[i].rName
-             opt.value = region[i].rID
-             arr.push(opt)
-           }
-           this.throwCity = arr;
-         })
-       },
-       // 城市地区联动，选择省级后去获取市级和区、县级
-       handleItemChange(val) {
-         console.log('active item:', val);
-         let region = []
-         api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
-           let city = res.data
-           //    console.log('city：',city)
-           for (let j = 0; j < this.throwCity.length; j++) {
-             if (this.throwCity[j].value == val[0]) {
-               this.throwCity[j].children = []
-               for (let i = 0; i < city.length; i++) {
-                 let obj = {label: '', value: ''}
-                 obj.label = city[i].rName
-                 obj.value = city[i].rID
-                 if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
-                   //        console.log(city[i].rID.toString().substring(4,6))
-                   this.throwCity[j].children.push(obj)
-                 }
-                 // else{
-                 //   region.push(obj)              // 三级，所属区域
-                 // }
-               }
-               //      console.log('region',region)
-               //    this.regionOpt = region
-               break
-             }
-           }
-         })
-       },*/
+      // 获取广告点位列表
+      getAdList(){
+        // api.getApi()
+      },
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
         let e = event || window.event;
@@ -1240,6 +1196,7 @@
           } else {
             this.badgeNumber--
           }
+          this.deleteShopRow(row,'AB')
           row.checkBox.A = false
           row.checkBox.B = false
         } else {
@@ -1256,10 +1213,12 @@
           if (check.checkBox.A) {
             this.shopShow_hide()      // 动画效果
             this.AddShopingInfo(row,'A') // 添加到购物车
-          } else {
+          } else {                          // A、B都勾选的时候
+            this.deleteShopRow(check,'A')
             this.badgeNumber--
           }
         } else {
+          this.deleteShopRow(check,'A')
           this.$refs.multipleTable.toggleRowSelection(check, false);
           this.badgeNumber--
         }
@@ -1271,17 +1230,19 @@
           if (check.checkBox.B === true) {
             this.shopShow_hide()
             this.AddShopingInfo(row,'B') // 添加到购物车
-          } else {
+          } else {                        // A、B都勾选的时候
+            this.deleteShopRow(check,'B')
             this.badgeNumber--
           }
         } else {
           this.$refs.multipleTable.toggleRowSelection(check, false);
+          this.deleteShopRow(check,'B')
           this.badgeNumber--
         }
       },
       //点击全选按钮
       handleSelectAll(selection) {
-        console.log(selection)
+        console.log('selection',selection)
         let number = 0    // 统计全选后取消的行数或A/B面
         if (selection.length !== 0) {
           console.log('number:', number)
@@ -1298,13 +1259,24 @@
             selection[i].checkBox.B = true
           }
           this.shopShow_hide('all', number)
-          //  this.badgeNumber += (this.planList.length *2) - number
+          this.deleteShopRow(selection,'all')
         } else {
+          let num = 0
           for (let i = 0; i < this.planList.length; i++) {
-            this.planList[i].checkBox.A = false
-            this.planList[i].checkBox.B = false
+            // 判断是否有取消勾选 A B面的
+            if(!this.planList[i].checkBox.A){
+               num++
+            }else{
+              this.planList[i].checkBox.A = false
+            }
+            if(!this.planList[i].checkBox.B){
+              num++
+            }else{
+              this.planList[i].checkBox.B = false
+            }
           }
-          this.badgeNumber -= (this.planList.length * 2)
+          this.shopingList = [] // 清空购物车的列表
+          this.badgeNumber -= ((this.planList.length * 2) - num)
         }
       },
       // 点击确认框后显示详情
@@ -1372,30 +1344,34 @@
         this.changeMake = false;
         this.changeAD = false;
       },
+      // dialog购物筐的显示全选中后添加都购物车
+      dialogVisible(){
+        this.dialogTableVisible = true
+      },
       // 添加到购物车
       AddShopingInfo(info,letter) {
         //  alert('1')
         console.log('选中的row信息', info)
         let selectInfo = {
-              rid: info.rid,
-              recName: info.recName,
-              city: info.city,
-              origin: info.origin,
-              buildType: info.buildType,
-              houseNum: info.houseNum,
-              buildPrice: info.buildPrice,
-              mediaName: info.mediaName,
-              buildNum: info.buildNum,
-              schedules: info.schedules,
-              businessOrigin: info.businessOrigin,
-              assetID: info.assetID,
-              liveYear:info.liveYear,
-              adLimit: info.adLimit,
-              checkBox: {A: info.checkBox.A, B: info.checkBox.B},
+          rid: info.rid,
+          recName: info.recName,
+          city: info.city,
+          origin: info.origin,
+          buildType: info.buildType,
+          houseNum: info.houseNum,
+          buildPrice: info.buildPrice,
+          mediaName: info.mediaName,
+          buildNum: info.buildNum,
+          schedules: info.schedules,
+          businessOrigin: info.businessOrigin,
+          assetID: info.assetID,
+          liveYear:info.liveYear,
+          adLimit: info.adLimit,
+          checkBox: {A: info.checkBox.A, B: info.checkBox.B},
         }
-       console.log(letter)
+        console.log(letter)
         if(letter == 'B'){
-        //  alert('B')
+          //  alert('B')
           selectInfo.A_B = 'B面'
           this.shopingList.push(selectInfo)
         }else{
@@ -1405,8 +1381,8 @@
       },
       // 购物车删除行
       deleteRow(rows) {
-      //  console.log('购物车列表：',list)
-      //  this.$refs.multipleTable.toggleRowSelection(rows, false)
+        //  console.log('购物车列表：',list)
+        //  this.$refs.multipleTable.toggleRowSelection(rows, false)
         console.log('购物车删除行', rows)
         console.log('删除行id', rows.rid)
         for (let i = 0; i < this.planList.length; i++) {
@@ -1416,7 +1392,7 @@
               this.planList[i].checkBox.A = false
               console.log('删除行的 this.planList', this.planList[i])
               if(!this.planList[i].checkBox.B){
-                alert('1')
+              //  alert('1')
                 this.$refs.multipleTable.toggleRowSelection(this.planList[i], false)
               }
               console.log('相等的rid的checkBox.A', this.planList[i].checkBox.A)
@@ -1431,7 +1407,7 @@
             }else if(rows.A_B == 'B面'){
               this.planList[i].checkBox.B = false
               if(!this.planList[i].checkBox.A){
-                alert('2')
+              //  alert('2')
                 this.$refs.multipleTable.toggleRowSelection(this.planList[i], false)
               }
               // 删除
@@ -1444,6 +1420,71 @@
               }
             }
             break
+          }
+        }
+      },
+      // 取消勾时删除购物车里对应的数据行
+      deleteShopRow(row,letter){
+        if(letter === 'all'){
+          this.shopingList = []
+          for(let i=0;i<this.planList.length;i++){
+            let info = this.planList[i]
+            for(let j=0; j<2; j++){
+              let selectInfo = {
+                rid: info.rid,
+                recName: info.recName,
+                city: info.city,
+                origin: info.origin,
+                buildType: info.buildType,
+                houseNum: info.houseNum,
+                buildPrice: info.buildPrice,
+                mediaName: info.mediaName,
+                buildNum: info.buildNum,
+                schedules: info.schedules,
+                businessOrigin: info.businessOrigin,
+                assetID: info.assetID,
+                liveYear:info.liveYear,
+                adLimit: info.adLimit,
+                checkBox: {A: info.checkBox.A, B: info.checkBox.B},
+              }
+              if(j === 0){
+                //  alert('B')
+                selectInfo.A_B = 'A面'
+                this.shopingList.push(selectInfo)
+              }else if(j === 1){
+                selectInfo.A_B = 'B面'
+                this.shopingList.push(selectInfo)
+              }
+            }
+          }
+        }else {
+          for (let i = 0; i < this.planList.length; i++) {
+            if (row.rid === this.planList[i].rid) {
+              console.log('相等的rid', row.rid)
+              if(letter === 'B'){
+                for(let j=0;j<this.shopingList.length;j++){
+                  if(this.shopingList[j].rid === row.rid  && this.shopingList[j].A_B === 'B面'){
+                    this.shopingList.splice(j,1)
+                    break
+                  }
+                }
+              }else if(letter === 'B'){
+                for(let j=0;j<this.shopingList.length;j++){
+                  if(this.shopingList[j].rid === row.rid  && this.shopingList[j].A_B === 'A面'){
+                    this.shopingList.splice(j,1)
+                    break
+                  }
+                }
+              }else if(letter === 'AB'){
+                for(let j=0;j<this.shopingList.length;j++){
+                  if(this.shopingList[j].rid === row.rid ){
+                    this.shopingList.splice(j,1)
+                    //  break
+                  }
+                }
+              }
+              break
+            }
           }
         }
       },
@@ -1467,6 +1508,9 @@
             $(".shopAnimateAll").css({'top': T, 'right': R, width: '790px', height: '386px'})
             that.selectAll = false
             that.badgeNumber += (that.planList.length * 2) - num
+            if(that.badgeNumber < 0){
+              that.badgeNumber = 0
+            }
             //   that.badgeNumber++
           })
         } else {
@@ -1483,10 +1527,6 @@
 </script>
 
 <style scoped>
-
-  .el-table--scrollable-x .el-table__body-wrapper {
-    overflow-x: auto !important;
-  }
 
   .shopAnimate, .shopAnimateAll {
     position: fixed;
@@ -1621,6 +1661,7 @@
 
   /*下一步按钮*/
 
+
   /deep/ .map.el-button--primary {
     background: #FF7721;
     border-color: #FF7721;
@@ -1715,10 +1756,9 @@
   }
 
   /*选择点位*/
-  /deep/ .el-checkbox, .el-checkbox__input {
+  /deep/ .el-checkbox, .el-checkbox__input{
 
   }
-
   /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
     width: 95px;
     position: relative;
@@ -1757,8 +1797,7 @@
     top: 3px;
     left: -5px;
   }
-
-  /deep/ .plan-select /deep/ .el-input__suffix {
+  /deep/ .plan-select /deep/ .el-input__suffix{
 
     right: 10px;
   }
@@ -1768,9 +1807,8 @@
     top: -2px;
     left: -3px;
   }
-
   /*日期*/
-  /deep/ .el-date-editor .el-range__close-icon {
+  /deep/ .el-date-editor .el-range__close-icon{
     line-height: 29px;
   }
 
@@ -1790,14 +1828,13 @@
     position: relative;
     left: -5px;
   }
-
   /*下拉搜索框*/
-  /deep/ .el-input-group__prepend {
+  /deep/  .el-input-group__prepend{
     width: 64px;
     background-color: #fff;
   }
 
-  /deep/ .el-input-group--prepend .el-select .el-input__inner {
+  /deep/ .el-input-group--prepend .el-select .el-input__inner{
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     border-top-right-radius: 0;
@@ -1805,11 +1842,9 @@
 
     width: 104px;
   }
-
-  /deep/ .el-input-group--prepend .el-input__inner {
+  /deep/ .el-input-group--prepend .el-input__inner{
     width: 185px;
   }
-
   .el-input {
 
     height: 34px !important;
@@ -1821,24 +1856,21 @@
     /*position: relative;
     top: -1px;*/
   }
-
   /*按钮*/
-  /deep/ .el-button--default:focus, .el-button--default:hover {
+  /deep/ .el-button--default:focus, .el-button--default:hover{
     color: #606266;
     border-color: #dcdfe6;
     background-color: #fcfcfc;
   }
-
-  .content_bottom_btn /deep/ .el-button span {
+  .content_bottom_btn /deep/ .el-button span{
     position: relative;
     top: -2px;
   }
-
-  .content_bottom_btn /deep/ .el-button span a {
+  .content_bottom_btn /deep/ .el-button span a{
     color: #606266;
   }
 
-  .finishBtn /deep/ .el-button span {
+  .finishBtn /deep/ .el-button span{
     left: -8px;
   }
 
@@ -1976,7 +2008,7 @@
     float: left;
     margin-left: 22px;
     position: relative;
-    width: 218px;
+    width: 219px;
     top: 4px;
   }
 
@@ -2193,7 +2225,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: #ecf5ff;
   }
@@ -2546,6 +2577,7 @@
     .filter-input .input-wrap .el-button--mini {
       left: 1px;
     }
+
 
     .tbody .tr li:nth-of-type(1) {
       width: 3.25%;

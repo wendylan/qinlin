@@ -1,149 +1,151 @@
 <template>
-	<div>
-		<div>
-			<div class="ad_mediaMana_wrap">
-				<div class="ad_mediaMana_nav clearfix">
-					<p><a href="#">客户管理</a><em> / </em><a href="#">创建客户</a></p>
-				</div>
-				<!--客户信息-->
-				<div class="mediaMana_content_top">
-					<div class="content_top_wrap">
-						<div class="content_top_head">
-							<h2>客户信息</h2>
-						</div>
-						<div class="content_top_form_wrap">
-							<el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
-									class="demo-ruleForm">
-								<el-form-item label="联系人:" prop="realname">
-									<el-input v-model="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
-								</el-form-item>
-								<el-form-item label="账户名:" prop="sname">
-									<el-input v-model="clientForm.sname" placeholder="请输入账户名"></el-input>
-								</el-form-item>
-								<el-form-item label="职位:" prop="position">
-									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
-								</el-form-item>
-								<el-form-item label="手机号码:" prop="phone">
-									<el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
-								</el-form-item>
-								<el-form-item label="所在地:" prop="cityArr">
-									<!-- <el-select v-model="clientForm.rid" placeholder="请选择活动区域">
-										<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
-									</el-select> -->
-									<el-cascader
-										:options="allProvince"
-										v-model="clientForm.cityArr"
-										separator="-"
-										:show-all-levels="false"
-										@change="seleProClient"
-										@active-item-change="handleItemChange"
-									></el-cascader>
-								</el-form-item>
-								<el-form-item label="邮箱:" prop="email">
-									<el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
-								</el-form-item>
-								<el-form-item label="固定电话:" prop="telphone">
-									<el-input v-model="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
-								</el-form-item>
-								<el-form-item label="事业部:" prop="division">
-									<el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
-								</el-form-item>
-							</el-form>
-						</div>
-					</div>
-				</div>
-				<!--公司信息-->
-				<div class="mediaMana_content_bottom clearfix">
-					<div class="content_bottom_wrap companyInfo">
-						<div class="content_bottom_head">
-							<h2>公司信息</h2>
-						</div>
-						<div class="content_bottom_form_wrap">
-							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
-									class="demo-ruleForm">
-								<el-form-item label="公司名称:" prop="cName">
-									<span v-if="isFill">{{companyForm.cName}} <el-button @click="selectAnother" size="mini">重选</el-button></span>
-									<el-autocomplete
-										v-else
-										v-model="companyForm.cName"
-										:fetch-suggestions="querySearchAsync"
-										placeholder="请输入内容"
-										@select="handleSelect"
-										>
-									</el-autocomplete>
-								</el-form-item>
-								<el-form-item label="公司品牌:" class="tags">
-									<el-tag
-										v-for="tag in oldBrandTags"
-										:key="tag.bID">
-										{{tag.bTitle}}
-									</el-tag>
-									<el-tag
-										v-for="(tag, index) in companyTags"
-										:key="index"
-										closable
-										:disable-transitions="false"
-										@close="handleClose(tag)">
-										{{tag}}
-									</el-tag>
-									<el-input
-										style="width: 90px"
-										class="input-new-tag"
-										v-if="inputVisible"
-										v-model="inputValue"
-										ref="saveTagInput"
-										size="small"
-										@keyup.enter.native="handleInputConfirm"
-										@blur="handleInputConfirm"
-									>
-									</el-input>
-									<el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
-								</el-form-item>
-								<el-form-item label="行业分类:" prop="industryIdArr">
-									<span v-if="isFill">{{companyForm.iName}}</span>
-									<el-cascader v-else
-										placeholder="试试搜索：互联网"
-										:options="bussiness"
-										v-model="companyForm.industryIdArr"
-										filterable
-										change-on-select
-										@change="handleChange"
-									></el-cascader>
-								</el-form-item>
-								<el-form-item label="公司地址:" prop="cAddress">
-									<span v-if="isFill">{{companyForm.cAddress}}</span>
-									<el-input v-else v-model="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
-								</el-form-item>
-								<el-form-item label="所在城市:" prop="cityArr">
-									<span v-if="isFill">{{companyForm.rName}}</span>
-									<!-- <el-select v-else v-model="companyForm.rID" placeholder="请选择公司所在城市">
-										<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
-									</el-select> -->
-									<el-cascader v-else
-										:options="allProvince"
-										v-model="companyForm.cityArr"
-										separator="-"
-										:show-all-levels="false"
-										@change="seleProCom"
-										@active-item-change="handleItemChange"
-									></el-cascader>
-								</el-form-item>
-								<el-form-item label="备注:" prop="cRemark">
-									<span v-if="isFill">{{companyForm.cRemark}}</span>
-									<el-input v-else type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
-								</el-form-item>
-							</el-form>
-						</div>
-					</div>
-					<div class="content_bottom_btn">
-						<el-button type="primary" @click="submitData" :disabled="isAdd">创建</el-button>
-						<el-button @click="goBack">取消</el-button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div>
+    <div>
+      <div class="ad_mediaMana_wrap">
+        <div class="ad_mediaMana_nav clearfix">
+          <p><a href="#">客户管理</a><em> / </em><a href="#">创建客户</a></p>
+        </div>
+        <!--客户信息-->
+        <div class="mediaMana_content_top">
+          <div class="content_top_wrap">
+            <div class="content_top_head">
+              <h2>客户信息</h2>
+            </div>
+            <div class="content_top_form_wrap">
+              <el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
+                       class="demo-ruleForm">
+                <el-form-item label="联系人:" prop="realname">
+                  <el-input v-model="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="账户名:" prop="sname">
+                  <el-input v-model="clientForm.sname" placeholder="请输入账户名"></el-input>
+                </el-form-item>
+                <el-form-item label="职位:" prop="position">
+                  <el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码:" prop="phone">
+                  <el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
+                </el-form-item>
+                <el-form-item label="所在地:" prop="cityArr">
+					<!-- <el-select v-model="clientForm.rid" placeholder="请选择活动区域">
+						<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
+					</el-select> -->
+					<el-cascader
+						:options="allProvince"
+						v-model="clientForm.cityArr"
+						separator="-"
+						:show-all-levels="false"
+						@change="seleProClient"
+						@active-item-change="handleItemChange"
+					></el-cascader>
+				</el-form-item>
+                <el-form-item label="邮箱:" prop="email">
+                  <el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="固定电话:" prop="telphone">
+                  <el-input v-model="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
+                </el-form-item>
+                <el-form-item label="事业部:" prop="division">
+                  <el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+        </div>
+        <!--公司信息-->
+        <div class="mediaMana_content_bottom clearfix">
+          <div class="content_bottom_wrap companyInfo">
+            <div class="content_bottom_head">
+              <h2>公司信息</h2>
+            </div>
+            <div class="content_bottom_form_wrap">
+              <el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
+                       class="demo-ruleForm">
+                <el-form-item label="公司名称:" prop="cName">
+					<span v-if="isFill">{{companyForm.cName}} <el-button @click="selectAnother" size="mini">重选</el-button></span>
+					<el-autocomplete
+						v-else
+						v-model="companyForm.cName"
+						:fetch-suggestions="querySearchAsync"
+						placeholder="请输入内容"
+						@select="handleSelect"
+						>
+					</el-autocomplete>
+				</el-form-item>
+                <el-form-item label="公司品牌:" prop="cBrand" class="tags">
+                  <el-tag
+						v-for="tag in oldBrandTags"
+						:key="tag.bID">
+						{{tag.bTitle}}
+                  </el-tag>
+                  <el-tag
+						v-for="(tag, index) in companyTags"
+						:key="index"
+						closable
+						:disable-transitions="false"
+						@close="handleClose(tag)">
+						{{tag}}
+                  </el-tag>
+                  <el-input
+						style="width: 90px"
+						class="input-new-tag"
+						v-if="inputVisible"
+						v-model="inputValue"
+						ref="saveTagInput"
+						size="small"
+						@keyup.enter.native="handleInputConfirm"
+						@blur="handleInputConfirm"
+                  >
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
+                </el-form-item>
+                <el-form-item label="行业分类:" prop="industryIdArr">
+					<span v-if="isFill">{{companyForm.iName}}</span>
+					<el-cascader v-else
+						placeholder="试试搜索：互联网"
+						:options="bussiness"
+						v-model="companyForm.industryIdArr"
+						filterable
+						change-on-select
+						@change="handleChange"
+					></el-cascader>
+				</el-form-item>
+                <el-form-item label="公司地址:" prop="cAddress">
+					<span v-if="isFill">{{companyForm.cAddress}}</span>
+					<el-input v-else v-model="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
+				</el-form-item>
+                <el-form-item label="所在城市:" prop="cityArr">
+					<span v-if="isFill">{{companyForm.rName}}</span>
+					<!-- <el-select v-else v-model="companyForm.rID" placeholder="请选择公司所在城市">
+						<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
+					</el-select> -->
+					<el-cascader v-else
+						:options="allProvince"
+						v-model="companyForm.cityArr"
+						separator="-"
+						:show-all-levels="false"
+						@change="seleProCom"
+						@active-item-change="handleItemChange"
+					></el-cascader>
+				</el-form-item>
+				<el-form-item label="备注:" prop="cRemark">
+					<span v-if="isFill">{{companyForm.cRemark}}</span>
+					<el-input v-else type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
+				</el-form-item>
+              </el-form>
+            </div>
+          </div>
+          <div class="content_bottom_btn">
+				<!-- <el-button type="primary" @click="submitData" :disabled="isAdd">创建</el-button> -->
+				<el-button type="primary" @click="submitData">创建</el-button>
+				<el-button @click="goBack">取消</el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
 
 <script>
 import api from '../../api/api.js';
@@ -241,6 +243,7 @@ export default {
 				puid: ''
 			},
 			companyForm: {
+				uid: '',
 				cityArr: [],
 				// 选中之后的行业组合
 				industryIdArr: [],
@@ -417,7 +420,7 @@ export default {
 				console.log('comCli', client_bool);
 				// console.log('clientForm', this.validateForm('clientForm'));
 				if(client_bool){
-					this.isAdd = true;
+					// this.isAdd = true;
 					// 注册用户
 					let puid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 					let cid = this.companyForm.cID;
@@ -434,7 +437,7 @@ export default {
 				});
 				console.log('nocom', company_bool, client_bool);
 				if(client_bool && company_bool){
-					this.isAdd = true;
+					// this.isAdd = true;
 					// 创建公司和用户
 					this.createCompany();
 				}
@@ -450,14 +453,31 @@ export default {
 		},
 		// 创建公司
 		createCompany(){
-			let companyInfo = {};
-			companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			companyInfo.cname = this.companyForm.cName;
-			companyInfo.iid = this.companyForm.industryIdArr[1];
-			companyInfo.rid = this.companyForm.cityArr[1];
-			companyInfo.cbrand = this.companyTags.join(',');
-			companyInfo.caddr = this.companyForm.cAddress;
-			companyInfo.cremark = this.companyForm.cRemark;
+			// uid         int【必填】     当前账户UserID
+            // cname       String【必填】  公司名称
+            // iid         int【必填】     公司所属行业ID
+            // rid         int【必填】     公司所在地区ID
+            // cbrand      String          公司旗下品牌，多个品牌用半角分号,隔开
+            // caddr       String          公司通讯地址
+			// cremark     String          公司备注信息
+			let cForm = this.companyForm;
+			let companyInfo = {
+				uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+				cname: cForm.cName,
+				iid: cForm.industryIdArr[1],
+				rid: cForm.cityArr[1],
+				cbrand: this.companyTags.join(','),
+				caddr: cForm.cAddress,
+				cremark: cForm.cRemark,
+			};
+			// let companyInfo ={};
+			// companyInfo.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// companyInfo.cname = this.companyForm.cName;
+			// companyInfo.iid = this.companyForm.industryIdArr[1];
+			// companyInfo.rid = this.companyForm.cityArr[1];
+			// companyInfo.cbrand = this.companyTags.join(',');
+			// companyInfo.caddr = this.companyForm.cAddress;
+			// companyInfo.cremark = this.companyForm.cRemark;
 			console.log(companyInfo);
 			// 注册公司
 			api.getApi('/AddCom', companyInfo).then(res => {
@@ -480,13 +500,37 @@ export default {
 		},
 		// 注册用户
 		regUser(puid, cid){
-			// 注册客户
-			this.clientForm.puid = puid;
-			this.clientForm.uwho = cid;
-			if(this.clientForm.cityArr[1]){
-				this.clientForm.rid = this.clientForm.cityArr[1];
-			}
-			api.postApi('/RegUser', this.clientForm).then(res => {
+			// realname    String【必填】      用户真实姓名
+            // sname       String【必填】      账户名
+            // phone       int【必填】         用户手机号码
+            // telphone    String【选填】      固定电话
+            // email       String【选填】      电子邮箱
+            // position    String【选填】      职务
+            // division    String【选填】      部门
+            // rid         int【选填】         地区ID
+            // utype       String【选填】      用户类型：SM、OP、BD、MD、AD
+            // uwho        String【选填】      所属公司ID，新增客户这里必填
+			// puid        int                 所属所属销售uID，当utype是AD时必填
+			let form = this.clientForm;
+			let clientInfo = {
+				realname: form.realname,
+				sname: form.sname,
+				phone: form.phone,
+				telphone: form.telphone,
+				email: form.email,
+				position: form.position,
+				division: form.division,
+				rid: form.cityArr[1]?form.cityArr[1]:'',
+				utype: 'AD',
+				uwho: cid,
+				puid: puid
+			};
+			// this.clientForm.puid = puid;
+			// this.clientForm.uwho = cid;
+			// if(this.clientForm.cityArr[1]){
+			// 	this.clientForm.rid = this.clientForm.cityArr[1];
+			// }
+			api.postApi('/RegUser', clientInfo).then(res => {
 				console.log(res);
 				let userMsg = res.data;
 				if (!userMsg.SysCode) {
@@ -525,7 +569,15 @@ export default {
 		handleInputConfirm() {
 			let inputValue = this.inputValue;
 			if (inputValue) {
-				this.companyTags.push(inputValue);
+				let temp = [];
+				for(let item of this.oldBrandTags){
+					temp.push(item.bTitle);
+				}
+				let comBol = this.companyTags.includes(inputValue);
+				let tempBol = temp.includes(inputValue);
+				if( (!comBol)&& (!tempBol)){
+					this.companyTags.push(inputValue);
+				}
 			}
 			this.inputVisible = false;
 			this.inputValue = '';

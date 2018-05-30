@@ -11,7 +11,7 @@
         <div class="mediaMana_content_top">
           <div class="content_top_wrap">
             <div class="content_top_head">
-              <h2>客户信息</h2>
+              <h2>账号信息</h2>
             </div>
             <div class="content_top_form_wrap">
               <el-form :model="accountForm" status-icon :rules="accountRules" ref="accountForm" label-width="100px"
@@ -387,7 +387,7 @@ export default {
 				this.$refs['accountForm'].resetFields();
 				window.history.go(-1);
 			}
-		},	
+		},
 		// 获取修改账户初始信息
 		getInitEditInfo(){
 			let inputPath = this.$route.fullPath //this.$route.path

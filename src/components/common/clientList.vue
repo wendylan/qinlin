@@ -1,111 +1,119 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix"><a href="#">客户管理</a></p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>客户列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-							<el-select v-model="select" slot="prepend" placeholder="请选择">
-								<el-option label="公司品牌" value="1"></el-option>
-								<el-option label="公司名称" value="2"></el-option>
-								<el-option label="联系人" value="3"></el-option>
-							</el-select>
-						</el-input>
-						<div class="block">
-							<el-date-picker
-							v-model="date"
-							type="daterange"
-							range-separator="-"
-							format="yyyy-MM-dd" 
-							value-format="yyyy-MM-dd"
-							start-placeholder="创建日期"
-							end-placeholder="创建日期">
-							</el-date-picker>
-						</div>
-						<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-						<el-button plain @click="newClient" v-if="showNewBtn">新建</el-button>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table
-						border
-						:data="currentPlan"
-						style="width: 100%"
-						:default-sort = "{prop: 'date', order: 'descending'}"
-					>
-						<el-table-column
-							prop="realName"
-							label="联系人"
-							min-width="6%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="position"
-							label="职位"
-							class="tar"
-							min-width="7.2%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="phone"
-							label="手机号码"
-							min-width="9.5%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="cName"
-							label="公司名称"
-							min-width="18.4%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="rName"
-							label="所在城市"
-							min-width="8%"
-							:filters="filtCity"
-							:filter-method="filterCity"
-							:filter-multiple="false"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="cBrand"
-							label="公司品牌"
-							min-width="12.1%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="puName"
-							label="所有人"
-							min-width="6.1%"
-						>
-						</el-table-column>
-						<el-table-column
-							label="创建日期"
-							min-width="8.3%"
-						>
-							<template slot-scope="scope">
-								<span>{{ formatTime(scope.row.joinTime) }}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							label="操作"
-							min-width="4.1%"
-						>
-							<template slot-scope="scope">
-								<a href="javascript:void(0)" @click="showDetail(scope.row)" style="color: #108EE9">查看</a>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="ad_mediaDetail_wrap clearfix">
+    <div class="ad_mediaDetail_nav ">
+      <p class="clearfix"><a href="#">客户管理</a></p>
+    </div>
+    <div class="mediaList_wrap">
+      <div class="mediaList_head">
+        <h2>客户列表</h2>
+      </div>
+      <div class="mediaList_container">
+        <el-row>
+          <div class="mediaList_handel">
+            <div style="display:inline-block">
+				<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+					<el-select v-model="select" slot="prepend" placeholder="请选择">
+						<el-option label="公司品牌" value="1"></el-option>
+						<el-option label="公司名称" value="2"></el-option>
+						<el-option label="联系人" value="3"></el-option>
+					</el-select>
+				</el-input>
+            </div>
+            <div class="block">
+              <el-date-picker
+                v-model="date"
+                type="daterange"
+                range-separator="-"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                start-placeholder="创建日期"
+                end-placeholder="创建日期">
+              </el-date-picker>
+            </div>
+            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+            <el-button plain @click="newClient" v-if="showNewBtn">新建</el-button>
+          </div>
+        </el-row>
+        <div class="table_wrap">
+          <el-table
+				border
+				:data="currentPlan"
+				style="width: 100%"
+				:default-sort="{prop: 'date', order: 'descending'}"
+          >
+            <el-table-column
+				prop="realName"
+				label="联系人"
+				min-width="6%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="clientRName"
+				label="所在地"
+				min-width="7.2%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="position"
+				label="职位"
+				class="tar"
+				min-width="7.2%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="phone"
+				label="手机号码"
+				min-width="9.5%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="cName"
+				label="公司名称"
+				min-width="18.4%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="rName"
+				label="所在城市"
+				min-width="8%"
+				:filters="filtCity"
+				:filter-method="filterCity"
+				:filter-multiple="false"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="cBrand"
+				label="公司品牌"
+				min-width="12.1%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="puName"
+				label="所有人"
+				min-width="6.1%"
+            >
+            </el-table-column>
+            <el-table-column
+				label="创建日期"
+				min-width="8.3%"
+            >
+				<template slot-scope="scope">
+					<span>{{ formatTime(scope.row.joinTime) }}</span>
+				</template>
+            </el-table-column>
+            <el-table-column
+				label="操作"
+				min-width="4.1%"
+            >
+				<template slot-scope="scope">
+					<a href="javascript:void(0)" @click="showDetail(scope.row)" style="color: #108EE9">查看</a>
+				</template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -114,7 +122,8 @@ import api from '../../api/api.js';
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
-import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, Message, } from 'element-ui';
+import { Row, Input, Button, Table, TableColumn, DatePicker } from 'element-ui';
+import areaToText from '../../commonFun/areaToText.js';
 export default {
 	name: "customList",
 	components:{
@@ -124,8 +133,6 @@ export default {
 		elTable: Table,
 		elTableColumn: TableColumn,
 		elDatePicker: DatePicker,
-		elSelect: Select,
-		elOption: Option
 	},
 	data() {
 		return {
@@ -258,21 +265,42 @@ export default {
 		},
 		// 获取客户列表
 		GetCustomer() {
-			console.log(JSON.parse(sessionStorage.getItem("session_data")).uID);
-			api.getApi('/MyCustomer', {
-				// uid:3
-				uid: JSON.parse(sessionStorage.getItem("session_data")).uID
-			}).then(res=>{
-				if(!res.data.SysCode){
-					this.planList = res.data;
-					this.currentPlan = this.planList;
-					this.filtCity = filterFormat(this.planList, 'rName');
-				}else{
-					Message.warning(res.data.MSG);
-				}
-			}).catch(res =>{
-				console.log(res);
-			});
+			// let uid = 3;
+			let session = JSON.parse(sessionStorage.getItem('session_data'));
+			let uType = session.uType;
+			let uid = session.uID;
+			let puid = session.puID;
+			if(uType =='BD'){
+				api.getApi('/MyCustomer', {uid: uid}).then(res=>{
+					if(!res.data.SysCode){
+						this.planList = res.data;
+						for(let data of this.planList){
+							areaToText.toTextCity(city=>{
+								this.$set(data, 'clientRName', city);
+							}, data.rID);
+						}
+						this.currentPlan = this.planList;
+						this.filtCity = filterFormat(this.planList, 'rName');
+					}else{
+						Message.warning(res.data.MSG);
+					}
+				}).catch(res =>{
+					console.log(res);
+				});
+			}else{
+				// uid=24&puid=2
+				api.getApi('/GetCustomer', {uid: uid, puid: puid}).then(res=>{
+					if(!res.data.SysCode){
+						this.planList = res.data;
+						this.currentPlan = this.planList;
+						this.filtCity = filterFormat(this.planList, 'rName');
+					}else{
+						Message.warning(res.data.MSG);
+					}
+				}).catch(res =>{
+					console.log(res);
+				});
+			}
 		},
 	}
 }

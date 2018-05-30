@@ -18,11 +18,11 @@
         <div class="loginInput" v-if="isActive">
           <div class="username">
             <input type="text" placeholder="账户" v-model="username">
-            <i class="fa fa-user-o"></i>
+            <img src="../../assets/images/usericon.png" alt="">
           </div>
           <div class="password">
             <input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
-			<i class="fa fa-lock"></i>
+            <img src="../../assets/images/passicon.png" alt="">
           </div>
           <div class="remeberUser">
             <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
@@ -43,9 +43,9 @@
       </div>
     </div>
     <!--背景canvas特效 -->
-   <!-- <div>
-      <canvas id="Mycanvas"></canvas>
-    </div>-->
+    <!-- <div>
+       <canvas id="Mycanvas"></canvas>
+     </div>-->
     <!--背景图片动画-->
     <div class="backgroundImg">
       <img src="../../assets/images/loginBg.png" alt="">
@@ -58,44 +58,43 @@
 
 <script>
 import { Checkbox, MessageBox, Message } from 'element-ui';
-  import utils from '../../js/utils.js';
-  import commentFun from '../../js/commentFun.js'
-  import api from '../../api/api'
+import utils from '../../js/utils.js';
+import commentFun from '../../js/commentFun.js'
+import api from '../../api/api'
 
-  export default {
+export default {
 	name: "login",
 	components:{
 		elCheckbox: Checkbox,
 	},
-    data() {
-
-      return {
-        loading: false,
-        isActive: true,
-        remeAccount: false,
-        username: '', //lxj
-        password: '', //qinlin888
-        realName: '',
-        checke: false,
-        //背景动画参数
-     /*   circleArr : [],
-        WIDTH: '',
-        HEIGHT: '',
-        POINT: 13,
-        canvas: '',
-        context:'',*/
-      }
-    },
-    mounted: function () {
-    //  this.canvanFun()
-      //页面加载调用获取cookie值
-      this.username = utils.getCookie('username');
-      this.password = utils.getCookie('password');
-      if (this.username !== '' && this.password !== '') {
-        this.remeAccount = true;
-      }
-    },
-    methods: {
+	data() {
+		return {
+			loading: false,
+			isActive: true,
+			remeAccount: false,
+			username: '', //lxj
+			password: '', //qinlin888
+			realName: '',
+			checke: false,
+			//背景动画参数
+			/*   circleArr : [],
+			WIDTH: '',
+			HEIGHT: '',
+			POINT: 13,
+			canvas: '',
+			context:'',*/
+		}
+	},
+	mounted: function () {
+		//  this.canvanFun()
+		//页面加载调用获取cookie值
+		this.username = utils.getCookie('username');
+		this.password = utils.getCookie('password');
+		if (this.username !== '' && this.password !== '') {
+			this.remeAccount = true;
+		}
+	},
+	methods: {
 		// 获取所有行业信息并保存
 		getIndustry(){
 			api.getApi('/GetIndustry', {act:'all'}).then(res =>{
@@ -103,193 +102,192 @@ import { Checkbox, MessageBox, Message } from 'element-ui';
 				sessionStorage.setItem('industry', JSON.stringify(arr));
 			});
 		},
-      //键盘
-      show: function (ev) {
-        if (ev.keyCode === 13) {
-          this.doLogin();
-        }
-      },
-      //登录
-      doLogin: function () {
-        let name = this.username;
-        let pass = this.password;
-        if (name === '' || name == null) {
-          MessageBox.alert('请输入正确的用户名', '用户登录', {
-            showClose: false,
-            confirmButtonText: '确定',
-          });
-          return;
-        } else if (pass === '' || pass == null) {
-          MessageBox.alert('请输入正确的密码', '用户登录', {
-            showClose: false,
-            confirmButtonText: '确定',	
-          });
-          return;
-        }
-        //判断复选框是否勾选，勾选则调用配置cookie方法
-        if (this.remeAccount === true) {
-          utils.setCookie('username', name, 7);
-          utils.setCookie('password', pass, 7);
-        }else{
-          utils.clearCookie()
-        }
-        //接口
-        let loginParams = {username: name, pwd: pass};
-    //    let apiUrl = 'https://beta.qinlinad.com/QADN/Login';
-        let apiUrl = '/Login';
-          api.getApi(apiUrl, loginParams).then(res => {
-          let userMsg = res.data;
-          console.log(res.data);
-          if (!userMsg.SysCode) {
-            sessionStorage.setItem("session_data", JSON.stringify(userMsg));//userMsg.realName
-            if (userMsg.uType === 'SM') {
-              //sessionStorage.getItem("real_name") 获取session的值
-              this.$router.push('/superOperate')
-            } else if (userMsg.uType === 'MD') {
-              this.$router.push('/media')
-            } else if (userMsg.uType === 'BD') {
-              this.$router.push('/sale')
+		//键盘
+		show: function (ev) {
+			if (ev.keyCode === 13) {
+			this.doLogin();
 			}
-			
-			this.getIndustry();
-          } else {
-           /* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
-              showClose: false,
-              confirmButtonText: '确定',
-            });*/
-            Message({
-              message: '用户名或密码错误！',
-              type: 'warning'
-            })
-          }
-        }).catch(err => {
-          console.log(err);
-        });
+		},
+		//登录
+		doLogin: function () {
+			let name = this.username;
+			let pass = this.password;
+			if (name === '' || name == null) {
+				MessageBox.alert('请输入正确的用户名', '用户登录', {
+					showClose: false,
+					confirmButtonText: '确定',
+				});
+				return;
+			} else if (pass === '' || pass == null) {
+				MessageBox.alert('请输入正确的密码', '用户登录', {
+					showClose: false,
+					confirmButtonText: '确定',
+				});
+				return;
+			}
+			//判断复选框是否勾选，勾选则调用配置cookie方法
+			if (this.remeAccount === true) {
+				utils.setCookie('username', name, 7);
+				utils.setCookie('password', pass, 7);
+			}else{
+				utils.clearCookie()
+			}
+			//接口
+			let loginParams = {username: name, pwd: pass};
+			//    let apiUrl = 'https://beta.qinlinad.com/QADN/Login';
+			let apiUrl = '/Login';
+			api.getApi(apiUrl, loginParams).then(res => {
+			let userMsg = res.data;
+			console.log(res.data);
+			if (!userMsg.SysCode) {
+				sessionStorage.setItem("session_data", JSON.stringify(userMsg));//userMsg.realName
+				if (userMsg.uType === 'SM') {
+					//sessionStorage.getItem("real_name") 获取session的值
+					this.$router.push('/superOperate')
+				} else if (userMsg.uType === 'MD') {
+					this.$router.push('/media')
+				} else if (userMsg.uType === 'BD') {
+					this.$router.push('/sale')
+				}
 
-        /* let joinTime = '2018-04-03 16:21:45.0'
-         console.log(commentFun.spliceFun(joinTime))*/
+				this.getIndustry();
+			} else {
+			/* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
+				showClose: false,
+				confirmButtonText: '确定',
+				});*/
+				Message({
+					message: '用户名或密码错误！',
+					type: 'warning'
+				})
+			}
+			}).catch(err => {
+				console.log(err);
+			});
 
-      },
-      loginType() {
-        this.isActive = !this.isActive;
-      },
-      //生成max和min之间的随机数
-    /*  num (max, _min) {
-        let min = arguments[1] || 0
-        return Math.floor(Math.random()*(max-min+1)+min)
-      },
-      //初始化生成原点
-      init () {
-        this.circleArr = []
-        for (let i = 0; i < this.POINT; i++) {
-          this.circleArr.push(this.drawCricle(this.context, this.num(this.WIDTH), this.num(this.HEIGHT), this.num(12, 2), this.num(10, -10) / 40, this.num(10, -10) / 40));
-        }
-        this.draw()
-      },
-      //线条：开始xy坐标，结束xy坐标，线条透明度
-      Line (x, y, _x, _y, o) {
-        this.beginX = x,
-          this.beginY = y,
-          this.closeX = _x,
-          this.closeY = _y,
-          this.o = o
-      },
-      //点：圆心xy坐标，半径，每帧移动xy的距离
-      Circle (x, y, r, moveX, moveY) {
-          this.x = x,
-          this.y = y,
-          this.r = r,
-          this.moveX = moveX,
-          this.moveY = moveY
-      },
-      // 绘制原点
-      drawCricle (cxt, x, y, r, moveX, moveY) {
-        let circle = new this.Circle(x, y, r, moveX, moveY)
-        cxt.beginPath()
-        cxt.arc(circle.x, circle.y, circle.r, 0, 2*Math.PI)
-        cxt.closePath()
-        cxt.fill()
-        return circle
-      },
-      //绘制线条
-      drawLine (cxt, x, y, _x, _y, o) {
-        let line = new this.Line(x, y, _x, _y, o)
-        cxt.beginPath()
-        cxt.strokeStyle = 'rgba(0,0,0,'+ o +')'
-        cxt.moveTo(line.beginX, line.beginY)
-        cxt.lineTo(line.closeX, line.closeY)
-        cxt.closePath()
-        cxt.stroke()
+			/* let joinTime = '2018-04-03 16:21:45.0'
+			console.log(commentFun.spliceFun(joinTime))*/
 
-      },
-      //每帧绘制
-      draw () {
-        this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
-        for (let i = 0; i < this.POINT; i++) {
-          this.drawCricle(this.context, this.circleArr[i].x, this.circleArr[i].y, this.circleArr[i].r)
-        }
-        for (let i = 0; i < this.POINT; i++) {
-          for (let j = 0; j < this.POINT; j++) {
-            if (i + j < this.POINT) {
-              let A = Math.abs(this.circleArr[i+j].x - this.circleArr[i].x),
-                B = Math.abs(this.circleArr[i+j].y - this.circleArr[i].y);
-              let lineLength = Math.sqrt(A*A + B*B);
-              let C = 1/lineLength*7-0.009;
-              let lineOpacity = C > 0.03 ? 0.03 : C;
-              if (lineOpacity > 0) {
-                this.drawLine(this.context, this.circleArr[i].x, this.circleArr[i].y, this.circleArr[i+j].x, this.circleArr[i+j].y, lineOpacity);
-              }
-            }
-          }
-        }
-      },
-      canvanFun(){
-        //  let WIDTH = window.innerWidth, HEIGHT = window.innerHeight, POINT = 35;
-        this.WIDTH = window.innerWidth
-        this.HEIGHT = window.innerHeight
-        console.log('WIDTH:',this.WIDTH+'HEIGHT:'+this.HEIGHT)
+		},
+		loginType() {
+			this.isActive = !this.isActive;
+		},
+		//生成max和min之间的随机数
+		/*  num (max, _min) {
+			let min = arguments[1] || 0
+			return Math.floor(Math.random()*(max-min+1)+min)
+		},
+		//初始化生成原点
+		init () {
+			this.circleArr = []
+			for (let i = 0; i < this.POINT; i++) {
+			this.circleArr.push(this.drawCricle(this.context, this.num(this.WIDTH), this.num(this.HEIGHT), this.num(12, 2), this.num(10, -10) / 40, this.num(10, -10) / 40));
+			}
+			this.draw()
+		},
+		//线条：开始xy坐标，结束xy坐标，线条透明度
+		Line (x, y, _x, _y, o) {
+			this.beginX = x,
+			this.beginY = y,
+			this.closeX = _x,
+			this.closeY = _y,
+			this.o = o
+		},
+		//点：圆心xy坐标，半径，每帧移动xy的距离
+		Circle (x, y, r, moveX, moveY) {
+			this.x = x,
+			this.y = y,
+			this.r = r,
+			this.moveX = moveX,
+			this.moveY = moveY
+		},
+		// 绘制原点
+		drawCricle (cxt, x, y, r, moveX, moveY) {
+			let circle = new this.Circle(x, y, r, moveX, moveY)
+			cxt.beginPath()
+			cxt.arc(circle.x, circle.y, circle.r, 0, 2*Math.PI)
+			cxt.closePath()
+			cxt.fill()
+			return circle
+		},
+		//绘制线条
+		drawLine (cxt, x, y, _x, _y, o) {
+			let line = new this.Line(x, y, _x, _y, o)
+			cxt.beginPath()
+			cxt.strokeStyle = 'rgba(0,0,0,'+ o +')'
+			cxt.moveTo(line.beginX, line.beginY)
+			cxt.lineTo(line.closeX, line.closeY)
+			cxt.closePath()
+			cxt.stroke()
 
-        this.canvas = document.getElementById('Mycanvas');
-        this.canvas.width = this.WIDTH
-        this.canvas.height = this.HEIGHT;
-        this.context = this.canvas.getContext('2d');
-        this.context.strokeStyle = 'rgba(0,0,0,0.1)'
-        this.context.strokeWidth = 1
-    //    this.context.fillStyle = 'rgba(193,193,193,0.3)'
-        this.context.fillStyle = 'rgba(0,0,0,0.1)'
-        //  let circleArr = [];
-        this.init();
-        let that = this
-        setInterval(function () {
-          for (let i = 0; i < that.POINT; i++) {
-            let cir = that.circleArr[i];
-            cir.x += cir.moveX;
-            cir.y += cir.moveY;
-            if (cir.x > that.WIDTH) cir.x = 0;
-            else if (cir.x < 0) cir.x = that.WIDTH;
-            if (cir.y > that.HEIGHT) cir.y = 0;
-            else if (cir.y < 0) cir.y = that.HEIGHT;
+		},
+		//每帧绘制
+		draw () {
+			this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
+			for (let i = 0; i < this.POINT; i++) {
+			this.drawCricle(this.context, this.circleArr[i].x, this.circleArr[i].y, this.circleArr[i].r)
+			}
+			for (let i = 0; i < this.POINT; i++) {
+			for (let j = 0; j < this.POINT; j++) {
+				if (i + j < this.POINT) {
+				let A = Math.abs(this.circleArr[i+j].x - this.circleArr[i].x),
+					B = Math.abs(this.circleArr[i+j].y - this.circleArr[i].y);
+				let lineLength = Math.sqrt(A*A + B*B);
+				let C = 1/lineLength*7-0.009;
+				let lineOpacity = C > 0.03 ? 0.03 : C;
+				if (lineOpacity > 0) {
+					this.drawLine(this.context, this.circleArr[i].x, this.circleArr[i].y, this.circleArr[i+j].x, this.circleArr[i+j].y, lineOpacity);
+				}
+				}
+			}
+			}
+		},
+		canvanFun(){
+			//  let WIDTH = window.innerWidth, HEIGHT = window.innerHeight, POINT = 35;
+			this.WIDTH = window.innerWidth
+			this.HEIGHT = window.innerHeight
+			console.log('WIDTH:',this.WIDTH+'HEIGHT:'+this.HEIGHT)
 
-          }
-          that.draw()
-          //  document.getElementsByClassName('login_wrap')[0].style.background = "url('"+Mycanvas.toDataURL()+"')"loginWrap
-        }, 30);
-      }*/
-    },
-  }
+			this.canvas = document.getElementById('Mycanvas');
+			this.canvas.width = this.WIDTH
+			this.canvas.height = this.HEIGHT;
+			this.context = this.canvas.getContext('2d');
+			this.context.strokeStyle = 'rgba(0,0,0,0.1)'
+			this.context.strokeWidth = 1
+		//    this.context.fillStyle = 'rgba(193,193,193,0.3)'
+			this.context.fillStyle = 'rgba(0,0,0,0.1)'
+			//  let circleArr = [];
+			this.init();
+			let that = this
+			setInterval(function () {
+			for (let i = 0; i < that.POINT; i++) {
+				let cir = that.circleArr[i];
+				cir.x += cir.moveX;
+				cir.y += cir.moveY;
+				if (cir.x > that.WIDTH) cir.x = 0;
+				else if (cir.x < 0) cir.x = that.WIDTH;
+				if (cir.y > that.HEIGHT) cir.y = 0;
+				else if (cir.y < 0) cir.y = that.HEIGHT;
+
+			}
+			that.draw()
+			//  document.getElementsByClassName('login_wrap')[0].style.background = "url('"+Mycanvas.toDataURL()+"')"loginWrap
+			}, 30);
+		}*/
+	},
+}
 
 </script>
-
 <style scoped>
 
   /deep/ .el-form-item__content {
-    margin-left: 0 !important;
+	margin-left: 0 !important;
   }
-/*  #Mycanvas{
-    position:absolute;
-    z-index:-1;
-    top:0;
-  }*/
+  /*  #Mycanvas{
+      position:absolute;
+      z-index:-1;
+      top:0;
+    }*/
   .backgroundImg{
     position: fixed;
     top: 0;
@@ -326,16 +324,11 @@ import { Checkbox, MessageBox, Message } from 'element-ui';
       -moz-transform: scale(1.1);
     }
   }
-  .loginBox{
-    width: 400px;
-    margin: 0 auto;
-    background: rgba(0,0,0,0);
-  }
   .login_wrap {
     position: fixed;
     width: 100%;
     height: 100%;
-  /*  background: url("../../assets/images/loginBg.png") no-repeat;
+   /* background: url("../../assets/images/loginBg.png") no-repeat;
     background-size: cover;*/
   }
 
@@ -409,12 +402,11 @@ import { Checkbox, MessageBox, Message } from 'element-ui';
     margin-bottom: 24px;
   }
 
-  .loginInput i {
+  .loginInput img {
     position: absolute;
     left: 10px;
     top: 13px;
     width: 12px;
-	color: #999999;
   }
 
   input::placeholder {
