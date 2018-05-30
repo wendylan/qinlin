@@ -122,7 +122,7 @@ import api from '../../api/api.js';
 import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
-import { Row, Input, Button, Table, TableColumn, DatePicker } from 'element-ui';
+import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, Message } from 'element-ui';
 import areaToText from '../../commonFun/areaToText.js';
 export default {
 	name: "customList",
@@ -133,6 +133,8 @@ export default {
 		elTable: Table,
 		elTableColumn: TableColumn,
 		elDatePicker: DatePicker,
+		elSelect: Select,
+		elOption: Option,
 	},
 	data() {
 		return {
