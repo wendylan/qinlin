@@ -40,6 +40,12 @@ var pageHeadData = {
             {name: '操作指引', path: '/media'} 
 		]
 	},
+	admin: { 
+		name:'系统管理员', 
+		pageData: [
+            {name: '账号设置', path: '/admin/accountList'},
+		]
+	},
 	sale: {
 		name:'销售', 
 		pageData: [
