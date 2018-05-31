@@ -448,7 +448,7 @@
             // {type: 'number', min: 1970, max: 2018,message: '只能输入数字(1970-2018)', trigger: 'blur'},
           ],
           lng: [
-            {required: true, message: '经纬度不能为空', trigger: 'blur'},
+            {required: true, message: '经度不能为空', trigger: 'blur'},
             {type: 'number', min:0, max:180, message: '只能输入数字(0-180)', trigger: 'change'},
             // {min:0, max:180,message: '经度范围0-180', trigger: 'blur'}
           ],

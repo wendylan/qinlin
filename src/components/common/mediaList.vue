@@ -320,7 +320,17 @@
         }else if(rows.mState === '正常' && Status === '待安装'){
           Message({
             type: 'warning',
-            message: '当前媒体已安装不可修改为待安装'
+            message: '需先完成每天安装任务'
+          });
+        }else if(rows.mState === '待安装'){
+          Message({
+            type: 'warning',
+            message: '需先完成每天安装任务'
+          });
+        }else if(Status === '待安装'){
+          Message({
+            type: 'warning',
+            message: '请按正常流程走，当前媒体已安装'
           });
         }else{
           if (Status == '正常') {
@@ -332,9 +342,6 @@
           } else if (Status == '待维修') {
             mstate = '3'
           }
-            // else if (Status == '删除') {
-          //   mstate = '-1'
-          // }
           let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
           let mid = rows.mID
 
@@ -390,9 +397,9 @@
       getData() {
 //       let reclist =  [
 // {resID: 1,rID: 440106,rName: "越秀区",resName: "帝景山庄1",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-// {resID: 2,rID: 110101,rName: "东城区",resName: "帝景山庄2",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "1"},
-// {resID: 3,rID: 440106,rName: "越秀区",resName: "帝景山庄1",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},
-// {resID: 17,rID: 440303,rName: "南山区",resName: "帝景山庄4",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "1"},]
+// {resID: 2,rID: 110101,rName: "东城区",resName: "帝景山庄2",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
+// {resID: 3,rID: 440106,rName: "越秀区",resName: "帝景山庄1",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
+// {resID: 17,rID: 440303,rName: "南山区",resName: "帝景山庄4",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},]
 //         this.planList = reclist
 //         for(let i=0;i<this.planList.length;i++){
 //           let rName = {
@@ -418,7 +425,7 @@
           // console.log('资源媒体列表：', res.data)
           let RMList = res.data
           if (!RMList.SysCode) {
-            // let RMList = reclist
+          //   let RMList = reclist
             if (RMList) {
               console.log('资源媒体列表：', res.data)
               for (let i = 0; i < RMList.length; i++) {

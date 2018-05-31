@@ -74,13 +74,6 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <!--  <el-cascader
-                    :options="throwCity"
-                    v-model="planForm.throwCity"
-                    separator="-"
-                    :show-all-levels="false"
-                    @active-item-change="handleItemChange">
-                  </el-cascader>-->
               </el-form-item>
               <el-form-item label="方案备注：" prop="planRemark">
                 <el-input type="textarea" v-model="planForm.planRemark" placeholder="请填写备注信息"></el-input>
@@ -107,6 +100,7 @@
                   type="daterange"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                   class="date-select"
                 >
                 </el-date-picker>
@@ -131,27 +125,15 @@
               </dl>
               <dl>
                 <dt>媒体类型：</dt>
-                <dd class="active">社区广告门</dd>
-                <dd>电梯广告</dd>
+                <dd class="active">广告门</dd>
+               <!-- <dd>电梯广告</dd>-->
               </dl>
               <dl style="border: none">
-                <dt>城市区域：</dt>
-                <dd class="active">广州</dd>
-                <dd>深圳</dd>
+                <dt>城市区域：</dt><!--city-->
+                <dd v-for="(item, index) in city" :index="index" :class=" index == 0 ? 'active' : ''">{{item.rName}}</dd>
               </dl>
               <dl class="city-proper">
-                <dd class="active">全市</dd>
-                <dd>天河区</dd>
-                <dd>越秀区</dd>
-                <dd>海珠区</dd>
-                <dd>荔湾区</dd>
-                <dd>黄浦区</dd>
-                <dd>白云区</dd>
-                <dd>番禺区</dd>
-                <dd>花都区</dd>
-                <dd>南沙区</dd>
-                <dd>从化区</dd>
-                <dd>增城区</dd>
+                <dd v-for="item of area[0]" :class="item.rName == '全市' ? 'active' : ''">{{item.rName}}</dd>
               </dl>
               <dl style="border: none">
                 <dt>广告限制：</dt>
@@ -305,8 +287,14 @@
                 </el-table-column>
                 <el-table-column width="132px">
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.checkBox.A" label="A面" @change="changeA(scope.row)"></el-checkbox>
-                    <el-checkbox v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)"></el-checkbox>
+                    <el-checkbox v-model="scope.row.checkBox.A" label="A面"
+                                 @change="changeA(scope.row)"
+                                 :disabled="scope.row.box.A"><!-- :disabled="scope.row.box.A"-->
+                    </el-checkbox>
+                    <el-checkbox v-model="scope.row.checkBox.B" label="B面"
+                                 @change="changeB(scope.row)"
+                                 :disabled="scope.row.box.B"><!--:disabled="scope.row.box.B"-->
+                    </el-checkbox>
                   </template>
                 </el-table-column>
               </el-table>
@@ -588,6 +576,7 @@
   } from 'element-ui';
   import api from '../../api/api'
   import areaToText from '../../commonFun/areaToText.js';
+  import areaArr from '../../commonFun/areaPackage'
 
   export default {
     name: "createPlan",
@@ -613,12 +602,15 @@
     },
     data() {
       return {
+        // box:{A:true,B:true},
         cType: ['社区', '写字楼'],
         shopXY: {x: '', y: ''},   // 动画起始坐标
         shoppingShow: false, //动画效果的显示隐藏
         selectAll: false, // 是否全选
         badgeNumber:0,    // 购物车数量
         bodyWidth: 1920,
+        city:[],        // step2 城市
+        area:[],      // step2城市下属区域
         //step2修改弹框
         changeAD: false,
         changeMake: false,
@@ -678,7 +670,7 @@
         planSelect: '',
         //步骤
         active: 0,
-        dateInput: '',
+        dateInput: [],
         //setp1创建方案表单
         planForm: {
           planName: '',
@@ -712,28 +704,10 @@
           ],
         },
         // 购物车列表
-        shopingList: [
-          /* {
-             id: 1,
-             recName: '珠江帝景花园1',
-             city: '广州1',
-             origin: '海珠区',
-             buildType: '高端住宅',
-             houseNum: '600',
-             buildPrice: '￥30,000',
-             mediaName: '广州市中山大道1',
-             buildNum: '12',
-             schedules: '2017.08.30-2017.09.30',
-             businessOrigin: '白云万达广场',
-             assetID: 'GZ201871024',
-             liveYear: '1999年',
-             adLimit: '地产/医药/汽车',
-             A_B: 'B面'
-           }*/
-        ],
+        shopingList: [],
         //step2列表
         planList: [
-          {
+          /*{
             rid: 1,
             recName: '珠江1',
             city: '广州1',
@@ -749,8 +723,9 @@
             liveYear: '1999年',
             adLimit: '地产/医药/汽车',
             checkBox: {A: false, B: false},
-          },
-          {
+            box: {A:true, B: false}
+          },*/
+          /*{
             rid: 2,
             recName: '珠江2',
             city: '广州2',
@@ -816,169 +791,8 @@
             liveYear: '1999年',
             adLimit: '地产/医药/汽车',
             checkBox: {A: false, B: false},
-          },
-          /*{
-            id: 6,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 7,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 8,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 9,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 10,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 11,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 12,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 13,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 14,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 15,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }*/],
-
+          },*/],
+          sessionData:'',   // 登录用户的数据
       };
     },
     created: function () {
@@ -986,7 +800,10 @@
     },
     computed: {},
     mounted() {
-      this.Get_cName()
+      this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+      this.getAdList()     // 获取选点列表
+      this.Get_cName()     // 获取公司名称列表
+    //  this.getAreaFun()    // 获取城市区域
       //  this.GetBrand()
       //  this.ShowRegion()// 获取城市接口
       // 注：window.onresize只能在项目内触发1次
@@ -1081,8 +898,8 @@
           this.ownerBU = ownerList // 联系人列表
         })
         // 公司信息所在城市
-        let uWho =  '440100,110100'//userInfo.uWho //
-        let uWhoArr = uWho.split(',') // ['440100','110100']
+        let uWho =  '440100,110100,310100'//userInfo.uWho
+        let uWhoArr = uWho.split(',') // ['440100','110100','330100']
         let cityList = []
         console.log()
         for (let j = 0; j < uWhoArr.length; j++) {
@@ -1163,9 +980,137 @@
         }
 
       },
+      // 获取当前时间并计算N天后的日期
+      GetDateStr(AddDayCount){
+        let dd = new Date();
+        dd.setDate(dd.getDate() + AddDayCount)    // 获取AddDayCount天后的日期
+        let y = dd.getFullYear();
+        let m = (dd.getMonth() + 1) < 10 ? "0" + (dd.getMonth() + 1) : (dd.getMonth() + 1)  // 获取当前月份的日期，不足10补0
+        let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate()       // 获取当前几号，不足10补0
+        return y + "." + m + "." + d
+      },
+      // 设置城市区域
+      getAreaFun(){
+        // let rid = 440100
+        let throwCityList = this.planForm.throwCity
+        let cityArr = []
+        for(let t=0;t< this.throwCity.length; t++){
+          for(let j=0;j< throwCityList.length;j++){
+            if(this.throwCity[t].value === throwCityList[j]){
+              let cityObj = { rName: this.throwCity[t].label, rid:this.throwCity[t].value }
+              cityArr.push(cityObj)
+            }
+          }
+          if(t >= this.throwCity.length-1){
+            this.city = cityArr
+          }
+        }
+        for(let n=0; n<throwCityList.length; n++){
+          let rid = throwCityList[n]
+          console.log('投放城市',this.planForm.throwCity)
+          api.getApi('/ShowRegion',{rid: rid}).then(res=>{
+            console.log('城市区域',res.data)
+            let areaList = res.data
+            let areaArr = []
+            for(let i=0; i<areaList.length; i++){
+              if(i === 0){
+                let allArea = {
+                  rID: rid,
+                  rName: '全市'
+                }
+                areaArr.push(allArea)
+              }
+              if(rid.toString().substring(0, 4) === areaList[i].rID.toString().substring(0,4) && areaList[i].rID.toString().substring(4,6) !== '00'){
+                areaArr.push(areaList[i])
+              }
+              if(i >= areaList.length-1){
+                this.area.push(areaArr)
+              }
+            }
+          })
+          if(n >= throwCityList.length - 1){
+            console.log('this.area',this.area)
+            // this.area = areaArr
+          }
+        }
+
+      },
       // 获取广告点位列表
       getAdList(){
-        // api.getApi()
+        let starTime = this.GetDateStr(1)
+        let endTime = this.GetDateStr(15)
+        console.log('开始日期',starTime,'结束日期',endTime)
+        this.dateInput = [ starTime, endTime ] // 设置默认时间
+        let uid = this.sessionData.uID
+        let tempADList = [
+{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,asIDs: "7",asLabs: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
+{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "1,2",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
+{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6200000,asIDs: "4,3",asLabs: "B,A",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
+{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "5,6",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"},
+{resName: "帝景山庄",mTitle: "帝景门",rName: "白云区",cType: "别墅",hNum: 171,hPrice: 6600000,asIDs: "7,8",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉",fNum: 12,assetTag: "201707GZ-1328",chDay: "2014",notPush: "医学"}
+]
+        api.getApi('/GetAdS',{uid:uid,rid:440100}).then(res=>{
+          console.log('选点列表：',res)
+          // let ADList = res.data
+          let ADList =tempADList
+          // 被占广告点位列表【选点】GetAdLaunch
+          let LaunchParams = {uid: uid, rid: 440100, ls: starTime, le: endTime}
+          api.getApi('/GetAdLaunch',LaunchParams).then(res=>{
+            console.log('被占选点列表',res)
+          //  let adLaunch = res.data
+            let adLaunch =  [
+                {lID: 1,asID: 1,pdID: 1,lStar: "2018-06-01",lEnd: "2018-06-09",uID: 1,lSetTime: "2018-05-17 18:19:15.0",lState: 1},
+                {lID: 2,asID: 2,pdID: 1,lStar: "2018-06-01",lEnd: "2018-06-09",uID: 1,lSetTime: "2018-05-17 18:19:15.0",lState: 1},
+                {lID: 3,asID: 3,pdID: 1,lStar: "2018-06-01",lEnd: "2018-06-09",uID: 1,lSetTime: "2018-05-17 18:19:15.0",lState: 1},
+                {lID: 4,asID: 6,pdID: 1,lStar: "2018-06-01",lEnd: "2018-06-09",uID: 1,lSetTime: "2018-05-17 18:19:15.0",lState: 2}]
+            let planArr = []
+            for(let i=0;i<ADList.length;i++){
+              console.log('遍历选点列表')
+              let adObj = {
+                    rid: i+1,
+                    recName: tempADList[i].resName,
+                    city: '广州',
+                    origin: tempADList[i].rName,
+                    buildType: tempADList[i].cType,
+                    houseNum: tempADList[i].hNum,
+                    buildPrice: (tempADList[i].hPrice/100),
+                    mediaName: tempADList[i].mTitle,
+                    buildNum: tempADList[i].fNum,
+                    schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                    businessOrigin: tempADList[i].tradingArea,
+                    assetID:  tempADList[i].assetTag,
+                    liveYear:  tempADList[i].chDay,
+                    adLimit: tempADList[i].notPush,
+                    checkBox: {A: false, B: false},
+                    box: {A:false, B:false},
+              }
+              if(ADList[i].asLabs.indexOf('A') === -1){
+                adObj.box.A = true
+              }
+              if(ADList[i].asLabs.indexOf('B') === -1){
+                adObj.box.B = true
+              }
+              let asIDArr = ADList[i].asIDs.split(',')
+              let asLabArr = ADList[i].asLabs.split(',')
+              for(let j=0;j<adLaunch.length;j++){
+               for(let t=0; t<2; t++){
+                 if(adLaunch[j].asID == asIDArr[t]){
+                   if(asLabArr[t] === 'B'){
+                     adObj.box.B = true
+                   }else if(asLabArr[t] === 'A'){
+                     adObj.box.A = true
+                   }
+                 }
+               }
+              }
+              planArr.push(adObj)
+              if(i >= ADList.length-1){
+                console.log('方案选点列表',planArr)
+                this.planList = planArr
+              }
+            }
+          })
+        })
       },
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
@@ -1187,9 +1132,15 @@
           this.badgeNumber--
         }*/
         if (!row.checkBox.B && !row.checkBox.A) {
-          row.checkBox.A = true
-          this.shopShow_hide()   // 动画效果
-          this.AddShopingInfo(row) // 添加到购物车
+          if(!row.box.A){
+            row.checkBox.A = true
+            this.shopShow_hide()   // 动画效果
+            this.AddShopingInfo(row) // 添加到购物车
+          }else if(!row.box.B && row.box.A){
+            row.checkBox.B = true
+            this.shopShow_hide()   // 动画效果
+            this.AddShopingInfo(row) // 添加到购物车
+          }
         } else if (row.checkBox.A || row.checkBox.B) {
           if (row.checkBox.A && row.checkBox.B) {
             this.badgeNumber -= 2
@@ -1247,6 +1198,7 @@
         if (selection.length !== 0) {
           console.log('number:', number)
           for (let i = 0; i < selection.length; i++) {
+            // 判断右边AB面是否被勾选
             if (selection[i].checkBox.A) {
               console.log('a')
               number++
@@ -1255,21 +1207,30 @@
               console.log('b')
               number++
             }
-            selection[i].checkBox.A = true
-            selection[i].checkBox.B = true
+            // 根据是否被占用去打勾
+            if(!selection[i].box.A){
+              selection[i].checkBox.A = true
+              number++
+            }
+            if(!selection[i].box.B){
+              selection[i].checkBox.B = true
+              number++
+            }
           }
           this.shopShow_hide('all', number)
-          this.deleteShopRow(selection,'all')
+          this.deleteShopRow(selection,'all')     // 全选时添加进购物篮
         } else {
           let num = 0
           for (let i = 0; i < this.planList.length; i++) {
             // 判断是否有取消勾选 A B面的
             if(!this.planList[i].checkBox.A){
+              console.log('A')
                num++
             }else{
               this.planList[i].checkBox.A = false
             }
             if(!this.planList[i].checkBox.B){
+              console.log('B')
               num++
             }else{
               this.planList[i].checkBox.B = false
@@ -1318,16 +1279,18 @@
       },
       // 表单验证
       submitForm(formName) {
-        this.active++;
-        /*this.$refs[formName].validate((valid) => {
+        // this.active++;
+        this.getAreaFun()
+        this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log('submit!');
             this.active++;
+            this.getAreaFun()
           } else {
             console.log('error submit!!');
             return false;
           }
-        });*/
+        });
       },
       continueCreate() {
         this.active = 0;
@@ -1375,7 +1338,11 @@
           selectInfo.A_B = 'B面'
           this.shopingList.push(selectInfo)
         }else{
-          selectInfo.A_B = 'A面'
+          if(info.checkBox.B){
+            selectInfo.A_B = 'B面'
+          }else{
+            selectInfo.A_B = 'A面'
+          }
           this.shopingList.push(selectInfo)
         }
       },
@@ -1423,9 +1390,9 @@
           }
         }
       },
-      // 取消勾时删除购物车里对应的数据行
+      // 取消勾时,删除购物车里对应的数据行
       deleteShopRow(row,letter){
-        if(letter === 'all'){
+        if(letter === 'all'){     // 判断是否全选
           this.shopingList = []
           for(let i=0;i<this.planList.length;i++){
             let info = this.planList[i]
@@ -1446,12 +1413,13 @@
                 liveYear:info.liveYear,
                 adLimit: info.adLimit,
                 checkBox: {A: info.checkBox.A, B: info.checkBox.B},
+                box: {A: info.box.A, B: info.box.B}
               }
-              if(j === 0){
+              if(j === 0 && !selectInfo.box.A){
                 //  alert('B')
                 selectInfo.A_B = 'A面'
                 this.shopingList.push(selectInfo)
-              }else if(j === 1){
+              }else if(j === 1 && !selectInfo.box.B){
                 selectInfo.A_B = 'B面'
                 this.shopingList.push(selectInfo)
               }
