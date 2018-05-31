@@ -158,10 +158,7 @@ export default {
 					}
 				});
 			}).catch(()=>{
-				this.$message({
-					type:'info',
-					message:'已取消删除'
-				})
+				Message.info('已取消删除');
 			})
 		},
 		//编辑
@@ -177,24 +174,15 @@ export default {
 		//保存
 		saveAD(rows, index){
 			if(rows.typeUpdate === '' ){
-				this.$message({
-					type:'warning',
-					message:'请填写限制类型后再保存'
-				});
+				Message.warning('请填写限制类型后再保存');
 				return;
 			}
 			if(rows.typeUpdate.length> 30 ){
-				this.$message({
-					type:'warning',
-					message:'限制类型请保持在30个字符以内'
-				});
+				Message.warning('限制类型请保持在30个字符以内');
 				return;
 			}
 			if(rows.detailUpdate.length> 200 ){
-				this.$message({
-					type:'warning',
-					message:'描述请保持在200个字符以内'
-				});
+				Message.warning('描述请保持在200个字符以内');
 				return;
 			}
 			if(!rows.nID){
@@ -264,8 +252,6 @@ export default {
 				this.ADlist.splice(index,1);
 			}else{
 			//前端显示
-				// this.ADlist[index].nTitle = this.ADlist[index].nTitle;
-				// this.ADlist[index].ndescript = this.ADlist[index].ndescript;
 				this.$set(rows, 'nTitle', rows.nTitle);
 				this.$set(rows, 'ndescript', rows.ndescript);
 				//切换输入框和操作类型的显示

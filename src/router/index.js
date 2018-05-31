@@ -118,8 +118,6 @@ export default new Router({
 				{path: '/media/mediaDetail', component: mediaDetail},
 				{path: '/media/planList', component: planList},
 				{path: '/media/publishPriceList', component: publishPriceList},
-				{path: '/media/createAccount', component: createAccount},
-				{path: '/media/accountList', component: accountList},
 				{path: '/media/orderList', component: orderList},
 				{path: '/media/createPlan', component: createPlan},
 				{path: '/media/planDetail', component: planDetail},

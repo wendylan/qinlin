@@ -360,10 +360,7 @@ export default {
 		},
 		//权限功能暂未开放
 		authority(){
-			this.$message({
-				message: '该功能暂未开放',
-				type: 'warning'
-			});
+			Message.warning('该功能暂未开放');
 		},
 		// 开通或者禁用：
 		isForbidden(row){
