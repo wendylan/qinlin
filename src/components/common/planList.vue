@@ -298,14 +298,20 @@ export default {
 							dateFormat.date(data.apcTime) >= range[0] &&
 							dateFormat.date(data.apcTime) <= range[1]
 						){
-							if((select == '1') && data.apName.includes(keyword) ){
-								arr.push(data);
+							if(data.apName){
+								if((select == '1') && data.apName.includes(keyword) ){
+									arr.push(data);
+								}
 							}
-							if((select == '2') && data.cName.includes(keyword)){
-								arr.push(data);
+							if(data.cName){
+								if((select == '2') && data.cName.includes(keyword)){
+									arr.push(data);
+								}
 							}
-							if((select == '3') && data.bTitle.includes(keyword)){
-								arr.push(data);
+							if(data.bTitle){
+								if((select == '3') && data.bTitle.includes(keyword)){
+									arr.push(data);
+								}
 							}
 						}
 					}else if(range){
@@ -316,14 +322,20 @@ export default {
 							arr.push(data);
 						}
 					}else if(keyword){
-						if((select == '1') && data.apName.includes(keyword) ){
-							arr.push(data);
+						if(data.apName){
+							if((select == '1') && data.apName.includes(keyword) ){
+								arr.push(data);
+							}
 						}
-						if((select == '2') && data.cName.includes(keyword)){
-							arr.push(data);
+						if(data.cName){
+							if((select == '2') && data.cName.includes(keyword)){
+								arr.push(data);
+							}
 						}
-						if((select == '3') && data.bTitle.includes(keyword)){
-							arr.push(data);
+						if(data.bTitle){
+							if((select == '3') && data.bTitle.includes(keyword)){
+								arr.push(data);
+							}
 						}
 					}
 				}

@@ -319,16 +319,18 @@ export default {
 			// 账号，姓名
 			console.log(this.select);
 			console.log(this.keyword);
+			let select = this.select;
+			let keyword = this.keyword;
 			if(this.keyword){
 				let arr = [];
 				for(let data of this.accountList){
-					if(this.select=='1'){
-						if(data.realName== this.keyword){
+					if(data.realName){
+						if((select=='1') && data.realName.includes(keyword)){
 							arr.push(data);
 						}
 					}
-					if(this.select =='2'){
-						if(data.sName == this.keyword){
+					if(data.sName){
+						if((select =='2') && data.sName.includes(keyword)){
 							arr.push(data);
 						}
 					}
