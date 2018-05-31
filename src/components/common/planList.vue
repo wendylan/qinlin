@@ -188,7 +188,8 @@ export default {
 			showNewBtn:true,
 			select: '1',
 			// 表格数据
-			currentPlan: [{
+			currentPlan: [
+				{
 				apID: 1,
 				apName: "第一个投放方案",
 				cName: "新光百货",
@@ -198,9 +199,11 @@ export default {
 				rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
 				apcTime: "2018-05-09 18:29:47.0",
 				apState: 1
-			}],
+				}
+			],
 			//所有数据
-			planList: [{
+			planList: [
+				{
 				apID: 1,
 				apName: "第一个投放方案",
 				cName: "新光百货",
@@ -210,7 +213,8 @@ export default {
 				rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
 				apcTime: "2018-05-09 18:29:47.0",
 				apState: 1
-			}]
+				}
+			]
 		}
     },
     methods: {
@@ -238,7 +242,9 @@ export default {
 				if(!info.SysCode){
 					this.planList = info;
 					for(let item of this.planList){
-						item.cityArea = item.rIDs.split(',');
+						if(item.rIDs){
+							item.cityArea = item.rIDs.split(',');
+						}
 						console.log(item.cityArea);
 					}
 					this.currentPlan = this.planList;
@@ -477,8 +483,6 @@ export default {
     border-top: 1px solid #cccccc;
   }
 
-
-
   /deep/ .el-checkbox__label {
     font-size: 10px;
     color: #8A8A8A;
@@ -593,7 +597,6 @@ export default {
     border-radius: 4px;
   }
 
-
   .el-button {
     width: 76px;
     height: 34px;
@@ -639,11 +642,9 @@ export default {
     left: 3px;
   }
 
-
   /deep/.el-picker-panel .el-date-range-picker .el-popper{
     left: 335px !important;
   }
-
 
   /*表格*/
   /deep/ .el-date-editor .el-range-separator {
@@ -775,7 +776,6 @@ export default {
     display: none;
   }
 
-
   /*按钮*/
   /deep/ .el-button--default:focus, .el-button--default:hover{
     color: #606266;
@@ -789,7 +789,6 @@ export default {
   .content_bottom_btn /deep/ .el-button span a{
     color: #606266;
   }
-
 
   /*1440*/
   @media screen and (min-width: 1440px) {
@@ -806,8 +805,6 @@ export default {
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1284px;
     }
-
-
   }
 
   /*1920*/
@@ -821,10 +818,5 @@ export default {
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1764px !important;
     }
-
-
-
   }
-
-
 </style>
