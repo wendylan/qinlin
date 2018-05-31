@@ -250,23 +250,23 @@ export default {
 			userInfo.realName = data.realName;
 			userInfo.sName = data.sName;
 			userInfo.rID = data.rID;
-			userInfo.email = data.email;
-			userInfo.position = data.position;
-			userInfo.division = data.division;
+			userInfo.email = data.email?data.email:'';
+			userInfo.position = data.position?data.position:'';
+			userInfo.division = data.division?data.division:'';
 			userInfo.phone = data.phone;
-			userInfo.telephone = data.telephone;
-			userInfo.puName = data.puName;
+			userInfo.telephone = data.telephone?data.telephone:'';
+			userInfo.puName = data.puName?data.puName:'';
 			// 公司信息
 			let companyInfo = {};
 			companyInfo.cID = data.cID;
 			companyInfo.cName = data.cName;
-			companyInfo.cBrand = data.cBrand;
+			companyInfo.cBrand = data.cBrand?data.cBrand:'';
 			companyInfo.iID = data.iID;
 
-			companyInfo.rName = data.rName;
+			companyInfo.rName = data.rName?data.rName:'';
 			companyInfo.rID = data.crID;
-			companyInfo.cAddress = data.cAddress;
-			companyInfo.cRemark = data.cRemark;
+			companyInfo.cAddress = data.cAddress?data.cAddress:'';
+			companyInfo.cRemark = data.cRemark?data.cRemark:'';
 
 			// sessionStorage.setItem('clientDetail_data', JSON.stringify(data));
 			sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
