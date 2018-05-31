@@ -294,6 +294,11 @@ export default {
 				api.getApi('/GetCustomer', {uid: uid, puid: puid}).then(res=>{
 					if(!res.data.SysCode){
 						this.planList = res.data;
+						for(let data of this.planList){
+							areaToText.toTextCity(city=>{
+								this.$set(data, 'clientRName', city);
+							}, data.rID);
+						}
 						this.currentPlan = this.planList;
 						this.filtCity = filterFormat(this.planList, 'rName');
 					}else{

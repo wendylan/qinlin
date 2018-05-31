@@ -412,11 +412,11 @@ export default {
 						realName: accountInfo.realName,
 						role: accountInfo.uType,
 						PermissionCity: accountInfo.uWho.split(','),
-						boss: accountInfo.puName,
-						position: accountInfo.position,
+						boss: accountInfo.puName?accountInfo.puName: '',
+						position: accountInfo.position? accountInfo.position: '',
 						phone: accountInfo.phone,
-						division: accountInfo.division,
-						email: accountInfo.email
+						division: accountInfo.division?accountInfo.division: '',
+						email: accountInfo.email? accountInfo.email: ''
 					};
 					this.accountForm = editInfo;
 				}else{

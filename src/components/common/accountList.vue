@@ -1,131 +1,125 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix"><a href="#">账号管理</a></p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>账号列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<!-- <el-input  v-model="keyword" placeholder="公司名称、公司品牌"></el-input> -->
-						<div style="display:inline-block">
-							<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-								<el-select v-model="select" slot="prepend" placeholder="请选择">
-									<el-option label="姓名" value="1"></el-option>
-									<el-option label="账号" value="2"></el-option>
-								</el-select>
-							</el-input>
-						</div>
-						<div class="block">
-							<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-							<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
-						</div>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table
-						border
-						:data="currAccount"
-						style="width: 100%"
-						:default-sort = "{prop: 'date', order: 'descending'}"
-					>
-						<el-table-column
-							label="账号"
-							min-width="11.8%"
-						>
-							<template slot-scope="scope">
-								<a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
-							</template>
-						</el-table-column>
-						<el-table-column
-							prop="realName"
-							label="姓名"
-							min-width="7.8%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="uWhoArr"
-							label="权限城市"
-							class="tar"
-							min-width="14.2%"
-							:filters="filterUWhoData"
-							:filter-method="filterUWho"
-							:filter-multiple="true"
-						>
-							<!-- <template slot-scope="scope">
-								<span>{{cityToText(scope.row.uWho)}}</span>
-							</template> -->
-						</el-table-column>
-						<el-table-column
-							prop="uType"
-							label="账号角色"
-							min-width="8.1%"
-							:filters="[
-								{text: '系统管理员', value: 'SA'},
-								{text: '超级管理员', value: 'SM'},
-								{text: '运营', value: 'OP'},
-								{text: '媒介', value: 'MD'},
-								{text: '销售', value: 'BD'},
-								{text: '广告主', value: 'AD'},
-								{text: '工程人员', value: 'EP'}
-							]"
-							:filter-method="filterUType"
-							:filter-multiple="false"
-						>
-							<template slot-scope="scope">
-								<span>{{roleToText(scope.row.uType)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							prop="puName"
-							label="上级"
-							min-width="7.8%"
-						>
-						</el-table-column>
-						</el-table-column>
-						<el-table-column
-							label="创建日期"
-							sortable
-							min-width="9.8%"
-						>
-							<template slot-scope="scope">
-								<span>{{formatTime(scope.row.joinTime)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							prop="uState"
-							label="状态"
-							min-width="8.9%"
-							:filters="[
-							{ text: '正常', value: 1 },
-							{ text: '禁用', value: 0 },
-							]"
-							:filter-method="filterState"
-							:filter-multiple="false"
-						>
-							<template slot-scope="scope">
-								<span>{{stateToText(scope.row.uState)}}</span>
-							</template>
-						</el-table-column>
+  <div class="ad_mediaDetail_wrap clearfix">
+    <div class="ad_mediaDetail_nav ">
+      <p class="clearfix"><a href="#">账号管理</a></p>
+    </div>
+    <div class="mediaList_wrap">
+      <div class="mediaList_head">
+        <h2>账号列表</h2>
+      </div>
+      <div class="mediaList_container">
+        <el-row>
+          <div class="mediaList_handel">
+            <div style="display:inline-block">
+              <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+                <el-select v-model="select" slot="prepend" placeholder="请选择">
+					<el-option label="姓名" value="1"></el-option>
+					<el-option label="账号" value="2"></el-option>
+                </el-select>
+              </el-input>
+            </div>
+            <div class="block">
+              <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+              <el-button plain @click="newAccount" v-if="showNewBtn" >新建</el-button>
+            </div>
+          </div>
+        </el-row>
+        <div class="table_wrap">
+          <el-table
+				border
+				:data="currAccount"
+				style="width: 100%"
+				:default-sort="{prop: 'date', order: 'descending'}"
+          >
+            <el-table-column
+				label="账号"
+				min-width="11.8%"
+            >
+				<template slot-scope="scope">
+					<a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
+				</template>
+            </el-table-column>
+            <el-table-column
+				prop="realName"
+				label="姓名"
+				min-width="7.8%"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="uWhoArr"
+				label="权限城市"
+				class="tar"
+				min-width="14.2%"
+				:filters="filterUWhoData"
+				:filter-method="filterUWho"
+				:filter-multiple="true"
+            >
+            </el-table-column>
+            <el-table-column
+				prop="uType"
+				label="账号角色"
+				min-width="8.1%"
+				:filters="[
+					{text: '系统管理员', value: 'SA'},
+					{text: '超级管理员', value: 'SM'},
+					{text: '运营', value: 'OP'},
+					{text: '媒介', value: 'MD'},
+					{text: '销售', value: 'BD'},
+					{text: '广告主', value: 'AD'},
+					{text: '工程人员', value: 'EP'}
+				]"
+				:filter-method="filterUType"
+				:filter-multiple="false"
+            >
+				<template slot-scope="scope">
+					<span>{{roleToText(scope.row.uType)}}</span>
+				</template>	
+            </el-table-column>
+            <el-table-column
+				prop="puName"
+				label="上级"
+				min-width="7.8%"
+            >
+            </el-table-column>
+            <el-table-column
+				label="创建日期"
+				min-width="9.8%"
+            >
+				<template slot-scope="scope">
+					<span>{{formatTime(scope.row.joinTime)}}</span>
+				</template>
+            </el-table-column>
+            <el-table-column
+				prop="uState"
+				label="状态"
+				min-width="8.9%"
+				:filters="[
+					{ text: '正常', value: 1 },
+					{ text: '禁用', value: 0 },
+					]"
+				:filter-method="filterState"
+				:filter-multiple="false"
+            >
+				<template slot-scope="scope">
+					<span>{{stateToText(scope.row.uState)}}</span>
+				</template>
+            </el-table-column>
 
-						<el-table-column
-							label="操作"
-							min-width="7.1%"
-						>
-							<template slot-scope="scope">
-								<a href="#" style="color: #108EE9" @click="authority">权限</a>
-								<a href="#" v-if="scope.row.uState ==1" style="color: #108EE9" @click="isForbidden(scope.row)">禁用</a>
-								<a href="#" v-if="scope.row.uState ==0" style="color: #108EE9" @click="isForbidden(scope.row)">开通</a>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
-			</div>
-		</div>
-	</div>
+            <el-table-column
+              label="操作"
+              min-width="7.1%"
+            >
+              <template slot-scope="scope">
+                <span style="color: #108EE9" @click="authority">权限</span>
+                <span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
+				<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -377,7 +371,8 @@ export default {
 			// uid         int【必填】     当前用户UserID
             // toid        int【必填】     被操作的UserID
 			// ustate      int【必填】     用户状态值
-			this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
+			// this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
+			MessageBox.confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'

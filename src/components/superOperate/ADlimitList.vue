@@ -9,50 +9,50 @@
 			</div>
 		<div class="mediaList_container">
 			<div class="table_wrap">
-			<el-table
-				border
-				:data="ADlist"
-				style="width: 100%"
-				:default-sort = "{prop: 'date', order: 'descending'}"
-			>
-				<el-table-column
-				label="限制类型"
-				min-width="11.6%"
+				<el-table
+					border
+					:data="ADlist"
+					style="width: 100%"
+					:default-sort = "{prop: 'date', order: 'descending'}"
 				>
-					<template slot-scope="scope">
-						<span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
-						<el-input v-model="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
-					</template>
-				</el-table-column>
-				<el-table-column
-					label="描述"
-					min-width="62.2%"
-				>
-					<template slot-scope="scope">
-						<span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
-						<el-input v-model="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
-					</template>
-				</el-table-column>
-				<el-table-column
-					v-if="role=='SM'"
-					label="操作"
-					min-width="7.1%"
-				>
-					<template slot-scope="scope">
-						<div v-if="!scope.row.changeBtn">
-							<el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
-							<el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)" >删除</el-button>
-						</div>
-						<div v-if="scope.row.changeBtn">
-							<el-button type="text" size="small" class="saveAD"  @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
-							<el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.row, scope.$index)">取消</el-button>
-						</div>
-					</template>
-				</el-table-column>
-			</el-table>
-			<div v-if="role=='SM'">
-				<div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
-			</div>
+					<el-table-column
+					label="限制类型"
+					min-width="11.6%"
+					>
+						<template slot-scope="scope">
+							<span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
+							<el-input v-model="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="描述"
+						min-width="62.2%"
+					>
+						<template slot-scope="scope">
+							<span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
+							<el-input v-model="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
+						</template>
+					</el-table-column>
+					<el-table-column
+						v-if="role=='SM'"
+						label="操作"
+						min-width="7.1%"
+					>
+						<template slot-scope="scope">
+							<div v-if="!scope.row.changeBtn">
+								<el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
+								<el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)" >删除</el-button>
+							</div>
+							<div v-if="scope.row.changeBtn">
+								<el-button type="text" size="small" class="saveAD"  @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
+								<el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.row, scope.$index)">取消</el-button>
+							</div>
+						</template>
+					</el-table-column>
+				</el-table>
+				<div v-if="role=='SM'">
+					<div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
+				</div>
 			</div>
 
 		</div>
@@ -176,10 +176,24 @@ export default {
 		},
 		//保存
 		saveAD(rows, index){
-			if(rows.typeUpdate === ''){
+			if(rows.typeUpdate === '' ){
 				this.$message({
-					type:'error',
+					type:'warning',
 					message:'请填写限制类型后再保存'
+				});
+				return;
+			}
+			if(rows.typeUpdate.length> 30 ){
+				this.$message({
+					type:'warning',
+					message:'限制类型请保持在30个字符以内'
+				});
+				return;
+			}
+			if(rows.detailUpdate.length> 200 ){
+				this.$message({
+					type:'warning',
+					message:'描述请保持在200个字符以内'
 				});
 				return;
 			}
@@ -198,14 +212,17 @@ export default {
 				api.postApi('/AddNotPush', info).then(res => {
 					console.log(res);
 					if(res.data.SysCode ==200200){
+						location.reload();
 						Message.success(res.data.MSG);
-						this.$set(rows, 'nTitle', rows.typeUpdate);
-						this.$set(rows, 'ndescript', rows.detailUpdate);
-						this.$set(rows, 'showInput', !rows.showInput);
-						this.$set(rows, 'changeBtn', !rows.changeBtn);
-						this.ADlist.push();
+						// this.$set(rows, 'nID', res.data.nID);
+						// this.$set(rows, 'nTitle', rows.typeUpdate);
+						// this.$set(rows, 'ndescript', rows.detailUpdate);
+						// this.$set(rows, 'showInput', !rows.showInput);
+						// this.$set(rows, 'changeBtn', !rows.changeBtn);
+						// this.ADlist.push();
 					}else{
-						Message.warning(res.data.MSG);
+						// Message.warning(res.data.MSG);
+						Message.warning('广告限制不能重复');
 					}
 				}).catch(res =>{
 					console.log(res);

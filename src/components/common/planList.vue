@@ -1,154 +1,154 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix"><a href="#">方案管理</a></p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>方案列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<div style="display:inline-block">
-						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-							<el-select v-model="select" slot="prepend" placeholder="请选择">
-							<el-option label="方案名称" value="1"></el-option>
-							<el-option label="客户名称" value="2"></el-option>
-							<el-option label="品牌名称" value="3"></el-option>
-							</el-select>
-						</el-input>
-						</div>
-						<div class="block">
-						<el-date-picker
-							v-model="rangeDate"
-							type="daterange"
-							range-separator="-"
-							format="yyyy-MM-dd" 
-							value-format="yyyy-MM-dd"
-							start-placeholder="创建日期"
-							end-placeholder="创建日期">
-						</el-date-picker>
-						</div>
-						<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-						<el-button plain v-if="showNewBtn" @click="addOne">新建</el-button>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table
-						border
-						:data="currentPlan"
-						style="width: 100%"
-						:default-sort="{prop: 'date', order: 'descending'}"
-					>
-						<el-table-column
-							prop="apName"
-							label="方案名称"
-							min-width="14.9%"
-						>
-						</el-table-column>
-						<el-table-column
-							prop="cName"
-							label="客户名称"
-							min-width="12.6%"
-						>
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
-									<span title="">{{scope.row.cName}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column
-							prop="bTitle"
-							label="品牌名称"
-							min-width="6.6%"
-						>
-						</el-table-column>
-						<el-table-column
-							label="方案价格"
-							sortable
-							class="tar"
-							min-width="8.3%"
-						>
-							<template slot-scope="scope">
-								<span>{{priceFormat(scope.row.apTotal)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							prop="realName"
-							label="所有人"
-							min-width="6.1%"
-						>
-						</el-table-column>
-						<el-table-column
-							label="投放城市(点位面数,排期)"
-							min-width="23.6%"
-						>
-							<template slot-scope="scope">
-								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}<i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
-							</template>
-						</el-table-column>
-						<el-table-column
-							label="创建日期"
-							min-width="7.3%"
-						>
-							<template slot-scope="scope">
-								<span>{{formatTime(scope.row.apcTime)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							class="tac"
-							label="状态"
-							min-width="6.1%"
-							:filters="[
-							{ text: '进行中', value: '进行中' },
-							{ text: '预锁中', value: '预锁中' },
-							{ text: '已完成', value: '已完成' },
-							{ text: '未投放', value: '未投放' },
-							{ text: '强制停止', value: '强制停止' }
-							]"
-							:filter-method="filterStatus"
-							:filter-multiple="false"
-						>
-							<template slot-scope="scope">
-								<span>{{ stateToText(scope.row.apState) }}</span>
-							</template>
-						</el-table-column>
-						<el-table-column
-							label="操作"
-							min-width="8.4%"
-						>
-							<template slot-scope="scope">
-								<el-dropdown size="small" split-button trigger="click">操作
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item @click.native.prevent="preload">预锁</el-dropdown-item>
-										<el-dropdown-item @click.native.prevent="release(scope.row)">发布</el-dropdown-item>
-										<el-dropdown-item disabled="disabled">解除预锁</el-dropdown-item>
-										<el-dropdown-item @click="deleteOne(scope.row)">删除</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
+  <div class="ad_mediaDetail_wrap clearfix">
+    <div class="ad_mediaDetail_nav ">
+		<p class="clearfix"><a href="#">方案管理</a></p>
+    </div>
+    <div class="mediaList_wrap">
+      <div class="mediaList_head">
+        <h2>方案列表</h2>
+      </div>
+      <div class="mediaList_container">
+        <el-row>
+          <div class="mediaList_handel">
+            <div style="display:inline-block">
+              <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+                <el-select v-model="select" slot="prepend" placeholder="请选择">
+                  <el-option label="方案名称" value="1"></el-option>
+                  <el-option label="客户名称" value="2"></el-option>
+                  <el-option label="品牌名称" value="3"></el-option>
+                </el-select>
+              </el-input>
+            </div>
+            <div class="block">
+              <el-date-picker 
+                v-model="rangeDate"
+                type="daterange"
+                range-separator="-"
+                start-placeholder="创建日期"
+                end-placeholder="创建日期">
+              </el-date-picker>
+            </div>
+            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+            <el-button plain v-if="showNewBtn" @click="addOne">新建</el-button>
+          </div>
+        </el-row>
+        <div class="table_wrap">
+          <el-table
+				border
+				:data="currentPlan"
+				style="width: 100%"
+				:default-sort="{prop: 'date', order: 'descending'}"
+          >
+            <el-table-column
+				label="方案名称"
+				min-width="14.9%"
+            >
+				<template slot-scope="scope">
+					<a href="javascript:void(0);" @click="ToDetail(scope.row)">{{scope.row.apName}}</a>
+				</template>
+            </el-table-column> 
+            <el-table-column
+				prop="cName"
+				label="客户名称"
+				min-width="12.6%"
+            >
+				<template slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+						<span title="">{{scope.row.cName}}</span>
+					</el-tooltip>
+				</template>
+            </el-table-column>
+            <el-table-column
+				prop="bTitle"
+				label="品牌名称"
+				min-width="6.6%"
+            >	
+            </el-table-column>
+            <el-table-column
+				label="方案价格"
+				sortable
+				class="tar"
+				min-width="8.3%"
+            >
+				<template slot-scope="scope">
+					<span>{{priceFormat(scope.row.apTotal)}}</span>
+				</template>
+            </el-table-column>
+            <el-table-column
+              prop="realName"
+              label="所有人"
+              min-width="6.1%"
+            >
+            </el-table-column>
+            <el-table-column
+              label="投放城市(点位面数,排期)"
+              min-width="23.6%"
+            >
+				<template slot-scope="scope">
+					<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}<i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
+				</template>
+            </el-table-column>
+            <el-table-column
+				label="创建日期"
+				min-width="7.3%"
+			>
+				<template slot-scope="scope">
+					<span>{{formatTime(scope.row.apcTime)}}</span>
+				</template>
+			</el-table-column>
+			<el-table-column
+				class="tac"
+				label="状态"
+				min-width="6.1%"
+				:filters="[
+					{ text: '进行中', value: '进行中' },
+					{ text: '预锁中', value: '预锁中' },
+					{ text: '已完成', value: '已完成' },
+					{ text: '未投放', value: '未投放' },
+					{ text: '强制停止', value: '强制停止' }
+				]"
+				:filter-method="filterStatus"
+				:filter-multiple="false"
+			>
+				<template slot-scope="scope">
+					<span>{{ stateToText(scope.row.apState) }}</span>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="操作"
+				min-width="8.4%"
+			>
+				<template slot-scope="scope">
+					<el-dropdown size="small" split-button trigger="click">操作
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item @click.native.prevent="preload">预锁</el-dropdown-item>
+							<el-dropdown-item @click.native.prevent="release(scope.row)">发布</el-dropdown-item>
+							<el-dropdown-item disabled="disabled">解除预锁</el-dropdown-item>
+							<el-dropdown-item @click="deleteOne(scope.row)">删除</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+				</template>
+			</el-table-column>
+          </el-table>
+        </div>
 
-				<el-dialog
-					title="请选择预锁城市"
-					:visible.sync="dialogVisible"
-					width="30%"
-				>
-					<el-checkbox-group v-model="cityChoose">
-						<el-checkbox label="广州市" checked border></el-checkbox>
-						<el-checkbox label="深圳市" border></el-checkbox>
-					</el-checkbox-group>
-					<span slot="footer" class="dialog-footer">
-						<el-button @click="cancelLock">取 消</el-button>
-						<el-button type="primary" @click="confirmLock">确 定</el-button>
-					</span>
-				</el-dialog>
-			</div>
-		</div>
-	</div>
+        <el-dialog
+			title="请选择预锁城市"
+			:visible.sync="dialogVisible"
+			width="30%"
+		>
+			<el-checkbox-group v-model="cityChoose">
+				<el-checkbox label="广州市" checked border></el-checkbox>
+				<el-checkbox label="深圳市" border></el-checkbox>
+			</el-checkbox-group>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="cancelLock">取 消</el-button>
+				<el-button type="primary" @click="confirmLock">确 定</el-button>
+			</span>
+		</el-dialog>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -282,7 +282,7 @@ export default {
 				this.currentPlan = this.planList;
 			}
 		},
-		// 搜索方案 
+		// 搜索方案
 		search(){
 			console.log(this.select);
 			console.log(this.keyword);
@@ -360,6 +360,12 @@ export default {
 			    message: '已取消操作'
 			  })
 			})
+		},
+		// 跳转到详情页面
+		ToDetail(row){
+			console.log(row);
+			// sessionStorage.setItem('account_detail', JSON.stringify(row));
+			this.$router.push('./planDetail');
 		},
 		//确认框
 		preload(e) {
@@ -523,7 +529,7 @@ export default {
     position: absolute;
     left: 0;
     top: 12px;
-    font-family: PingFangSC-Regular;
+
     font-size: 14px;
     line-height: 18px;
   }

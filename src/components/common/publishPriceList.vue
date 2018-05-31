@@ -70,7 +70,7 @@
 						>
 							<template slot-scope="scope">
 								<span class="data" v-if="!scope.row.showInput">{{scope.row.adPrice/100}}</span>
-								<el-input v-model.number="scope.row.priceUpdate"  placeholder="请输入刊例价" class=" tar" v-if="scope.row.showInput"></el-input>
+								<el-input type="number" v-model="scope.row.priceUpdate"  placeholder="请输入刊例价" class=" tar" v-if="scope.row.showInput"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -126,16 +126,6 @@ export default {
 			// 过滤去重后的城市
 			filtCity: [],
 			publishPriceList:[
-				// {
-				// 	city:'北京',
-				// 	media:'社区广告门',
-				// 	publicPrice:'￥3800',
-				// 	cityUpdate:'',
-				// 	mediaUpdate:'',
-				// 	priceUpdate:'',
-				// 	showInput:false,
-				// 	changeBtn:false,
-				// },
 				{
 					amID: 2,
 					rID: 110100,
@@ -227,7 +217,7 @@ export default {
 		},
 		//删除
 		deleteRow(rows, index){
-			this.$confirm('确定要删除这条数据吗？','提示',{
+			MessageBox.confirm('确定要删除这条数据吗？','提示',{
 				confirmButtonText:'确定',
 				cancelButtonText:'取消',
 				type:'warning'
@@ -249,10 +239,7 @@ export default {
 					}
 				});
 			}).catch(()=>{
-				this.$message({
-					type:'info',
-					message:'已取消删除'
-				})
+				Message.info('已取消删除');
 			})
 		},
 		//编辑
@@ -273,23 +260,13 @@ export default {
 			this.$set(rows, 'changeBtn', !rows.changeBtn);
 			this.publishPriceList.push();
 			console.log(rows);
-
-			// this.publishPriceList[index].cityUpdate = this.publishPriceList[index].city;
-			// this.publishPriceList[index].mediaUpdate = this.publishPriceList[index].media;
-			// this.publishPriceList[index].priceUpdate = this.publishPriceList[index].publicPrice;
-			// //切换输入框和操作类型的显示
-			// this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-			// this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
 		},
 		//保存
 		savePP(rows, index){
-			// if(rows.rID === '' || rows.mVehicle === '' || rows.priceUpdate === ''){
-			// 	this.$message({
-			// 		type:'error',
-			// 		message:'请选择城市,媒体，填写价格之后再保存'
-			// 	});
-			// 	return;
-			// }
+			if(rows.rNameUpdate === '' || rows.mediaUpdate === '' || rows.priceUpdate === ''){
+				Message.warning('请选择城市,媒体，填写价格之后再保存');
+				return;
+			}
 			if(!rows.amID){
 				// 新增刊例价
 				// uid     int【必填】     UserID
@@ -310,19 +287,22 @@ export default {
 						Message.success('该城市已存在刊例价，请勿重复添加');
 					}else{
 						if(res.data){
-							this.$set(rows, 'amID', res.data.amID);
-							this.$set(rows, 'rID', rows.cityUpdate);
-							this.$set(rows, 'rName', rows.rNameUpdate);
+							location.reload();
+
+							// this.$set(rows, 'amID', res.data.amID);
+							// this.$set(rows, 'rID', rows.cityUpdate);
+							// this.$set(rows, 'rName', rows.rNameUpdate);
 	
-							this.$set(rows, 'mVehicle', rows.mediaUpdate);
-							this.$set(rows, 'adPrice', rows.priceUpdate*100);
-							this.$set(rows, 'showInput', !rows.showInput);
-							this.$set(rows, 'changeBtn', !rows.changeBtn);
-							console.log(rows);
-							this.publishPriceList.push();
+							// this.$set(rows, 'mVehicle', rows.mediaUpdate);
+							// this.$set(rows, 'adPrice', rows.priceUpdate*100);
+							// this.$set(rows, 'showInput', !rows.showInput);
+							// this.$set(rows, 'changeBtn', !rows.changeBtn);
+							// console.log(rows);
+							// this.publishPriceList.push();
 							Message.warning('添加成功');
+						}else{
+							Message.success('该城市已存在刊例价，请勿重复添加');
 						}
-						Message.success('该城市已存在刊例价，请勿重复添加');
 					}
 				}).catch(res =>{
 					console.log(res);
@@ -361,37 +341,12 @@ export default {
 					console.log(res);
 				});
 			}
-
-
-			// if(rows[index].city === '' || rows[index].media === '' || rows[index].publicPrice === ''){
-			// 	this.$message({
-			// 		type:'error',
-			// 		message:'请完善所有信息后再保存！'
-			// 	});
-			// 	this.publishPriceList[index].city = this.publishPriceList[index].cityUpdate;
-			// 	this.publishPriceList[index].media = this.publishPriceList[index].mediaUpdate;
-			// 	this.publishPriceList[index].publicPrice = this.publishPriceList[index].priceUpdate;
-
-			// }else{
-			// 	//前端显示
-			// 	this.publishPriceList[index].city = this.publishPriceList[index].cityUpdate;
-			// 	this.publishPriceList[index].media = this.publishPriceList[index].mediaUpdate;
-			// 	this.publishPriceList[index].publicPrice = this.publishPriceList[index].priceUpdate;
-
-			// 	//切换输入框和操作类型的显示
-			// 	this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-			// 	this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
-			// }
-
 		},
 		//取消
 		cancelPP(rows, index){
 			if(!rows.amID){
 				this.publishPriceList.splice(index, 1);
 			}else{
-				//切换输入框和操作类型的显示
-				// this.publishPriceList[index].showInput = !this.publishPriceList[index].showInput;
-				// this.publishPriceList[index].changeBtn = !this.publishPriceList[index].changeBtn;
 				this.$set(rows, 'rID', rows.rID);
 				this.$set(rows, 'rName', rows.rName);
 				this.$set(rows, 'mVehicle', rows.mVehicle);
