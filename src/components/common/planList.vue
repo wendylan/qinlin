@@ -44,7 +44,7 @@
 				min-width="14.9%"
             >
 				<template slot-scope="scope">
-					<a href="javascript:void(0);" @click="ToDetail(scope.row)">{{scope.row.apName}}</a>
+					<a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
 				</template>
             </el-table-column> 
             <el-table-column
@@ -290,9 +290,6 @@ export default {
 		},
 		// 搜索方案
 		search(){
-			console.log(this.select);
-			console.log(this.keyword);
-			console.log(this.rangeDate);
 			let range = this.rangeDate;
 			let arr = [];
 			let select = this.select;
@@ -380,9 +377,9 @@ export default {
 			})
 		},
 		// 跳转到详情页面
-		ToDetail(row){
-			console.log(row);
-			// sessionStorage.setItem('account_detail', JSON.stringify(row));
+		ToDetail(apid){
+			console.log(apid);
+			sessionStorage.setItem('plan_apid', apid);
 			this.$router.push('./planDetail');
 		},
 		//确认框

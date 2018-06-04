@@ -102,7 +102,7 @@
 											prop="city"
 											label="城市"
 											min-width="6%"
-											:filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
+											:filters="filterCityData"
 											:filter-method="filterCity"
 											>
 											</el-table-column>
@@ -224,8 +224,14 @@
 </template>
 
 <script>
+import { api } from '../../api/api.js';
+// 城市区域变成中文
+import areaToText from '../../commonFun/areaToText_new.js';
+// 价格格式化
+import commaFormat from '../../commonFun/commaFormat.js';
+// 筛选过滤
+// import filterFormat from '../../commonFun/filterTableData.js';
 import { Table, TableColumn, Tabs, TabPane, Button } from 'element-ui';
-import { api } from '../../api/api';
 export default {
 	name: "planDetail",
 	components:{
@@ -237,6 +243,8 @@ export default {
 	},
 	data() {
 		return {
+			// 城市过滤结果
+			filterCityData: [],
 			//监播备注
 			remark: '',
 			changeRemark: false,
@@ -248,347 +256,349 @@ export default {
 			planPanel: 'first',
 			//选点排期
 			planList: [
-			{
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				putAB:'A面',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}],
+				// {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }, {
+				// 	recName: '珠江帝景花园',
+				// 	city: '广州',
+				// 	origin: '海珠区',
+				// 	putAB:'A面',
+				// 	buildType: '高端住宅',
+				// 	houseNum: '600',
+				// 	buildPrice: '￥30,000',
+				// 	mediaName: '广州市中山大道',
+				// 	buildNum: '12',
+				// 	schedules: '2017.08.30-2017.09.30',
+				// 	businessOrigin: '白云万达广场',
+				// 	assetID: 'GZ201871024',
+				// 	liveYear: '1999年',
+				// 	adLimit: '地产/医药/汽车'
+				// }
+			],
 			//物料信息
 			materialInfo: [
-			{
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}],
+				{
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}, {
+					no: 1,
+					adSize: '840*1180',
+					visualPic: '840*1180',
+					resolution: '150dpi',
+					colorMode: 'CMYK',
+					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+					pointNum: '28'
+				}
+			],
 		};
 	},
 	created(){
@@ -604,11 +614,76 @@ export default {
 				// apid: apid
 				apid: 1
 			};
+			let tempADList = [
+				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,asIDs: "7",asLabs: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
+				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "1,2",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
+				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6200000,asIDs: "4,3",asLabs: "B,A",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
+				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "5,6",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"},
+				{resName: "帝景山庄",mTitle: "帝景门",rName: "白云区",cType: "别墅",hNum: 171,hPrice: 6600000,asIDs: "7,8",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉",fNum: 12,assetTag: "201707GZ-1328",chDay: "2014",notPush: "医学"}
+			];
+			let initData = tempADList;
+			let arr = [];
+			for(let data of initData){
+				let obj = {
+					recName: data.resName,
+					city: this.cityToText(['440100']),
+					origin: data.rName,
+					putAB: data.asLabs+'面',
+					buildType: data.cType,
+					houseNum: data.hNum,
+					buildPrice: this.priceFormat(data.hPrice),
+					mediaName: data.mTitle,
+					buildNum: data.apNum,
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: data.tradingArea,
+					assetID: data.assetTag,
+					liveYear: data.chDay,
+					adLimit: data.notPush
+				};
+				arr.push(obj);
+			}
+			this.planList = arr;
 			api.postApi('/GetAdPlan', info).then(res =>{
 				console.log(res.data);
+				// [{"apID":1,"apName":"第一个投放方案","adcID":5,"suID":7,"bID":2,"muID":0,"apuID":3,"apcTime":"2018-05-09 18:29:47.0","appuID":0,"apaDays":2017,"apTotal":465200,"apCity":"440100","apNum":4,"apsuID":0,"apState":1}] 
+				let initData = res.data;
+				let arr = [];
+				for(let data of initData){
+					let obj = {
+						recName: data.resName,
+						city: this.cityToText(['440100']),
+						origin: data.rName,
+						putAB: data.asLabs+'面',
+						buildType: data.cType,
+						houseNum: data.hNum,
+						buildPrice: this.priceFormat(data.hPrice),
+						mediaName: data.mTitle,
+						buildNum: data.apNum,
+						schedules: '2017.08.30-2017.09.30',
+						businessOrigin: data.tradingArea,
+						assetID: data.assetTag,
+						liveYear: data.chDay,
+						adLimit: data.notPush
+					};
+					arr.push(obj);
+				}
+				this.planList = arr;
 			}).catch(res => {
 				console.log(res);
 			});
+		},
+		// 城市转换为中文
+		cityToText(arr){
+			console.table(arr);
+			let cityText = '';
+			for(let data of arr){
+				cityText = areaToText.toText(Number(data)).city + ',' + cityText;
+			}
+			return cityText;
+		},
+		priceFormat(price){
+			console.table(price);
+			return commaFormat.format(price);
 		},
 		filterCity(value, row) {
 			return row.city === value;
