@@ -3595,7 +3595,7 @@
         "regionEntitys": [
             {
                 "code": "310100", 
-                "region": "市辖区", 
+                "region": "上海市", 
                 "regionEntitys": [
                     {
                         "code": "310101", 
@@ -10329,7 +10329,7 @@
         "regionEntitys": [
             {
                 "code": "500100", 
-                "region": "市辖区", 
+                "region": "重庆市", 
                 "regionEntitys": [
                     {
                         "code": "500101", 
