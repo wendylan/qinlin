@@ -30,20 +30,13 @@
 					<!-- <el-select v-model="clientForm.rid" placeholder="请选择活动区域">
 						<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
 					</el-select> -->
-					<!-- <el-cascader
-						:options="allProvince"
-						v-model="clientForm.cityArr"
-						separator="-"
-						:show-all-levels="false"
-						@change="seleProClient"
-						@active-item-change="handleItemChange"
-					></el-cascader> -->
 					<el-cascader
 						:options="allProvince"
 						v-model="clientForm.cityArr"
 						separator="-"
 						:show-all-levels="false"
 						@change="seleProClient"
+						@active-item-change="handleItemChange"
 					></el-cascader>
 				</el-form-item>
                 <el-form-item label="邮箱:" prop="email">
@@ -126,20 +119,13 @@
 					<!-- <el-select v-else v-model="companyForm.rID" placeholder="请选择公司所在城市">
 						<el-option :label="item.rName" :value="item.rID" v-for="item of allProvince" :key="item.rID"></el-option>
 					</el-select> -->
-					<!-- <el-cascader v-else
+					<el-cascader v-else
 						:options="allProvince"
 						v-model="companyForm.cityArr"
 						separator="-"
 						:show-all-levels="false"
 						@change="seleProCom"
 						@active-item-change="handleItemChange"
-					></el-cascader> -->
-					<el-cascader
-						:options="allProvince"
-						v-model="companyForm.cityArr"
-						separator="-"
-						:show-all-levels="false"
-						@change="seleProCom"
 					></el-cascader>
 				</el-form-item>
 				<el-form-item label="备注:" prop="cRemark">
@@ -165,7 +151,6 @@
 import api from '../../api/api.js';
 import areaToText from '../../commonFun/areaToText.js';
 import region from '../../commonFun/areaPackage.js';
-import region2 from '../../commonFun/areaPackage_new.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message, MessageBox } from 'element-ui';
 export default {
@@ -330,7 +315,6 @@ export default {
 		}
 	},
 	created() {
-		region2.province();
 		this.getIndustry();
 		this.getAreaData();
 	},
@@ -352,11 +336,9 @@ export default {
 		},
 		// 获取所有区域信息
 		getAreaData(){
-			// region.province(data =>{
-			// 	this.allProvince = data.province;
-			// });
-
-			this.allProvince = region2.province();
+			region.province(data =>{
+				this.allProvince = data.province;
+			});
 		},
 		// 点击省级去显示其对应市级
 		handleItemChange(val){
