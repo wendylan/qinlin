@@ -468,7 +468,7 @@
                     <el-table-column
                       prop="planNum"
                       label="计划点位数"
-                      min-width=18.6%"
+                      min-width="18.6%"
                     >
                     </el-table-column>
                     <el-table-column

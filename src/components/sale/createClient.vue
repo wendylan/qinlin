@@ -15,13 +15,13 @@
               <el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
                        class="demo-ruleForm">
                 <el-form-item label="联系人:" prop="realname">
-                  <el-input v-model="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
+                  <el-input v-model.trim="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="账户名:" prop="sname">
-                  <el-input v-model="clientForm.sname" placeholder="请输入账户名"></el-input>
+                  <el-input v-model.trim="clientForm.sname" placeholder="请输入账户名"></el-input>
                 </el-form-item>
                 <el-form-item label="职位:" prop="position">
-                  <el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
+                  <el-input v-model.trim="clientForm.position" placeholder="请输入联系人职位"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号码:" prop="phone">
                   <el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
@@ -40,13 +40,13 @@
 					></el-cascader>
 				</el-form-item>
                 <el-form-item label="邮箱:" prop="email">
-                  <el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
+                  <el-input v-model.trim="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
                 </el-form-item>
                 <el-form-item label="固定电话:" prop="telphone">
-                  <el-input v-model="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
+                  <el-input v-model.trim="clientForm.telphone" placeholder="请输入联系人固定电话"></el-input>
                 </el-form-item>
                 <el-form-item label="事业部:" prop="division">
-                  <el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
+                  <el-input v-model.trim="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
                 </el-form-item>
               </el-form>
             </div>
@@ -65,7 +65,7 @@
 					<span v-if="isFill">{{companyForm.cName}} <el-button @click="selectAnother" size="mini">重选</el-button></span>
 					<el-autocomplete
 						v-else
-						v-model="companyForm.cName"
+						v-model.trim="companyForm.cName"
 						:fetch-suggestions="querySearchAsync"
 						placeholder="请输入内容"
 						@select="handleSelect"
@@ -112,7 +112,7 @@
 				</el-form-item>
                 <el-form-item label="公司地址:" prop="cAddress">
 					<span v-if="isFill">{{companyForm.cAddress}}</span>
-					<el-input v-else v-model="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
+					<el-input v-else v-model.trim="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
 				</el-form-item>
                 <el-form-item label="所在城市:" prop="cityArr">
 					<span v-if="isFill">{{companyForm.rName}}</span>
@@ -130,7 +130,7 @@
 				</el-form-item>
 				<el-form-item label="备注:" prop="cRemark">
 					<span v-if="isFill">{{companyForm.cRemark}}</span>
-					<el-input v-else type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
+					<el-input v-else type="textarea" v-model.trim="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
 				</el-form-item>
               </el-form>
             </div>

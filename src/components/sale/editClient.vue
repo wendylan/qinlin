@@ -15,13 +15,13 @@
 							<el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px"
 									class="demo-ruleForm">
 								<el-form-item label="联系人:" prop="realName">
-									<el-input v-model="clientForm.realName" placeholder="请输入联系人姓名" disabled="disabled"></el-input>
+									<el-input v-model.trim="clientForm.realName" placeholder="请输入联系人姓名" disabled="disabled"></el-input>
 								</el-form-item>
 								<el-form-item label="账户名:" prop="sName">
-									<el-input v-model="clientForm.sName" placeholder="请输入账户名" disabled="disabled"></el-input>
+									<el-input v-model.trim="clientForm.sName" placeholder="请输入账户名" disabled="disabled"></el-input>
 								</el-form-item>
 								<el-form-item label="职位:" prop="position">
-									<el-input v-model="clientForm.position" placeholder="请输入联系人职位"></el-input>
+									<el-input v-model.trim="clientForm.position" placeholder="请输入联系人职位"></el-input>
 								</el-form-item>
 								<el-form-item label="手机号码:" prop="phone">
 									<el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
@@ -37,13 +37,13 @@
 									></el-cascader>
 								</el-form-item>
 								<el-form-item label="邮箱:" prop="email">
-									<el-input v-model="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
+									<el-input v-model.trim="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
 								</el-form-item>
 								<el-form-item label="固定电话:" prop="telephone">
-									<el-input v-model="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
+									<el-input v-model.trim="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
 								</el-form-item>
 								<el-form-item label="事业部:" prop="division">
-									<el-input v-model="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
+									<el-input v-model.trim="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
 								</el-form-item>
 							</el-form>
 						</div>
@@ -59,7 +59,7 @@
 							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px"
 									class="demo-ruleForm">
 								<el-form-item label="公司名称:" prop="cName">
-									<el-input v-model="companyForm.cName" placeholder="请输入公司具体地址"></el-input>
+									<el-input v-model.trim="companyForm.cName" placeholder="请输入公司具体地址"></el-input>
 								</el-form-item>
 								<el-form-item label="公司品牌:" prop="cBrand" class="tags">
 									<el-tag
@@ -99,7 +99,7 @@
 									></el-cascader>
 								</el-form-item>
 								<el-form-item label="公司地址:" prop="cAddress">
-									<el-input v-model="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
+									<el-input v-model.trim="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
 								</el-form-item>
 								<el-form-item label="所在城市:" prop="cityArr">
 									<el-cascader
@@ -112,7 +112,7 @@
 									></el-cascader>
 								</el-form-item>
 								<el-form-item label="备注:" prop="cRemark">
-									<el-input type="textarea" v-model="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
+									<el-input type="textarea" v-model.trim="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
 								</el-form-item>
 							</el-form>
 						</div>

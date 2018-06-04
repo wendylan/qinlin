@@ -26,20 +26,21 @@
 				</div>
 				<div class="companyInfo">
 					<h4>公司信息</h4>
-					<div class="infobox">
+					<!-- <div class="infobox"> -->
 						<ul>
 							<li><em>公司名称：</em>{{companyInfo.cName}}</li>
 							<li><em>公司地址：</em>{{companyInfo.cAddress}}</li>
+							<li><em>行业：</em>{{companyInfo.iName}}</li>
 							<li><em>公司品牌：</em>{{companyInfo.cBrand}}</li>
 							<li><em>所在城市：</em>{{companyInfo.rName}}</li>
-							<li><em>行业：</em>{{companyInfo.iName}}</li>
+							<li><em>备注：</em>{{companyInfo.cRemark}}</li>
 						</ul>
-						<div class="remarkBox">
+						<!-- <div class="remarkBox">
 							<p>
 								<em>备注：</em>{{companyInfo.cRemark}}
 							</p>
-						</div>
-					</div>
+						</div> -->
+					<!-- </div> -->
 				</div>
 			</div>
 		</div>
