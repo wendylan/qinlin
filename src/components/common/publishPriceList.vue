@@ -106,7 +106,8 @@ import region from '../../commonFun/areaPackage.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
 import { Table, TableColumn, Input, Button, MessageBox, Message, Select, Option, Cascader } from 'element-ui';
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 export default {
 	name: "publishPriceList",
 	components: {
@@ -210,14 +211,15 @@ export default {
 			console.log(rows);
 			// this.$set(rows, 'rID', rows.cityArr[1]);
 			this.$set(rows, 'cityUpdate', rows.cityArr[1]);
-			areaToText.toTextCity(data=>{
-				console.log(data);
-				this.$set(rows, 'rNameUpdate', data);
-			}, rows.cityUpdate);
+			// areaToText.toTextCity(data=>{
+			// 	console.log(data);
+			// 	this.$set(rows, 'rNameUpdate', data);
+			// }, rows.cityUpdate);
+			this.$set(rows, 'rNameUpdate', areaToText.toText(rows.cityUpdate).city);
 		},
 		//删除
 		deleteRow(rows, index){
-			MessageBox.confirm('确定要删除这条数据吗？','提示',{
+			this.$confirm('确定要删除这条数据吗？','提示',{
 				confirmButtonText:'确定',
 				cancelButtonText:'取消',
 				type:'warning'

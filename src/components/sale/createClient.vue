@@ -149,7 +149,8 @@
 
 <script>
 import api from '../../api/api.js';
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 import region from '../../commonFun/areaPackage.js';
 import industryToText from '../../commonFun/industryToText.js';
 import { Form, FormItem, Input, Button, Cascader, Select, Option, Autocomplete, Tag, Message, MessageBox } from 'element-ui';
@@ -323,11 +324,9 @@ export default {
 			this.companyForm.industryIdArr = val;
 		},
 		seleProCom(val){
-			console.log(val);
 			this.companyForm.cityArr = val;
 		},
 		seleProClient(val){
-			console.log(val);
 			this.clientForm.cityArr = val;
 		},
 		// 获取所有行业信息
@@ -372,10 +371,11 @@ export default {
 			this.companyForm.cRemark = item.cRemark;
 
 			// 获取公司所在地的中文名称
-			areaToText.toTextCity(data=>{
-				console.log(data);
-				this.companyForm.rName = data;
-			}, item.rID);
+			// areaToText.toTextCity(data=>{
+			// 	console.log(data);
+			// 	this.companyForm.rName = data;
+			// }, item.rID);
+			this.companyForm.rName = areaToText.toText(item.rID).city;
 
 			// 获取公司原有的品牌信息
 			api.getApi('/GetBrand', {cid: item.cID}).then(res => {

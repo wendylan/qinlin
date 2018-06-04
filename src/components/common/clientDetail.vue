@@ -54,7 +54,8 @@
 <script>
 import api from '../../api/api.js';
 // 区域转换成中文
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 // 行业转换为中文
 import industryToText from '../../commonFun/industryToText.js';
 import { Button } from 'element-ui';
@@ -115,11 +116,12 @@ export default {
 			}
 			if(userInfo){
 				if(userInfo.rID){
-					areaToText.toTextCity(data=>{
-						console.log(data);
-						// userInfo.rName = data.city;	
-						this.$set(this.userInfo, 'rName', data);
-					}, userInfo.rID);
+					// areaToText.toTextCity(data=>{
+					// 		console.log(data);
+					// 	// userInfo.rName = data.city;	
+					// 	this.$set(this.userInfo, 'rName', data);
+					// }, userInfo.rID);
+					userInfo.rName = areaToText.toText(userInfo.rID).city;
 				}
 				this.userInfo = userInfo;
 			}

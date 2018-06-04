@@ -123,7 +123,8 @@ import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
 import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, Message } from 'element-ui';
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 export default {
 	name: "customList",
 	components:{
@@ -289,9 +290,10 @@ export default {
 					if(!res.data.SysCode){
 						this.planList = res.data;
 						for(let data of this.planList){
-							areaToText.toTextCity(city=>{
-								this.$set(data, 'clientRName', city);
-							}, data.rID);
+							// areaToText.toTextCity(city=>{
+							// 	this.$set(data, 'clientRName', city);
+							// }, data.rID);
+							this.$set(data, 'clientRName', areaToText.toText(data.rID).city);
 						}
 						this.currentPlan = this.planList;
 						this.filtCity = filterFormat(this.planList, 'rName');
@@ -307,9 +309,10 @@ export default {
 					if(!res.data.SysCode){
 						this.planList = res.data;
 						for(let data of this.planList){
-							areaToText.toTextCity(city=>{
-								this.$set(data, 'clientRName', city);
-							}, data.rID);
+							// areaToText.toTextCity(city=>{
+							// 	this.$set(data, 'clientRName', city);
+							// }, data.rID);
+							this.$set(data, 'clientRName', areaToText.toText(data.rID).city);
 						}
 						this.currentPlan = this.planList;
 						this.filtCity = filterFormat(this.planList, 'rName');

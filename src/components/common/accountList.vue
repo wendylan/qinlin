@@ -130,7 +130,8 @@ import dateFormat from '../../commonFun/timeFormat.js';
 // 角色转换为中文
 import uTypeToText from '../../commonFun/uTypeToText.js'
 // 城市转换为中文
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 export default {
 	name: "customList",
 	components:{
@@ -245,24 +246,42 @@ export default {
 							this.$set(account[index], 'uWhoArr', '全国');
 						}else{
 							for(let i=0; i<uWhoArr.length; i++){
-								areaToText.toTextCity(res=>{
-									result = result +'/'+res;
-									let cityObj = {
-										text: res,
-										value: res,
-									}
-									// 去重城市
-									if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
-										cityList.push(cityObj);
-									}
-									if(i >= uWhoArr.length-1){
-										console.log('result', result);
-										// data.uWhoArr = result;
-										this.$set(account[index], 'uWhoArr', result);
-										this.filterUWhoData = cityList;
-										console.log('cityList', cityList);
-									}
-								}, Number(uWhoArr[i]));
+								// areaToText.toTextCity(res=>{
+								// 	result = result +'/'+res;
+								// 	let cityObj = {
+								// 		text: res,
+								// 		value: res,
+								// 	}
+								// 	// 去重城市
+								// 	if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
+								// 		cityList.push(cityObj);
+								// 	}
+								// 	if(i >= uWhoArr.length-1){
+								// 		console.log('result', result);
+								// 		// data.uWhoArr = result;
+								// 		this.$set(account[index], 'uWhoArr', result);
+								// 		this.filterUWhoData = cityList;
+								// 		console.log('cityList', cityList);
+								// 	}
+								// }, Number(uWhoArr[i]));
+
+								let res = areaToText.toText(Number(uWhoArr[i])).city
+								result = result +'/'+res;
+								let cityObj = {
+									text: res,
+									value: res,
+								}
+								// 去重城市
+								if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
+									cityList.push(cityObj);
+								}
+								if(i >= uWhoArr.length-1){
+									console.log('result', result);
+									// data.uWhoArr = result;
+									this.$set(account[index], 'uWhoArr', result);
+									this.filterUWhoData = cityList;
+									console.log('cityList', cityList);
+								}
 							}
 						}
 					}

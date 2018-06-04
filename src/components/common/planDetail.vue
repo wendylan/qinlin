@@ -1,619 +1,635 @@
 <template>
-  <div>
-    <div class="ad_mediaMana_wrap">
-      <div class="ad_mediaMana_nav clearfix">
-        <p><a href="#">方案管理</a><em> / </em><a href="#">方案详情</a></p>
-        <div class="tip">该方案由 shanqi 创建于 2018.04.26 10:37:48</div>
-      </div>
-      <!--资源信息-->
-      <div class="mediaMana_content_top">
-        <div class="content_top_wrap">
-          <div class="plan-title">
-            <h4>
-              <img src="../../assets/home/orderlogo.png" alt="">珠江帝景地产三月投放
-              <!--<p>{{cid}}<img src="../../assets/home/bi.png" alt="" @click="changeCID = true"></p>-->
-            </h4>
-            <div class="handleBtn">
-              <el-button plain>导出</el-button>
-              <el-button type="primary">编辑</el-button>
-            </div>
-          </div>
-          <div>
-            <div class="plan-detail">
-              <div class="plan-detail-left">
-                <ul>
-                  <li><span>公司名称：</span><em>杭州市阿里巴巴网络科技有限公司</em></li>
-                  <li><span>事业部：</span><em>市场推广部</em></li>
-                  <li><span>现金结算：</span><em>￥797,142</em></li>
-                  <li><span>公司品牌：</span><em>阿里巴巴</em></li>
-                  <li><span>投放城市：</span><em>广州、深圳</em></li>
-                  <li><span>资源置换：</span><em>￥0</em></li>
-                  <li><span>所属销售：</span><em>周杰伦</em></li>
-                  <li><span>方案备注：</span><em>无</em></li>
-                  <li><span>其他费用：</span><em>￥0</em></li>
-                </ul>
-              </div>
-              <div class="plan-detail-right">
-                <dl>
-                  <dt>状态</dt>
-                  <dd>锁点</dd>
-                </dl>
-                <dl>
-                  <dt>方案金额</dt>
-                  <dd>¥ 1,380,568.08</dd>
-                </dl>
-              </div>
-            </div>
-            <div class="plan-panel">
-              <el-tabs v-model="planPanel">
-                <el-tab-pane label="选点排期" name="first">
-                  <div class="first-wrap box-wrap">
-                    <h4>选点排期</h4>
-                    <div class="table_wrap">
-                      <el-table
-                        border
-                        :data="planList"
-                        style="width: 100%"
-                        :default-sort="{prop: 'recName', order: 'descending'}"
-                        :row-class-name="tableRowClassName"
-                      >
-                        <el-table-column type="expand">
-                          <template slot-scope="props">
-                            <el-form label-position="left" inline class="demo-table-expand">
-                              <el-form-item label="商圈：">
-                                <span>{{ props.row.businessOrigin}}</span>
-                              </el-form-item>
-                              <el-form-item label="楼栋数量：">
-                                <span>{{ props.row.buildNum }}</span>
-                              </el-form-item>
-                              <el-form-item label="资产编号：">
-                                <span>{{ props.row.assetID }}</span>
-                              </el-form-item>
-                              <el-form-item label="入住年份：">
-                                <span>{{ props.row.liveYear }}</span>
-                              </el-form-item>
-                              <el-form-item label="广告限制：">
-                                <span>{{ props.row.adLimit }}</span>
-                              </el-form-item>
-                            </el-form>
-                          </template>
-                        </el-table-column>
+	<div>
+		<div class="ad_mediaMana_wrap">
+			<div class="ad_mediaMana_nav clearfix">
+				<p><a href="#">方案管理</a><em> / </em><a href="#">方案详情</a></p>
+				<div class="tip">该方案由 shanqi 创建于 2018.04.26 10:37:48</div>
+			</div>
+			<!--资源信息-->
+			<div class="mediaMana_content_top">
+				<div class="content_top_wrap">
+					<div class="plan-title">
+						<h4>
+							<img src="../../assets/images/orderlogo.png" alt="">珠江帝景地产三月投放
+							<!--<p>{{cid}}<img src="../../assets/images/bi.png" alt="" @click="changeCID = true"></p>-->
+						</h4>
+						<div class="handleBtn">
+							<el-button plain>导出</el-button>
+							<el-button type="primary">编辑</el-button>
+						</div>
+					</div>
+					<div>
+						<div class="plan-detail">
+							<div class="plan-detail-left">
+								<ul>
+									<li><span>公司名称：</span><em>杭州市阿里巴巴网络科技有限公司</em></li>
+									<li><span>所属销售：</span><em>周杰伦</em></li>
+									<li><span>现金结算：</span><em>￥797,142</em></li>
+									<li><span>公司品牌：</span><em>阿里巴巴</em></li>
+									<li><span>投放城市：</span><em>广州、深圳</em></li>
+									<li><span>资源置换：</span><em>￥0</em></li>
+									<li><span>联系人：</span><em>金城武</em></li>
+									<li><span>方案备注：</span><em>无</em></li>
+									<li><span>其他费用：</span><em>￥0</em></li>
+								</ul>
+							</div>
+						<div class="plan-detail-right">
+							<dl>
+								<dt>状态</dt>
+								<dd>锁点</dd>
+							</dl>
+							<dl>
+								<dt>方案金额</dt>
+								<dd>¥ 1,380,568.08</dd>
+							</dl>
+						</div>
+						</div>
+						<div class="plan-panel">
+							<el-tabs v-model="planPanel">
+								<el-tab-pane label="选点排期" name="first">
+									<div class="first-wrap box-wrap">
+										<h4>选点排期</h4>
+										<div class="table_wrap">
+										<el-table
+											border
+											:data="planList"
+											style="width: 100%"
+											:default-sort="{prop: 'recName', order: 'descending'}"
+											:row-class-name="tableRowClassName"
+										>
+											<el-table-column type="expand">
+											<template slot-scope="props">
+												<el-form label-position="left" inline class="demo-table-expand">
+												<el-form-item label="商圈：">
+													<span>{{ props.row.businessOrigin}}</span>
+												</el-form-item>
+												<el-form-item label="楼栋数量：">
+													<span>{{ props.row.buildNum }}</span>
+												</el-form-item>
+												<el-form-item label="资产编号：">
+													<span>{{ props.row.assetID }}</span>
+												</el-form-item>
+												<el-form-item label="入住年份：">
+													<span>{{ props.row.liveYear }}</span>
+												</el-form-item>
+												<el-form-item label="广告限制：">
+													<span>{{ props.row.adLimit }}</span>
+												</el-form-item>
+												</el-form>
+											</template>
+											</el-table-column>
 
-                        <el-table-column
-                          label="资源名称"
-                          min-width="16.1%"
-                          prop="recName"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="mediaName"
-                          label="媒体名称"
-                          min-width="10.3%"
-                          class="tar"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="putAB"
-                          label="投放面"
-                          min-width="8.8%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="city"
-                          label="城市"
-                          min-width="6%"
-                          :filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
-                          :filter-method="filterCity"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="origin"
-                          label="区域"
-                          min-width="7.4%"
-                          :filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
-                          :filter-method="filterOrigin"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="buildType"
-                          label="楼盘类型"
-                          min-width="8.8%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="houseNum"
-                          label="小区户数"
-                          min-width="7.3%"
-                          class="tar"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="buildPrice"
-                          label="楼盘价格"
-                          min-width="7.3%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                          prop="schedules"
-                          label="排期"
-                          min-width="14.2%"
-                          :filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
-                          :filter-method="filterSchedules"
-                        >
-                        </el-table-column>
-                      </el-table>
-                    </div>
-                  </div>
-                  <div class="content_bottom_btn">
-                    <button class="cancel">返回</button>
-                  </div>
-                </el-tab-pane>
-                <el-tab-pane label="报价单" name="second">
-                  <div class="second-wrap box-wrap">
-                    <h4>报价单</h4>
-                    <div class="panel">
-                      <el-tabs type="border-card" class="baojiadan">
-                        <el-tab-pane label="广州">
-                          <div class="tab-info">
-                            <div class="pqxx">
-                              <h4>排期信息</h4>
-                              <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-                            </div>
-                            <div class="price">
-                              <div class="price-left">
-                                <h4>广告费</h4>
-                                <ul>
-                                  <li>刊例价(面/周) <span>￥1900.00</span></li>
-                                  <li>投放量(面·天) <span>235</span></li>
-                                  <li>赠送(面·天) <span>35</span></li>
-                                  <li>广告费折扣 <span>96.67%</span></li>
-                                  <li>￥3,800,000.00</li>
-                                </ul>
-                              </div>
-                              <div class="price-right">
-                                <h4>制作费</h4>
-                                <ul>
-                                  <li>制作费单价<span>￥100</span></li>
-                                  <li>广告画数量(张)<span>35</span></li>
-                                  <li></li>
-                                  <li>制作费折扣<span>100%</span></li>
-                                  <li>￥3,000.00</li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div class="bottom">
-                              <div class="bottom-detail">
-                                <div class="remark">
-                                  <p>备注：无</p>
-                                </div>
-                                <div class="bill-title-right">
-                                  <ul>
-                                    <li><p><em>现金结算：</em><span>¥ 88,000,000.00</span></p></li>
-                                    <li><p><em>资源置换：</em><span>¥ 2,000,000.00</span></p></li>
-                                    <li><p><em>其他费用：</em><span>¥ 2,000,000.00</span></p></li>
-                                  </ul>
-                                </div>
-                              </div>
-                              <div class="bottom-fin">
-                                <p><em style="top: 5px">总计：</em><span class="totalPrice">¥ 90,000,000.00</span></p>
-                              </div>
-                            </div>
-                          </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-                        <el-tab-pane label="成都">成都内容</el-tab-pane>
-                      </el-tabs>
-                    </div>
-                  </div>
-                  <div class="content_bottom_btn">
-                    <button class="cancel">返回</button>
-                  </div>
-                </el-tab-pane>
-              </el-tabs>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mediaMana_content_bottom clearfix">
-        <div class="content_bottom_wrap">
+											<el-table-column
+											label="资源名称"
+											min-width="16.1%"
+											prop="recName"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="mediaName"
+											label="媒体名称"
+											min-width="10.3%"
+											class="tar"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="putAB"
+											label="投放面"
+											min-width="8.8%"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="city"
+											label="城市"
+											min-width="6%"
+											:filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
+											:filter-method="filterCity"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="origin"
+											label="区域"
+											min-width="7.4%"
+											:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
+											:filter-method="filterOrigin"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="buildType"
+											label="楼盘类型"
+											min-width="8.8%"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="houseNum"
+											label="小区户数"
+											min-width="7.3%"
+											class="tar"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="buildPrice"
+											label="楼盘价格"
+											min-width="7.3%"
+											>
+											</el-table-column>
+											<el-table-column
+											prop="schedules"
+											label="排期"
+											min-width="14.2%"
+											:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
+											:filter-method="filterSchedules"
+											>
+											</el-table-column>
+										</el-table>
+										</div>
+									</div>
+									<div class="content_bottom_btn">
+										<button class="cancel">返回</button>
+									</div>
+								</el-tab-pane>
+								<el-tab-pane label="报价单" name="second">
+									<div class="second-wrap box-wrap">
+										<h4>报价单</h4>
+										<div class="panel">
+										<el-tabs type="border-card" class="baojiadan">
+											<el-tab-pane label="广州">
+											<div class="tab-info">
+												<div class="pqxx">
+												<h4>排期信息</h4>
+												<p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
+												</div>
+												<div class="price">
+												<div class="price-left">
+													<h4>广告费</h4>
+													<ul>
+													<li>刊例价(面/周) <span>￥1900.00</span></li>
+													<li>投放量(面·天) <span>235</span></li>
+													<li>赠送(面·天) <span>35</span></li>
+													<li>广告费折扣 <span>96.67%</span></li>
+													<li>￥3,800,000.00</li>
+													</ul>
+												</div>
+												<div class="price-right">
+													<h4>制作费</h4>
+													<ul>
+													<li>制作费单价<span>￥100</span></li>
+													<li>广告画数量(张)<span>35</span></li>
+													<li></li>
+													<li>制作费折扣<span>100%</span></li>
+													<li>￥3,000.00</li>
+													</ul>
+												</div>
+												</div>
+												<div class="bottom">
+												<div class="bottom-detail">
+													<div class="remark">
+													<p>备注：无</p>
+													</div>
+													<div class="bill-title-right">
+													<ul>
+														<li><p><em>现金结算：</em><span>¥ 88,000,000.00</span></p></li>
+														<li><p><em>资源置换：</em><span>¥ 2,000,000.00</span></p></li>
+														<li><p><em>其他费用：</em><span>¥ 2,000,000.00</span></p></li>
+													</ul>
+													</div>
+												</div>
+												<div class="bottom-fin">
+													<p><em style="top: 5px">总计：</em><span class="totalPrice">¥ 90,000,000.00</span></p>
+												</div>
+												</div>
+											</div>
+											</el-tab-pane>
+											<el-tab-pane label="深圳">深圳内容</el-tab-pane>
+											<el-tab-pane label="成都">成都内容</el-tab-pane>
+										</el-tabs>
+										</div>
+									</div>
+									<div class="content_bottom_btn">
+										<button class="cancel">返回</button>
+									</div>
+								</el-tab-pane>
+							</el-tabs>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mediaMana_content_bottom clearfix">
+				<div class="content_bottom_wrap">
 
-        </div>
-      </div>
-    </div>
-  </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import { Tabs, TabPane, Button, Table, TableColumn, Form, FormItem } from 'element-ui';
-  export default {
+import { Table, TableColumn, Tabs, TabPane, Button } from 'element-ui';
+import { api } from '../../api/api';
+export default {
 	name: "planDetail",
 	components:{
-		elTabs: Tabs,
-		elTabPane: TabPane,
-		elButton: Button,
 		elTable: Table,
 		elTableColumn: TableColumn,
-		elForm: Form,
-		elFormItem: FormItem,
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elButton: Button
 	},
-    data() {
-      return {
-        //监播备注
-        remark: '',
-        changeRemark: false,
-        //合同号
-        cid: 'QC201803284401001',
-        CIDinput: 'QC201803284401001',
-        //修改合同号
-        changeCID: false,
-        planPanel: 'first',
-        //选点排期
-        planList: [
-          {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }, {
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            putAB:'A面',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车'
-          }],
-        //物料信息
-        materialInfo: [
-          {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }, {
-            no: 1,
-            adSize: '840*1180',
-            visualPic: '840*1180',
-            resolution: '150dpi',
-            colorMode: 'CMYK',
-            photoFormat: 'JPG/TIF/AI/PSD/CDR',
-            pointNum: '28'
-          }],
-      };
-    },
-    methods:{
-      filterCity(value, row) {
-        return row.city === value;
-      },
-      filterOrigin(value, row) {
-        return row.origin === value;
-      },
-      filterSchedules(value, row) {
-        return row.schedules === value;
-      },
-      tableRowClassName({row, rowIndex}) {
-        //状态行 根据状态判断
-        if (rowIndex === 0) {
-          //添加类名
-          return 'warning-row'
-        }
-        return '';
-      }
+	data() {
+		return {
+			//监播备注
+			remark: '',
+			changeRemark: false,
+			//合同号
+			cid: 'QC201803284401001',
+			CIDinput: 'QC201803284401001',
+			//修改合同号
+			changeCID: false,
+			planPanel: 'first',
+			//选点排期
+			planList: [
+			{
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}, {
+				recName: '珠江帝景花园',
+				city: '广州',
+				origin: '海珠区',
+				putAB:'A面',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				schedules: '2017.08.30-2017.09.30',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车'
+			}],
+			//物料信息
+			materialInfo: [
+			{
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}, {
+				no: 1,
+				adSize: '840*1180',
+				visualPic: '840*1180',
+				resolution: '150dpi',
+				colorMode: 'CMYK',
+				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+				pointNum: '28'
+			}],
+		};
+	},
+	created(){
+		this.getInitData();
+	},
+	methods:{
+		// 获取选点排期列表数据
+		getInitData(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('plan_apid');
+			let info = {
+				uid: uid,
+				// apid: apid
+				apid: 1
+			};
+			api.postApi('/GetAdPlan', info).then(res =>{
+				console.log(res.data);
+			}).catch(res => {
+				console.log(res);
+			});
+		},
+		filterCity(value, row) {
+			return row.city === value;
+		},
+		filterOrigin(value, row) {
+			return row.origin === value;
+		},
+		filterSchedules(value, row) {
+			return row.schedules === value;
+		},
+		tableRowClassName({row, rowIndex}) {
+			//状态行 根据状态判断
+			if (rowIndex === 0) {
+				//添加类名
+				return 'warning-row'
+			}
+			return '';
+		},
 
-    }
-  }
-
+	}
+}
 </script>
 
 <style scoped>
