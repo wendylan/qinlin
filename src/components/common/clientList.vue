@@ -123,7 +123,8 @@ import dateFormat from '../../commonFun/timeFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
 import { Row, Input, Button, Table, TableColumn, DatePicker, Select, Option, Message } from 'element-ui';
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText2 from '../../commonFun/areaToText_new.js';
 export default {
 	name: "customList",
 	components:{
@@ -149,6 +150,11 @@ export default {
 		}
 	},
 	mounted:function(){
+		areaToText2.toText(440100);
+		areaToText2.toText(440103);
+		areaToText2.toText(440000);
+		areaToText2.toText(110000);
+		areaToText2.toText(110100);
 		this.GetCustomer();
 		this.getRole();
 	},
