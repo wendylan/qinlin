@@ -146,9 +146,26 @@ import { api } from '../../api/api';
 import dateFormat  from '../../commonFun/timeFormat.js';
 // 价格格式化
 import commaFormat  from '../../commonFun/commaFormat.js';
-import { MessageBox, Message } from 'element-ui';
+import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 export default {
 	name: "projectList",
+	components: {
+		elButton: Button,
+		elCheckboxGroup: CheckboxGroup,
+		elCheckbox: Checkbox,
+		elInput: Input,
+		elDropdown: Dropdown,
+		elDropdownItem: DropdownItem,
+		elDropdownMenu: DropdownMenu,
+		elRow: Row,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elDatePicker: DatePicker,
+		elTooltip: Tooltip,
+		elDialog: Dialog,
+		elSelect: Select,
+		elOption: Option
+	},
 	data() {
 		return {
 			rangeDate: '',

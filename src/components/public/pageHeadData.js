@@ -28,15 +28,13 @@ var pageHeadData = {
 		]
 	},
 	operate: { 
-		name:'管理员', 
+		name:'运营', 
 		pageData: [
             {name: '首页', path: '/operate'},
             {name: '媒体管理', path: '/operate/mediaList'},
             {name: '方案管理', path: '/operate/planList'},
             {name: '订单管理', path: '/operate/orderList'},
             {name: '刊例价', path: '/'},
-            {name: '广告限制', path: '/'},
-            {name: '账号设置', path: '/operate/createAccount'},
             {name: '操作指引', path: '/media'} 
 		]
 	},

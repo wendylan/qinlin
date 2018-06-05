@@ -160,10 +160,10 @@
 </template>
 
 <script>
-import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 import api  from '../../api/api.js';
 import dateFormat  from '../../commonFun/timeFormat.js';
 import commaFormat  from '../../commonFun/commaFormat.js';
+import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 export default {
     name: "projectList",
 	components:{
