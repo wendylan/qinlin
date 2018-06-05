@@ -841,12 +841,12 @@ export default {
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
     .mediaMana_content_bottom .content_bottom_btn {
       position: absolute;
       bottom: -66px;

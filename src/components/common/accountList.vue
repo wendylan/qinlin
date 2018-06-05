@@ -9,20 +9,24 @@
       </div>
       <div class="mediaList_container">
         <el-row>
-          <div class="mediaList_handel">
-            <div style="display:inline-block">
-              <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-                <el-select v-model="select" slot="prepend" placeholder="请选择">
-					<el-option label="姓名" value="1"></el-option>
-					<el-option label="账号" value="2"></el-option>
-                </el-select>
-              </el-input>
-            </div>
-            <div class="block">
-              <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-              <el-button plain @click="newAccount" v-if="showNewBtn" >新建</el-button>
-            </div>
-          </div>
+			<div class="mediaList_handel">
+				<span>
+					<div style="display:inline-block">
+						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+							<el-select v-model="select" slot="prepend" placeholder="请选择">
+								<el-option label="姓名" value="1"></el-option>
+								<el-option label="账号" value="2"></el-option>
+							</el-select>
+						</el-input>
+					</div>
+				</span>
+				<span>
+					<div class="block">
+						<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+						<el-button plain @click="newAccount" v-if="showNewBtn" >新建</el-button>
+					</div>
+				</span>
+			</div>
         </el-row>
         <div class="table_wrap">
           <el-table
@@ -106,14 +110,14 @@
             </el-table-column>
 
             <el-table-column
-              label="操作"
-              min-width="7.1%"
+				label="操作"
+				min-width="7.1%"
             >
-              <template slot-scope="scope">
-                <span style="color: #108EE9" @click="authority">权限</span>
-                <span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
-				<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
-              </template>
+				<template slot-scope="scope">
+					<span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span>
+					<span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
+					<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
+				</template>
             </el-table-column>
           </el-table>
         </div>
@@ -430,28 +434,28 @@ export default {
 
 </script>
 <style scoped>
+  a{
+    color: #108EE9 !important;
+  }
   /*筛选*/
   .el-checkbox + .el-checkbox {
     margin-left: 0;
   }
 
-  .Csaixuan {
-    position: relative;
-    cursor: pointer;
+
+  .input-with-select /deep/ .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
+  }
+  /deep/ .plan-select .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
   }
 
-  .Csaixuan .typeBox {
-    width: 100px;
-    height: 150px;
-    border: 1px solid #108EE9;
-    background-color: #ffffff;
-    position: absolute;
-    z-index: 999;
-    border-radius: 4px;
-    top: 36px;
-    left: 56px;
-    display: none;
-  }
 
   .typeBox p {
     height: 30px;
@@ -461,24 +465,7 @@ export default {
     border-top: 1px solid #cccccc;
   }
 
-  .rec_typeYes, .rec_typeNo {
-    display: inline-block;
-    width: 50px;
-    height: 20px;
-    text-align: center;
-    line-height: 20px;
-    cursor: pointer;
-    font-weight: normal;
-    color: #108EE9;
-  }
 
-  .ckboxH {
-    height: 24px;
-    font-size: 14px;
-    line-height: 23px;
-    padding-left: 8px;
-
-  }
 
   /deep/ .el-checkbox__label {
     font-size: 10px;
@@ -571,11 +558,12 @@ export default {
     width: 76px;
     height: 34px;
     text-align: center;
-    line-height: 34px;
+    /*line-height: 34px;*/
     padding: 0;
     position: relative;
-    top: 1px;
+    /*top: 1px;*/
     left: 0;
+    margin-left: 2px;
   }
 
   /deep/ .el-button + .el-button {
@@ -589,6 +577,10 @@ export default {
 
   }
 
+  .mediaList_handel span{
+    float: left;
+    margin-left: 2px;
+  }
   /deep/ .el-date-editor .el-range-separator {
     line-height: 26px;
   }
@@ -757,7 +749,7 @@ export default {
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;
@@ -774,7 +766,7 @@ export default {
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
 
     .mediaList_wrap {
       width: 1800px !important;

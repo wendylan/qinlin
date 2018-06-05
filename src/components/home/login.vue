@@ -148,6 +148,8 @@ export default {
 					this.$router.push('/media')
 				} else if (userMsg.uType === 'BD') {
 					this.$router.push('/sale')
+				} else if (userMsg.uType ==='OP'){
+					this.$router.push('/operate')
 				}
 
 				this.getIndustry();

@@ -1,79 +1,80 @@
 <template >
-  <div class="bottom">
-      <div class="ad_mediaMana_wrap">
-        <div class="ad_mediaMana_nav clearfix">
-          <p><a href="#">账号管理</a><em> / </em>
-			<a href="#" v-if="!isEdit">创建账号</a>
-			<a href="#" v-else>修改账号</a>
-		  </p>
-        </div>
-        <!--客户信息-->
-        <div class="mediaMana_content_top">
-          <div class="content_top_wrap">
-            <div class="content_top_head">
-              <h2>账号信息</h2>
-            </div>
-            <div class="content_top_form_wrap">
-              <el-form :model="accountForm" status-icon :rules="accountRules" ref="accountForm" label-width="100px"
-                       class="demo-ruleForm">
-                <el-form-item label="账号:" prop="account">
-                  <el-input v-model="accountForm.account" placeholder="请输入账号" :disabled="isEdit"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名:" prop="realName">
-                  <el-input v-model="accountForm.realName" placeholder="请输入真实姓名"></el-input>
-                </el-form-item>
-                <el-form-item label="角色" prop="role">
-					<el-select v-model="accountForm.role" placeholder="请选择角色" :disabled="isEdit">
-						<el-option label="超级管理员" value="SM"></el-option>
-						<el-option label="媒介" value="MD"></el-option>
-						<el-option label="销售" value="AD"></el-option>
-						<el-option label="运营" value="OP"></el-option>
-					</el-select>
-				</el-form-item>
-                <el-form-item label="权限城市:" prop="PermissionCity">
-                  <el-select v-model="accountForm.PermissionCity" multiple placeholder="请选择权限城市(多选)">
-                    <el-option
-                      v-for="item in throwCity"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="部门:" prop="division">
-					<el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
-				</el-form-item>
-				<el-form-item label="上级:" prop="boss" v-if="!isEdit">
-					<el-autocomplete
-						v-model="accountForm.boss"
-						:fetch-suggestions="querySearchAsync"
-						placeholder="请输入账号"
-						@select="handleSelect"
-						>
-					</el-autocomplete>
-				</el-form-item>
-				<el-form-item label="上级:" v-if="isEdit">
-					<el-input disabled="disabled" :value="accountForm.boss"></el-input>
-				</el-form-item>
-				<el-form-item label="职务:" prop="position">
-					<el-input v-model="accountForm.position" placeholder="请输入职务"></el-input>
-				</el-form-item>
-				<el-form-item label="手机号码:" prop="phone">
-					<el-input v-model="accountForm.phone" placeholder="请输入手机号码"></el-input>
-				</el-form-item>
-				<el-form-item label="邮箱:" prop="email">
-					<el-input v-model="accountForm.email" placeholder="请输入邮箱" type="email"></el-input>
-				</el-form-item>
-              </el-form>
-            </div>
-          </div>
-        </div>
-        <div class="content_bottom_btn">
-			<el-button  @click="submitForm('accountForm')">{{isEdit?'保存':'创建'}}</el-button>
-			<el-button type="default" @click="resetForm()">取消</el-button>
+	<div class="bottom">
+		<div class="ad_mediaMana_wrap">
+			<div class="ad_mediaMana_nav clearfix">
+				<p>
+					<a href="#">账号管理</a><em> / </em>
+					<a href="#" v-if="!isEdit">创建账号</a>
+					<a href="#" v-else>修改账号</a>
+				</p>
+			</div>
+			<!--客户信息-->
+			<div class="mediaMana_content_top">
+				<div class="content_top_wrap">
+					<div class="content_top_head">
+						<h2>账号信息</h2>
+					</div>
+					<div class="content_top_form_wrap">
+						<el-form :model="accountForm" status-icon :rules="accountRules" ref="accountForm" label-width="100px" class="demo-ruleForm">
+							<el-form-item label="账号:" prop="account">
+								<el-input v-model="accountForm.account" placeholder="请输入账号" :disabled="isEdit"></el-input>
+							</el-form-item>
+							<el-form-item label="姓名:" prop="realName">
+								<el-input v-model="accountForm.realName" placeholder="请输入真实姓名"></el-input>
+							</el-form-item>
+							<el-form-item label="角色" prop="role">
+								<el-select v-model="accountForm.role" placeholder="请选择角色" :disabled="isEdit">
+									<el-option label="超级管理员" value="SM"></el-option>
+									<el-option label="媒介" value="MD"></el-option>
+									<el-option label="销售" value="AD"></el-option>
+									<el-option label="运营" value="OP"></el-option>
+									<el-option label="工程人员" value="EP"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="权限城市:" prop="PermissionCity">
+								<el-select v-model="accountForm.PermissionCity" multiple placeholder="请选择权限城市(多选)">
+									<el-option
+									v-for="item in throwCity"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="部门:" prop="division">
+								<el-input v-model="accountForm.division" placeholder="请输入部门"></el-input>
+							</el-form-item>
+							<el-form-item label="上级:" prop="boss" v-if="!isEdit">
+								<el-autocomplete
+									v-model="accountForm.boss"
+									:fetch-suggestions="querySearchAsync"
+									placeholder="请输入账号"
+									@select="handleSelect"
+									>
+								</el-autocomplete>
+							</el-form-item>
+							<el-form-item label="上级:" v-if="isEdit">
+								<el-input disabled="disabled" :value="accountForm.boss"></el-input>
+							</el-form-item>
+							<el-form-item label="职务:" prop="position">
+								<el-input v-model="accountForm.position" placeholder="请输入职务"></el-input>
+							</el-form-item>
+							<el-form-item label="手机号码:" prop="phone">
+								<el-input v-model="accountForm.phone" placeholder="请输入手机号码"></el-input>
+							</el-form-item>
+							<el-form-item label="邮箱:" prop="email">
+								<el-input v-model="accountForm.email" placeholder="请输入邮箱" type="email"></el-input>
+							</el-form-item>
+						</el-form>
+					</div>
+				</div>
+			</div>
+			<div class="content_bottom_btn">
+				<el-button  @click="submitForm('accountForm')">{{isEdit?'保存':'创建'}}</el-button>
+				<el-button type="default" @click="resetForm()">取消</el-button>
+			</div>
 		</div>
-      </div>
-  </div>
+	</div>
 </template>
 
 <script>
@@ -656,14 +657,14 @@ export default {
     height: 672px;
   }
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
     .bottom{
       height: 802px;
     }
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
     .mediaMana_content_bottom .content_bottom_btn {
       position: absolute;
       bottom: -66px;

@@ -9,107 +9,112 @@
       </div>
       <div class="mediaList_container">
         <el-row>
-          <div class="mediaList_handel">
-            <div style="display:inline-block">
-				<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-					<el-select v-model="select" slot="prepend" placeholder="请选择">
-						<el-option label="公司品牌" value="1"></el-option>
-						<el-option label="公司名称" value="2"></el-option>
-						<el-option label="联系人" value="3"></el-option>
-					</el-select>
-				</el-input>
-            </div>
-            <div class="block">
-              <el-date-picker
-                v-model="date"
-                type="daterange"
-                range-separator="-"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                start-placeholder="创建日期"
-                end-placeholder="创建日期">
-              </el-date-picker>
-            </div>
-            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-            <el-button plain @click="newClient" v-if="showNewBtn">新建</el-button>
-          </div>
+			<div class="mediaList_handel">
+				<span>
+					<div style="display:inline-block">
+						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+							<el-select v-model="select" slot="prepend" placeholder="请选择">
+								<el-option label="公司品牌" value="1"></el-option>
+								<el-option label="公司名称" value="2"></el-option>
+								<el-option label="联系人" value="3"></el-option>
+							</el-select>
+						</el-input>
+					</div>
+				</span>
+				<span>
+					<div class="block">
+						<el-date-picker
+							class="input-with-select"
+							v-model="date"
+							type="daterange"
+							range-separator="-"
+							format="yyyy-MM-dd"
+							value-format="yyyy-MM-dd"
+							start-placeholder="创建日期"
+							end-placeholder="创建日期">
+						</el-date-picker>
+					</div>
+				</span>
+				<span><el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button></span>
+				<span><el-button plain @click="newClient" v-if="showNewBtn">新建</el-button></span>
+			</div>
         </el-row>
         <div class="table_wrap">
-          <el-table
+			<el-table
 				border
 				:data="currentPlan"
 				style="width: 100%"
 				:default-sort="{prop: 'date', order: 'descending'}"
-          >
-            <el-table-column
-				prop="realName"
-				label="联系人"
-				min-width="6%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="clientRName"
-				label="所在地"
-				min-width="7.2%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="position"
-				label="职位"
-				class="tar"
-				min-width="7.2%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="phone"
-				label="手机号码"
-				min-width="9.5%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="cName"
-				label="公司名称"
-				min-width="18.4%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="rName"
-				label="所在城市"
-				min-width="8%"
-				:filters="filtCity"
-				:filter-method="filterCity"
-				:filter-multiple="false"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="cBrand"
-				label="公司品牌"
-				min-width="12.1%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="puName"
-				label="所有人"
-				min-width="6.1%"
-            >
-            </el-table-column>
-            <el-table-column
-				label="创建日期"
-				min-width="8.3%"
-            >
-				<template slot-scope="scope">
-					<span>{{ formatTime(scope.row.joinTime) }}</span>
-				</template>
-            </el-table-column>
-            <el-table-column
-				label="操作"
-				min-width="4.1%"
-            >
-				<template slot-scope="scope">
-					<a href="javascript:void(0)" @click="showDetail(scope.row)" style="color: #108EE9">查看</a>
-				</template>
-            </el-table-column>
-          </el-table>
+			>
+				<el-table-column
+					prop="realName"
+					label="联系人"
+					min-width="6%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="clientRName"
+					label="所在地"
+					min-width="7.2%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="position"
+					label="职位"
+					class="tar"
+					min-width="7.2%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="phone"
+					label="手机号码"
+					min-width="9.5%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="cName"
+					label="公司名称"
+					min-width="18.4%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="rName"
+					label="所在城市"
+					min-width="8%"
+					:filters="filtCity"
+					:filter-method="filterCity"
+					:filter-multiple="false"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="cBrand"
+					label="公司品牌"
+					min-width="12.1%"
+				>
+				</el-table-column>
+				<el-table-column
+					prop="puName"
+					label="所有人"
+					min-width="6.1%"
+				>
+				</el-table-column>
+				<el-table-column
+					label="创建日期"
+					min-width="8.3%"
+				>
+					<template slot-scope="scope">
+						<span>{{ formatTime(scope.row.joinTime) }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column
+					label="操作"
+					min-width="4.1%"
+				>
+					<template slot-scope="scope">
+						<a href="javascript:void(0)" @click="showDetail(scope.row)" style="color: #108EE9">查看</a>
+					</template>
+				</el-table-column>
+			</el-table>
         </div>
       </div>
     </div>
@@ -335,6 +340,13 @@ export default {
     margin-left: 0;
   }
 
+  .input-with-select /deep/ .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
+  }
+
   .typeBox p {
     height: 30px;
     font-size: 12px;
@@ -351,31 +363,61 @@ export default {
   /*日期控件*/
   .block {
     display: inline-block;
+    margin-left: 2px;
     position: relative;
-    top: 3px;
+    /*top: 3px;*/
   }
 
-  /deep/ .el-input__inner {
-    width: 240px;
-    height: 34px;
-
-  }
 
   /deep/ .el-date-editor .el-range__icon {
     position: relative;
     top: -3px;
     margin-right: 2px;
   }
+  /deep/ .el-range-separator{
+    position: relative;
+    top: -3px;
+  }
+  /deep/ .el-input__inner {
+    width: 260px;
+    height: 34px;
+    line-height: 34px;
+  }
 
-  /deep/ .el-date-editor .el-range__close-icon {
+
+  /*/deep/ .el-date-editor .el-range__close-icon {
     position: relative;
     top: -2px;
     left: 3px;
-  }
+  }*/
 
-  /deep/ .el-picker-panel .el-date-range-picker .el-popper {
+  /*/deep/ .el-picker-panel .el-date-range-picker .el-popper {
     left: 335px !important;
   }
+  /deep/ .el-date-editor .el-range-separator {
+    font-size: 14px;
+    height: 34px;
+    position: relative;
+    top: -3px;
+    !*top: -4px;*!
+  }*/
+ /* /deep/ .el-range-editor .el-range-input{
+    font-size: 14px;
+    padding: 8px 0px;
+    height: 30px;
+    line-height: 14px;
+    box-sizing: border-box;
+    !*top: -4px;*!
+    width: 85px;
+    position: relative;
+    top: -3px;
+
+  }*/
+/deep/ .el-date-editor i, /deep/ .el-date-editor input, /deep/ .el-date-editor span {
+  float: left;
+  position: relative;
+}
+
 
   /*面包屑导航*/
   .ad_mediaDetail_wrap {
@@ -432,7 +474,6 @@ export default {
 
   .el-input {
     width: 240px;
-    height: 34px !important;
     border-radius: 4px;
   }
 
@@ -440,11 +481,11 @@ export default {
     width: 76px;
     height: 34px;
     text-align: center;
-    line-height: 34px;
+    /*line-height: 34px;*/
     padding: 0;
     margin-left: 2px;
     position: relative;
-    top: 1px;
+    /*top: 1px;*/
     left: 0;
   }
 
@@ -453,10 +494,6 @@ export default {
     margin: 10px 0 0 0;
     border-radius: 4px;
 
-  }
-
-  /deep/ .el-date-editor .el-range-separator {
-    line-height: 26px;
   }
 
   .table_wrap {
@@ -486,7 +523,6 @@ export default {
   }
 
   .el-input {
-
     height: 34px !important;
     border-radius: 4px;
   }
@@ -497,10 +533,10 @@ export default {
     top: -1px;*/
   }
 
+
+
+
   /*表格*/
-  /deep/ .el-date-editor .el-range-separator {
-    line-height: 26px;
-  }
 
   /deep/ .el-table th, .el-table tr {
     height: 44px;
@@ -547,7 +583,6 @@ export default {
   }
 
   /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
-
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: #C1C1C1;
     border-radius: 4px;
@@ -586,6 +621,9 @@ export default {
     width: 65px;
   }
 
+  /deep/ .el-button-group .el-button:not(:last-child){
+    margin-top: -1px;
+  }
   .tar {
     text-align: right !important;
     padding-right: 10px;
@@ -595,6 +633,7 @@ export default {
     height: 28px;
 
   }
+
 
   /*按钮*/
   /deep/ .el-button--default:focus, .el-button--default:hover {
@@ -612,8 +651,13 @@ export default {
     color: #606266;
   }
 
+  .mediaList_handel span{
+    float: left;
+    margin-left: 2px;
+  }
+
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;
@@ -630,7 +674,7 @@ export default {
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
 
     .mediaList_wrap {
       width: 1800px !important;

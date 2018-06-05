@@ -448,7 +448,7 @@
             // {type: 'number', min: 1970, max: 2018,message: '只能输入数字(1970-2018)', trigger: 'blur'},
           ],
           lng: [
-            {required: true, message: '经度不能为空', trigger: 'blur'},
+            {required: true, message: '经纬度不能为空', trigger: 'blur'},
             {type: 'number', min:0, max:180, message: '只能输入数字(0-180)', trigger: 'change'},
             // {min:0, max:180,message: '经度范围0-180', trigger: 'blur'}
           ],
@@ -1463,7 +1463,7 @@
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     /deep/ .lngNlat.RlngNlat.el-form-item {
       min-width: 15.13%;
@@ -1488,7 +1488,7 @@
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
     .mediaMana_content_bottom .content_bottom_btn {
       position: absolute;
       bottom: -66px;

@@ -812,7 +812,7 @@
 
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
     .mediaMana_content_top,.plan-panel{
       width: 1320px;
     }
@@ -822,7 +822,7 @@
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
     .mediaMana_content_top,.plan-panel{
       width: 1800px;
     }

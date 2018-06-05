@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav clearfix">
-			<p><a href="#">客户管理</a><em> / </em><a href="#">客户详情</a></p>
+			<p ><a href="#">客户管理</a><em> / </em><a href="#">客户详情</a></p>
 		</div>
 
 		<!--媒体信息-->
@@ -119,7 +119,7 @@ export default {
 				if(userInfo.rID){
 					// areaToText.toTextCity(data=>{
 					// 		console.log(data);
-					// 	// userInfo.rName = data.city;	
+					// 	// userInfo.rName = data.city;
 					// 	this.$set(this.userInfo, 'rName', data);
 					// }, userInfo.rID);
 					userInfo.rName = areaToText.toText(userInfo.rID).city;
@@ -162,6 +162,7 @@ export default {
 
 	.ad_mediaDetail_nav p a{
 		color: #666;
+    font-size: 14px;
 	}
 
 	.ad_mediaDetail_nav p a:nth-of-type(1){
@@ -286,7 +287,7 @@ export default {
 
 
 /*1440*/
-@media screen and (min-width: 1440px) {
+@media all and (min-width: 1440px) {
 	.ad_mediaInfo,.ad_ad{
 		width: 1320px;
 	}
@@ -300,7 +301,7 @@ export default {
 
 
 /*1920*/
-@media screen and (min-width: 1920px) {
+@media all and (min-width: 1920px) {
 	.ad_mediaInfo,.ad_ad{
 		width: 1800px;
 	}

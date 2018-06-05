@@ -7,39 +7,56 @@
       <div class="mediaList_wrap">
         <div class="mediaList_container">
           <el-tabs v-model="activeName" @tab-click="handleClick">
+            <!--搜索框-->
+            <div class="search-wrap" v-if="!ludan">
+              <span>
+                  <div style="display:inline-block">
+                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+                  <el-select v-model="select" slot="prepend" placeholder="请选择">
+                    <el-option label="方案名称" value="1"></el-option>
+                    <el-option label="媒体名称" value="2"></el-option>
+                    <el-option label="资源名称" value="3"></el-option>
+                  </el-select>
+                </el-input>
+              </div>
+              </span>
+
+              <el-cascader
+                :options="citys"
+                v-model="selectedOptions"
+                class="plan-select"
+                placeholder="选择地区"
+                change-on-select
+              >
+              </el-cascader>
+
+              <span>
+               <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select">
+                <el-option label="A面" value="Amian"></el-option>
+                <el-option label="B面" value="Bmian"></el-option>
+              </el-select>
+            </span>
+              <span>
+               <div class="block">
+                <el-date-picker
+                  v-model="date"
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="投放日期"
+                  end-placeholder="投放日期">
+                </el-date-picker>
+              </div>
+             </span>
+              <span>
+                <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
+              </span>
+              <span>
+                <el-button plain class="map">一键导出</el-button>
+              </span>
+            </div>
             <el-tab-pane label="上刊" name="first">
               <div class="search-nav">
-                <div class="search-wrap">
-                  <el-select v-model="value" placeholder="请选择" class="type-select">
-                    <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
-                               :value="item.value"></el-option>
-                  </el-select>
-                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-                  <el-cascader
-                    :options="citys"
-                    v-model="selectedOptions"
-                    class="plan-select"
-                    placeholder="选择地区"
-                    change-on-select
-                  >
-                  </el-cascader>
-                  <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select" style="margin-left: 6px">
-                    <el-option label="A面" value="Amian"></el-option>
-                    <el-option label="B面" value="Bmian"></el-option>
-                  </el-select>
-                  <el-date-picker
-                    v-model="dateInput"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    class="date-select"
-                  >
-                  </el-date-picker>
-                  <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-                  <el-button plain class="map">一键导出</el-button>
-
-                </div>
-                <!--未搜索占位图-->
+                <!--提示或图片显示区域-->
                 <div class="tempPic">
                   <div class="noFind" v-if="showPic === 1">
                     <img src="../../assets/images/tempPic.png" alt="">
@@ -132,7 +149,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -165,7 +182,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -198,7 +215,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -231,7 +248,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -264,7 +281,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -297,7 +314,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -330,7 +347,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -363,7 +380,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -381,56 +398,27 @@
                         <span>guangzhoumeijie</span>
                         <em>2018.08.30</em>
                       </div>
+                    </div>
+                    <!--页码-->
+                    <div class="pager">
+                      <el-pagination
+                        small
+                        background
+                        :current-page="1"
+                        :page-sizes="[10, 20]"
+                        :page-size="10"
+                        layout=" sizes, prev, pager, next, jumper"
+                        :total="60">
+                      </el-pagination>
                     </div>
                   </div>
+
                 </div>
 
-              </div>
-              <!--页码-->
-              <div class="pager">
-                <el-pagination
-                  small
-                  background
-                  :current-page="1"
-                  :page-sizes="[10, 20]"
-                  :page-size="10"
-                  layout=" sizes, prev, pager, next, jumper"
-                  :total="60">
-                </el-pagination>
               </div>
             </el-tab-pane>
             <el-tab-pane label="下刊" name="second">
               <div class="search-nav">
-                <div class="search-wrap">
-                  <el-select v-model="value" placeholder="请选择" class="type-select">
-                    <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
-                               :value="item.value"></el-option>
-                  </el-select>
-                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-                  <el-cascader
-                    :options="citys"
-                    v-model="selectedOptions"
-                    class="plan-select"
-                    placeholder="选择地区"
-                    change-on-select
-                  >
-                  </el-cascader>
-                  <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select" style="margin-left: 6px">
-                    <el-option label="A面" value="Amian"></el-option>
-                    <el-option label="B面" value="Bmian"></el-option>
-                  </el-select>
-                  <el-date-picker
-                    v-model="dateInput"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    class="date-select"
-                  >
-                  </el-date-picker>
-                  <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-                  <el-button plain class="map">一键导出</el-button>
-
-                </div>
                 <!--未搜索占位图-->
                 <div class="tempPic">
                   <div class="noFind" v-if="showPic === 1">
@@ -458,7 +446,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -491,7 +479,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -524,7 +512,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -557,7 +545,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -590,7 +578,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -623,7 +611,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -656,7 +644,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -689,7 +677,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -722,7 +710,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -755,7 +743,7 @@
                         <span>华南碧桂园二期-东门</span>
                         <div class="icons">
                           <span class="el-icon-location">广州市</span>
-						  <span>
+                          <span>
 							  <i class="fa  fa-file-text"></i>
 							  A面
 							</span>
@@ -773,56 +761,27 @@
                         <span>guangzhoumeijie</span>
                         <em>2018.08.30</em>
                       </div>
+                    </div>
+                    <!--页码-->
+                    <div class="pager">
+                      <el-pagination
+                        small
+                        background
+                        :current-page="1"
+                        :page-sizes="[10, 20]"
+                        :page-size="10"
+                        layout=" sizes, prev, pager, next, jumper"
+                        :total="60">
+                      </el-pagination>
                     </div>
                   </div>
                 </div>
 
               </div>
-              <!--页码-->
-              <div class="pager">
-                <el-pagination
-                  small
-                  background
-                  :current-page="1"
-                  :page-sizes="[10, 20]"
-                  :page-size="10"
-                  layout=" sizes, prev, pager, next, jumper"
-                  :total="60">
-                </el-pagination>
-              </div>
+
             </el-tab-pane>
             <el-tab-pane label="安装" name="third">
               <div class="search-nav">
-                <div class="search-wrap">
-                  <el-select v-model="value" placeholder="请选择" class="type-select">
-                    <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
-                               :value="item.value"></el-option>
-                  </el-select>
-                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-                  <el-cascader
-                    :options="citys"
-                    v-model="selectedOptions"
-                    class="plan-select"
-                    placeholder="选择地区"
-                    change-on-select
-                  >
-                  </el-cascader>
-                  <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select" style="margin-left: 6px">
-                    <el-option label="A面" value="Amian"></el-option>
-                    <el-option label="B面" value="Bmian"></el-option>
-                  </el-select>
-                  <el-date-picker
-                    v-model="dateInput"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    class="date-select"
-                  >
-                  </el-date-picker>
-                  <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-                  <el-button plain class="map">一键导出</el-button>
-
-                </div>
                 <!--未搜索占位图-->
                 <div class="tempPic">
                   <div class="noFind" v-if="showPic === 1">
@@ -1136,54 +1095,25 @@
                         <em>2018.08.30</em>
                       </div>
                     </div>
+                    <!--页码-->
+                    <div class="pager">
+                      <el-pagination
+                        small
+                        background
+                        :current-page="1"
+                        :page-sizes="[10, 20]"
+                        :page-size="10"
+                        layout=" sizes, prev, pager, next, jumper"
+                        :total="60">
+                      </el-pagination>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!--页码-->
-              <div class="pager">
-                <el-pagination
-                  small
-                  background
-                  :current-page="1"
-                  :page-sizes="[10, 20]"
-                  :page-size="10"
-                  layout=" sizes, prev, pager, next, jumper"
-                  :total="60">
-                </el-pagination>
-              </div>
+
             </el-tab-pane>
             <el-tab-pane label="巡点" name="fourth">
               <div class="search-nav">
-                <div class="search-wrap">
-                  <el-select v-model="value" placeholder="请选择" class="type-select">
-                    <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
-                               :value="item.value"></el-option>
-                  </el-select>
-                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-                  <el-cascader
-                    :options="citys"
-                    v-model="selectedOptions"
-                    class="plan-select"
-                    placeholder="选择地区"
-                    change-on-select
-                  >
-                  </el-cascader>
-                  <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select" style="margin-left: 6px">
-                    <el-option label="A面" value="Amian"></el-option>
-                    <el-option label="B面" value="Bmian"></el-option>
-                  </el-select>
-                  <el-date-picker
-                    v-model="dateInput"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    class="date-select"
-                  >
-                  </el-date-picker>
-                  <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-                  <el-button plain class="map">一键导出</el-button>
-
-                </div>
                 <!--未搜索占位图-->
                 <div class="tempPic">
                   <div class="noFind" v-if="showPic === 1">
@@ -1507,30 +1437,38 @@
                         <em>2018.08.30</em>
                       </div>
                     </div>
+                    <!--页码-->
+                    <div class="pager">
+                      <el-pagination
+                        small
+                        background
+                        :current-page="1"
+                        :page-sizes="[10, 20]"
+                        :page-size="10"
+                        layout=" sizes, prev, pager, next, jumper"
+                        :total="60">
+                      </el-pagination>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!--页码-->
-              <div class="pager">
-                <el-pagination
-                  small
-                  background
-                  :current-page="1"
-                  :page-sizes="[10, 20]"
-                  :page-size="10"
-                  layout=" sizes, prev, pager, next, jumper"
-                  :total="60">
-                </el-pagination>
-              </div>
+
             </el-tab-pane>
             <el-tab-pane label="录单" name="fifth">
               <div class="mediaList_container">
-                <el-row>
-                  <div class="mediaList_handel">
-                    <el-input v-model="input" placeholder="公司名称、公司品牌"></el-input>
+                <div style="display:inline-block" v-if="ludan">
+                  <span>
+                    <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+                    <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+                      <el-option label="任务名称" value="1"></el-option>
+                      <el-option label="创建人" value="2"></el-option>
+                    </el-select>
+                  </el-input>
+                  </span>
+                  <span>
                     <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                  </div>
-                </el-row>
+                  </span>
+                </div>
                 <div class="table_wrap">
                   <el-table
                     border
@@ -1544,7 +1482,7 @@
                       min-width="18.3%"
                     >
                       <template slot-scope="scope">
-                        <a href="#" style="color: #1890ff">{{scope.row.caseName}}</a>
+                        <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -1553,6 +1491,7 @@
                       min-width="11%"
                       :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
                       :filter-method="filterCaseType"
+                      :filter-multiple="false"
                     >
                     </el-table-column>
                     <el-table-column
@@ -1587,11 +1526,10 @@
                     </el-table-column>
                   </el-table>
                 </div>
-
               </div>
             </el-tab-pane>
           </el-tabs>
-          <!--缩略图-->
+          <!--缩略图对话框-->
           <el-dialog :visible.sync="dialogVisible">
             <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
           </el-dialog>
@@ -1605,54 +1543,60 @@
 </template>
 
 <script>
-import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane, Select, Option, Cascader, DatePicker, Pagination } from 'element-ui';
+  import {
+    Button,
+    Input,
+    Dialog,
+    Table,
+    TableColumn,
+    Row,
+    Tooltip,
+    Tabs,
+    TabPane,
+    Select,
+    Option,
+    Cascader,
+    DatePicker,
+    Pagination
+  } from 'element-ui';
+
   export default {
-	name: "PhotoGallery",
-	components:{
-		elButton: Button,
-		elInput: Input,
-		elDialog: Dialog,
-		elTable: Table,
-		elTableColumn: TableColumn,
-		elRow: Row,
-		elTooltip: Tooltip,
-		elTabs: Tabs,
-		elTabPane: TabPane,
-		elSelect: Select,
-		elOption: Option,
-		elCascader: Cascader,
-		elDatePicker: DatePicker,
-		elPagination: Pagination,
-	},
+    name: "PhotoGallery",
+    components: {
+      elButton: Button,
+      elInput: Input,
+      elDialog: Dialog,
+      elTable: Table,
+      elTableColumn: TableColumn,
+      elRow: Row,
+      elTooltip: Tooltip,
+      elTabs: Tabs,
+      elTabPane: TabPane,
+      elSelect: Select,
+      elOption: Option,
+      elCascader: Cascader,
+      elDatePicker: DatePicker,
+      elPagination: Pagination,
+    },
     data() {
       return {
         //缩略图
         dialogImageUrl: '../../../static/images/testPic.png',
         dialogVisible: false,
         showBtn: false,
-
         assetID: `005B201803GZ-X446`,
         address: `广东广州市天河区黄埔大道中`,
         activeName: 'first',
         //上刊搜索行
-        searchInput: '',
-        areaSelect: '',
+        select: '',
+        keyword: '',
+        keyword2: '',
         mianSelect: '',
-        dateInput: '',
+        date: '',
         selectedOptions: [],
-        typeSelect: [
-          {
-            value: '方案名称',
-            label: '方案名称'
-          }, {
-            value: '媒体名称',
-            label: '媒体名称'
-          }, {
-            value: '资源名称',
-            label: '资源名称'
-          }],
-        //默认
-        value: '方案名称',
+        //录单搜索行
+        ludan: false,
+        ludanSelect: '任务名称',
         //地区搜索
         citys: [
           {
@@ -1696,7 +1640,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
           }],
 
         //是否搜索到图片
-        showPic: 3,
+        showPic: 2,
         //  录单
         input: '',
         value6: '',
@@ -1734,7 +1678,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
             creater: '冯少宏',
             account: 'fengshaohong',
             createDate: '2018.05.26',
-          },{
+          }, {
             caseName: '珠江帝景地产三月份方案',
             caseType: '上刊',
             dwNum: '60',
@@ -1750,39 +1694,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
             creater: '冯少宏',
             account: 'fengshaohong',
             createDate: '2018.05.26',
-          },{
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          },{
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          },{
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          },{
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          },{
+          }, {
             caseName: '珠江帝景地产三月份方案',
             caseType: '上刊',
             dwNum: '60',
@@ -1798,7 +1710,39 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
             creater: '冯少宏',
             account: 'fengshaohong',
             createDate: '2018.05.26',
-          },{
+          }, {
+            caseName: '珠江帝景地产三月份方案',
+            caseType: '上刊',
+            dwNum: '60',
+            uploadImg: '73',
+            creater: '冯少宏',
+            account: 'fengshaohong',
+            createDate: '2018.05.26',
+          }, {
+            caseName: '珠江帝景地产三月份方案',
+            caseType: '上刊',
+            dwNum: '60',
+            uploadImg: '73',
+            creater: '冯少宏',
+            account: 'fengshaohong',
+            createDate: '2018.05.26',
+          }, {
+            caseName: '珠江帝景地产三月份方案',
+            caseType: '上刊',
+            dwNum: '60',
+            uploadImg: '73',
+            creater: '冯少宏',
+            account: 'fengshaohong',
+            createDate: '2018.05.26',
+          }, {
+            caseName: '珠江帝景地产三月份方案',
+            caseType: '上刊',
+            dwNum: '60',
+            uploadImg: '73',
+            creater: '冯少宏',
+            account: 'fengshaohong',
+            createDate: '2018.05.26',
+          }, {
             caseName: '珠江帝景地产三月份方案',
             caseType: '上刊',
             dwNum: '60',
@@ -1816,20 +1760,46 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
         });
         $('.mask-btn').mouseleave(function () {
           $(this).hide();
+        });
+        $('.photoCard').hover(function () {
+          $(this).css('box-shadow', '0px 0px 20px rgba(0, 0, 0, 0.20)')
+        }, function () {
+          $(this).css('box-shadow', 'none')
         })
       })
+
     },
+
     methods: {
+      //请求
+      PostIMg() {
+
+      },
       handleClick(tab, event) {
-        console.log(tab, event);
+        if (this.activeName === 'fifth') {
+          this.ludan = true;
+        } else {
+          this.ludan = false
+        }
       },
       handlePictureCardPreview() {
         // this.dialogImageUrl = this.dialogImageUrl;
         this.dialogVisible = true;
       },
       //筛选
-      filterCaseType(value,row){
+      filterCaseType(value, row) {
         return row.tag === value;
+      },
+      searchPic() {
+        if (!this.select && !this.keyword && !this.mianSelect && !this.date && this.selectedOptions.length == 0) {
+          this.$message({
+            message: '请先输入搜索条件',
+            type: 'warning'
+          });
+        }
+      },
+      newPath() {
+        this.$router.push('./ludanReport')
       }
 
     }
@@ -1889,6 +1859,11 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     color: #409EFF;
   }
 
+  /deep/ .el-tabs__nav {
+    height: 49px;
+    line-height: 49px;
+  }
+
   /*上刊*/
   /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
     width: 95px;
@@ -1920,27 +1895,12 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
 
   /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
     width: 180px;
-    margin-left: -6px;
-    height: 34px;
-  }
-
-  /deep/ .date-select.el-input__inner {
-    width: 237px;
-    position: relative;
-    top: 3px;
-    left: -5px;
-    height: 34px;
-  }
-
-  /deep/ .el-date-editor .el-range__icon {
-    position: relative;
-    top: -2px;
-    left: -3px;
+    /*height: 34px;*/
   }
 
   .searchBtn, .map {
     position: relative;
-    top: 3px;
+    /*top: 3px;*/
     left: -3px;
   }
 
@@ -1948,40 +1908,29 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     left: -12px;
   }
 
-  /deep/ .searchBtn .el-icon-search {
-    position: relative;
-    top: -2px;
-    left: -9px;
-  }
-
-  /deep/ .el-button.searchBtn span {
-    position: relative;
-    left: -7px;
-    top: -2px;
-  }
-
-  /deep/ .el-button.map span {
-    position: relative;
-    left: -10px;
-    top: -2px;
-  }
+  /* /deep/ .el-button.map span {
+     position: relative;
+     !*left: -10px;*!
+     top: -2px;
+   }*/
 
   .search-wrap {
     position: relative;
   }
 
-  /deep/ .el-input__suffix {
-    right: 12px;
-  }
 
-  /deep/ .el-cascader__label {
-    padding: 0;
+
+  /deep/ .el-input-group .el-input__suffix {
+    right: 5px;
+  }
+  /deep/ .el-input__icon{
+    line-height: 34px;
   }
 
   .tempPic {
     text-align: center;
     /*margin-top: 87px;*/
-    margin-bottom: 35px;
+    margin-bottom: 50px;
   }
 
   .noFind, .cantFind {
@@ -1990,8 +1939,8 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   .tempPic img {
-    width: 340px;
-    height: 250px;
+    width: 350px;
+    height: 245px;
   }
 
   .tempPic p {
@@ -2007,12 +1956,30 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   /*搜索到的图片列表*/
+  .input-with-select /deep/ .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
+  }
+  /deep/ .plan-select .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
+  }
+
+  .find {
+    position: relative;
+  }
+
   .photoCard {
+    transition: all 0.3s;
     float: left;
     width: 234px;
     /*height: 307px;*/
     background: #FFFFFF;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.20);
+    /*box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.20);*/
     border-radius: 2px;
     text-align: left;
     border: 1px solid rgba(0, 0, 0, 0.10);
@@ -2031,6 +1998,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     width: 234px;
     height: 190px;
     position: relative;
+    overflow: hidden;
   }
 
   .imgBox .mask-btn {
@@ -2070,8 +2038,13 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   .photoCard .imgBox > img {
-    width: 100%;
-    height: 100%;
+    display: inline-block;
+    /* width: 100%; */
+    /* height: 100%; */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
   }
 
   .detailBox {
@@ -2082,7 +2055,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   .detailBox p {
-    font-size: 12px;
+    font-size: 14px;
     color: #333333;
   }
 
@@ -2154,7 +2127,9 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
 
   /*页码*/
   .pager {
-    position: relative;
+    position: absolute;
+    bottom: 0;
+    right: 10px;
     height: 32px;
     margin-top: 18px;
   }
@@ -2162,12 +2137,18 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   /deep/ .el-pagination {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 50px;
   }
 
   /deep/ .el-pagination.is-background .el-pager li {
     font-weight: normal;
     font-size: 13px;
+    background-color: transparent;
+  }
+
+  /deep/ .el-select__caret {
+    position: relative;
+    right: 4px;
   }
 
   .up-report-bottom {
@@ -2181,15 +2162,35 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     left: 0;
   }
 
+  /deep/ .el-pager .number {
+    background-color: transparent;
+  }
+
   .up-report-bottom-btns .el-button {
     width: 74px;
     height: 32px;
     padding: 0;
   }
 
+  /deep/ .el-pagination .el-select .el-input .el-input__inner {
+    height: 28px !important;
+  }
+
+  /deep/ .el-pagination__editor.el-input .el-input__inner {
+    height: 28px !important;
+  }
+
   /deep/ .el-pagination span:not([class*=suffix]) {
     position: relative;
     top: -4px;
+  }
+
+  /deep/ .el-pagination span:not([class*=suffix]) .el-input__inner {
+    width: 100px;
+  }
+
+  /deep/ .el-pagination__editor.el-input .el-input__inner {
+    width: 50px !important;
   }
 
   /*录单*/
@@ -2198,29 +2199,29 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   .el-input {
-    width: 180px;
+    width: 240px;
     height: 34px !important;
     border-radius: 4px;
   }
 
   /deep/ .el-input__inner {
     height: 34px !important;
-  }
-
-  .el-button--primary {
-    background-color: #108EE9;
+    line-height: 34px;
   }
 
   .el-button {
     width: 76px;
     height: 34px;
     text-align: center;
-    line-height: 34px;
+    /*line-height: 34px;*/
     padding: 0;
-    margin-left: 6px;
     position: relative;
-    top: 1px;
+    /*top: 1px;*/
     left: 0;
+  }
+
+  /deep/ .el-button + .el-button {
+    margin-left: 0;
   }
 
   .mediaList_wrap .mediaList_container .table_wrap {
@@ -2332,10 +2333,9 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
 
   }
 
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
+  .bottom-btn {
+    text-align: center;
+    margin-bottom: 30px;
   }
 
   /*筛选*/
@@ -2356,15 +2356,97 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     color: #8A8A8A;
   }
 
-  /*返回按钮*/
-  .bottom-btn {
-    text-align: center;
-    margin-bottom: 26px;
+  /deep/ .el-date-editor .el-range__close-icon {
+    position: relative;
+    top: -1px;
   }
 
-  .bottom-btn /deep/ .el-button span {
+  /*日期控件*/
+  .block {
+    display: inline-block;
+    margin-left: 2px;
+    position: relative;
+    /*top: 3px;*/
+  }
+
+
+  /deep/ .el-date-editor .el-range__icon {
+    position: relative;
+    top: -3px;
+    margin-right: 2px;
+  }
+  /deep/ .el-range-separator{
     position: relative;
     top: -2px;
+  }
+  /deep/ .el-input__inner {
+    width: 260px;
+    height: 34px;
+    line-height: 34px;
+  }
+  /deep/ .el-date-editor i, /deep/ .el-date-editor input, /deep/ .el-date-editor span {
+    float: left;
+    position: relative;
+  }
+
+  /*下拉搜索框*/
+  /deep/ .el-input-group__prepend {
+    width: 64px;
+    background-color: #fff;
+  }
+
+  /deep/ .el-input-group--prepend .el-select .el-input__inner {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    width: 104px;
+  }
+
+  /deep/ .el-input-group--prepend .el-input__inner {
+    width: 185px;
+  }
+
+  .el-input {
+
+    height: 34px !important;
+    border-radius: 4px;
+  }
+
+  /deep/ .el-input__inner {
+    height: 34px;
+    /*position: relative;
+    top: -1px;*/
+  }
+
+  /*按钮*/
+  /deep/ .el-button--default:focus, .el-button--default:hover {
+    color: #606266;
+    border-color: #dcdfe6;
+    background-color: #fcfcfc;
+  }
+
+  .search-wrap span {
+    float: left;
+    margin-left: 4px;
+  }
+  .mediaList_container span{
+    float: left;
+    margin-left: 4px;
+  }
+
+  /deep/ .el-cascader {
+    line-height: 34px;
+  }
+
+  .content_bottom_btn /deep/ .el-button span {
+    position: relative;
+    top: -2px;
+  }
+
+  .content_bottom_btn /deep/ .el-button span a {
+    color: #606266;
   }
 
   .clearfix:before,
@@ -2377,8 +2459,12 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
     clear: both
   }
 
+  /deep/ .el-tabs__nav-wrap::after {
+    height: 1px;
+  }
+
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;
@@ -2404,7 +2490,7 @@ import { Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane,
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
 
     .mediaList_wrap {
       width: 1800px !important;

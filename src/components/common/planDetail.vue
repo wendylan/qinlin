@@ -1222,7 +1222,7 @@ export default {
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
     .tab-info .price h4 {
       width: 92%;
     }
@@ -1235,7 +1235,7 @@ export default {
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
     .tab-info .price h4 {
       width: 94%;
     }

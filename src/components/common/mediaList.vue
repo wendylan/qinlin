@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav ">
-			<p><a href="#" style="color: #666">媒体管理</a></p>
+			<p><span >媒体管理</span></p>
 		</div>
 		<div class="mediaList_wrap">
 			<div class="mediaList_head">
@@ -11,7 +11,7 @@
 				<el-row>
 					<div class="mediaList_handel">
 						<!--<el-input v-model="input" placeholder="资源名称、商圈"></el-input>-->
-						<div style="display:inline-block">
+						<span style="display:inline-block">
 						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select"  @change="initData">
 							<el-select v-model="selectInfo" slot="prepend" placeholder="请选择">
 							<el-option v-for="item in SelOptions"
@@ -21,7 +21,7 @@
 							</el-option>
 							</el-select>
 						</el-input>
-						</div>
+						</span>
 						<span><el-button type="primary" icon="el-icon-search" @click="searchFun">搜索</el-button></span>
 						<span><el-button plain @click="newMedia" v-if="showNewBtn">新建</el-button></span>
 						<!--<span><el-button plain>导入</el-button></span>
@@ -42,8 +42,6 @@
 							<template slot-scope="scope">
 								<el-tooltip class="item" effect="dark" :content="scope.row.resName" placement="bottom">
 								<span @click="mediaDetail(scope.row)" v-if="haveDetail" style="color: #1890ff;cursor: pointer">
-								<!-- <router-link :to="{path:'/'+rootPath+'/mediaDetail'}" class="nav_fast">{{scope.row.resName}}
-									</router-link>-->
 									{{scope.row.resName}}
 								</span>
 								<span v-else>{{scope.row.resName}}</span>
@@ -145,6 +143,7 @@
 						>
 						</el-table-column>
 						<el-table-column
+							v-if="role!='OP'"
 							label="操作"
 							min-width="7.4%"
 						>
@@ -176,23 +175,7 @@
 import api from '../../api/api'
 // import areaToText from '../../commonFun/areaToText.js';
 import areaToText from '../../commonFun/areaToText_new.js';
-import {
-	Form,
-	FormItem,
-	Table,
-	TableColumn,
-	Dropdown,
-	DropdownMenu,
-	DropdownItem,
-	Input,
-	Row,
-	Button,
-	Tooltip,
-	MessageBox,
-	Message,
-	Select,
-	Option
-} from 'element-ui';
+import { Form, FormItem, Table,	TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip, MessageBox, Message, Select, Option } from 'element-ui';
 
 export default {
 	name: "mediaList",
@@ -213,7 +196,7 @@ export default {
 	},
 	data() {
 		return {
-			rootPath: '',
+			role: '',
 			showNewBtn: true,   // 新建按钮
 			haveDetail: true,
 			//搜索框和下拉列表
@@ -262,6 +245,8 @@ export default {
 		}
 	},
 	mounted: function () {
+		// 判断角色确定是否有操作这一列
+		this.role = JSON.parse(sessionStorage.getItem('session_data')).uType;
 		let path = this.$route.path.split('/')[1];
 		if (path != 'media' && path != 'superOperate') {
 			this.showNewBtn = false;
@@ -559,7 +544,14 @@ export default {
 
 <style scoped>
   a {
-    color: #409EFF;
+    color: #108EE9 !important;
+  }
+
+  .input-with-select /deep/ .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
   }
 
   /deep/ .el-table th > .cell.highlight {
@@ -654,6 +646,7 @@ export default {
 
   /deep/ .el-input__inner {
     height: 34px;
+    line-height: 34px;
     /*position: relative;
     top: -1px;*/
   }
@@ -795,13 +788,22 @@ export default {
   /*操作*/
   /deep/ .el-dropdown .el-button-group .el-button {
     height: 28px;
-    width: 54px;
+    width: 48px;
     font-size: 14px;
     padding: 0;
   }
 
   /deep/ .el-dropdown .el-button-group .el-button:last-child {
     width: 30px;
+    /*position: relative;*/
+    /*top: -1px;*/
+  }
+  /*/deep/ .el-button-group .el-button:not(:last-child){*/
+  /*margin-top: -1px;*/
+  /*}*/
+
+  /deep/ .el-button-group button{
+    float: left !important;
   }
 
   /deep/ .popper__arrow {
@@ -828,8 +830,13 @@ export default {
     position: relative;
   }
 
+  .mediaList_handel span{
+    float: left !important;
+    margin-left: 2px !important;
+  }
+
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;
@@ -847,7 +854,7 @@ export default {
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
 
     .mediaList_wrap {
       width: 1800px !important;

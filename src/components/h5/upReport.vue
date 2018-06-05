@@ -22,12 +22,19 @@
             <el-tab-pane label="投放详情" name="first">
               <div class="first-wrap box-wrap">
                 <h4>投放详情</h4>
-                <el-select v-model="value" placeholder="请选择" class="type-select">
+                <div class="search-wrap">
+                  <span>
+                     <el-select v-model="value" placeholder="请选择" class="type-select">
                   <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
                              :value="item.value"></el-option>
                 </el-select>
                 <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-                <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+                  </span>
+                  <span>
+                     <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+                  </span>
+                </div>
+
                 <div class="table_wrap">
                   <el-table
                     border
@@ -506,373 +513,373 @@
 </template>
 
 <script>
-  import {
-    Dialog,
-    Tabs,
-    TabPane,
-    Table,
-    TableColumn,
-    Input,
-    Button,
-    Upload,
-    Select,
-    Option,
-    Checkbox,
-    Card,
-    Progress,
-    Cascader,
-    Pagination,
-    MessageBox,
-    Message,
-    Form,
-    FormItem,
-    Carousel,
-    CarouselItem
-  } from 'element-ui';
-  export default {
-    name: "upReport",
-    components: {
-      elDialog: Dialog,
-      elTabs: Tabs,
-      elTabPane: TabPane,
-      elTable: Table,
-      elTableColumn: TableColumn,
-      elInput: Input,
-      elButton: Button,
-      elUpload: Upload,
-      elSelect: Select,
-      elOption: Option,
-      elCheckbox: Checkbox,
-      elCard: Card,
-      elProgress: Progress,
-      elCascader: Cascader,
-      elPagination: Pagination,
-      elForm: Form,
-      elFormItem: FormItem,
-      elCarousel:Carousel,
-      elCarouselItem:CarouselItem
-    },
-    data() {
-      return {
-        planPanel: 'first',
-        //搜索框
-        searchInput: '',
-        planSelect: '',
-        //监播图片内容
-        isActive1: true,
-        //搜索类型
-        typeSelect: [{
-          value: '资源名称',
-          label: '资源名称'
-        }, {
-          value: '商圈',
-          label: '商圈'
-        }, {
-          value: '城市',
-          label: '城市'
-        }],
-        //默认
-        value: '资源名称',
-        //投放详情
-        putDetail: [
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
-          {
-            recName: '珠江帝景花园二期',
-            city: '广州',
-            origin: '海珠区',
-            address: '广州市天河区中山大道西109号',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            mediaNum: 1,
-            liveTime: '2006'
-          },
+import {
+	Dialog,
+	Tabs,
+	TabPane,
+	Table,
+	TableColumn,
+	Input,
+	Button,
+	Upload,
+	Select,
+	Option,
+	Checkbox,
+	Card,
+	Progress,
+	Cascader,
+	Pagination,
+	MessageBox,
+	Message,
+	Form,
+	FormItem,
+	Carousel,
+	CarouselItem
+} from 'element-ui';
+export default {
+	name: "upReport",
+	components: {
+		elDialog: Dialog,
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elInput: Input,
+		elButton: Button,
+		elUpload: Upload,
+		elSelect: Select,
+		elOption: Option,
+		elCheckbox: Checkbox,
+		elCard: Card,
+		elProgress: Progress,
+		elCascader: Cascader,
+		elPagination: Pagination,
+		elForm: Form,
+		elFormItem: FormItem,
+		elCarousel:Carousel,
+		elCarouselItem:CarouselItem
+	},
+	data() {
+		return {
+			planPanel: 'first',
+			//搜索框
+			searchInput: '',
+			planSelect: '',
+			//监播图片内容
+			isActive1: true,
+			//搜索类型
+			typeSelect: [{
+			value: '资源名称',
+			label: '资源名称'
+			}, {
+			value: '商圈',
+			label: '商圈'
+			}, {
+			value: '城市',
+			label: '城市'
+			}],
+			//默认
+			value: '资源名称',
+			//投放详情
+			putDetail: [
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
+			{
+				recName: '珠江帝景花园二期',
+				city: '广州',
+				origin: '海珠区',
+				address: '广州市天河区中山大道西109号',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024',
+				liveYear: '1999年',
+				adLimit: '地产/医药/汽车',
+				mediaNum: 1,
+				liveTime: '2006'
+			},
 
-        ],
-        //发布情况
-        postDetail:[
-          {
-            city:'广州',
-            planNum:200,
-            realNum:200,
-            wrongNum:0,
-            resolveNum:0,
-          },
-          {
-            city:'深圳',
-            planNum:200,
-            realNum:200,
-            wrongNum:0,
-            resolveNum:0,
-          },
-        ],
-        //缩略图对话框
-        dialogVisible:false,
-        dialogImageUrl: '../../../static/images/testPic.png',
-      }
-    },
-    mounted() {
-      $(function () {
-        $('.tabs').find('button').click(function () {
-          $(this).addClass('active').siblings().removeClass('active');
-        });
-        $('.picBox').mouseenter(function () {
-          $(this).find('.mask-btn').show()
-        }).mouseleave(function () {
-          $(this).find('.mask-btn').hide()
-        })
+			],
+			//发布情况
+			postDetail:[
+			{
+				city:'广州',
+				planNum:200,
+				realNum:200,
+				wrongNum:0,
+				resolveNum:0,
+			},
+			{
+				city:'深圳',
+				planNum:200,
+				realNum:200,
+				wrongNum:0,
+				resolveNum:0,
+			},
+			],
+			//缩略图对话框
+			dialogVisible:false,
+			dialogImageUrl: '../../../static/images/testPic.png',
+		}
+	},
+	mounted() {
+		$(function () {
+			$('.tabs').find('button').click(function () {
+			$(this).addClass('active').siblings().removeClass('active');
+			});
+			$('.picBox').mouseenter(function () {
+			$(this).find('.mask-btn').show()
+			}).mouseleave(function () {
+			$(this).find('.mask-btn').hide()
+			})
 
-      });
-    },
-    methods: {
-      box1Change() {
-        this.isActive1 = !this.isActive1;
-      },
-      filterCity(value, row) {
-        return row.city === value;
-      },
-      filterOrigin(value, row) {
-        return row.origin === value;
-      },
-      //页码
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      //缩略图
-      handlePictureCardPreview(){
-        this.dialogVisible = true;
-      }
-    }
-  }
+		});
+	},
+	methods: {
+		box1Change() {
+			this.isActive1 = !this.isActive1;
+		},
+		filterCity(value, row) {
+			return row.city === value;
+		},
+		filterOrigin(value, row) {
+			return row.origin === value;
+		},
+		//页码
+		handleSizeChange(val) {
+			console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChange(val) {
+			console.log(`当前页: ${val}`);
+		},
+		//缩略图
+		handlePictureCardPreview(){
+			this.dialogVisible = true;
+		}
+	}
+}
 </script>
 
 <style scoped>
@@ -888,7 +895,7 @@
     padding: 28px 31px 60px;
     width: 1247px;
     box-sizing: border-box;
-    background:#fff url("../../assets/images/upReportBg.png") right no-repeat ;
+    background: #fff url("../../assets/images/upReportBg.png") right no-repeat;
     /*height: 100px;*/
   }
 
@@ -970,7 +977,14 @@
     /*top: 3px;*/
     padding: 0;
   }
-  .first-wrap /deep/ .el-select .el-input .el-select__caret{
+
+  .search-wrap span {
+    float: left;
+    margin-left: 2px;
+    margin-bottom: 30px;
+  }
+
+  .first-wrap /deep/ .el-select .el-input .el-select__caret {
     position: relative;
     left: 0;
     top: 2px;
@@ -1094,7 +1108,8 @@
     background: #C1C1C1;
     border-radius: 4px;
   }
-  .el-table{
+
+  .el-table {
     border-radius: 4px;
   }
 
@@ -1117,18 +1132,19 @@
   }
 
   /*地图展示*/
-  .sec-wrap .map{
+  .sec-wrap .map {
     width: 1246px;
     height: 527px;
     padding: 21px 29px;
   }
 
   /*监播图片*/
-   .tabs {
+  .tabs {
     padding-left: 24px;
-     margin-bottom: 12px;
-     height: 34px;
+    margin-bottom: 12px;
+    height: 34px;
   }
+
   .tabs button {
     width: 88px;
     height: 32px;
@@ -1139,20 +1155,24 @@
     cursor: pointer;
     float: left;
   }
+
   .tabs button + button {
     /*margin-left: 1px;*/
     border-radius: 0 4px 4px 0;
   }
+
   .tabs button.active {
     border: 1px solid #1890FF;
     font-weight: bold;
     color: #1890ff;
   }
+
   /*图片切换*/
-  .typeOfRec,.typeOfPic{
-    padding: 0 24px 30px ;
+  .typeOfRec, .typeOfPic {
+    padding: 0 24px 30px;
   }
-  .picBox{
+
+  .picBox {
     width: 220px;
     height: 326px;
     padding: 4px;
@@ -1163,41 +1183,51 @@
     margin-bottom: 22px;
     position: relative;
   }
-  .picBox + .picBox{
+
+  .picBox + .picBox {
     margin-left: 19px;
   }
-  .picBox img{
+
+  .picBox img {
     width: 210px;
     height: 280px;
     margin-bottom: 4px;
     border-bottom: 1px solid #e9e9e9;
   }
-  .picBox .pic-title{
+
+  .picBox .pic-title {
     font-size: 14px;
     color: #666666;
     text-align: center;
     line-height: 4px;
   }
-  /deep/ .el-carousel__button{
-    width: 18px ;
+
+  /deep/ .el-carousel__button {
+    width: 18px;
   }
-  /deep/ .el-carousel__indicators{
+
+  /deep/ .el-carousel__indicators {
     bottom: 28px;
   }
+
   /*发布情况*/
-  .forth-wrap /deep/ .el-table th, .el-table tr{
+  .forth-wrap /deep/ .el-table th, .el-table tr {
     padding: 6px 0;
   }
-  .forth-wrap /deep/ .el-table .cell{
+
+  .forth-wrap /deep/ .el-table .cell {
     padding: 9px 14px;
   }
-  /deep/ .el-table_2_column_13,/deep/ .el-table_2_column_14, /deep/ .el-table_2_column_15 {
+
+  /deep/ .el-table_2_column_13, /deep/ .el-table_2_column_14, /deep/ .el-table_2_column_15 {
     text-align: right;
   }
-  .mask-btn{
+
+  .mask-btn {
     display: none;
   }
-  .mask-btn .el-icon-search{
+
+  .mask-btn .el-icon-search {
     position: absolute;
     left: 43%;
     top: 43%;
@@ -1207,7 +1237,7 @@
     z-index: 2;
   }
 
-    /*页码*/
+  /*页码*/
   .pager {
     position: relative;
     height: 32px;
@@ -1215,18 +1245,21 @@
     top: -22px;
     right: 0px;
   }
-  /deep/ .el-select .el-input .el-select__caret{
+
+  /deep/ .el-select .el-input .el-select__caret {
     position: relative;
     left: -9px;
   }
-  /deep/ .el-select{
+
+  /deep/ .el-select {
     top: -4px;
   }
 
-  /deep/ .btn-prev{
+  /deep/ .btn-prev {
     position: relative;
     top: -4px !important;
   }
+
   /deep/ .el-pagination {
     position: absolute;
     right: 0;
@@ -1236,40 +1269,42 @@
   /deep/ .el-pagination.is-background .el-pager li {
     font-weight: normal;
     font-size: 13px;
-    background-color: transparent ;
+    background-color: transparent;
   }
-  /deep/ .el-pagination button, .el-pagination span:not([class*=suffix]){
+
+  /deep/ .el-pagination button, .el-pagination span:not([class*=suffix]) {
     position: relative;
     top: 0px !important;
     background-color: transparent !important;
   }
-  /deep/ .el-pagination__jump{
+
+  /deep/ .el-pagination__jump {
     margin-left: 13px;
     position: relative;
     top: -4px;
   }
 
-
-
-
   /*1440*/
-  @media screen and (min-width: 1440px) {
-    .mediaMana_content_top,.plan-panel{
+  @media all and (min-width: 1440px) {
+    .mediaMana_content_top, .plan-panel {
       width: 1320px;
     }
-    .picBox + .picBox{
+
+    .picBox + .picBox {
       margin-left: 37px;
     }
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
-    .mediaMana_content_top,.plan-panel{
+  @media all and (min-width: 1920px) {
+    .mediaMana_content_top, .plan-panel {
       width: 1800px;
     }
+
     .picBox + .picBox[data-v-74e3f71e] {
       margin-left: 118px;
     }
+
     .typeOfRec[data-v-74e3f71e], .typeOfPic[data-v-74e3f71e] {
       padding: 0 103px 30px;
     }

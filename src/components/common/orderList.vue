@@ -1,311 +1,353 @@
 <template>
-  <div class="ad_mediaDetail_wrap clearfix">
-    <div class="ad_mediaDetail_nav ">
-      <p><a href="#" style="color: #999">订单管理</a><em> / </em><a href="#">订单列表</a></p>
-    </div>
-    <div class="mediaList_wrap">
-      <div class="mediaList_head">
-        <h2>订单列表</h2>
-      </div>
-      <div class="mediaList_container">
-        <el-row>
-          <div class="mediaList_handel">
-            <el-input v-model="search" placeholder="订单名/客户名/合同编号"></el-input>
-            <div class="block">
-              <el-date-picker
-                v-model="cDate"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="发布日期"
-                end-placeholder="发布日期">
-              </el-date-picker>
-            </div>
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
-          </div>
-        </el-row>
-        <div class="table_wrap">
-          <el-table
-            border
-            :data="orderList"
-            style="width: 100%"
-            :default-sort="{prop: 'date', order: 'descending'}"
-          >
-            <el-table-column
-              label="订单名称"
-              min-width="13.6%"
-            >
-              <template slot-scope="scope">
-                <router-link :to="{path:'/sale/orderDetail'}">{{scope.row.orderName}}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="客户名称"
-              min-width="11.4%"
-            >
-              <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" :content="scope.row.clientName" placement="bottom">
-                  <span title="">{{scope.row.clientName}}</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="brandName"
-              label="品牌名称"
-              min-width="6.0%"
-            >
-            </el-table-column>
-            <el-table-column
-              label="合同编号"
-              class="tar"
-              min-width="8.9%"
-            >
-              <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" :content="scope.row.contractID" placement="bottom">
-                  <span title="">{{scope.row.contractID}}</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="orderPrice"
-              sortable
-              label="订单总价"
-              min-width="7.5%"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="city"
-              label="投放城市(点位面数，排期)"
-              min-width="19.2%"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="createDate"
-              label="发布日期"
-              sortable
-              min-width="7.3%"
-            >
-            </el-table-column>
-            <el-table-column
-              class="Status"
-              prop="Status"
-              label="状态"
-              min-width="6.1%"
-              :filters="[
-              { text: '已完成', value: '已完成' },
-              { text: '未投放', value: '未投放' },
-              { text: '强制停止', value: '强制停止' }
-              ]"
-              :filter-method="filterStatus"
-              :filter-multiple="false"
-            >
-            </el-table-column>
-            <el-table-column
-              label="操作"
-              min-width="6.4%"
-            >
-              <template slot-scope="scope">
-                <el-dropdown size="small" split-button trigger="click">
-                  操作
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item  @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
-                    <el-dropdown-item class="update">更换点位</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item>
-                    <el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="ad_mediaDetail_wrap clearfix">
+		<div class="ad_mediaDetail_nav ">
+			<p>订单管理</p>
+		</div>
+		<div class="mediaList_wrap">
+			<div class="mediaList_head">
+				<h2>订单列表</h2>
+			</div>
+			<div class="mediaList_container">
+				<el-row>
+					<div class="mediaList_handel">
+						<span>
+							<div style="display:inline-block">
+								<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+									<el-select v-model="select" slot="prepend" placeholder="请选择">
+									<el-option label="订单名" value="1"></el-option>
+									<el-option label="客户名" value="2"></el-option>
+									<el-option label="合同编号" value="3"></el-option>
+									</el-select>
+								</el-input>
+							</div>
+						</span>
+						<span>
+							<div class="block">
+								<el-date-picker
+									v-model="rangeDate"
+									type="daterange"
+									range-separator="-"
+									start-placeholder="发布日期"
+									end-placeholder="发布日期">
+								</el-date-picker>
+							</div>
+						</span>
+						<span><el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button></span>
+					</div>
+				</el-row>
+				<div class="table_wrap">
+					<el-table
+						border
+						:data="orderList"
+						style="width: 100%"
+						:default-sort="{prop: 'date', order: 'descending'}"
+					>
+						<el-table-column
+							label="订单名称"
+							min-width="14.6%"
+						>
+							<template slot-scope="scope">
+								<a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
+							</template>
+						</el-table-column>
+						<el-table-column
+							label="客户名称"
+							min-width="10.4%"
+						>
+							<template slot-scope="scope">
+								<el-tooltip class="item" effect="dark" :content="scope.row.clientName" placement="bottom">
+								<span title="">{{scope.row.clientName}}</span>
+								</el-tooltip>
+							</template>
+						</el-table-column>
+						<el-table-column
+							prop="brandName"
+							label="品牌名称"
+							min-width="6.0%"
+						>
+						</el-table-column>
+						<el-table-column
+							label="合同编号"
+							class="tar"
+							min-width="7.9%"
+						>
+							<template slot-scope="scope">
+								<el-tooltip class="item" effect="dark" :content="scope.row.contractID" placement="bottom">
+								<span title="">{{scope.row.contractID}}</span>
+								</el-tooltip>
+							</template>
+						</el-table-column>
+						<el-table-column
+							sortable
+							label="订单总价"
+							min-width="7.5%"
+						>
+							<template slot-scope="scope">
+								<span>{{priceFormat(scope.row.apTotal)}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column
+							label="投放城市(点位面数，排期)"
+							min-width="19.2%"
+						>
+							<template slot-scope="scope">
+								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}<i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
+							</template>
+						</el-table-column>
+						<el-table-column
+							label="发布日期"
+							sortable
+							min-width="7.3%"
+						>
+							<template slot-scope="scope">
+								<span>{{formatTime(scope.row.apcTime)}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column
+							class="Status"
+							prop="Status"
+							label="状态"
+							min-width="6%"
+							:filters="[
+								{ text: '投放中', value: '投放中' },
+								{ text: '已完成', value: '已完成' },
+								{ text: '未投放', value: '未投放' },
+								{ text: '强制结束', value: '强制结束' }
+							]"
+							:filter-method="filterStatus"
+							:filter-multiple="false"
+						>
+						</el-table-column>
+						<el-table-column
+							label="操作"
+							min-width="7.4%"
+						>
+							<template slot-scope="scope">
+								<el-dropdown size="small" split-button trigger="click">操作
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
+										<el-dropdown-item class="update">更换点位</el-dropdown-item>
+										<el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item>
+										<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownItem,Tooltip, Button, Input, MessageBox, Message } from 'element-ui';
-  export default {
+import { api } from '../../api/api';
+// 时间格式化
+import dateFormat  from '../../commonFun/timeFormat.js';
+// 价格格式化
+import commaFormat  from '../../commonFun/commaFormat.js';
+import { MessageBox, Message } from 'element-ui';
+export default {
 	name: "projectList",
-	components:{
-		elRow: Row,
-		elDatePicker: DatePicker,
-		elTable: Table,
-		elTableColumn: TableColumn,
-		elDropdown: Dropdown,
-		elDropdownMenu: DropdownMenu,
-		elDropdownItem: DropdownItem,
-		elTooltip: Tooltip,
-		elButton: Button,
-		elInput: Input,
+	data() {
+		return {
+			rangeDate: '',
+			keyword: '',
+			select: '1',
+			//表格
+			orderList: [
+				{
+					apID: 1,
+					apName: "第一个投放方案",
+					cName: "新光百货",
+					bTitle: "新光百货",
+					apTotal: 465200,
+					realName: "黄启炜",
+					rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+					apcTime: "2018-05-09 18:29:47.0",
+					apState: 1
+				}
+			],
+			currentOrder:[
+				{
+					apID: 1,
+					apName: "第一个投放方案",
+					cName: "新光百货",
+					bTitle: "新光百货",
+					apTotal: 465200,
+					realName: "黄启炜",
+					rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+					apcTime: "2018-05-09 18:29:47.0",
+					apState: 1
+				}
+			],
+		}
 	},
-    data() {
-      return {
-        cDate: '',
-        search: '',
-        //表格
-        orderList: [
-          {
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '强制完成',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '已完成',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '未投放',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        },{
-          orderName: '新世界百货二月投放方案2.0',
-          brandName:'亲邻科技',
-          clientName: '北京通瑞万华置业北京通瑞万华置业',
-          contractID: 'QC201803284401001',
-          orderPrice: '￥3,720,000',
-          city: '广州市(300面,2017.09.10-2017.10.01)',
-          createDate: '2018.08.30',
-          Status: '进行中',
-        }]
-      }
-    },
+	mounted() {
+		// 获得初始数据
+		this.getInitData();
+	},
+	methods: {
+		// 获得初始数据
+		getInitData(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			api.getApi('/GetOrder', {uid : uid}).then(res => {
+				console.log(res.data);
+				if(!res.data.SysCode){
+					this.orderList = res.data;
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res => {
+				console.log(res);
+			});
+		},
+		// 跳转到详情页面
+		ToDetail(apid){
+			console.log(apid);
+			sessionStorage.setItem('order_apid', apid);
+			this.$router.push('./orderDetail');
+		},
+		// 状态转换成文本
+		stateToText(val){
+			let state = [
+				{ text: '投放中', value: 0 },
+				{ text: '已完成', value: 1 },
+				{ text: '未投放', value: 2 },
+				{ text: '强制结束', value: 3 }
+			];
+			for(let data of state ){
+				if(val == data.state){
+					return data.text;
+				}
+			}
+		},
+		// 时间格式规范
+		formatTime(val){
+			return dateFormat.date(val);
+		},
+		// 价格加上逗号
+		priceFormat(price){
+			return commaFormat.format(price);
+		},
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if((!this.rangeDate) && (!this.keyword) ){
+				this.currentOrder = this.orderList;
+			}
+		},
+		// 搜索方案
+		search(){
+			let range = this.rangeDate;
+			let arr = [];
+			let select = this.select;
+			let keyword = this.keyword;
+			if(range || this.keyword){
+				for(let data of this.orderList){
+					if(range && keyword){
+						if(
+							dateFormat.date(data.apcTime) >= range[0] &&
+							dateFormat.date(data.apcTime) <= range[1]
+						){
+							if(data.apName){
+								if((select == '1') && data.apName.includes(keyword) ){
+									arr.push(data);
+								}
+							}
+							if(data.cName){
+								if((select == '2') && data.cName.includes(keyword)){
+									arr.push(data);
+								}
+							}
+							if(data.bTitle){
+								if((select == '3') && data.bTitle.includes(keyword)){
+									arr.push(data);
+								}
+							}
+						}
+					}else if(range){
+						if(
+							dateFormat.date(data.apcTime) >= range[0] &&
+							dateFormat.date(data.apcTime) <= range[1] 
+						){
+							arr.push(data);
+						}
+					}else if(keyword){
+						if(data.apName){
+							if((select == '1') && data.apName.includes(keyword) ){
+								arr.push(data);
+							}
+						}
+						if(data.cName){
+							if((select == '2') && data.cName.includes(keyword)){
+								arr.push(data);
+							}
+						}
+						if(data.bTitle){
+							if((select == '3') && data.bTitle.includes(keyword)){
+								arr.push(data);
+							}
+						}
+					}
+				}
+				this.currentOrder = arr;
+				console.log(arr);
+				return;
+			}
+			this.currentOrder = this.orderList;
+		},
+		//提示框
+		inputBox1() {
+			MessageBox.prompt('请输入监控备注', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				inputType: 'textarea',
+				inputPattern: /^.{1,100}$/,
+				inputErrorMessage: '监控备注超过100字,请缩减'
+			}).then(() => {
+				Message.success('监控备注输入成功');
+			}).catch(() => {
+				Message.info('取消输入');
+			});
+		},
 
-    methods: {
-      //提示框
-      inputBox1(){
-        this.$prompt('请输入监控备注', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputType:'textarea',
-          inputPattern:  /^.{1,100}$/,
-          inputErrorMessage: '监控备注超过100字,请缩减'
-        }).then(() => {
-          Message({
-            type: 'success',
-            message: '监控备注输入成功'
-          });
-        }).catch(() => {
-          Message({
-            type: 'info',
-            message: '取消输入'
-          });
-        });
-      },
+		confirmBox1() {
+			MessageBox.confirm('是否结束<b>' + this.orderList[0].orderName + '</b>订单投放？', '提示', {
+				confirmButtonText: '是',
+				cancelButtonText: '否',
+				dangerouslyUseHTMLString: true,
+				type: 'warning'
+			}).then(() => {
+				//确定
+				Message.success('操作成功');
+			}).catch(() => {
+				Message.info('已取消操作');
+			});
+		},
+		//筛选
+		filterStatus(value, row) {
+			return row.Status === value;
+		},
+		//状态
 
-      confirmBox1(){
-        console.log(this);
-        MessageBox.confirm('是否结束<b>'+this.orderList[0].orderName+'</b>订单投放？','提示',{
-          confirmButtonText:'是',
-          cancelButtonText:'否',
-          dangerouslyUseHTMLString: true,
-          type:'warning'
-        }).then(()=>{
-          //确定
-          Message({
-            type:'success',
-            message:'操作成功'
-          });
-        }).catch(()=>{
-          Message({
-            type:'info',
-            message:'已取消操作'
-          })
-        });
-      },
-      //筛选
-      filterStatus(value, row) {
-        return row.Status === value;
-      },
-      //状态
+	},
 
-    },
+}
 
-  }
+	$(function () {
+		/*window.onresize = function () {
+		if ($(window.width >= 1366)) {
+			$('.el-table-filter').css({
+			left: '1145'
+			})
+		}
+		};*/
+		var Status = $('.el-table__row').find('td').text();
+		if (Status === '已完成') {
+			$('.watch').attr('disabled', 'disabled')
+		}
 
-  $(function () {
-    /*window.onresize = function () {
-      if ($(window.width >= 1366)) {
-        $('.el-table-filter').css({
-          left: '1145'
-        })
-      }
-    };*/
-    var Status = $('.el-table__row').find('td').text();
-    if(Status === '已完成'){
-        $('.watch').attr('disabled','disabled')
-    }
-
-
-
-  })
+	})
 </script>
 
 <style scoped>
@@ -313,40 +355,50 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     color: #108EE9;
   }
 
-/deep/.el-textarea__inner{
-  height: 134px !important;
-  resize: none;
-}
+  /deep/ .el-textarea__inner {
+    height: 134px !important;
+    resize: none;
+  }
 
   /*筛选*/
   .el-checkbox + .el-checkbox {
     margin-left: 0;
   }
 
-
   /deep/ .el-checkbox__label {
     font-size: 10px;
     color: #8A8A8A;
   }
 
+
   /*日期控件*/
   .block {
     display: inline-block;
+    margin-left: 2px;
     position: relative;
-    top: 0px;
-    margin-left: 63px;
+    /*top: 3px;*/
   }
 
-  /deep/ .el-input__inner {
-    width: 237px;
-    height: 34px;
-  }
 
   /deep/ .el-date-editor .el-range__icon {
-    position: absolute;
-    right: 10px;
-    top: 0;
+    position: relative;
+    top: -3px;
+    margin-right: 2px;
   }
+  /deep/ .el-range-separator{
+    position: relative;
+    top: -2px;
+  }
+  /deep/ .el-input__inner {
+    width: 260px;
+    height: 34px;
+    line-height: 34px;
+  }
+  /deep/ .el-date-editor i, /deep/ .el-date-editor input, /deep/ .el-date-editor span {
+    float: left;
+    position: relative;
+  }
+
 
   /*面包屑导航*/
   .ad_mediaDetail_wrap {
@@ -392,7 +444,6 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     font-size: 16px;
     color: #2C313C;
     height: 24px;
-    border-left: 2px solid #465D89;
     padding-left: 14px;
     font-weight: bold;
   }
@@ -408,20 +459,16 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     border-radius: 4px;
   }
 
-  .el-button--primary {
-    background-color: #108EE9;
-  }
-
   .el-button {
     width: 76px;
     height: 34px;
     text-align: center;
-    line-height: 34px;
+    /*line-height: 34px;*/
     padding: 0;
-    margin-left: 6px;
-    position: relative;
-    top: 1px;
-    left: 0;
+    margin-left: 2px;
+    /*position: relative;*/
+    /*top: 1px;*/
+    /*left: 0;*/
   }
 
   .mediaList_wrap .mediaList_container .table_wrap {
@@ -430,6 +477,88 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
 
     border-radius: 4px;
 
+  }
+  .input-with-select /deep/ .el-input__inner{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 34px;
+    line-height: 14px;
+  }
+
+  /*日期控件*/
+  .block {
+    display: inline-block;
+    margin-left: 2px;
+  }
+
+  /deep/ .el-input__inner {
+    width: 260px;
+    height: 34px;
+
+  }
+
+  /deep/ .el-date-editor .el-range__icon {
+    position: relative;
+    top: -3px;
+    left: 0;
+    margin-right: 2px;
+  }
+
+  /deep/ .el-date-editor .el-range__close-icon {
+    position: relative;
+    top: -2px;
+    left: 3px;
+  }
+
+  /deep/ .el-picker-panel .el-date-range-picker .el-popper {
+    left: 335px !important;
+  }
+
+  /*下拉搜索框*/
+  /deep/ .el-input-group__prepend {
+    width: 64px;
+    background-color: #fff;
+  }
+
+  /deep/ .el-input-group--prepend .el-select .el-input__inner {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    width: 104px;
+  }
+
+  /deep/ .el-input-group--prepend .el-input__inner {
+    width: 185px;
+  }
+
+  .el-input {
+
+    height: 34px !important;
+    border-radius: 4px;
+  }
+
+  /deep/ .el-input__inner {
+    height: 34px;
+    /*position: relative;
+    top: -1px;*/
+  }
+
+  /*按钮*/
+  /deep/ .el-button--default:focus, .el-button--default:hover {
+    color: #606266;
+    border-color: #dcdfe6;
+    background-color: #fcfcfc;
+  }
+
+  .content_bottom_btn /deep/ .el-button span {
+    position: relative;
+    top: -2px;
+  }
+
+  .content_bottom_btn /deep/ .el-button span a {
+    color: #606266;
   }
 
   /*表格*/
@@ -464,7 +593,7 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     width: 22px;
   }
 
-  /deep/ .el-table_1_column_3 {
+  /deep/ .el-table_1_column_5 {
     text-align: right !important;
   }
 
@@ -512,6 +641,10 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     left: 1106px !important;
   }
 
+  /deep/ .el-table-filter__list-item {
+    color: #666;
+  }
+
   /*操作*/
   /deep/ .el-button--mini, .el-button--small {
     font-size: 14px !important;
@@ -525,6 +658,12 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
     width: 65px;
   }
 
+  /deep/ button.el-button.el-button--default.el-button--small:hover {
+    color: #666;
+    border-color: #d8d8d8;
+    background-color: #fff;
+  }
+
   .tar {
     text-align: right !important;
     padding-right: 10px;
@@ -532,28 +671,34 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
 
   /deep/ .el-dropdown .el-button-group .el-button {
     height: 28px;
-    width: 40px;
+    width: 48px;
     font-size: 14px;
     padding: 0;
   }
 
   /deep/ .el-dropdown .el-button-group .el-button:last-child {
-    width: 22px;
+    width: 30px;
+  }
+
+  /*/deep/ .el-button-group .el-button:not(:last-child){*/
+    /*margin-top: -1px;*/
+  /*}*/
+
+  /deep/ .el-button-group button{
+    float: left !important;
   }
 
   /deep/ .popper__arrow {
     display: none;
   }
 
-  /deep/ .el-button:focus, /deep/ .el-button:hover {
-    border: 1px solid #409eff;
-    color: #409EFF;
-    background-color: #ffffff;
-
+  .mediaList_handel span{
+    float: left !important;
+    margin-left: 4px;
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media all and (min-width: 1440px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;
@@ -571,7 +716,7 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media all and (min-width: 1920px) {
 
     .mediaList_wrap {
       width: 1800px !important;
@@ -588,7 +733,6 @@ import { Row, DatePicker, Table, TableColumn, Dropdown, DropdownMenu, DropdownIt
 
        .table_wrap .tr_wrap{
          height: 450px;}*/
-
   }
 
 
