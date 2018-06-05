@@ -31,7 +31,7 @@
 				<div class="table_wrap">
 					<el-table
 						border
-						:data="planList"
+						:data="currentPlan"
 						style="width: 100%"
 						:default-sort="{prop: 'resName', order: 'descending'}"
 					>
@@ -174,7 +174,8 @@
 
 <script>
 import api from '../../api/api'
-import areaToText from '../../commonFun/areaToText.js';
+// import areaToText from '../../commonFun/areaToText.js';
+import areaToText from '../../commonFun/areaToText_new.js';
 import {
 	Form,
 	FormItem,
@@ -365,7 +366,8 @@ export default {
 							type: 'success',
 							message: '成功更改状态'
 						});
-					this.planList[index].mState = Status;
+						this.planList[index].mState = Status;
+						this.currentPlan = this.planList;
 					}).catch(() => {
 						Message({
 							type: 'info',
@@ -429,62 +431,64 @@ export default {
 			let dataArr = []
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
 			api.getApi('/GetRMList', {uid: uid}).then(res => {
-			// console.log('资源媒体列表：', res.data)
-			let RMList = res.data
-			if (!RMList.SysCode) {
-				// let RMList = reclist
-				if (RMList) {
-				console.log('资源媒体列表：', res.data)
-				for (let i = 0; i < RMList.length; i++) {
-					if (RMList[i].mState == '1') {
-					RMList[i].mState = '正常'
-					} else if (RMList[i].mState == '0') {
-					RMList[i].mState = '禁止'
-					} else if (RMList[i].mState == '2') {
-					RMList[i].mState = '待安装'
-					} else if (RMList[i].mState == '3') {
-					RMList[i].mState = '待维修'
+				// console.log('资源媒体列表：', res.data)
+				let RMList = res.data
+				if (!RMList.SysCode) {
+					// let RMList = reclist
+					if (RMList) {
+						console.log('资源媒体列表：', res.data)
+						for (let i = 0; i < RMList.length; i++) {
+							if (RMList[i].mState == '1') {
+								RMList[i].mState = '正常'
+							} else if (RMList[i].mState == '0') {
+								RMList[i].mState = '禁止'
+							} else if (RMList[i].mState == '2') {
+								RMList[i].mState = '待安装'
+							} else if (RMList[i].mState == '3') {
+								RMList[i].mState = '待维修'
+							}
+							// areaToText.toTextCity(data => {
+								// console.log('公司信息所在城市', data);
+								// RMList[i].city = data.city
+								// RMList[i].city = data
+								let data = areaToText.toText(RMList[i].rID).city;
+								this.$set(RMList[i], 'city', data);
+								if (i >= RMList.length - 1) {
+									this.planList = RMList
+									console.log('planList', this.planList)
+									for (let j = 0; j < this.planList.length; j++) {    // 表头区域和城市选项
+										let rName = {
+											text: this.planList[j].rName,
+											value: this.planList[j].rName
+										}
+										let rCity = {
+											text: this.planList[j].city,
+											value: this.planList[j].city
+										}
+										//  this.filtersRName.push(rName)
+										if (JSON.stringify(this.filtersRName).indexOf(rName.value) === -1) {
+											this.filtersRName.push(rName)
+										}
+										if (JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1) {
+											this.filtersCity.push(rCity)
+										}
+									}
+								}
+							// }, RMList[i].rID);
+						}
+						this.currentPlan = this.planList;
+					} else {
+						Message({
+							type: 'warning',
+							message: '数据为空'
+						});
 					}
-					areaToText.toTextCity(data => {
-					// console.log('公司信息所在城市', data);
-					// RMList[i].city = data.city
-					// RMList[i].city = data
-					this.$set(RMList[i], 'city', data);
-					if (i >= RMList.length - 1) {
-						this.planList = RMList
-						console.log('planList', this.planList)
-						for (let j = 0; j < this.planList.length; j++) {    // 表头区域和城市选项
-						let rName = {
-							text: this.planList[j].rName,
-							value: this.planList[j].rName
-						}
-						let rCity = {
-							text: this.planList[j].city,
-							value: this.planList[j].city
-						}
-						//  this.filtersRName.push(rName)
-						if (JSON.stringify(this.filtersRName).indexOf(rName.value) === -1) {
-							this.filtersRName.push(rName)
-						}
-						if (JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1) {
-							this.filtersCity.push(rCity)
-						}
-						}
-					}
-					}, RMList[i].rID);
-				}
 				} else {
-				Message({
-					type: 'warning',
-					message: '数据为空'
-				});
+					Message({
+						type: 'warning',
+						message: RMList.MSG
+					});
 				}
-			} else {
-				Message({
-				type: 'warning',
-				message: RMList.MSG
-				});
-			}
 			})
 			/*  let dataArr = [];
 			api.getApi('/GetMediaList', {resid: 1}).then(res => {
