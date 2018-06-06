@@ -22,9 +22,7 @@
                 <el-input v-model="planForm.planName" placeholder="请输入方案名称"></el-input>
               </el-form-item>
               <el-form-item label="所属销售：" prop="ownerSales">
-                <el-select v-model="planForm.ownerSales" placeholder="请选择所属销售">
-                  <!--<el-option label="销售" value="BD"></el-option>
-                  <el-option label="媒介" value="MD"></el-option>-->
+              <!--  <el-select v-model="planForm.ownerSales" placeholder="请选择所属销售">
                   <el-option
                     v-for="item in ownerSales"
                     :key="item.value"
@@ -32,7 +30,13 @@
                     :value="item.value"
                   >
                   </el-option>
-                </el-select>
+                </el-select>-->
+                <el-autocomplete
+                  v-model="BDData.realName"
+                  :fetch-suggestions="querySearchAsync"
+                  placeholder="请输入账号"
+                >
+                </el-autocomplete>
               </el-form-item>
               <el-form-item label="公司名称：" prop="companyName">
                 <el-select v-model="planForm.companyName" @change="GetBrandByCid" placeholder="请选择公司名称">
@@ -74,13 +78,6 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <!--  <el-cascader
-                    :options="throwCity"
-                    v-model="planForm.throwCity"
-                    separator="-"
-                    :show-all-levels="false"
-                    @active-item-change="handleItemChange">
-                  </el-cascader>-->
               </el-form-item>
               <el-form-item label="方案备注：" prop="planRemark">
                 <el-input type="textarea" v-model="planForm.planRemark" placeholder="请填写备注信息"></el-input>
@@ -98,7 +95,8 @@
                   <el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
                              :value="item.value"></el-option>
                   </el-select>
-                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput input-with-select"></el-input>
+                  <el-input v-model="searchInput" placeholder="请输入要搜索的内容"
+                            class="searchInput input-with-select"></el-input>
                 </span>
                 <span>
                   <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select input-with-select">
@@ -141,28 +139,23 @@
               </dl>
               <dl>
                 <dt>媒体类型：</dt>
-                <dd class="active">社区广告门</dd>
-                <dd>电梯广告</dd>
+                <dd class="active">广告门</dd>
+                <!-- <dd>电梯广告</dd>-->
               </dl>
               <dl style="border: none">
-                <dt>城市区域：</dt>
-                <dd class="active">广州</dd>
-                <dd>深圳</dd>
+                <dt>城市区域：</dt><!--city-->
+                <dd v-for="(item, index) in city" :index="index" :class=" index == activeIndex ? 'active' : ''"
+                    @click="activeCity(item,index)">{{item.rName}}
+                </dd>
               </dl>
-              <dl class="city-proper">
-                <dd class="active">全市</dd>
-                <dd>天河区</dd>
-                <dd>越秀区</dd>
-                <dd>海珠区</dd>
-                <dd>荔湾区</dd>
-                <dd>黄浦区</dd>
-                <dd>白云区</dd>
-                <dd>番禺区</dd>
-                <dd>花都区</dd>
-                <dd>南沙区</dd>
-                <dd>从化区</dd>
-                <dd>增城区</dd>
+              <dl class="city-proper" v-for="(list, index) of area" :index="index" v-show=" index == activeIndex">
+                <dd v-for="item of list" :class="item.rName == areaName ? 'active' : ''"
+                    @click="activeArea(item.rName)">{{item.rName}}
+                </dd>
               </dl>
+              <!--<dl class="city-proper">
+                <dd v-for="item of area[0]" :class="item.rName == '全市' ? 'active' : ''">{{item.rName}}</dd>
+              </dl>-->
               <dl style="border: none">
                 <dt>广告限制：</dt>
                 <dd>医学</dd>
@@ -228,6 +221,7 @@
                 ref="multipleTable"
                 border
                 :data="planList"
+                :select-on-indeterminate="selectOnAll"
                 :default-sort="{prop: 'recName', order: 'descending'}"
                 @select="handleSelect"
                 @select-all="handleSelectAll"
@@ -315,8 +309,14 @@
                 </el-table-column>
                 <el-table-column width="132px">
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.checkBox.A" label="A面" @change="changeA(scope.row)"></el-checkbox>
-                    <el-checkbox v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)"></el-checkbox>
+                    <el-checkbox v-model="scope.row.checkBox.A" label="A面"
+                                 @change="changeA(scope.row)"
+                                 :disabled="scope.row.box.A"><!-- :disabled="scope.row.box.A"-->
+                    </el-checkbox>
+                    <el-checkbox v-model="scope.row.checkBox.B" label="B面"
+                                 @change="changeB(scope.row)"
+                                 :disabled="scope.row.box.B"><!--:disabled="scope.row.box.B"-->
+                    </el-checkbox>
                   </template>
                 </el-table-column>
               </el-table>
@@ -427,76 +427,131 @@
           <div class="confirmBox">
             <div class="bill-title">
               <div class="bill-title-left">
-                <h4>珠江帝景地产三月份投放</h4>
-                <p>广州市视传文化传播有限公司</p>
+                <h4>{{planForm.planName}}</h4>
+                <p>{{cName}}</p>
                 <p>珠江帝景</p>
               </div>
               <div class="bill-title-right">
                 <ul>
-                  <li><p><em>现金结算：</em><span>￥88,000,000.00</span></p></li>
-                  <li><p><em>资源置换：</em><span>￥2,000,000.00</span></p></li>
-                  <li><p><em>其他费用：</em><span>￥2,000,000.00</span></p></li>
-                  <li><p><em style="top: 5px">总计：</em><span class="totalPrice">￥90,000,000.00</span></p></li>
+                  <li><p><em>现金结算：</em><span>￥{{cash}}</span></p></li>
+                  <li><p><em>资源置换：</em><span>￥{{zyzh}}</span></p></li>
+                  <li><p><em>其他费用：</em><span>￥{{other}}</span></p></li>
+                  <li><p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{totalPrice}}</span></p></li>
                 </ul>
               </div>
             </div>
             <div class="panel">
               <el-tabs type="border-card">
-                <el-tab-pane label="广州">
+                <el-tab-pane v-for="(item,index) in quotation" :label=item.city :key=index :index=index>
                   <div class="tab-info">
                     <div class="pqxx">
                       <h4>排期信息</h4>
-                      <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
+                      <p>{{ item.schedules }}</p>
+                      <!--2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）-->
                     </div>
                     <div class="price">
                       <div class="price-left">
                         <h4>广告费
-                          <el-button type="text" @click="changeAD = true">修改</el-button>
+                          <el-button type="text" @click="changePrice('AD',item)">修改</el-button><!--changeAD = true-->
                         </h4>
                         <ul>
-                          <li>刊例价(面/周) <span>{{ADPrice}}</span></li>
-                          <li>投放量(面·天) <span>{{tfl}}</span></li>
-                          <li>赠送(面·天) <span>35</span></li>
-                          <li>广告费折扣 <span>96.67%</span></li>
-                          <li>￥3,800,000.00</li>
+                          <li>刊例价(面/周) <span>￥{{item.ADPrice}}</span></li>
+                          <li>投放量(面·天) <span>{{item.tfl}}</span></li>
+                          <li>赠送(面·天) <span>{{item.GMDate}}</span></li>
+                          <li>广告费折扣 <span>{{item.discount}}</span></li>
+                          <li>￥{{item.advertyPrice}}</li>
                         </ul>
                       </div>
                       <div class="price-right">
                         <h4>制作费
-                          <el-button type="text" @click="changeMake = true">修改</el-button>
+                          <el-button type="text" @click="changePrice('M',item)">修改</el-button>
                         </h4>
                         <ul>
-                          <li>制作费单价<span>￥100</span></li>
-                          <li>广告画数量(张)<span>35</span></li>
+                          <li>制作费单价<span>￥{{item.MPrice}}</span></li>
+                          <li>广告画数量(张)<span>{{item.ADNumber}}</span></li>
                           <li></li>
-                          <li>制作费折扣<span>100%</span></li>
-                          <li>{{makePrice}}</li>
+                          <li>制作费折扣<span>{{item.makeDiscount}}</span></li>
+                          <li>￥{{item.makePrice}}</li>
                         </ul>
                       </div>
                     </div>
                     <div class="bottom">
                       <div class="bottom-detail">
                         <div class="remark">
-                          <p>备注：{{remark}}</p>
+                          <p>备注：{{item.remark}}</p>
                         </div>
                         <div class="bill-title-right">
                           <ul>
-                            <li><p><em>现金结算：</em><span>{{cash}}</span></p></li>
-                            <li><p><em>资源置换：</em><span>{{zyzh}}</span></p></li>
-                            <li><p><em>其他费用：</em><span>{{other}}</span></p></li>
+                            <li><p><em>现金结算：</em><span>￥{{item.cash}}</span></p></li>
+                            <li><p><em>资源置换：</em><span>￥{{item.zyzh}}</span></p></li>
+                            <li><p><em>其他费用：</em><span>￥{{item.other}}</span></p></li>
                           </ul>
                         </div>
                       </div>
                       <div class="bottom-fin">
-                        <el-button type="text" @click="changeBill = true">修改</el-button>
-                        <p><em style="top: 5px">总计：</em><span class="totalPrice">{{totalPrice}}</span></p>
+                        <el-button type="text" @click="changePrice('TP',item)">修改</el-button><!--changeBill = true-->
+                        <p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{item.total}}</span></p>
                       </div>
                     </div>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-                <el-tab-pane label="成都">成都内容</el-tab-pane>
               </el-tabs>
+              <!-- <el-tabs type="border-card">
+                 <el-tab-pane label='广州'>
+                   <div class="tab-info">
+                     <div class="pqxx">
+                       <h4>排期信息</h4>
+                       <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
+                     </div>
+                     <div class="price">
+                       <div class="price-left">
+                         <h4>广告费
+                           <el-button type="text" @click="changeAD = true">修改</el-button>
+                         </h4>
+                         <ul>
+                           <li>刊例价(面/周) <span>￥{{ADPrice}}</span></li>
+                           <li>投放量(面·天) <span>{{tfl}}</span></li>
+                           <li>赠送(面·天) <span>{{GMDate}}</span></li>
+                           <li>广告费折扣 <span>{{discount}}</span></li>
+                           <li>￥{{advertyPrice}}</li>
+                         </ul>
+                       </div>
+                       <div class="price-right">
+                         <h4>制作费
+                           <el-button type="text" @click="changeMake = true">修改</el-button>
+                         </h4>
+                         <ul>
+                           <li>制作费单价<span>￥{{MPrice}}</span></li>
+                           <li>广告画数量(张)<span>{{ADNumber}}</span></li>
+                           <li></li>
+                           <li>制作费折扣<span>{{makeDiscount}}</span></li>
+                           <li>￥{{makePrice}}</li>
+                         </ul>
+                       </div>
+                     </div>
+                     <div class="bottom">
+                       <div class="bottom-detail">
+                         <div class="remark">
+                           <p>备注：{{remark}}</p>
+                         </div>
+                         <div class="bill-title-right">
+                           <ul>
+                             <li><p><em>现金结算：</em><span>￥{{cash}}</span></p></li>
+                             <li><p><em>资源置换：</em><span>￥{{zyzh}}</span></p></li>
+                             <li><p><em>其他费用：</em><span>￥{{other}}</span></p></li>
+                           </ul>
+                         </div>
+                       </div>
+                       <div class="bottom-fin">
+                         <el-button type="text" @click="changeBill = true">修改</el-button>
+                         <p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{totalPrice}}</span></p>
+                       </div>
+                     </div>
+                   </div>
+                 </el-tab-pane>
+                 <el-tab-pane label="深圳">深圳内容</el-tab-pane>
+                 <el-tab-pane label="成都">成都内容</el-tab-pane>
+               </el-tabs>-->
               <!--修改对话框-->
               <el-dialog
                 title="修改广告费"
@@ -504,14 +559,14 @@
                 width="30%">
                 <div class="changeMakePrice">
                   <p>赠送(面·天)</p>
-                  <el-input-number v-model="tfl" controls-position="right"></el-input-number>
+                  <el-input-number v-model="ADchanger.GMDate" controls-position="right"></el-input-number>
                   <p style="margin-top: 20px">广告费</p>
-                  <el-input v-model="ADPrice" placeholder="请输入内容"></el-input>
+                  <el-input v-model="ADchanger.reaPrice" placeholder="请输入内容"></el-input>
                 </div>
                 <span slot="footer" class="dialog-footer">
-    <el-button @click="changeAD = false">取 消</el-button>
-    <el-button type="primary" @click="handleClose">确 定</el-button>
-  </span>
+                  <el-button @click="changeAD = false">取 消</el-button>
+                  <el-button type="primary" @click="handleClose('AD')">确 定</el-button>
+                </span>
               </el-dialog>
               <!---->
               <el-dialog
@@ -520,12 +575,12 @@
                 width="30%">
                 <div class="changeMakePrice">
                   <p>制作费</p>
-                  <el-input v-model="makePrice" placeholder="请输入内容"></el-input>
+                  <el-input v-model="makeChange.MReaPrice" placeholder="请输入内容"></el-input>
                 </div>
                 <span slot="footer" class="dialog-footer">
-    <el-button @click="changeMake = false">取 消</el-button>
-    <el-button type="primary" @click="handleClose">确 定</el-button>
-  </span>
+                  <el-button @click="changeMake = false">取 消</el-button>
+                  <el-button type="primary" @click="handleClose('M')">确 定</el-button>
+                </span>
               </el-dialog>
               <el-dialog
                 title="修改结算方式"
@@ -533,20 +588,20 @@
                 width="30%"
               >
                 <div class="changeBill">
-                  <h4>{{totalPrice}}</h4>
+                  <h4>￥{{totalChange.total}}</h4>
                   <p>现金结算</p>
-                  <el-input v-model="cash" placeholder="请输入内容"></el-input>
+                  <el-input v-model="totalChange.cash" placeholder="请输入内容"></el-input>
                   <p>资源置换</p>
-                  <el-input v-model="zyzh" placeholder="请输入内容"></el-input>
+                  <el-input v-model="totalChange.zyzh" placeholder="请输入内容"></el-input>
                   <p>其他费用</p>
-                  <el-input v-model="other" placeholder="请输入内容"></el-input>
+                  <el-input v-model="totalChange.other" placeholder="请输入内容"></el-input>
                   <p>结算备注</p>
-                  <el-input v-model="remark" type="textarea"></el-input>
+                  <el-input v-model="totalChange.remark" type="textarea"></el-input>
                 </div>
                 <span slot="footer" class="dialog-footer">
-    <el-button @click="changeBill = false">取 消</el-button>
-    <el-button type="primary" @click="handleClose">确 定</el-button>
-  </span>
+                  <el-button @click="changeBill = false">取 消</el-button>
+                  <el-button type="primary" @click="handleClose('TP')">确 定</el-button><!--Settlement method-->
+                </span>
               </el-dialog>
 
             </div>
@@ -603,6 +658,7 @@
   } from 'element-ui';
   import api from '../../api/api'
   import areaToText from '../../commonFun/areaToText.js';
+  import areaArr from '../../commonFun/areaPackage'
 
   export default {
     name: "createPlan",
@@ -627,33 +683,58 @@
       elInputNumber: InputNumber,
     },
     data() {
+      var validateSales=(rule, value, callback)=>{
+        if(value){
+          if (this.BDData.realName !== '' && this.BDData.realName !== null){
+            callback(new Error('请输入正确的账号并进行选择'));
+          }else{
+            callback();
+          }
+        }else{
+          callback();
+        }
+      };
       return {
+        loading: false,             // 加载所属销售
         cType: ['社区', '写字楼'],
-        shopXY: {x: '', y: ''},   // 动画起始坐标
-        shoppingShow: false, //动画效果的显示隐藏
-        selectAll: false, // 是否全选
-        badgeNumber: 0,    // 购物车数量
+        shopXY: {x: '', y: ''},     // 动画起始坐标
+        shoppingShow: false,      //动画效果的显示隐藏
+        selectAll: false,         // 是否全选
+        badgeNumber: 0,            // 购物车数量
         bodyWidth: 1920,
-        //step2修改弹框
+        city: [],                      // step2 城市
+        area: [],                    // step2城市下属区域
+        activeIndex: 0,             //step2当前选中的城市下标
+        areaName: '全市',            // step2当前选中的区域
+        quotation: [],                // step3 报价单汇总
+        ADchanger: {rid: '', GMDate: 0, reaPrice: 0,}, // 广告费修改
+        makeChange: {rid: '',MReaPrice:0},            // 制作费修改
+        totalChange: {rid: '',cash: 0,zyzh: 0,other: 0,total: 0,remark:''},   // 合计费用修改
+        /*  GMDate: 0,                  // 赠送面.天
+          discount: '100%',         // 广告费折扣
+          advertyPrice: 0,           // 广告费
+          ADNumber: 0,               // 广告画数量
+          makeDiscount: '100%',    // 制作费折扣
+          MPrice: 100,                // 制作费单价
+          reaPrice: 0,               // 广告费原价
+          MReaPrice: 0,              // 制作费原价
+          makePrice: 0,    // 制作费
+          ADPrice: 0,  // 广告费
+         tfl: 0, //投放量
+          */
+        // step2修改弹框
         changeAD: false,
         changeMake: false,
         changeBill: false,
-        //step2制作费
-        makePrice: '￥3,000',
-        //广告费
-        ADPrice: '￥3,000,000',
-        //投放量
-        tfl: '235',
-        //总价
-        totalPrice: '￥90,000,000.00',
-        //备注
-        remark: '无',
-        cash: '￥88,000,000.00',
-        zyzh: '￥2,000,000.00',
-        other: '￥2,000,000.00',
-        ownerSales: [], // step1所属销售
+        totalPrice: 0,      //总价
+        remark: '无',      //备注
+        cash: 0,          // 现金结算
+        zyzh: 0,          // 资源置换
+        other: 0,         // 其他费用
+        ownerSales: { value:'',}, // step1所属销售
         customer: [],  // step1公司客户
         companyName: [], //step1公司名称
+        cName: '',         // 选中公司名称
         companyBrand: [], //step1公司品牌
         ownerBU: [],  //step1联系人
         //step1投放城市
@@ -691,9 +772,8 @@
         //搜索框
         searchInput: '',
         planSelect: '',
-        //步骤
-        active: 0,
-        dateInput: '',
+        active: 0, //步骤
+        dateInput: [],
         //setp1创建方案表单
         planForm: {
           planName: '',
@@ -704,7 +784,6 @@
           ownerBU: '',    // 所属联系人
           planRemark: '',
         },
-
         planRules: {
           planName: [
             {required: true, message: '方案名称不能为空', trigger: 'blur'},
@@ -714,7 +793,8 @@
             {required: true, message: '请选择联系人', trigger: 'change'},
           ],
           ownerSales: [
-            {required: true, message: '请选择所属销售', trigger: 'change'},
+            // {required: true, message: '请输入账号', trigger: 'blur'},
+            { validator: validateSales, trigger:'change'},
           ],
           companyName: [
             {required: true, message: '请选择公司名称', trigger: 'change'},
@@ -727,28 +807,10 @@
           ],
         },
         // 购物车列表
-        shopingList: [
-          /* {
-             id: 1,
-             recName: '珠江帝景花园1',
-             city: '广州1',
-             origin: '海珠区',
-             buildType: '高端住宅',
-             houseNum: '600',
-             buildPrice: '￥30,000',
-             mediaName: '广州市中山大道1',
-             buildNum: '12',
-             schedules: '2017.08.30-2017.09.30',
-             businessOrigin: '白云万达广场',
-             assetID: 'GZ201871024',
-             liveYear: '1999年',
-             adLimit: '地产/医药/汽车',
-             A_B: 'B面'
-           }*/
-        ],
+        shopingList: [],
         //step2列表
         planList: [
-          {
+          /*{
             rid: 1,
             recName: '珠江1',
             city: '广州1',
@@ -764,244 +826,25 @@
             liveYear: '1999年',
             adLimit: '地产/医药/汽车',
             checkBox: {A: false, B: false},
-          },
-          {
-            rid: 2,
-            recName: '珠江2',
-            city: '广州2',
-            origin: '白云区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          },
-          {
-            rid: 3,
-            recName: '珠江3',
-            city: '广州3',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            rid: 4,
-            recName: '珠江4',
-            city: '广州4',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          },
-          {
-            rid: 5,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          },
-          /*{
-            id: 6,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 7,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 8,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 9,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 10,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 11,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 12,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 13,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 14,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }, {
-            id: 15,
-            recName: '珠江帝景花园',
-            city: '广州',
-            origin: '海珠区',
-            buildType: '高端住宅',
-            houseNum: '600',
-            buildPrice: '￥30,000',
-            mediaName: '广州市中山大道',
-            buildNum: '12',
-            schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
-            liveYear: '1999年',
-            adLimit: '地产/医药/汽车',
-            checkBox: {A: false, B: false},
-          }*/],
-
+            box: {A:true, B: false}
+          },*/
+        ],
+        totalPlanList:[],   // step2全部城市的选点列表
+        sessionData: '',    // 登录用户的数据
+        shopListCity:[],    // 购物车的城市列表
+        selectOnAll: false,   // 默认selecton
+        FAData:'',            // 创建方后台返回的数据
+        timeout:  null,
+        BDData:{uid:'',realName:''}
       };
     },
-    created: function () {
-
-    },
+    created: function () { },
     computed: {},
     mounted() {
-      this.Get_cName()
+      this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+      //  this.getAdList()     // 获取选点列表
+      // this.Get_cName()     // 获取公司名称列表
+      //  this.getAreaFun()    // 获取城市区域
       //  this.GetBrand()
       //  this.ShowRegion()// 获取城市接口
       // 注：window.onresize只能在项目内触发1次
@@ -1021,13 +864,13 @@
       shopAnimate.style.right = this.shopXY.x + 'px'
       $(function () {
         //事件委托
-        $('.content_top_wrap').on('click', 'dd', function () {
-          if ($(this).hasClass('active')) {
-            $(this).removeClass('active')
-          } else {
-            $(this).addClass('active');
-          }
-        });
+        /*  $('.content_top_wrap').on('click', 'dd', function () {
+            if ($(this).hasClass('active')) {
+              $(this).removeClass('active')
+            } else {
+              $(this).addClass('active');
+            }
+          });*/
         //筛选输入框
         $('.content_top_wrap').on('focus', '.input', function () {
           $(this).parents('.input-wrap').addClass('focus');
@@ -1047,11 +890,33 @@
       })
     },
     methods: {
+      querySearchAsync(queryString, callback){
+        let uid = this.sessionData.uID
+        if(queryString){
+          api.postApi('/CheckUserName', {uid: uid, sname: queryString}).then(res => {
+            if(res.data){
+              // res.data.value  = res.data.realName;
+              this.BDData.realName = queryString;
+              this.BDData.uid = res.data.uID
+              if( this.BDData.realName !== '' &&  this.BDData.realName !== null){
+                this.Get_cName()
+              }
+              // this.planForm.ownerSales = res.data.realName
+              // this.BDData.uID = res.data.uID;
+              var results = [res.data];
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(() => {
+                callback(results);
+              }, 1000);
+            }
+          });
+        }
+      },
       //获取公司名称列表MyCustomer
       Get_cName() {
-        let userInfo = JSON.parse(sessionStorage.getItem('session_data'))
+        // let uid = this.sessionData.uID
         //Type:"BD"
-        let uType = userInfo.uType
+    /*    let uType = userInfo.uType
         if (uType == 'BD') {
           //    alert('销售') //ownerSales
           let sales = {
@@ -1061,62 +926,62 @@
           //  this.planForm.ownerSales = userInfo.uID
           this.ownerSales.push(sales)
         } else {
-          this.ownerSales = [
-            {label: '销售', value: '7'},
-            {label: '媒体', value: userInfo.uID}
-          ]
-        }
-        console.log('this.ownerSales', this.ownerSales)
-        api.getApi('/MyCustomer', {uid: 3}).then(res => {
-          console.log('MyCustomer:', res.data)
-          let customerList = res.data
-          this.customer = res.data    //保存所有信息，方便后面的过滤使用
-          //companyName ownerBU customer
-          let companyList = []      // 公司名称
-          let ownerList = []      // 联系人
-          for (let i = 0; i < customerList.length; i++) {
-            let companyObj = {
-              label: customerList[i].cName,
-              value: customerList[i].cID,
-            }
-            let owner = {
-              label: customerList[i].realName,
-              value: customerList[i].uID,
-            }
-            ownerList.push(owner)
-            if (i == 0) {
-              companyList.push(companyObj)
-            } else if (JSON.stringify(companyList).indexOf(JSON.stringify(companyObj)) === -1) { //判断是否有重复的公司JSON.stringify(companyObj)
-              companyList.push(companyObj)
-            }
-          }
-          console.log('companyList:', companyList)
-          console.log('联系人列表:', ownerList)
-          this.companyName = companyList  // 公司名称列表
-          this.ownerBU = ownerList // 联系人列表
-        })
-        // 公司信息所在城市
-        let uWho = '440100,110100'//userInfo.uWho //
-        let uWhoArr = uWho.split(',') // ['440100','110100']
-        let cityList = []
-        console.log()
-        for (let j = 0; j < uWhoArr.length; j++) {
-          console.log('公司uWho', uWhoArr[j])
-          areaToText.toText(data => {
-            console.log('公司信息所在城市', data);
-            let cityObj = {
-              label: data.city,
-              value: uWhoArr[j],
-            }
-            console.log('cityObj', cityObj)
-            cityList.push(cityObj);
-            if (j >= uWhoArr.length - 1) {
-              console.log('cityListcityList玩玩', cityList)
-              this.throwCity = cityList
-            }
-          }, uWhoArr[j]);
+          // this.ownerSales = [
+          //   {label: '销售', value: '7'},
+          //   {label: '媒体', value: userInfo.uID}
+          // ]
 
         }
+        console.log('this.ownerSales', this.ownerSales)*/
+         api.getApi('/MyCustomer', {uid: this.BDData.uid}).then(res => {
+           console.log('MyCustomer:', res.data)
+           let customerList = res.data
+           this.customer = res.data    //保存所有信息，方便后面的过滤使用
+           //companyName ownerBU customer
+           let companyList = []      // 公司名称
+           let ownerList = []      // 联系人
+           for (let i = 0; i < customerList.length; i++) {
+             let companyObj = {
+               label: customerList[i].cName,
+               value: customerList[i].cID,
+             }
+             let owner = {
+               label: customerList[i].realName,
+               value: customerList[i].uID,
+             }
+             ownerList.push(owner)
+             if (i == 0) {
+               companyList.push(companyObj)
+             } else if (JSON.stringify(companyList).indexOf(JSON.stringify(companyObj)) === -1) { //判断是否有重复的公司JSON.stringify(companyObj)
+               companyList.push(companyObj)
+             }
+           }
+           // console.log('companyList:', companyList)
+           // console.log('联系人列表:', ownerList)
+           this.companyName = companyList  // 公司名称列表
+           this.ownerBU = ownerList // 联系人列表
+         })
+         // 公司信息所在城市
+         let uWho = '110100,310100,440100'//userInfo.uWho
+         let uWhoArr = uWho.split(',') // ['440100','110100','330100']
+         let cityList = []
+         for (let j = 0; j < uWhoArr.length; j++) {
+           console.log('公司uWho', uWhoArr[j])
+           areaToText.toText(data => {
+             // console.log('公司信息所在城市', data);
+             let cityObj = {
+               label: data.city,
+               value: uWhoArr[j],
+             }
+             console.log('cityObj', cityObj)
+             cityList.push(cityObj);
+             if (j >= uWhoArr.length - 1) {
+               console.log('cityListcityList玩玩', cityList)
+               this.throwCity = cityList
+             }
+           }, uWhoArr[j]);
+
+         }
       },
       // 获取公司品牌
       GetBrandByCid(val) {
@@ -1170,17 +1035,356 @@
         },*/
         let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
         let fangAnParams = {
-          uid: 3,
+          uid: uid,             // 销售uid
+          suid: this.BDData.uid,
           bid: this.planForm.companyBrand,
           apname: this.planForm.planName,
-          adcid: '',
-          rid: this.planForm.throwCity[1],
+          adcid: this.planForm.ownerBU,
+          rid: this.planForm.throwCity[0],
         }
-
+        console.log('创建方案时提交的数据：',fangAnParams)
+        api.postApi('/CreateAdPlan',fangAnParams).then(res=>{
+          console.log('创建方案返回信息',res)
+          let FAData = res.data
+          this.FAData = FAData
+          if(FAData !== '' || FAData !== null){
+            this.SendAdBaseFun(FAData.apID)
+          }else{
+            this.$message({
+              message: '创建方案失败',
+              type: 'warning'
+            });
+          }
+        })
+      },
+      // 提交方案选点信息
+      SendAdBaseFun(apID){
+        /*   uid         int【必填】         当前账户UserID
+            pdid        int【必填】         选择方案投放pdID
+            pbs         String【必填】      广告开始投放日期
+            pbe         String【必填】      广告投放结束日期
+            asids       String【必填】      选择的广告点位asID组合，以","逗号组合*/
+        let shopingArr = this.shopingList
+        let asIDs = ''
+        // console.log('shopingArr',shopingArr)
+        for(let i=0;i<shopingArr.length;i++){
+          // alert('1')
+          if(asIDs === ''){
+            // alert('2aa',shopingArr[i].asIDs)
+            asIDs = shopingArr[i].asIDs
+          }else{
+            // alert('3aa',shopingArr[i].asIDs)
+            asIDs = asIDs + ',' + shopingArr[i].asIDs
+          }
+          if(i >= shopingArr.length-1){
+            console.log('+++++++++++++',asIDs)
+          }
+        }
+        let uid = this.sessionData.uID
+        api.getApi('/GetAPD',{uid:uid,apid:apID}).then(res=>{
+          console.log('获取pdid',res)
+          let APDData = res.data
+            if(APDData.length !== 0){
+              let pointParams = {
+                uid: uid,
+                pdid: APDData[0].pdID,
+                pbs: this.shopingList[0].schedules.split('-')[0],
+                pbe: this.shopingList[0].schedules.split('-')[1],
+                asids: asIDs,
+              }
+              console.log('提交选点的信息',pointParams)
+              api.postApi('/SendAdBase',pointParams).then(res=>{
+                console.log('提交选点后返回的data',res)
+                let AdBase = res.data
+                this.CreateAPDFun()
+              })
+            }
+        })
+      },
+      // 创建方案投放城市详情(报价单数据提交)CreateAPD
+      CreateAPDFun(){
+        /*  uid         int【必填】     当前账户UserID
+            apid        int【必填】     方案apID
+            pdre        String【必填】  方案投放特定城市详情备注
+            muid        int【选填】     如果当前账户是MD，在填写该媒介UserID
+            rid         int【必填】     方案投放的目标城市rID
+            days        int【必填】     投放总数：面*天
+            fdays       int【必填】     赠送数量：面/天
+            ps          String【必填】  方案投放开始时间
+            pe          String【必填】  投放结束日期
+            pdfee       int【必填】     实计广告费用
+            pdn         int【必填】     投放点位数
+            pdm         int【必填】     实计制作费用
+            pdt         int【必填】     现金金额
+            pdsf        int【必填】     置换金额
+            pdof        int【必填】     其他金额*/
+        let CAPDParams = {
+          uid: this.sessionData.uID,      // 当前账户UserID
+          apid: this.FAData.apID,         // 方案apID
+          pdre: this.quotation[0].remark,   // 方案投放特定城市详情备注
+          muid: this.sessionData.uID,    // 如果当前账户是MD，在填写该媒介UserID
+          rid: this.quotation[0].rid,       // 方案投放的目标城市rID
+          days: this.quotation[0].tfl,      // 投放总数：面*天
+          fdays: this.quotation[0].GMDate,  // 赠送数量：面/天
+          ps: this.quotation[0].schedules.split('-')[0],       // 方案投放开始时间
+          pe: this.quotation[0].schedules.split('-')[1],       // 投放结束日期
+          pdfee: this.quotation[0].advertyPrice * 100,         //  实计广告费用
+          pdn: this.badgeNumber,                      // 投放点位数
+          pdm: this.quotation[0].makePrice * 100,   // 实计制作费用
+          pdt: this.quotation[0].cash * 100,        // 现金金额
+          pdsf: this.quotation[0].zyzh * 100,       // 置换金额
+          pdof: this.quotation[0].other * 100,      // 其他金额
+        }
+        console.log('报价单数据提交:',CAPDParams)
+        api.postApi('/CreateAPD',CAPDParams).then(res=>{
+          console.log('提交报价单后台返回数据：',res)
+          let APD_data = res.data
+          if(!res.data.SysCode){
+            if(res.data !== ''){
+              Message({
+                message: '投放城市的报价信息提交成功！',
+                type: 'success'
+              })
+            }else{
+              Message({
+                message: '投放城市的报价信息提交失败！',
+                type: 'warning'
+              })
+            }
+          }else{
+            Message({
+              message: '投放城市的报价信息提交失败！',
+              type: 'warning'
+            })
+          }
+        })
+      },
+      // 获取当前时间并计算N天后的日期
+      GetDateStr(AddDayCount) {
+        let dd = new Date();
+        dd.setDate(dd.getDate() + AddDayCount)    // 获取AddDayCount天后的日期
+        let y = dd.getFullYear();
+        let m = (dd.getMonth() + 1) < 10 ? "0" + (dd.getMonth() + 1) : (dd.getMonth() + 1)  // 获取当前月份的日期，不足10补0
+        let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate()       // 获取当前几号，不足10补0
+        return y + "." + m + "." + d
+      },
+      // 设置城市区域
+      getAreaFun() {
+        // let rid = 440100
+        let throwCityList = this.planForm.throwCity
+        console.log('****************',throwCityList)
+        let cityArr = []
+        for (let j = 0; j < throwCityList.length; j++) {
+          for (let t = 0; t < this.throwCity.length; t++) {
+            if (this.throwCity[t].value === throwCityList[j]) {
+              let cityObj = {rName: this.throwCity[t].label, rid: this.throwCity[t].value}
+              cityArr.push(cityObj)
+            }
+          }
+          if (j >= throwCityList.length - 1) {
+            this.city = cityArr
+            console.log('this.city ',this.city )
+          }
+        }
+        for (let n = 0; n < throwCityList.length; n++) {
+          let rid = throwCityList[n]
+          console.log('投放城市rid', rid)
+          api.getApi('/ShowRegion', {rid: rid}).then(res => {
+            console.log('城市区域', res.data)
+            let areaList = res.data
+            let areaArr = []
+            for (let i = 0; i < areaList.length; i++) {
+              if (i === 0) {
+                let allArea = {
+                  rID: rid,
+                  rName: '全市'
+                }
+                areaArr.push(allArea)
+              }
+              if (rid.toString().substring(0, 4) === areaList[i].rID.toString().substring(0, 4) && areaList[i].rID.toString().substring(4, 6) !== '00') {
+                areaArr.push(areaList[i])
+              }
+              if (i >= areaList.length - 1) {
+                this.area.push(areaArr)
+              }
+            }
+          })
+          if (n >= throwCityList.length - 1) {
+            console.log('this.area', this.area)
+            // this.area = areaArr
+          }
+        }
+      },
+      // stpe2, tab切换城市
+      activeCity(item,index) {
+        //  console.log('stpe2,tab切换城市',item)
+        this.activeIndex = index
+        this.areaName = '全市'
+        for(let i=0; i<this.totalPlanList.length; i++){
+          if(this.totalPlanList[i][0].city === item.rName){
+            //    console.log('this.totalPlanList[i]',this.totalPlanList[i])
+            this.planList = this.totalPlanList[i]
+            console.log('this.planList',this.planList)
+            let that = this
+            setTimeout(function () {
+              for(let j=0;j<that.planList.length;j++){
+                if(that.planList[j].checkBox.A || that.planList[j].checkBox.B){
+                  that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
+                }
+              }
+            },0)
+            break
+          }
+        }
+      },
+      //  stpe2, 切换区域
+      activeArea(rName) {
+        this.areaName = rName
       },
       // 获取广告点位列表
       getAdList() {
-        // api.getApi()
+        let starTime = this.GetDateStr(1)
+        let endTime = this.GetDateStr(15)
+        console.log('开始日期', starTime, '结束日期', endTime)
+        this.dateInput = [starTime, endTime] // 设置默认时间
+        let uid = this.sessionData.uID
+        let tempADList = [
+          {
+            resName: "尚东3",
+            mTitle: "尚东3东门",
+            rName: "荔湾区",
+            cType: "一般住宅",
+            hNum: 100,
+            hPrice: 56000,
+            asIDs: "7",
+            asLabs: "A",
+            asStates: "1",
+            tradingArea: "三里屯",
+            fNum: 3,
+            assetTag: "201805GZ-1324",
+            notPush: ""
+          },
+          {
+            resName: "帝景山庄改1",
+            mTitle: "帝景1门",
+            rName: "越秀区",
+            cType: "高端住宅",
+            hNum: 170,
+            hPrice: 6100000,
+            asIDs: "1,2",
+            asLabs: "A,B",
+            asStates: "1,1",
+            tradingArea: "山泉1",
+            fNum: 12,
+            assetTag: "201707GZ-13161",
+            chDay: "2013",
+            notPush: "美容"
+          },
+          {
+            resName: "帝景山庄改1", mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6200000, asIDs: "4,3", asLabs: "B,A",
+            asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"
+          },
+          {
+            resName: "帝景山庄改1", mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6100000, asIDs: "5,6", asLabs: "A,B",
+            asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"
+          },
+          {
+            resName: "帝景山庄", mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 6600000, asIDs: "7,8", asLabs: "A,B",
+            asStates: "1,1", tradingArea: "山泉", fNum: 12, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"
+          },
+          {
+            resName: "尚东", mTitle: "尚东一号", rName: "天河区", cType: "别墅", hNum: 171, hPrice: 7600000, asIDs: "9,10", asLabs: "A,B",
+            asStates: "1,1", tradingArea: "山泉", fNum: 12, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"
+          },
+        ]
+        let throwCity = this.city
+        let totalList = []        // 全部城市的选点列表
+        console.log('投放城市333333333',throwCity)
+        for(let t=0; t<throwCity.length;t++){
+          // alert('1')
+          let rid = throwCity[t].rid
+          let rName = throwCity[t].rName
+          api.getApi('/GetAdS', {uid: uid, rid: rid}).then(res => {
+            console.log('选点列表：', res)
+            let ADList = res.data
+            if(ADList.length !==0){
+            // let ADList = tempADList
+            // 被占广告点位列表【选点】GetAdLaunch
+            let LaunchParams = {uid: uid, rid: 440100, ls: starTime, le: endTime}
+            api.getApi('/GetAdLaunch', LaunchParams).then(res => {
+              console.log('被占选点列表', res)
+               let adLaunch = res.data
+              // let adLaunch = [
+              //   { lID: 1, asID: 1, pdID: 1, lStar: "2018-06-01", lEnd: "2018-06-09", uID: 1, lSetTime: "2018-05-17 18:19:15.0", lState: 1},
+              //   { lID: 2, asID: 2, pdID: 1, lStar: "2018-06-01", lEnd: "2018-06-09", uID: 1, lSetTime: "2018-05-17 18:19:15.0", lState: 1},
+              //   { lID: 3, asID: 3, pdID: 1, lStar: "2018-06-01", lEnd: "2018-06-09", uID: 1, lSetTime: "2018-05-17 18:19:15.0", lState: 1},
+              //   { lID: 4, asID: 6, pdID: 1, lStar: "2018-06-01", lEnd: "2018-06-09", uID: 1, lSetTime: "2018-05-17 18:19:15.0", lState: 2}]
+              let planArr = []
+              for (let i = 0; i < ADList.length; i++) {
+                console.log('遍历选点列表')
+                let adObj = {
+                  rid: i + 1,
+                  asIDs: tempADList[i].asIDs,
+                  asLabs: tempADList[i].asLabs,
+                  recName: tempADList[i].resName,
+                  city: rName, //'广州',
+                  origin: tempADList[i].rName,
+                  buildType: tempADList[i].cType,
+                  houseNum: tempADList[i].hNum,
+                  buildPrice: (tempADList[i].hPrice / 100),
+                  mediaName: tempADList[i].mTitle,
+                  buildNum: tempADList[i].fNum,
+                  schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                  businessOrigin: tempADList[i].tradingArea,
+                  assetID: tempADList[i].assetTag,
+                  liveYear: tempADList[i].chDay,
+                  adLimit: tempADList[i].notPush,
+                  checkBox: {A: false, B: false},
+                  box: {A: false, B: false},
+                }
+                if (ADList[i].asLabs.indexOf('A') === -1) {
+                  adObj.box.A = true
+                }
+                if (ADList[i].asLabs.indexOf('B') === -1) {
+                  adObj.box.B = true
+                }
+                let asIDArr = ADList[i].asIDs.split(',')
+                let asLabArr = ADList[i].asLabs.split(',')
+                for (let j = 0; j < adLaunch.length; j++) {
+                  for (let t = 0; t < 2; t++) {
+                    if (adLaunch[j].asID == asIDArr[t]) {
+                      if (asLabArr[t] === 'B') {
+                        adObj.box.B = true
+                      } else if (asLabArr[t] === 'A') {
+                        adObj.box.A = true
+                      }
+                    }
+                  }
+                }
+                if(adObj.box.A !== true || adObj.box.B !== true){   // 去除AB两面都被占的
+                  planArr.push(adObj)
+                }
+                if (i >= ADList.length - 1) {
+                  console.log('方案选点列表', planArr)
+                  // this.planList = planArr
+                  totalList.push(planArr)
+                }
+              }
+              if(t >= throwCity.length-1){
+                console.log('全部城市的选点列表',totalList)
+                this.totalPlanList = totalList
+                this.planList = this.totalPlanList[0]
+              }
+            })
+            }else{
+            this.$message({
+              message: '该城市暂无可选的投放点',
+              type: 'warning'
+            });
+            }
+          })
+        }
+
       },
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
@@ -1190,21 +1394,16 @@
       },
       // 行选中打钩
       handleSelect(selection, row) {
-        /*  if(row.checkBox.B === false){
-            row.checkBox.A = !row.checkBox.A
-        }/*else{
-            row.checkBox.A = false
-          }
-        if(row.checkBox.A){
-           this.shopShow_hide()
-        }else{
-          row.checkBox.B = false
-          this.badgeNumber--
-        }*/
         if (!row.checkBox.B && !row.checkBox.A) {
-          row.checkBox.A = true
-          this.shopShow_hide()   // 动画效果
-          this.AddShopingInfo(row) // 添加到购物车
+          if (!row.box.A) {
+            row.checkBox.A = true
+            this.shopShow_hide()   // 动画效果
+            this.AddShopingInfo(row) // 添加到购物车
+          } else if (!row.box.B && row.box.A) {
+            row.checkBox.B = true
+            this.shopShow_hide()   // 动画效果
+            this.AddShopingInfo(row) // 添加到购物车
+          }
         } else if (row.checkBox.A || row.checkBox.B) {
           if (row.checkBox.A && row.checkBox.B) {
             this.badgeNumber -= 2
@@ -1260,31 +1459,43 @@
         console.log('selection', selection)
         let number = 0    // 统计全选后取消的行数或A/B面
         if (selection.length !== 0) {
-          console.log('number:', number)
+          // console.log('number:', number)
           for (let i = 0; i < selection.length; i++) {
+            // 判断右边AB面是否被勾选
             if (selection[i].checkBox.A) {
-              console.log('a')
+              // console.log('a')
               number++
             }
             if (selection[i].checkBox.B) {
-              console.log('b')
+              // console.log('b')
               number++
             }
-            selection[i].checkBox.A = true
-            selection[i].checkBox.B = true
+            // 根据是否被占用去打勾
+            if (!selection[i].box.A) {
+              // console.log('boxA')
+              selection[i].checkBox.A = true
+              number++
+            }
+            if (!selection[i].box.B) {
+              // console.log('boxB')
+              selection[i].checkBox.B = true
+              number++
+            }
           }
           this.shopShow_hide('all', number)
-          this.deleteShopRow(selection, 'all')
+          this.deleteShopRow(selection, 'all')     // 全选时添加进购物篮
         } else {
           let num = 0
           for (let i = 0; i < this.planList.length; i++) {
             // 判断是否有取消勾选 A B面的
             if (!this.planList[i].checkBox.A) {
+              console.log('A')
               num++
             } else {
               this.planList[i].checkBox.A = false
             }
             if (!this.planList[i].checkBox.B) {
+              console.log('B')
               num++
             } else {
               this.planList[i].checkBox.B = false
@@ -1294,10 +1505,6 @@
           this.badgeNumber -= ((this.planList.length * 2) - num)
         }
       },
-      // 点击确认框后显示详情
-      showDetail() {
-        console.log(123);
-      },
       // 下一步
       next() {
         console.log('planForm', this.planForm)
@@ -1305,6 +1512,12 @@
           this.submitForm('planForm')
         } else if (this.active === 1) {
           this.active++
+          this.creatTab()       // 报价单tab
+          this.getShopingCityName()   // 获取购物车列表的城市名称
+          this.quotationFun()   // 报价单计算
+          // this.creatAdPlan()    // 创建方案
+        }else if(this.active === 2){
+          this.creatAdPlan()    // 创建方案
         }
         if (this.active > 2) {
           // this.active = 0;
@@ -1333,24 +1546,159 @@
       },
       // 表单验证
       submitForm(formName) {
-        this.active++;
-        /*this.$refs[formName].validate((valid) => {
+        // this.active++;
+        // this.getAreaFun()
+        this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log('submit!');
             this.active++;
+            this.getAreaFun()
+            this.getAdList()    // 获取选点列表
           } else {
             console.log('error submit!!');
             return false;
           }
-        });*/
+        });
       },
       continueCreate() {
         this.active = 0;
         //表单重置
         /*this.planForm.resetFields();*/
       },
+      changePrice(letter, info) {
+        if (letter === 'AD') {
+          this.changeAD = true
+          this.ADchanger.rid = info.rid
+          this.ADchanger.reaPrice = info.advertyPrice
+        } else if (letter === 'M') {
+          this.changeMake = true
+          this.makeChange.rid = info.rid
+          this.makeChange.MReaPrice = info.makePrice
+        }else if(letter === 'TP'){
+          this.changeBill = true
+          this.totalChange.rid = info.rid
+          this.totalChange.cash = info.cash
+          this.totalChange.zyzh = info.zyzh
+          this.totalChange.other = info.other
+          this.totalChange.total = info.total
+        }
+      },
       //step3确认修改
-      handleClose() {
+      handleClose(letter) {
+        // 'AD'为广告费修改，'M'为制作费修改, 'SM'为修改结算方式
+        let QArr= this.quotation
+        if (letter === 'AD') {
+          for(let i=0;i<QArr.length;i++){
+            if(QArr[i].rid === this.ADchanger.rid){
+              //  this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice/7)).toFixed(2)
+              //   this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice/7)).toFixed(2)
+              //   this.quotation[i].reaPrice = this.quotation[i].advertyPrice
+              //   if(this.ADchanger.reaPrice === this.quotation[i].reaPrice){         // 判断是否输入修改了广告费
+              //     this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+              //     this.quotation[i].reaPrice = this.ADchanger.reaPrice
+              //     this.quotation[i].discount = Math.round(this.ADchanger.reaPrice/QArr[i].advertyPrice * 10000) / 100.00 + "%" // 折扣百分比
+              //   }else{
+              //   //  this.quotation[i].advertyPrice = this.ADchanger.reaPrice
+              //     this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice/QArr[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+              //   }
+              this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice/7)).toFixed(2)
+              this.quotation[i].GMDate = this.ADchanger.GMDate
+              if(this.ADchanger.GMDate != 0){
+                // alert('1')
+                console.log('ADchanger.reaPrice',this.ADchanger.reaPrice)
+                console.log('quotation.advertyPrice',this.quotation[i].advertyPrice)
+                console.log('quotation.reaPrice',this.quotation[i].reaPrice)
+
+                if(this.ADchanger.reaPrice === this.quotation[i].reaPrice){
+                  // alert('2')
+                  this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+                  this.quotation[i].reaPrice = this.quotation[i].advertyPrice
+                  this.quotation[i].discount = '100%'
+                  this.hideBox()
+                }else if(this.ADchanger.reaPrice > this.quotation[i].reaPrice){
+                  // alert('3')
+                  this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+                  this.$message({
+                    message: '大于原价格',
+                    type: 'warning'
+                  });
+                }else{
+                  // alert('4')
+                  if(this.ADchanger.reaPrice > this.quotation[i].advertyPrice){
+                    this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+                    this.$message({
+                      message: '大于原价格',
+                      type: 'warning'
+                    });
+                  }else {
+                    this.quotation[i].reaPrice = this.quotation[i].advertyPrice
+                    this.quotation[i].advertyPrice = this.ADchanger.reaPrice
+                    this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                    this.hideBox()
+                  }
+                }
+              }else{
+                // alert('0')
+                if(this.ADchanger.reaPrice > this.quotation[i].oldPrice){
+                  this.$message({
+                    message: '大于原价格',
+                    type: 'warning'
+                  });
+                }else{
+                  this.quotation[i].advertyPrice = this.ADchanger.reaPrice
+                  this.quotation[i].reaPrice = this.quotation[i].oldPrice
+                  this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                  this.hideBox()
+                }
+              }
+              // break
+              this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+            }
+          }
+        } else if (letter === 'M') {         // 制作费修改
+          for(let i=0;i<QArr.length;i++){
+            if(QArr[i].rid === this.makeChange.rid){
+              if(this.makeChange.MReaPrice > this.quotation[i].MReaPrice){
+                this.$message({
+                  message: '大于原价格',
+                  type: 'warning'
+                });
+              }else{
+                this.quotation[i].makeDiscount = Math.round(this.makeChange.MReaPrice / this.quotation[i].MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
+                this.quotation[i].makePrice = this.makeChange.MReaPrice
+                this.hideBox()
+              }
+              // break
+              this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+            }
+          }
+        } else if (letter === 'TP') {     // 修改结算方式
+          for(let i=0;i<QArr.length;i++){
+            if(QArr[i].rid === this.totalChange.rid){
+              // alert('1')
+              let total = Number(this.totalChange.other) + Number(this.totalChange.zyzh) + Number(this.totalChange.cash)
+              console.log('total',total,this.totalChange.total)
+              if (total > this.totalChange.total) {
+                this.$message({
+                  message: '大于总价格',
+                  type: 'warning'
+                });
+              } else {
+                this.totalChange.other = this.totalChange.total - (Number(this.totalChange.zyzh) + Number(this.totalChange.cash))
+                this.quotation[i].cash = this.totalChange.cash
+                this.quotation[i].zyzh = this.totalChange.zyzh
+                this.quotation[i].other = this.totalChange.other
+                this.quotation[i].remark = this.totalChange.remark
+                this.computeTotal()
+                this.hideBox()
+              }
+              break
+            }
+          }
+        }
+      },
+      // 隐藏弹出框
+      hideBox() {
         this.$message({
           message: '修改成功',
           type: 'success'
@@ -1358,6 +1706,171 @@
         this.changeBill = false;
         this.changeMake = false;
         this.changeAD = false;
+      },
+      // step3 creatTab
+      creatTab() {
+        let quotationArr = []
+        for (let i = 0; i < this.city.length; i++) {
+          let quotationObj = {
+            city: this.city[i].rName,
+            rid: this.city[i].rid,
+            schedules:'',                // 排期
+            GMDate: 0,                   // 赠送面.天
+            discount: '100%',           // 广告费折扣
+            advertyPrice: 0,             // 广告费
+            ADNumber: 0,                 // 广告画数量
+            makeDiscount: '100%',      // 制作费折扣
+            MPrice: 100,                // 制作费单价
+            reaPrice: 0,                // 广告费每次修改前的价格
+            oldPrice:0,                 //  广告费初始价格
+            MReaPrice: 0,              // 制作费原价
+            makePrice: 0,              // 制作费
+            ADPrice: 0,                // 刊例价(面/周)
+            tfl: 0,                    //投放量
+            cash: 0,                  // 现金结算
+            zyzh: 0,                  // 资源置换
+            other: 0,                 // 其他费用
+            total: 0,
+            remark: '价格计算信息',
+          }
+          quotationArr.push(quotationObj)
+          if (i >= this.city.length - 1) {
+            this.quotation = quotationArr
+          }
+          // 从购物车列表获取排期
+          let shopingArr = this.shopingList
+          for(let j=0;j<this.shopingList.length;j++){
+            let shoping = this.shopingList[j]
+            console.log('从购物车列表获取排期',shoping)
+            for(let t=0; t<this.quotation.length;t++){
+              if(shoping.city === this.quotation[t].city){
+                // this.quotation[t].schedules = shoping.schedules
+                if(t === 0){
+                  this.quotation[t].schedules = shoping.schedules
+                }else{
+                  if(this.quotation[t].schedules.indexOf(shoping.schedules) !== -1){
+
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      //获取购物车中的城市名
+      getShopingCityName(){
+        // shopListCity
+        let cityList = []
+        for(let i=0; i<this.shopingList.length;i++){
+          let list = this.shopingList[i]
+          if(i === 0){
+            cityList.push(list.city)
+          }else{
+            let cityName = cityList.join('')
+            // console.log('wwwwwwwwwwwwwwww',cityName)
+            if(cityName.indexOf(list.city) === -1){
+              // alert('2')
+              cityList.push(list.city)
+            }
+          }
+          if(i >= this.shopingList.length-1){
+            console.log('购物车城市列表',cityList)
+            this.shopListCity = cityList
+          }
+        }
+      },
+      // step3 报价单
+      quotationFun() {
+        // let ADPriceList = [
+        //   {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
+        //   {amID: 91, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
+        //   {amID: 90, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
+        //   {amID: 89, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
+        //   {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}]
+        let uid = this.sessionData.uID
+        api.getApi('/GetAdPrice', {uid: uid}).then(res => {
+          console.log('刊例价信息', res)
+          let ADPriceList = res.data
+          console.log('投放城市信息', this.planForm.throwCity)
+          // let throwCityList = this.planForm.throwCity
+          let quotation = this.quotation
+          for (let i = 0; i < ADPriceList.length; i++) {
+            for (let j = 0; j < quotation.length; j++) {
+              let quotationObj = quotation[j]
+              for(let g=0;g< this.shopListCity.length; g++){
+                if (ADPriceList[i].rID == quotationObj.rid && this.shopListCity[g] === quotationObj.city) {
+                  // alert(ADPriceList[i].adPrice)
+                  console.log(ADPriceList[i].rName, '广告门价格为', ADPriceList[i].adPrice)
+                  // 广告费计算
+                  quotationObj.ADPrice = ADPriceList[i].adPrice / (100 * 2)       // 刊例价(面/周)
+                  console.log('刊例价(面/周)', quotationObj.ADPrice)
+                  quotationObj.tfl = this.badgeNumber * 14                    // 投放量(面·天)
+                  quotationObj.reaPrice = quotationObj.tfl * (quotationObj.ADPrice / 7)        // 广告费总价
+                  quotationObj.oldPrice = quotationObj.reaPrice               // 保存最初计算的价格
+
+                  quotationObj.advertyPrice = quotationObj.reaPrice
+                  console.log('广告费总价', quotationObj.advertyPrice)
+                  quotationObj.discount = Math.round(quotationObj.advertyPrice / quotationObj.reaPrice * 10000) / 100.00 + "%" // 广告费折扣百分比
+
+                  // 制作费计算
+                  quotationObj.ADNumber = this.badgeNumber                    // 广告画数量
+                  quotationObj.makePrice = quotationObj.ADNumber * quotationObj.MPrice       // 制作费 = 广告画数量 * 制作费单价
+                  quotationObj.MReaPrice = quotationObj.makePrice
+                  quotationObj.makeDiscount = Math.round(quotationObj.makePrice / quotationObj.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
+
+                  quotationObj.total = quotationObj.advertyPrice + quotationObj.makePrice
+                  quotationObj.cash = quotationObj.total
+
+                  // 计算总价格
+                  this.totalPrice += quotationObj.total
+                  this.cash += quotationObj.cash
+                  this.other += quotationObj.other
+                  this.zyzh += quotationObj.zyzh
+                }
+              }
+            }
+            /* if(ADPriceList[i].rID == throwCityList[0]){
+               // alert(ADPriceList[i].adPrice)
+               console.log(ADPriceList[i].rName,'广告门价格为',ADPriceList[i].adPrice)
+               // 广告费计算
+               this.ADPrice = ADPriceList[i].adPrice/(100*2)       // 刊例价(面/周)
+               console.log('刊例价(面/周)',this.ADPrice)
+               this.tfl = this.badgeNumber * 14                    // 投放量(面·天)
+               this.reaPrice = this.tfl * (this.ADPrice/7)        // 广告费总价
+
+               this.advertyPrice = this.reaPrice
+               console.log('广告费总价',this.advertyPrice)
+               this.discount = Math.round(this.advertyPrice / this.reaPrice * 10000) / 100.00 + "%" // 广告费折扣百分比
+
+               // 制作费计算
+               this.ADNumber = this.badgeNumber                    // 广告画数量
+               this.makePrice = this.ADNumber * this.MPrice       // 制作费 = 广告画数量 * 制作费单价
+               this.MReaPrice = this.makePrice
+               this.makeDiscount = Math.round(this.makePrice / this.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
+
+               this.totalPrice = this.advertyPrice + this.makePrice
+               this.cash = this.totalPrice
+             }*/
+          }
+        })
+        for (let n = 0; n < this.companyName.length; n++) {
+          if (this.companyName[n].value === this.planForm.companyName) {
+            this.cName = this.companyName[n].label
+          }
+        }
+      },
+      //计算总价格
+      computeTotal(){
+        this.totalPrice = 0
+        this.cash = 0
+        this.other = 0
+        this.zyzh = 0
+        for(let i=0;i<this.quotation.length;i++){
+          this.totalPrice += this.quotation[i].total
+          this.cash += this.quotation[i].cash
+          this.other += this.quotation[i].other
+          this.zyzh += this.quotation[i].zyzh
+        }
       },
       // dialog购物筐的显示全选中后添加都购物车
       dialogVisible() {
@@ -1369,6 +1882,8 @@
         console.log('选中的row信息', info)
         let selectInfo = {
           rid: info.rid,
+          asIDs: info.asIDs,
+          asLabs: info.asLabs,
           recName: info.recName,
           city: info.city,
           origin: info.origin,
@@ -1384,13 +1899,40 @@
           adLimit: info.adLimit,
           checkBox: {A: info.checkBox.A, B: info.checkBox.B},
         }
-        console.log(letter)
+        let asLabsArr = selectInfo.asLabs.split(',')
+        let asIDArr = selectInfo.asIDs.split(',')
+        // console.log(letter)
         if (letter == 'B') {
           //  alert('B')
+          for(let n=0;n<asLabsArr.length;n++){
+            if(asLabsArr[n] === 'B'){
+              console.log('B',asIDArr[n])
+              selectInfo.asIDs = asIDArr[n]
+              // break
+            }
+          }
           selectInfo.A_B = 'B面'
           this.shopingList.push(selectInfo)
         } else {
-          selectInfo.A_B = 'A面'
+          if (info.checkBox.B) {
+            for(let n=0;n<asLabsArr.length;n++){
+              if(asLabsArr[n] === 'B'){
+                console.log('B',asIDArr[n])
+                selectInfo.asIDs = asIDArr[n]
+                // break
+              }
+            }
+            selectInfo.A_B = 'B面'
+          } else {
+            for(let n=0;n<asLabsArr.length;n++){
+              if(asLabsArr[n] === 'A'){
+                console.log('A',asIDArr[n])
+                selectInfo.asIDs = asIDArr[n]
+                // break
+              }
+            }
+            selectInfo.A_B = 'A面'
+          }
           this.shopingList.push(selectInfo)
         }
       },
@@ -1438,15 +1980,17 @@
           }
         }
       },
-      // 取消勾时删除购物车里对应的数据行
+      // 取消勾时,删除购物车里对应的数据行
       deleteShopRow(row, letter) {
-        if (letter === 'all') {
+        if (letter === 'all') {     // 判断是否全选
           this.shopingList = []
           for (let i = 0; i < this.planList.length; i++) {
             let info = this.planList[i]
             for (let j = 0; j < 2; j++) {
               let selectInfo = {
                 rid: info.rid,
+                asIDs: info.asIDs,
+                asLabs: info.asLabs,
                 recName: info.recName,
                 city: info.city,
                 origin: info.origin,
@@ -1461,17 +2005,35 @@
                 liveYear: info.liveYear,
                 adLimit: info.adLimit,
                 checkBox: {A: info.checkBox.A, B: info.checkBox.B},
+                box: {A: info.box.A, B: info.box.B}
               }
-              if (j === 0) {
+              let asLabsArr = selectInfo.asLabs.split(',')
+              let asIDArr = selectInfo.asIDs.split(',')
+              if (j === 0 && !selectInfo.box.A) {
                 //  alert('B')
                 selectInfo.A_B = 'A面'
+                for(let n=0;n<asLabsArr.length;n++){
+                  if(asLabsArr[n] === 'A'){
+                    console.log('A',asIDArr[n])
+                    selectInfo.asIDs = asIDArr[n]
+                    // break
+                  }
+                }
                 this.shopingList.push(selectInfo)
-              } else if (j === 1) {
+              } else if (j === 1 && !selectInfo.box.B) {
                 selectInfo.A_B = 'B面'
+                for(let n=0;n<asLabsArr.length;n++){
+                  if(asLabsArr[n] === 'B'){
+                    console.log('B',asIDArr[n])
+                    selectInfo.asIDs = asIDArr[n]
+                    // break
+                  }
+                }
                 this.shopingList.push(selectInfo)
               }
             }
           }
+          console.log('全选是this.shopingList',this.shopingList)
         } else {
           for (let i = 0; i < this.planList.length; i++) {
             if (row.rid === this.planList[i].rid) {
@@ -1483,7 +2045,7 @@
                     break
                   }
                 }
-              } else if (letter === 'B') {
+              } else if (letter === 'A') {
                 for (let j = 0; j < this.shopingList.length; j++) {
                   if (this.shopingList[j].rid === row.rid && this.shopingList[j].A_B === 'A面') {
                     this.shopingList.splice(j, 1)
@@ -1491,8 +2053,10 @@
                   }
                 }
               } else if (letter === 'AB') {
+                console.log('this.shopingList',this.shopingList)
                 for (let j = 0; j < this.shopingList.length; j++) {
                   if (this.shopingList[j].rid === row.rid) {
+                    // alert('2')
                     this.shopingList.splice(j, 1)
                     //  break
                   }
@@ -1522,11 +2086,11 @@
           $(".shopAnimateAll").animate({right: '37px', top: '77px', width: '18px', height: '18px'}, 700, function () {
             $(".shopAnimateAll").css({'top': T, 'right': R, width: '790px', height: '386px'})
             that.selectAll = false
-            that.badgeNumber += (that.planList.length * 2) - num
-            if (that.badgeNumber < 0) {
-              that.badgeNumber = 0
-            }
-            //   that.badgeNumber++
+            that.getBadeNumberByShopList()
+            // that.badgeNumber += (that.planList.length * 2) - num
+            // if (that.badgeNumber < 0) {
+            //   that.badgeNumber = 0
+            // }
           })
         } else {
           this.shoppingShow = true
@@ -1537,18 +2101,23 @@
           })
         }
       },
+      // 根据购物车列表的行数确定badgeNumber  shopingList
+      getBadeNumberByShopList(){
+        this.badgeNumber = this.shopingList.length
+      }
     }
   }
 </script>
 
 <style scoped>
-  .input-with-select /deep/ .el-input__inner{
+  .input-with-select /deep/ .el-input__inner {
     font-size: 14px;
     padding: 10px 10px;
     height: 34px;
     line-height: 14px;
   }
-  /deep/  .el-input__inner{
+
+  /deep/ .el-input__inner {
     font-size: 14px;
     padding: 10px 10px;
     height: 34px;
@@ -1821,9 +2390,8 @@
   /deep/ .date-select.el-input__inner {
     width: 237px;
     position: relative;
-    /*top: 3px;*/
+    top: 3px;
     left: -5px;
-    padding: 0 10px;
   }
 
   /deep/ .plan-select /deep/ .el-input__suffix {
@@ -1938,7 +2506,8 @@
     position: relative;
     height: 34px;
   }
-  .search-wrap span{
+
+  .search-wrap span {
     float: left;
     margin-left: 2px;
     margin-bottom: 30px;
@@ -2514,9 +3083,10 @@
     right: 42px !important;
   }
 
-  /deep/ .el-input__suffix{
+  /deep/ .el-input__suffix {
     right: 7px;
   }
+
   /deep/ .el-input-number.is-controls-right .el-input-number__decrease [class*=el-icon], .el-input-number.is-controls-right .el-input-number__increase [class*=el-icon] {
     position: relative;
     top: 2px;

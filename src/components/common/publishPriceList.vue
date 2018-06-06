@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix"><a href="#">刊例价</a></p>
+			<p class="clearfix"><a href="#" style="color: #999">刊例价</a></p>
 		</div>
 		<div class="mediaList_wrap">
 			<div class="mediaList_head">
@@ -75,7 +75,7 @@
 						</el-table-column>
 						<el-table-column
 							v-if="role=='SM'"
-							label="操作" 
+							label="操作"
 							min-width="22.6%"
 						>
 							<template slot-scope="scope">
@@ -294,7 +294,7 @@ export default {
 							// this.$set(rows, 'amID', res.data.amID);
 							// this.$set(rows, 'rID', rows.cityUpdate);
 							// this.$set(rows, 'rName', rows.rNameUpdate);
-	
+
 							// this.$set(rows, 'mVehicle', rows.mediaUpdate);
 							// this.$set(rows, 'adPrice', rows.priceUpdate*100);
 							// this.$set(rows, 'showInput', !rows.showInput);

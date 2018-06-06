@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav ">
-			<p><span >媒体管理</span></p>
+			<p><a href="#" style="color: #999">媒体管理</a></p>
 		</div>
 		<div class="mediaList_wrap">
 			<div class="mediaList_head">
@@ -544,7 +544,7 @@ export default {
 
 <style scoped>
   a {
-    color: #108EE9 !important;
+    color: #108EE9 ;
   }
 
   .input-with-select /deep/ .el-input__inner{

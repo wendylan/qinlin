@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix"><a href="#">广告限制</a></p>
+			<p class="clearfix"><a href="#" style="color: #999">广告限制</a></p>
 		</div>
 		<div class="mediaList_wrap">
 			<div class="mediaList_head">

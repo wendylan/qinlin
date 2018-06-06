@@ -151,7 +151,22 @@ export default {
 			filtCity: [],
 			//表格
 			planList: [],
-			currentPlan: [],
+			currentPlan: [
+        {
+          recName: '珠江1',
+          city: '广州1',
+          origin: '海珠区',
+          buildType: '高端住宅',
+          houseNum: '600',
+          buildPrice: '￥30,000',
+          mediaName: '广州市中山大道',
+          buildNum: '12',
+          schedules: '2017.08.30-2017.09.30',
+          businessOrigin: '白云万达广场',
+          assetID: 'GZ201871024'
+        }
+
+      ],
 		}
 	},
 	mounted:function(){
@@ -209,7 +224,7 @@ export default {
 					}else if(range){
 						if(
 							dateFormat.date(data.joinTime) >= range[0] &&
-							dateFormat.date(data.joinTime) <= range[1] 
+							dateFormat.date(data.joinTime) <= range[1]
 						){
 							arr.push(data);
 						}
@@ -593,6 +608,15 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /deep/ .el-table .el-table_1_column_3  .cell {
+    width: 102px;
+  }
+  /deep/ .el-table .el-table_1_column_5  .cell {
+    width: 200px;
+  }
+  /deep/ .el-table .el-table_1_column_7  .cell {
+    width: 145px;
   }
 
   /*筛选*/

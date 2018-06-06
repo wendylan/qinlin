@@ -3,14 +3,14 @@
 		<div class="ad_mediaMana_wrap">
 			<div class="ad_mediaMana_nav clearfix">
 				<p><a href="#">方案管理</a><em> / </em><a href="#">方案详情</a></p>
-				<div class="tip">该方案由 shanqi 创建于 2018.04.26 10:37:48</div>
+				<div class="tip">该方案由 {{planDetail.realName}} 创建于 {{planDetail.apcTime}}</div>
 			</div>
 			<!--资源信息-->
 			<div class="mediaMana_content_top">
 				<div class="content_top_wrap">
 					<div class="plan-title">
 						<h4>
-							<img src="../../assets/images/orderlogo.png" alt="">珠江帝景地产三月投放
+							<img src="../../assets/images/orderlogo.png" alt="">{{planDetail.apName}}
 							<!--<p>{{cid}}<img src="../../assets/images/bi.png" alt="" @click="changeCID = true"></p>-->
 						</h4>
 						<div class="handleBtn">
@@ -22,27 +22,27 @@
 						<div class="plan-detail">
 							<div class="plan-detail-left">
 								<ul>
-									<li><span>公司名称：</span><em>杭州市阿里巴巴网络科技有限公司</em></li>
-									<li><span>所属销售：</span><em>周杰伦</em></li>
-									<li><span>现金结算：</span><em>￥797,142</em></li>
-									<li><span>公司品牌：</span><em>阿里巴巴</em></li>
-									<li><span>投放城市：</span><em>广州、深圳</em></li>
-									<li><span>资源置换：</span><em>￥0</em></li>
-									<li><span>联系人：</span><em>金城武</em></li>
-									<li><span>方案备注：</span><em>无</em></li>
-									<li><span>其他费用：</span><em>￥0</em></li>
+									<li><span>公司名称：</span><em>{{planDetail.cName}}</em></li>
+									<li><span>所属销售：</span><em>{{planDetail.realName}}</em></li>
+									<li><span>现金结算：</span><em>¥ {{planDetail.pdTotal}}</em></li>
+									<li><span>公司品牌：</span><em>{{planDetail.bTitle}}</em></li>
+									<li><span>投放城市：</span><em>{{planDetail.rIDs}}</em></li>
+									<li><span>资源置换：</span><em>¥ {{planDetail.pdSendFee}}</em></li>
+									<li><span>联系人：</span><em>{{planDetail.cuName}}</em></li>
+									<li><span>方案备注：</span><em>{{planDetail.remark||"无"}}</em></li>
+									<li><span>其他费用：</span><em>¥ {{planDetail.pdOtherFee}}</em></li>
 								</ul>
 							</div>
-						<div class="plan-detail-right">
-							<dl>
-								<dt>状态</dt>
-								<dd>锁点</dd>
-							</dl>
-							<dl>
-								<dt>方案金额</dt>
-								<dd>¥ 1,380,568.08</dd>
-							</dl>
-						</div>
+							<div class="plan-detail-right">
+								<dl>
+									<dt>状态</dt>
+									<dd>{{stateToText(planDetail.apState)}}</dd>
+								</dl>
+								<dl>
+									<dt>方案金额</dt>
+									<dd>¥ {{planDetail.apTotal}}</dd>
+								</dl>
+							</div>
 						</div>
 						<div class="plan-panel">
 							<el-tabs v-model="planPanel">
@@ -50,163 +50,167 @@
 									<div class="first-wrap box-wrap">
 										<h4>选点排期</h4>
 										<div class="table_wrap">
-										<el-table
-											border
-											:data="planList"
-											style="width: 100%"
-											:default-sort="{prop: 'recName', order: 'descending'}"
-											:row-class-name="tableRowClassName"
-										>
-											<el-table-column type="expand">
-											<template slot-scope="props">
-												<el-form label-position="left" inline class="demo-table-expand">
-												<el-form-item label="商圈：">
-													<span>{{ props.row.businessOrigin}}</span>
-												</el-form-item>
-												<el-form-item label="楼栋数量：">
-													<span>{{ props.row.buildNum }}</span>
-												</el-form-item>
-												<el-form-item label="资产编号：">
-													<span>{{ props.row.assetID }}</span>
-												</el-form-item>
-												<el-form-item label="入住年份：">
-													<span>{{ props.row.liveYear }}</span>
-												</el-form-item>
-												<el-form-item label="广告限制：">
-													<span>{{ props.row.adLimit }}</span>
-												</el-form-item>
-												</el-form>
-											</template>
-											</el-table-column>
+											<el-table
+												border
+												:data="planList"
+												style="width: 100%"
+												:default-sort="{prop: 'recName', order: 'descending'}"
+												:row-class-name="tableRowClassName"
+											>
+												<el-table-column type="expand">
+													<template slot-scope="props">
+														<el-form label-position="left" inline class="demo-table-expand">
+															<el-form-item label="商圈：">
+																<span>{{ props.row.businessOrigin}}</span>
+															</el-form-item>
+															<el-form-item label="楼栋数量：">
+																<span>{{ props.row.buildNum }}</span>
+															</el-form-item>
+															<el-form-item label="资产编号：">
+																<span>{{ props.row.assetID }}</span>
+															</el-form-item>
+															<el-form-item label="入住年份：">
+																<span>{{ props.row.liveYear }}</span>
+															</el-form-item>
+															<el-form-item label="广告限制：">
+																<span>{{ props.row.adLimit }}</span>
+															</el-form-item>
+														</el-form>
+													</template>
+												</el-table-column>
 
-											<el-table-column
-											label="资源名称"
-											min-width="16.1%"
-											prop="recName"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="mediaName"
-											label="媒体名称"
-											min-width="10.3%"
-											class="tar"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="putAB"
-											label="投放面"
-											min-width="8.8%"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="city"
-											label="城市"
-											min-width="6%"
-											:filters="filterCityData"
-											:filter-method="filterCity"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="origin"
-											label="区域"
-											min-width="7.4%"
-											:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
-											:filter-method="filterOrigin"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="buildType"
-											label="楼盘类型"
-											min-width="8.8%"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="houseNum"
-											label="小区户数"
-											min-width="7.3%"
-											class="tar"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="buildPrice"
-											label="楼盘价格"
-											min-width="7.3%"
-											>
-											</el-table-column>
-											<el-table-column
-											prop="schedules"
-											label="排期"
-											min-width="14.2%"
-											:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
-											:filter-method="filterSchedules"
-											>
-											</el-table-column>
-										</el-table>
+												<el-table-column
+													label="资源名称"
+													min-width="16.1%"
+													prop="recName"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="mediaName"
+													label="媒体名称"
+													min-width="10.3%"
+													class="tar"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="putAB"
+													label="投放面"
+													min-width="8.8%"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="city"
+													label="城市"
+													min-width="6%"
+													:filters="filterCityData"
+													:filter-method="filterCity"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="origin"
+													label="区域"
+													min-width="7.4%"
+													:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
+													:filter-method="filterOrigin"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="buildType"
+													label="楼盘类型"
+													min-width="8.8%"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="houseNum"
+													label="小区户数"
+													min-width="7.3%"
+													class="tar"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="buildPrice"
+													label="楼盘价格"
+													min-width="7.3%"
+												>
+												</el-table-column>
+												<el-table-column
+													prop="schedules"
+													label="排期"
+													min-width="14.2%"
+													:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
+													:filter-method="filterSchedules"
+												>
+												</el-table-column>
+											</el-table>
 										</div>
 									</div>
 									<div class="content_bottom_btn">
-										<button class="cancel">返回</button>
+										<el-button class="cancel" @click="goBack()" >返回</el-button>
 									</div>
 								</el-tab-pane>
 								<el-tab-pane label="报价单" name="second">
 									<div class="second-wrap box-wrap">
 										<h4>报价单</h4>
 										<div class="panel">
-										<el-tabs type="border-card" class="baojiadan">
-											<el-tab-pane label="广州">
-											<div class="tab-info">
-												<div class="pqxx">
-												<h4>排期信息</h4>
-												<p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-												</div>
-												<div class="price">
-												<div class="price-left">
-													<h4>广告费</h4>
-													<ul>
-													<li>刊例价(面/周) <span>￥1900.00</span></li>
-													<li>投放量(面·天) <span>235</span></li>
-													<li>赠送(面·天) <span>35</span></li>
-													<li>广告费折扣 <span>96.67%</span></li>
-													<li>￥3,800,000.00</li>
-													</ul>
-												</div>
-												<div class="price-right">
-													<h4>制作费</h4>
-													<ul>
-													<li>制作费单价<span>￥100</span></li>
-													<li>广告画数量(张)<span>35</span></li>
-													<li></li>
-													<li>制作费折扣<span>100%</span></li>
-													<li>￥3,000.00</li>
-													</ul>
-												</div>
-												</div>
-												<div class="bottom">
-												<div class="bottom-detail">
-													<div class="remark">
-													<p>备注：无</p>
+											<el-tabs type="border-card" class="baojiadan">
+												<el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
+													<div class="tab-info">
+														<div class="pqxx">
+															<h4>排期信息</h4>
+															<p>{{item.pdStar+'-'+item.pdEnd}}</p>
+															<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
+														</div>
+														<div class="price">
+															<div class="price-left">
+																<h4>广告费</h4>
+																<ul>
+																<li>刊例价(面/周) <span>¥ {{priceFormat(item.adPrice)}}</span></li>
+																<li>投放量(面·天) <span>{{item.pdDays}}</span></li>
+																<li>赠送(面·天) <span>{{item.pdFreeNum}}</span></li>
+																<li>广告费折扣 <span>{{item.discount}}%</span></li>
+																<li>¥ {{priceFormat(item.pdAdFee)}}</li>
+																</ul>
+															</div>
+															<div class="price-right">
+																<h4>制作费</h4>
+																<ul>
+																<li>制作费单价<span>¥ 100</span></li>
+																<li>广告画数量(张)<span>{{item.pdNum}}</span></li>
+																<li></li>
+																<li>制作费折扣<span>{{item.ADMakeDiscount}}%</span></li>
+																<li>¥ {{priceFormat(item.pdAdMake)}}</li>
+																</ul>
+															</div>
+														</div>
+														<div class="bottom">
+															<div class="bottom-detail">
+																<div class="remark">
+																<p>备注：无</p>
+																</div>
+																<div class="bill-title-right">
+																<ul>
+																	<li><p><em>现金结算：</em><span>¥ {{priceFormat(item.pdTotal)}}</span></p></li>
+																	<li><p><em>资源置换：</em><span>¥ {{priceFormat(item.pdSendFee)}}</span></p></li>
+																	<li><p><em>其他费用：</em><span>¥ {{priceFormat(item.pdOtherFee)}}</span></p></li>
+																</ul>
+																</div>
+															</div>
+															<div class="bottom-fin">
+																<p><em style="top: 5px">总计：</em><span class="totalPrice">¥ {{priceFormat(item.allprice)}}</span></p>
+															</div>
+														</div>
 													</div>
-													<div class="bill-title-right">
-													<ul>
-														<li><p><em>现金结算：</em><span>¥ 88,000,000.00</span></p></li>
-														<li><p><em>资源置换：</em><span>¥ 2,000,000.00</span></p></li>
-														<li><p><em>其他费用：</em><span>¥ 2,000,000.00</span></p></li>
-													</ul>
-													</div>
-												</div>
-												<div class="bottom-fin">
-													<p><em style="top: 5px">总计：</em><span class="totalPrice">¥ 90,000,000.00</span></p>
-												</div>
-												</div>
-											</div>
-											</el-tab-pane>
-											<el-tab-pane label="深圳">深圳内容</el-tab-pane>
-											<el-tab-pane label="成都">成都内容</el-tab-pane>
-										</el-tabs>
+												</el-tab-pane>
+
+
+
+												<!-- <el-tab-pane label="深圳">深圳内容</el-tab-pane>
+												<el-tab-pane label="成都">成都内容</el-tab-pane> -->
+											</el-tabs>
 										</div>
 									</div>
 									<div class="content_bottom_btn">
-										<button class="cancel">返回</button>
+										<el-button class="cancel" @click="goBack()" >返回</el-button>
 									</div>
 								</el-tab-pane>
 							</el-tabs>
@@ -231,7 +235,7 @@ import areaToText from '../../commonFun/areaToText_new.js';
 import commaFormat from '../../commonFun/commaFormat.js';
 // 筛选过滤
 // import filterFormat from '../../commonFun/filterTableData.js';
-import { Table, TableColumn, Tabs, TabPane, Button } from 'element-ui';
+import { Table, TableColumn, Tabs, TabPane, Button, Message } from 'element-ui';
 export default {
 	name: "planDetail",
 	components:{
@@ -243,6 +247,26 @@ export default {
 	},
 	data() {
 		return {
+			// 方案详情
+			planDetail: {
+				realName: "黄启炜",
+				apState: 1,
+				rIDs: "广州市,北京市,重庆市",
+				cName: "新光百货",
+				apID: 1,
+				apcTime: "May 9, 2018 6:29:47 PM",
+				cuName: "赵爽",
+				bTitle: "新光百货",
+				apTotal: 465200,
+				apName: "第一个投放方案",
+				apQC: "QC201803284401001",
+				pdTotal: 0,
+				pdSendFee: 0,
+				pdOtherFee: 0
+			},
+			// 选点排期
+			// 报价单详情
+			priceSheet: [],
 			// 城市过滤结果
 			filterCityData: [],
 			//监播备注
@@ -263,7 +287,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -278,7 +302,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -293,7 +317,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -308,7 +332,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -323,7 +347,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -338,7 +362,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -353,7 +377,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -368,7 +392,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -383,7 +407,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -398,7 +422,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -413,7 +437,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -428,7 +452,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -443,7 +467,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -458,7 +482,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -473,7 +497,7 @@ export default {
 				// 	putAB:'A面',
 				// 	buildType: '高端住宅',
 				// 	houseNum: '600',
-				// 	buildPrice: '￥30,000',
+				// 	buildPrice: '¥ 30,000',
 				// 	mediaName: '广州市中山大道',
 				// 	buildNum: '12',
 				// 	schedules: '2017.08.30-2017.09.30',
@@ -483,126 +507,12 @@ export default {
 				// 	adLimit: '地产/医药/汽车'
 				// }
 			],
-			//物料信息
-			materialInfo: [
-				{
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}, {
-					no: 1,
-					adSize: '840*1180',
-					visualPic: '840*1180',
-					resolution: '150dpi',
-					colorMode: 'CMYK',
-					photoFormat: 'JPG/TIF/AI/PSD/CDR',
-					pointNum: '28'
-				}
-			],
 		};
 	},
 	created(){
 		this.getInitData();
+		// 报价单
+		this.getPriceData();
 	},
 	methods:{
 		// 获取选点排期列表数据
@@ -611,79 +521,151 @@ export default {
 			let apid = sessionStorage.getItem('plan_apid');
 			let info = {
 				uid: uid,
-				// apid: apid
-				apid: 1
+				apid: apid
 			};
-			let tempADList = [
-				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,asIDs: "7",asLabs: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
-				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "1,2",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
-				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6200000,asIDs: "4,3",asLabs: "B,A",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
-				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,asIDs: "5,6",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"},
-				{resName: "帝景山庄",mTitle: "帝景门",rName: "白云区",cType: "别墅",hNum: 171,hPrice: 6600000,asIDs: "7,8",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉",fNum: 12,assetTag: "201707GZ-1328",chDay: "2014",notPush: "医学"}
-			];
-			let initData = tempADList;
-			let arr = [];
-			for(let data of initData){
-				let obj = {
-					recName: data.resName,
-					city: this.cityToText(['440100']),
-					origin: data.rName,
-					putAB: data.asLabs+'面',
-					buildType: data.cType,
-					houseNum: data.hNum,
-					buildPrice: this.priceFormat(data.hPrice),
-					mediaName: data.mTitle,
-					buildNum: data.apNum,
-					schedules: '2017.08.30-2017.09.30',
-					businessOrigin: data.tradingArea,
-					assetID: data.assetTag,
-					liveYear: data.chDay,
-					adLimit: data.notPush
-				};
-				arr.push(obj);
-			}
-			this.planList = arr;
-			api.postApi('/GetAdPlan', info).then(res =>{
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			api.postApi('/GetFanganInfo', info).then(res =>{
 				console.log(res.data);
-				// [{"apID":1,"apName":"第一个投放方案","adcID":5,"suID":7,"bID":2,"muID":0,"apuID":3,"apcTime":"2018-05-09 18:29:47.0","appuID":0,"apaDays":2017,"apTotal":465200,"apCity":"440100","apNum":4,"apsuID":0,"apState":1}] 
-				let initData = res.data;
-				let arr = [];
-				for(let data of initData){
-					let obj = {
-						recName: data.resName,
-						city: this.cityToText(['440100']),
-						origin: data.rName,
-						putAB: data.asLabs+'面',
-						buildType: data.cType,
-						houseNum: data.hNum,
-						buildPrice: this.priceFormat(data.hPrice),
-						mediaName: data.mTitle,
-						buildNum: data.apNum,
-						schedules: '2017.08.30-2017.09.30',
-						businessOrigin: data.tradingArea,
-						assetID: data.assetTag,
-						liveYear: data.chDay,
-						adLimit: data.notPush
-					};
-					arr.push(obj);
+				if(!res.data.SysCode){
+					this.planDetail = res.data;
+					this.planDetail.apTotal = priceFormat(res.data.apTotal);
+				}else{
+					Message.warning(res.data.MSG);
 				}
-				this.planList = arr;
 			}).catch(res => {
 				console.log(res);
 			});
 		},
-		// 城市转换为中文
-		cityToText(arr){
-			console.table(arr);
-			let cityText = '';
-			for(let data of arr){
-				cityText = areaToText.toText(Number(data)).city + ',' + cityText;
-			}
-			return cityText;
+		// 获取三个费用价格(报价单)
+		getPriceData(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('order_apid');
+			let info = {
+				uid: uid,
+				apid: apid
+			};
+			// 获取各个城市的刊例价
+			// uid         int【必填】     当前账户UserID
+			api.getApi('/GetAdPrice', {uid: uid}).then(res =>{
+				console.log(res.data);
+				let adPrice = res.data;
+				// uid         int【必填】     当前账户UserID
+				// apid        int             公司对应方案apID
+				api.getApi('/GetAPD', info).then(res => {
+					console.log(res.data);
+					if(!res.data.SysCode){
+
+						let plandata = res.data;
+						// let ADPriceList = [
+						// 	{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
+						// 	{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
+						// 	{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
+						// 	{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
+						// 	{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
+						// let adPrice = ADPriceList;
+						// let plandata = [
+						// 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+						// 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+						// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+						// ];
+						
+						let pdTotal = 0;
+						let pdSendFee = 0;
+						let pdOtherFee = 0;
+						let arr = [];
+						for(let price of plandata){
+							pdTotal+= price.pdTotal;
+							pdSendFee+= price.pdSendFee;
+							pdOtherFee+= price.pdOtherFee;
+							
+							let obj = {
+								"pdID":price.pdID,
+								"apID":price.apID,
+								"rID":price.rID,
+								"city": '',
+								"muID":price.muID,
+								"adPrice":0,
+								// 投放量
+								"pdDays":price.pdDays,
+								"pdStar":price.pdStar,
+								"pdEnd":price.pdEnd,
+								// 赠送
+								"pdFreeNum":price.pdFreeNum,
+								// 广告费用
+								"pdAdFee":price.pdAdFee/100,
+								// 广告画数量
+								"pdNum":price.pdNum,
+								// 制作费
+								"pdAdMake":price.pdAdMake/100,
+								// 现金结算
+								"pdTotal":price.pdTotal/100,
+								// 资源置换
+								"pdSendFee":price.pdSendFee/100,
+								// 其他费用
+								"pdOtherFee":price.pdOtherFee/100,
+								"allprice": 0
+							};
+							obj.allprice = (price.pdTotal+price.pdSendFee+price.pdOtherFee)/100;
+							obj.city = areaToText.toText(obj.rID).city;
+							arr.push(obj);
+						}
+						this.$set(this.planDetail, 'pdTotal', this.priceFormat(pdTotal/100));
+						this.$set(this.planDetail, 'pdSendFee', this.priceFormat(pdSendFee/100));
+						this.$set(this.planDetail, 'pdOtherFee', this.priceFormat(pdOtherFee/100));
+						// 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
+						for(let ta of arr){
+							for(let ad of adPrice){
+								if(ad.rID == ta.rID){
+									ta.adPrice = ad.adPrice/(100*2); // 刊例价(面/周)
+									let onedayPrice = ta.adPrice/7;  
+									ta.discount = Math.round(ta.pdAdFee/( onedayPrice * ta.pdDays )*10000) / 100; // 广告费折扣百分比
+									ta.ADMakeDiscount = Math.round( ta.pdAdMake /(100*ta.pdNum) *10000) / 100; // 制作费折扣百分比
+									break;
+								}
+							}
+						}
+						this.priceSheet = arr;
+					
+					}else{
+						Message.warning(res.data.MSG);
+					}
+				}).catch(res => {
+					console.log(res);
+				});
+				
+			}).catch(res =>{
+				console.log(res);
+			});
+
 		},
+		// 状态转换成文本
+		stateToText(val){
+			let state = [
+				{text: '已完成', state: 0},
+				{text: '进行中', state: 1},
+				{text: '未投放', state: 2},
+				{text: '投放中', state: 3},
+				{text: '强行结束', state: 5}
+			];
+			for(let data of state ){
+				if(val == data.state){
+					return data.text;
+				}
+			}
+		},
+		// 时间格式规范
+		formatTime(val){
+			return dateFormat.date(val);
+		},
+		// 价格加上逗号
 		priceFormat(price){
-			console.table(price);
-			return commaFormat.format(price);
+			console.log('price', price);
+			return commaFormat.init(price);
+		},
+		// 返回
+		goBack(){
+			this.$router.push('./planList');
 		},
 		filterCity(value, row) {
 			return row.city === value;

@@ -79,14 +79,14 @@
                 </div>
               </el-form-item>
               <el-form-item :label="rt_village?'入住年份:':'建成年份:'" prop="liveTime"><!-- v-model="recForm.liveTime"-->
-               <!-- <el-date-picker
-                  v-model="liveTime"
-                  type="date"
-                  @change="getTime"
-                  format="yyyy 年 MM 月 dd 日"
-                  value-format="yyyy-MM-dd"
-                  placeholder="选择日期时间">
-                </el-date-picker>-->
+                <!-- <el-date-picker
+                   v-model="liveTime"
+                   type="date"
+                   @change="getTime"
+                   format="yyyy 年 MM 月 dd 日"
+                   value-format="yyyy-MM-dd"
+                   placeholder="选择日期时间">
+                 </el-date-picker>-->
                 <el-date-picker
                   v-model="recForm.liveTime"
                   type="year"
@@ -119,9 +119,9 @@
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                 <!-- <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>-->
+                  <!-- <el-dialog :visible.sync="dialogVisible">
+                     <img width="100%" :src="dialogImageUrl" alt="">
+                   </el-dialog>-->
                 </div>
               </el-form-item>
             </el-form>
@@ -294,8 +294,8 @@
         if (value !== '' && !Number.isInteger(value)) {
           callback(new Error('只能输入整数值'));
         } else {
-          if (value > 26) {
-            callback(new Error('最多可投26面'));
+          if (value < 1 || value > 26) {
+            callback(new Error('最少投1面，最多可投26面'));
           } else {
             callback();
           }
@@ -343,7 +343,7 @@
               mediaType: '',   //媒体类型mVehicle
               mediaName: '',  //媒体名称mtitle
               usableNum: '1',   //广告位面数pnum
-              mstate: '',  //媒体状态mstate
+              mstate: '',       //媒体状态mstate
               assetId: '',      //资产编号assettag
               doorType: '',     // 门类型mType
               adSizeW: '',      //广告尺寸adsize
@@ -442,13 +442,13 @@
           ],
           buildingPrice: [
             { validator: validatePrice,trigger:'change'},
-           /* { min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'blur'}*/
+            /* { min: 1, max: 9999999, type: 'number', message: '只能输入数字', trigger: 'blur'}*/
           ],
           liveTime: [
             // {type: 'number', min: 1970, max: 2018,message: '只能输入数字(1970-2018)', trigger: 'blur'},
           ],
           lng: [
-            {required: true, message: '经纬度不能为空', trigger: 'blur'},
+            {required: true, message: '经度不能为空', trigger: 'blur'},
             {type: 'number', min:0, max:180, message: '只能输入数字(0-180)', trigger: 'change'},
             // {min:0, max:180,message: '经度范围0-180', trigger: 'blur'}
           ],
@@ -467,7 +467,7 @@
           {validator: validateAssetId, trigger: 'blur'},
           { message: '资产编号不能为空', trigger: 'blur'},
           {max: 40, message: '最多只能输入40个字节', trigger: 'blur'}
-          ],
+        ],
         mediaRules: {
           mediaType: [
             {required: true, message: '请选择媒介载体', trigger: 'change'},
@@ -531,7 +531,7 @@
         ],
         village:[                   // 社区楼盘
           { label: '高端住宅',value: '高端住宅' },
-          { label: '中段住宅',value: '中端住宅' },
+          { label: '中端住宅',value: '中端住宅' },
           { label: '一般住宅',value: '一般住宅' },
           { label: '洋房',value: '洋房'},
           { label: '别墅',value: '别墅' },
@@ -653,6 +653,7 @@
       },
       // 根据市级城市（rid前四位），筛选属于它的下属区、县
       handleChange(value) {
+        this.recForm.region = ''
         console.log('handleChange', value)
         //  console.log('value',value[1])
         let str = value[1].toString().substring(0, 4)
@@ -667,11 +668,12 @@
       },
       // 选择资源类型时的修改资源字段显示
       selectRec(val){
+
         this.recForm.buildingType = ''
         if(val === '1'){    // 社区
           this.rt_village = true
           this.buildingType = this.village
-        }else if(val === '0'){    // 写字楼
+        }else if(val === '2'){    // 写字楼
           this.rt_village = false
           /* let officeBuilding = [
              {lable:'单纯性写字楼',value:'单纯性写字楼'},
@@ -683,7 +685,7 @@
       },
       // 选择入住时间,修改时间格式
       getTime(date){
-      //  this.recForm.liveTime = date;
+        //  this.recForm.liveTime = date;
         console.log('入住时间',date);
         console.log('入住时间',typeof(date));
         console.log('this.recForm.liveTime',this.recForm.liveTime,'数据类型为:',typeof(this.recForm.liveTime))
@@ -723,7 +725,10 @@
            resaddr: '广东省广州市天河区东圃镇悦景路11号',
            latLng: '110.123;56.321'
          }*/
-        this.recForm.uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        let sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+        this.recForm.uid = sessionData.uID
+        let uWho = sessionData.uWho
+
         this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
         delete this.recForm.lat
         delete this.recForm.lng
@@ -758,72 +763,79 @@
             fn      int             楼栋数量
             dn      int             出入口数量
             hn      int             小区户数*/
-        api.postApi('/AddRes', recObj).then(res => {
-          console.log('资源数据：', res.data)
-          let recData = res.data
-          if (!recData.SysCode) {
-            let mediaArr = this.arrMedia//[0].mediaForm
-            for (let j = 0; j < mediaArr.length; j++) {
-              let arr_media = mediaArr[j].mediaForm
-              let adsize = arr_media.adSizeW + '*' + arr_media.adSizeH
-              let adviewsize = arr_media.visualW + '*' + arr_media.visualH
-              let mediaObj = {
-                rid: recData.rID,
-                resid: recData.resID,
-                uid: this.recForm.uid,
-                mtitle: arr_media.mediaName,
-                pnum: arr_media.usableNum,
-                adsize: adsize,
-                adviewsize: adviewsize,
-                notpush: arr_media.adLimit,
-                assettag: arr_media.assetId,
-                mtype: arr_media.doorType,
-                mimg: '',
-                mvc: arr_media.mediaType,
-                mrk: arr_media.mediaRemark,
-                mstate: arr_media.mstate
-              }
-              console.log('mediaObj', mediaObj)
-              /*arrMedia: [
-             { text: '媒体一' ,
-               mediaForm:{
-                 mediaType: '',   //媒介载体mvc
-                 mediaName: '',  //媒体名称mtitle
-                 usableNum: '1',   //广告位面数pnum
-                 mstate: '',  //媒体状态
-                 assetId: '',      //资产编号assettag
-                 doorType: '',     // 媒介类型
-                 adSizeW: '',      //广告尺寸adsize
-                 adSizeH: '',     //广告尺寸
-                 visualW: '',      //可视画面adviewsize
-                 visualH: '',      //可视画面
-                 mediaRemark: '',  //备注 mrk
-                 adLimit: ''     //请选择广告限制 notpush
-               },
-             },
-           ],*/
-              // 'https://beta.qinlinad.com/QADN/CreateMedia'
-              this.createMedia(mediaObj,j)
-              /*api.postApi('/CreateMedia', mediaObj).then(res => {
-                console.log(res)
-                if (j >= arr_media.length-1) {
-                  this.resetForm()  // 请求成功后重置表单
-                  Message({
-                    message: '资源媒体创建成功！',
-                    type: 'success'
-                  })
+        if(uWho !== '0' && uWho.indexOf(this.recForm.city[1]) === -1){
+          Message({
+            type: 'warning',
+            message: '权限受制，您无法创建该城市的媒体资源'
+          });
+        }else{
+          api.postApi('/AddRes', recObj).then(res => {
+            console.log('资源数据：', res.data)
+            let recData = res.data
+            if (!recData.SysCode) {
+              let mediaArr = this.arrMedia//[0].mediaForm
+              for (let j = 0; j < mediaArr.length; j++) {
+                let arr_media = mediaArr[j].mediaForm
+                let adsize = arr_media.adSizeW + '*' + arr_media.adSizeH
+                let adviewsize = arr_media.visualW + '*' + arr_media.visualH
+                let mediaObj = {
+                  rid: recData.rID,
+                  resid: recData.resID,
+                  uid: this.recForm.uid,
+                  mtitle: arr_media.mediaName,
+                  pnum: arr_media.usableNum,
+                  adsize: adsize,
+                  adviewsize: adviewsize,
+                  notpush: arr_media.adLimit,
+                  assettag: arr_media.assetId,
+                  mtype: arr_media.doorType,
+                  mimg: '',
+                  mvc: arr_media.mediaType,
+                  mrk: arr_media.mediaRemark,
+                  mstate: arr_media.mstate
                 }
-              })*/
+                console.log('mediaObj', mediaObj)
+                /*arrMedia: [
+               { text: '媒体一' ,
+                 mediaForm:{
+                   mediaType: '',   //媒介载体mvc
+                   mediaName: '',  //媒体名称mtitle
+                   usableNum: '1',   //广告位面数pnum
+                   mstate: '',  //媒体状态
+                   assetId: '',      //资产编号assettag
+                   doorType: '',     // 媒介类型
+                   adSizeW: '',      //广告尺寸adsize
+                   adSizeH: '',     //广告尺寸
+                   visualW: '',      //可视画面adviewsize
+                   visualH: '',      //可视画面
+                   mediaRemark: '',  //备注 mrk
+                   adLimit: ''     //请选择广告限制 notpush
+                 },
+               },
+             ],*/
+                // 'https://beta.qinlinad.com/QADN/CreateMedia'
+                this.createMedia(mediaObj,j)
+                /*api.postApi('/CreateMedia', mediaObj).then(res => {
+                  console.log(res)
+                  if (j >= arr_media.length-1) {
+                    this.resetForm()  // 请求成功后重置表单
+                    Message({
+                      message: '资源媒体创建成功！',
+                      type: 'success'
+                    })
+                  }
+                })*/
+              }
+            } else {
+              Message({
+                message: '资源创建失败！',
+                type: 'warning'
+              })
             }
-          } else {
-            Message({
-              message: '资源创建失败！',
-              type: 'warning'
-            })
-          }
-        }).catch(err => {
-          console.log(err)
-        })
+          }).catch(err => {
+            console.log(err)
+          })
+        }
         /* createRec
           rid         int【必填】     媒体所在地区ID
           resid       int【必填】     资源ID
@@ -968,7 +980,7 @@
             this.handleItemChange(this.recForm.city)
             this.recForm.city[1] = Number(recObj.rid.toString().substring(0, 4) + '00')
             // 获取设置资源信息
-        //    tempObj.rID = recObj.rid
+            //    tempObj.rID = recObj.rid
             tempObj.rt = recObj.cType
             tempObj.resname = recObj.resName
             tempObj.city = this.recForm.city //this.selectedOptions[1] //440100
@@ -981,10 +993,10 @@
             tempObj.households = recObj.HouseNum
             tempObj.buildingPrice = Number(recObj.housePrice.split('元')[0])
             tempObj.liveTime = recObj.joinTime
-        //    console.log('经纬度',typeof(recObj.latLng),recObj.latLng)
+            //    console.log('经纬度',typeof(recObj.latLng),recObj.latLng)
             if(recObj.latLng != null && recObj.latLng != '' && recObj.latLng != undefined){
-                tempObj.lat = Number(recObj.latLng.split(';')[0])
-                tempObj.lng = Number(recObj.latLng.split(';')[1])
+              tempObj.lat = Number(recObj.latLng.split(';')[0])
+              tempObj.lng = Number(recObj.latLng.split(';')[1])
             }
             tempObj.recRemark = recObj.remark
             this.recForm = tempObj
@@ -1040,7 +1052,9 @@
             fn      int             楼栋数量
             dn      int             出入口数量
             hn      int             小区户数*/
-        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
+        let sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+        let uid = sessionData.uID
+        let uWho = sessionData.uWho
         this.recForm.uid =  uid
         let rID = sessionStorage.getItem('resID')
         //    this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
@@ -1065,9 +1079,76 @@
         }else{
           SetResCTObj.rid = recObj.region
         }
-        api.postApi('/SetResCT',SetResCTObj).then(res=>{
-          console.log('修改资源信息',res)
-        })
+        let uWhoTemp = SetResCTObj.rid.toString().substring(0,4) + '00'
+        if(uWho !== '0' && uWho.indexOf( uWhoTemp )=== -1){
+          Message({
+            type: 'warning',
+            message: '权限受制，您无法创建该城市的媒体资源'
+          });
+        }else{
+          /*  let mediaArr = this.arrMedia
+            let mediaData = JSON.parse(sessionStorage.getItem('mediaList'))
+            for(let j=0; j< mediaArr.length; j++){
+              let mediaObj = mediaArr[j].mediaForm
+              let mstateName = mediaData[j].mState
+              if(mstateName === '待安装' && mediaObj.mstate !== '2'){
+
+              }
+            }*/
+          api.postApi('/SetResCT',SetResCTObj).then(res=>{
+            console.log('修改资源信息',res)
+            let mediaArr = this.arrMedia // this.arrMedia[0].mediaForm
+            // let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
+            for (let i = 0; i < mediaArr.length; i++) {
+              let tempObj = mediaArr[i].mediaForm
+              if(tempObj.assetId === null || tempObj.assetId === undefined){
+                tempObj.assetId = ''
+              }
+              let temp_media = {
+                uid: uid,
+                mid: tempObj.mid,
+                mtitle: tempObj.mediaName,
+                adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
+                adviewsize: tempObj.visualW + '*' + tempObj.visualH,
+                notpush: tempObj.adLimit,
+                assettag: tempObj.assetId,
+                mtype: tempObj.doorType,
+                mrk: tempObj.mediaRemark,
+                mimg: '',
+              }
+              console.log('temp_media', temp_media)
+              if(tempObj.mstate === '正常'){
+                tempObj.mstate = '1'
+              }else if(tempObj.mstate === '禁止'){
+                tempObj.mstate = '0'
+              }else if(tempObj.mstate === '待安装'){
+                tempObj.mstate = '2'
+              }else if(tempObj.mstate === '待维修'){
+                tempObj.mstate = '3'
+              }
+              // let mstateName = mediaObj[i].mState
+              this.editMState(uid,tempObj.mid,tempObj.mstate)
+              api.postApi('/SetMediaInfo', temp_media).then(res => {
+                console.log('SetMediaInfo', res)
+                let mediaInfo = res.data
+                if (!mediaInfo.SysCode){
+                  if (i >= mediaArr.length-1) {
+                    Message({
+                      message: '保存成功',
+                      type: 'success'
+                    });
+                    this.$router.push('./mediaDetail');
+                  }
+                }else{
+                  Message({
+                    message: '媒体保存失败！',
+                    type: 'warning'
+                  });
+                }
+              })
+            }
+          })
+        }
         /*mid         int【必填】     媒体ID
             mtitle      String          媒体名称
             adsize      String          广告位尺寸
@@ -1077,54 +1158,20 @@
             mimg        String          媒体照片
             mtype       String          媒体类型
             mrk         String          媒体备注*/
-        let mediaArr = this.arrMedia //this.arrMedia[0].mediaForm
-        for (let i = 0; i < mediaArr.length; i++) {
-          let tempObj = mediaArr[i].mediaForm
-          let temp_media = {
-            uid: uid,
-            mid: tempObj.mid,
-            mtitle: tempObj.mediaName,
-            adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
-            adviewsize: tempObj.visualW + '*' + tempObj.visualH,
-            notpush: tempObj.adLimit,
-            assettag: tempObj.assetId,
-            mtype: tempObj.doorType,
-            mrk: tempObj.mediaRemark,
-            mimg: '',
-          }
-          console.log('temp_media', temp_media)
-          if(tempObj.mstate === '正常'){
-            tempObj.mstate = '1'
-          }else if(tempObj.mstate === '禁止'){
-            tempObj.mstate = '0'
-          }else if(tempObj.mstate === '待安装'){
-            tempObj.mstate = '2'
-          }else if(tempObj.mstate === '待维修'){
-            tempObj.mstate = '3'
-          }
-          this.editMState(uid,tempObj.mid,tempObj.mstate)
-          api.postApi('/SetMediaInfo', temp_media).then(res => {
-            console.log('SetMediaInfo', res)
-            let mediaInfo = res.data
-            if (!mediaInfo.SysCode){
-              if (i >= mediaArr.length-1) {
-                Message({
-                  message: '保存成功',
-                  type: 'success'
-                });
-                this.$router.push('./mediaDetail');
-              }
-            }else{
-              Message({
-                message: '媒体保存失败！',
-                type: 'warning'
-              });
-            }
-          })
-        }
       },
       // 修改媒体状态
       editMState(uid,mid,mstate){
+        // if(mName === '待安装'){
+        //   Message({
+        //     type: 'warning',
+        //     message: '需先完成每天安装任务'
+        //   });
+        // }else if(mstate == '2'){
+        //   Message({
+        //     type: 'warning',
+        //     message: '请按正常流程走，当前媒体已安装'
+        //   });
+        // }else{
         api.postApi('/CtrlMedia',{uid:uid, mid:mid, mstate:mstate}).then(res=>{
           console.log('修改媒体状态',res)
           let data = res.data
@@ -1135,6 +1182,7 @@
             });
           }
         })
+        // }
       },
     },
   }
@@ -1437,7 +1485,7 @@
   .upload_img_wrap {
     width: 236px;
     height: 125px;
-   /* overflow:auto*/
+    /* overflow:auto*/
     overflow: hidden;
   }
   .el-checkbox-group {
@@ -1463,7 +1511,7 @@
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media screen and (min-width: 1440px) {
 
     /deep/ .lngNlat.RlngNlat.el-form-item {
       min-width: 15.13%;
@@ -1488,7 +1536,7 @@
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media screen and (min-width: 1920px) {
     .mediaMana_content_bottom .content_bottom_btn {
       position: absolute;
       bottom: -66px;

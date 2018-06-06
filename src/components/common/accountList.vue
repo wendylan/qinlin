@@ -1,7 +1,7 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-      <p class="clearfix"><a href="#">账号管理</a></p>
+      <p class="clearfix"><a href="#" style="color: #999">账号管理</a></p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -77,7 +77,7 @@
             >
 				<template slot-scope="scope">
 					<span>{{roleToText(scope.row.uType)}}</span>
-				</template>	
+				</template>
             </el-table-column>
             <el-table-column
 				prop="puName"
@@ -435,7 +435,7 @@ export default {
 </script>
 <style scoped>
   a{
-    color: #108EE9 !important;
+    color: #108EE9 ;
   }
   /*筛选*/
   .el-checkbox + .el-checkbox {

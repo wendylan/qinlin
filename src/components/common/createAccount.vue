@@ -26,7 +26,7 @@
 								<el-select v-model="accountForm.role" placeholder="请选择角色" :disabled="isEdit">
 									<el-option label="超级管理员" value="SM"></el-option>
 									<el-option label="媒介" value="MD"></el-option>
-									<el-option label="销售" value="AD"></el-option>
+									<el-option label="销售" value="BD"></el-option>
 									<el-option label="运营" value="OP"></el-option>
 									<el-option label="工程人员" value="EP"></el-option>
 								</el-select>
@@ -211,7 +211,7 @@ export default {
 						}, 3000 * Math.random());
 					}
 				});
-			}  
+			}
 		},
 		handleSelect(item){
 			console.log(item);

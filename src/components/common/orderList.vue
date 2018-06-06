@@ -1,7 +1,7 @@
 <template>
 	<div class="ad_mediaDetail_wrap clearfix">
 		<div class="ad_mediaDetail_nav ">
-			<p>订单管理</p>
+			<p><a href="#" style="color: #999">订单管理</a></p>
 		</div>
 		<div class="mediaList_wrap">
 			<div class="mediaList_head">
@@ -212,6 +212,13 @@ export default {
 				console.log(res.data);
 				if(!res.data.SysCode){
 					this.orderList = res.data;
+					for(let item of this.orderList){
+						if(item.rIDs){
+							item.cityArea = item.rIDs.split(',');
+						}
+						console.log(item.cityArea);
+					}
+					this.currentOrder = this.orderList;
 				}else{
 					Message.warning(res.data.MSG);
 				}

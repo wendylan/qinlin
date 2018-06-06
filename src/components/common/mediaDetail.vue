@@ -240,7 +240,7 @@
           }else if(res.data.resType == '2'){
             this.obj.cType = '写字楼'
           }
-        //  this.obj.cType = res.data.cType houseType
+          //  this.obj.cType = res.data.cType houseType
           this.obj.housePrice = (res.data.hPrice/100) + '元/平方米'
           this.obj.joinTime = res.data.chDay//commentFun.spliceFun(res.data.joinTime)
           this.obj.resAddress = res.data.resAddress
@@ -551,7 +551,7 @@
     top: -2px;
   }
   .content_bottom_btn /deep/ .el-button span a{
-   color: #606266;
+    color: #606266;
   }
   /*表格高亮*/
   /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {

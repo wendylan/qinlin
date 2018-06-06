@@ -1,7 +1,7 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-		<p class="clearfix"><a href="#">方案管理</a></p>
+		<p class="clearfix"><a href="#" style="color: #999">方案管理</a></p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -54,7 +54,7 @@
 				<template slot-scope="scope">
 					<a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
 				</template>
-            </el-table-column> 
+            </el-table-column>
             <el-table-column
 				prop="cName"
 				label="客户名称"
@@ -70,7 +70,7 @@
 				prop="bTitle"
 				label="品牌名称"
 				min-width="6.6%"
-            >	
+            >
             </el-table-column>
             <el-table-column
 				label="方案价格"
@@ -328,7 +328,7 @@ export default {
 					}else if(range){
 						if(
 							dateFormat.date(data.apcTime) >= range[0] &&
-							dateFormat.date(data.apcTime) <= range[1] 
+							dateFormat.date(data.apcTime) <= range[1]
 						){
 							arr.push(data);
 						}
@@ -387,7 +387,7 @@ export default {
 		// 跳转到详情页面
 		ToDetail(apid){
 			console.log(apid);
-			sessionStorage.setItem('plan_apid', apid);
+			sessionStorage.setItem('order_apid', apid);
 			this.$router.push('./planDetail');
 		},
 		//确认框
@@ -451,6 +451,9 @@ export default {
 </script>
 
 <style scoped>
+  a{
+    color: #108EE9;
+  }
   /*筛选*/
   .el-checkbox + .el-checkbox {
     margin-left: 0;

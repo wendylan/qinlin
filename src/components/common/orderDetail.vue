@@ -9,9 +9,8 @@
 				<div class="content_top_wrap">
 					<div class="plan-title">
 						<h4>
-							<img src="../../assets/images/planlogo.png" alt="">珠江帝景地产三月投放
-							<!--<p>{{cid}}<img src="../../assets/images/bi.png" alt="" @click="changeCID = true"></p>-->
-							<p>{{cid}}<i class="el-icon-edit" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i></p>
+							<img src="../../assets/images/planlogo.png" alt="">{{orderDetail.apName}}
+							<p>{{orderDetail.apQC}}<i class="el-icon-edit" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i></p>
 						</h4>
 						<!--修改合同号对话框-->
 						<el-dialog
@@ -46,25 +45,25 @@
 						<div class="plan-detail">
 							<div class="plan-detail-left">
 								<ul>
-								<li><span>公司名称：</span><em>杭州市阿里巴巴网络科技有限公司</em></li>
-								<li><span>事业部：</span><em>市场推广部</em></li>
-								<li><span>现金结算：</span><em>￥797,142</em></li>
-								<li><span>公司品牌：</span><em>阿里巴巴</em></li>
-								<li><span>投放城市：</span><em>广州、深圳</em></li>
-								<li><span>资源置换：</span><em>￥0</em></li>
-								<li><span>所属销售：</span><em>周杰伦</em></li>
-								<li><span>方案备注：</span><em>无</em></li>
-								<li><span>其他费用：</span><em>￥0</em></li>
+									<li><span>公司名称：</span><em>{{orderDetail.cName}}</em></li>
+									<li><span>所属销售：</span><em>{{orderDetail.realName}}</em></li>
+									<li><span>现金结算：</span><em>¥ {{orderDetail.pdTotal}}</em></li>
+									<li><span>公司品牌：</span><em>{{orderDetail.bTitle}}</em></li>
+									<li><span>投放城市：</span><em>{{orderDetail.rIDs}}</em></li>
+									<li><span>资源置换：</span><em>¥ {{orderDetail.pdSendFee}}</em></li>
+									<li><span>联系人：</span><em>{{orderDetail.cuName}}</em></li>
+									<li><span>方案备注：</span><em>{{orderDetail.remark||"无"}}</em></li>
+									<li><span>其他费用：</span><em>¥ {{orderDetail.pdOtherFee}}</em></li>
 								</ul>
 							</div>
 							<div class="plan-detail-right">
 								<dl>
 									<dt>状态</dt>
-									<dd>锁点</dd>
+									<dd>{{stateToText(orderDetail.apState)}}</dd>
 								</dl>
 								<dl>
 									<dt>方案金额</dt>
-									<dd>¥ 1,380,568.08</dd>
+									<dd>¥ {{orderDetail.apTotal}}</dd>
 								</dl>
 							</div>
 						</div>
@@ -440,60 +439,64 @@
 							</el-dialog>
 						</div>
 					</el-tab-pane>
-					<el-tab-pane label="报价单" name="second" :disabled="usableBtn">
+					<el-tab-pane label="报价单" name="second">
 						<div class="second-wrap box-wrap">
 							<h4>报价单</h4>
 							<div class="panel">
 								<el-tabs type="border-card" class="baojiadan">
-									<el-tab-pane label="广州">
+									<el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
 										<div class="tab-info">
-										<div class="pqxx">
-											<h4>排期信息</h4>
-											<p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-										</div>
-										<div class="price">
-											<div class="price-left">
-											<h4>广告费</h4>
-											<ul>
-												<li>刊例价(面/周) <span>￥1900.00</span></li>
-												<li>投放量(面·天) <span>235</span></li>
-												<li>赠送(面·天) <span>35</span></li>
-												<li>广告费折扣 <span>96.67%</span></li>
-												<li>￥3,800,000.00</li>
-											</ul>
+											<div class="pqxx">
+												<h4>排期信息</h4>
+												<p>{{item.pdStar+'-'+item.pdEnd}}</p>
+												<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
 											</div>
-											<div class="price-right">
-											<h4>制作费</h4>
-											<ul>
-												<li>制作费单价<span>￥100</span></li>
-												<li>广告画数量(张)<span>35</span></li>
-												<li></li>
-												<li>制作费折扣<span>100%</span></li>
-												<li>￥3,000.00</li>
-											</ul>
+											<div class="price">
+												<div class="price-left">
+													<h4>广告费</h4>
+													<ul>
+													<li>刊例价(面/周) <span>¥ {{priceFormat(item.adPrice)}}</span></li>
+													<li>投放量(面·天) <span>{{item.pdDays}}</span></li>
+													<li>赠送(面·天) <span>{{item.pdFreeNum}}</span></li>
+													<li>广告费折扣 <span>{{item.discount}}%</span></li>
+													<li>¥ {{priceFormat(item.pdAdFee)}}</li>
+													</ul>
+												</div>
+												<div class="price-right">
+													<h4>制作费</h4>
+													<ul>
+													<li>制作费单价<span>¥ 100</span></li>
+													<li>广告画数量(张)<span>{{item.pdNum}}</span></li>
+													<li></li>
+													<li>制作费折扣<span>{{item.ADMakeDiscount}}%</span></li>
+													<li>¥ {{priceFormat(item.pdAdMake)}}</li>
+													</ul>
+												</div>
 											</div>
-										</div>
-										<div class="bottom">
-											<div class="bottom-detail">
-											<div class="remark">
-												<p>备注：无</p>
+											<div class="bottom">
+												<div class="bottom-detail">
+													<div class="remark">
+													<p>备注：无</p>
+													</div>
+													<div class="bill-title-right">
+													<ul>
+														<li><p><em>现金结算：</em><span>¥ {{priceFormat(item.pdTotal)}}</span></p></li>
+														<li><p><em>资源置换：</em><span>¥ {{priceFormat(item.pdSendFee)}}</span></p></li>
+														<li><p><em>其他费用：</em><span>¥ {{priceFormat(item.pdOtherFee)}}</span></p></li>
+													</ul>
+													</div>
+												</div>
+												<div class="bottom-fin">
+													<p><em style="top: 5px">总计：</em><span class="totalPrice">¥ {{priceFormat(item.allprice)}}</span></p>
+												</div>
 											</div>
-											<div class="bill-title-right">
-												<ul>
-												<li><p><em>现金结算：</em><span>¥ 88,000,000.00</span></p></li>
-												<li><p><em>资源置换：</em><span>¥ 2,000,000.00</span></p></li>
-												<li><p><em>其他费用：</em><span>¥ 2,000,000.00</span></p></li>
-												</ul>
-											</div>
-											</div>
-											<div class="bottom-fin">
-											<p><em style="top: 5px">总计：</em><span class="totalPrice">¥ 90,000,000.00</span></p>
-											</div>
-										</div>
 										</div>
 									</el-tab-pane>
-									<el-tab-pane label="深圳">深圳内容</el-tab-pane>
-									<el-tab-pane label="成都">成都内容</el-tab-pane>
+
+
+
+									<!-- <el-tab-pane label="深圳">深圳内容</el-tab-pane>
+									<el-tab-pane label="成都">成都内容</el-tab-pane> -->
 								</el-tabs>
 							</div>
 						</div>
@@ -2148,9 +2151,16 @@
 </template>
 
 <script>
+import { api } from '../../api/api.js';
+// 城市区域变成中文
+import areaToText from '../../commonFun/areaToText_new.js';
+// 价格格式化
+import commaFormat from '../../commonFun/commaFormat.js';
+// 筛选过滤
+// import filterFormat from '../../commonFun/filterTableData.js';
 import { Table, TableColumn, Tabs, TabPane, Button, Upload, Card, Dialog, Checkbox, Select, Option, Input, Cascader, Progress, Pagination, Popover, Form, FormItem, MessageBox, Message } from 'element-ui';
 export default {
-	name: "planDetail",
+	name: "orderDetail",
 	components:{
 		elTable: Table,
 		elTableColumn: TableColumn,
@@ -2171,8 +2181,33 @@ export default {
 		elForm: Form,
 		elFormItem: FormItem
 	},
+	created(){
+		// this.getInitData();
+		// 报价单
+		this.getPriceData();
+	},
 	data() {
 		return {
+			// 订单详情头部
+			orderDetail: {
+				realName: "黄启炜",
+				apState: 1,
+				rIDs: "广州市,北京市,重庆市",
+				cName: "新光百货",
+				apID: 1,
+				apcTime: "May 9, 2018 6:29:47 PM",
+				cuName: "赵爽",
+				bTitle: "新光百货",
+				apTotal: 465200,
+				apName: "第一个投放方案",
+				apQC: "QC201803284401001",
+				pdTotal: 0,
+				pdSendFee: 0,
+				pdOtherFee: 0
+			},
+			// 报价单详情
+			priceSheet: [],
+
 			isShow1: false,
 			isShow2: false,
 			isShow3: false,
@@ -2849,6 +2884,154 @@ export default {
 		};
 	},
 	methods: {
+		// 获取选点排期列表数据
+		getInitData(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('plan_apid');
+			let info = {
+				uid: uid,
+				apid: apid
+			};
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			api.postApi('/GetFanganInfo', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					this.orderDetail = res.data;
+					this.orderDetail.apTotal = priceFormat(res.data.apTotal);
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res => {
+				console.log(res);
+			});
+		},
+		// 获取三个费用价格(报价单)
+		getPriceData(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('order_apid');
+			let info = {
+				uid: uid,
+				apid: apid
+			};
+			// 获取各个城市的刊例价
+			// uid         int【必填】     当前账户UserID
+			// api.getApi('/GetAdPrice', {uid: uid}).then(res =>{
+			// 	console.log(res.data);
+			// 	let adPrice = res.data;
+			// 	// uid         int【必填】     当前账户UserID
+			// 	// apid        int             公司对应方案apID
+			// 	api.getApi('/GetAPD', info).then(res => {
+			// 		console.log(res.data);
+			// 		if(!res.data.SysCode){
+
+			// 			let plandata = res.data;
+						let ADPriceList = [
+							{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
+							{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
+							{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
+							{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
+							{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
+						let adPrice = ADPriceList;
+						let plandata = [
+							{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+							{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+							{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+						];
+						
+						let pdTotal = 0;
+						let pdSendFee = 0;
+						let pdOtherFee = 0;
+						let arr = [];
+						for(let price of plandata){
+							pdTotal+= price.pdTotal;
+							pdSendFee+= price.pdSendFee;
+							pdOtherFee+= price.pdOtherFee;
+							
+							let obj = {
+								"pdID":price.pdID,
+								"apID":price.apID,
+								"rID":price.rID,
+								"city": '',
+								"muID":price.muID,
+								"adPrice":0,
+								// 投放量
+								"pdDays":price.pdDays,
+								"pdStar":price.pdStar,
+								"pdEnd":price.pdEnd,
+								// 赠送
+								"pdFreeNum":price.pdFreeNum,
+								// 广告费用
+								"pdAdFee":price.pdAdFee/100,
+								// 广告画数量
+								"pdNum":price.pdNum,
+								// 制作费
+								"pdAdMake":price.pdAdMake/100,
+								// 现金结算
+								"pdTotal":price.pdTotal/100,
+								// 资源置换
+								"pdSendFee":price.pdSendFee/100,
+								// 其他费用
+								"pdOtherFee":price.pdOtherFee/100,
+								"allprice": 0
+							};
+							obj.allprice = (price.pdTotal+price.pdSendFee+price.pdOtherFee)/100;
+							obj.city = areaToText.toText(obj.rID).city;
+							arr.push(obj);
+						}
+						this.$set(this.orderDetail, 'pdTotal', this.priceFormat(pdTotal/100));
+						this.$set(this.orderDetail, 'pdSendFee', this.priceFormat(pdSendFee/100));
+						this.$set(this.orderDetail, 'pdOtherFee', this.priceFormat(pdOtherFee/100));
+						// 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
+						for(let ta of arr){
+							for(let ad of adPrice){
+								if(ad.rID == ta.rID){
+									ta.adPrice = ad.adPrice/(100*2); // 刊例价(面/周)
+									let onedayPrice = ta.adPrice/7;  
+									ta.discount = Math.round(ta.pdAdFee/( onedayPrice * ta.pdDays )*10000) / 100; // 广告费折扣百分比
+									ta.ADMakeDiscount = Math.round( ta.pdAdMake /(100*ta.pdNum) *10000) / 100; // 制作费折扣百分比
+									break;
+								}
+							}
+						}
+						this.priceSheet = arr;
+					
+			// 		}else{
+			// 			Message.warning(res.data.MSG);
+			// 		}
+			// 	}).catch(res => {
+			// 		console.log(res);
+			// 	});
+				
+			// }).catch(res =>{
+			// 	console.log(res);
+			// });
+
+		},
+		// 状态转换成文本
+		stateToText(val){
+			let state = [
+				{text: '已完成', state: 0},
+				{text: '进行中', state: 1},
+				{text: '未投放', state: 2},
+				{text: '投放中', state: 3},
+				{text: '强行结束', state: 5}
+			];
+			for(let data of state ){
+				if(val == data.state){
+					return data.text;
+				}
+			}
+		},
+		// 时间格式规范
+		formatTime(val){
+			return dateFormat.date(val);
+		},
+		// 价格加上逗号
+		priceFormat(price){
+			console.log('price', price);
+			return commaFormat.init(price);
+		},
 		show2H5() {
 			this.$router.push('/upReport')
 		},
