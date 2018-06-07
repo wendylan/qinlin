@@ -99,20 +99,18 @@
 												>
 												</el-table-column>
 												<el-table-column
+													prop="city"
 													label="城市"
 													min-width="6%"
 													:filters="filterCityData"
 													:filter-method="filterCity"
 												>
-													<template slot-scope="scope">
-														<span>{{cityToText(scope.row.rID)}}</span>
-													</template>
 												</el-table-column>
 												<el-table-column
 													prop="rName"
 													label="区域"
 													min-width="7.4%"
-													:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
+													:filters="filtersArea"
 													:filter-method="filterOrigin"
 												>
 												</el-table-column>
@@ -241,7 +239,7 @@ import areaToText from '../../commonFun/areaToText_new.js';
 // 价格格式化
 import commaFormat from '../../commonFun/commaFormat.js';
 // 筛选过滤
-// import filterFormat from '../../commonFun/filterTableData.js';
+import filterFormat from '../../commonFun/filterTableData.js';
 import { Table, TableColumn, Tabs, TabPane, Button, Message } from 'element-ui';
 export default {
 	name: "planDetail",
@@ -277,6 +275,8 @@ export default {
 			priceSheet: [],
 			// 城市过滤结果
 			filterCityData: [],
+			// 地区过滤结果
+			filtersArea: [],
 			//监播备注
 			remark: '',
 			changeRemark: false,
@@ -557,18 +557,35 @@ export default {
 				apid: 2
 			};
 
+			// 虚拟数据情况
 			this.setpointArr = [
 				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
 				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
 				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
 				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"}
 			];
+			for(let data of this.setpointArr){
+				// data.city = this.cityToText(data.rID);
+				this.$set(data, 'city', areaToText.toText(data.rID).city);
+			}
+			this.filterCityData = filterFormat(this.setpointArr, 'city');
+			this.filtersArea = filterFormat(this.setpointArr, 'rName');
+
+			// 接口真实情况
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
 			api.getApi('/GetADB', info).then(res =>{
 				console.log(res.data);
 				if(!res.data.SysCode){
 					this.setpointArr = res.data;
+					// 城市中文名称
+					for(let data of this.setpointArr){
+						// data.city = this.cityToText(data.rID);
+						this.$set(data, 'city', areaToText.toText(data.rID).city);
+					}
+					// 城市筛选过滤
+					this.filterCityData = filterFormat(this.setpointArr, 'city');
+					this.filtersArea = filterFormat(this.setpointArr, 'rName');
 				}else{
 					Message.warning(res.data.MSG);
 				}
@@ -714,7 +731,7 @@ export default {
 			return row.city === value;
 		},
 		filterOrigin(value, row) {
-			return row.origin === value;
+			return row.rName === value;
 		},
 		filterSchedules(value, row) {
 			return row.schedules === value;
