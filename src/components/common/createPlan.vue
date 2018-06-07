@@ -31,8 +31,10 @@
                   >
                   </el-option>
                 </el-select>-->
+                <el-input  v-if="isBD" v-model="BDData.realName"></el-input>
                 <el-autocomplete
-                  v-model="BDData.realName"
+                  v-else
+                  v-model="planForm.ownerSales"
                   :fetch-suggestions="querySearchAsync"
                   placeholder="请输入账号"
                 >
@@ -683,10 +685,10 @@
       elInputNumber: InputNumber,
     },
     data() {
-      var validateSales=(rule, value, callback)=>{
+      var validateSales = (rule, value, callback)=>{
         if(value){
-          if (this.BDData.realName !== '' && this.BDData.realName !== null){
-            callback(new Error('请输入正确的账号并进行选择'));
+          if (this.BDData.uid === 0){
+            callback(new Error('请输入正确的账号'));
           }else{
             callback();
           }
@@ -695,6 +697,8 @@
         }
       };
       return {
+        isBD: true,                  // 判断登录用户是否为销售
+        username: '',                   // 获取登录用户的userName
         loading: false,             // 加载所属销售
         cType: ['社区', '写字楼'],
         shopXY: {x: '', y: ''},     // 动画起始坐标
@@ -731,7 +735,7 @@
         cash: 0,          // 现金结算
         zyzh: 0,          // 资源置换
         other: 0,         // 其他费用
-        ownerSales: { value:'',}, // step1所属销售
+        // ownerSales: { value:'',}, // step1所属销售
         customer: [],  // step1公司客户
         companyName: [], //step1公司名称
         cName: '',         // 选中公司名称
@@ -793,8 +797,8 @@
             {required: true, message: '请选择联系人', trigger: 'change'},
           ],
           ownerSales: [
-            // {required: true, message: '请输入账号', trigger: 'blur'},
-            { validator: validateSales, trigger:'change'},
+            { required: true, message: '请输入账号', trigger: 'blur'},
+            { validator: validateSales, trigger:'blur'},
           ],
           companyName: [
             {required: true, message: '请选择公司名称', trigger: 'change'},
@@ -835,13 +839,13 @@
         selectOnAll: false,   // 默认selecton
         FAData:'',            // 创建方后台返回的数据
         timeout:  null,
-        BDData:{uid:'',realName:''}
+        BDData:{uid: 0,realName:''}
       };
     },
     created: function () { },
     computed: {},
     mounted() {
-      this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+      this.getsessionData()   // 获取session中的数据
       //  this.getAdList()     // 获取选点列表
       // this.Get_cName()     // 获取公司名称列表
       //  this.getAreaFun()    // 获取城市区域
@@ -890,24 +894,37 @@
       })
     },
     methods: {
+      getsessionData(){
+        this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+        if(this.sessionData.uType === 'BD'){
+          this.BDData.realName = sessionStorage.getItem('username')
+          this.isBD = true
+        }else{
+          this.isBD = false
+        }
+      },
       querySearchAsync(queryString, callback){
         let uid = this.sessionData.uID
         if(queryString){
           api.postApi('/CheckUserName', {uid: uid, sname: queryString}).then(res => {
-            if(res.data){
-              // res.data.value  = res.data.realName;
-              this.BDData.realName = queryString;
+            console.log('CheckUserName',res)
+            console.log('媒介销售信息',this.BDData)
+            if(res.data !== null){
               this.BDData.uid = res.data.uID
-              if( this.BDData.realName !== '' &&  this.BDData.realName !== null){
+              console.log('CheckUserName数据包',res.data)
+              // if( this.BDData.realName !== '' &&  this.BDData.realName !== null){
+                console.log('2')
+                this.BDData.realName = queryString;
+                this.planForm.ownerSales = queryString
                 this.Get_cName()
-              }
-              // this.planForm.ownerSales = res.data.realName
-              // this.BDData.uID = res.data.uID;
+              // }
               var results = [res.data];
               clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
                 callback(results);
               }, 1000);
+            }else{
+              this.BDData.uid = 0
             }
           });
         }
@@ -962,7 +979,7 @@
            this.ownerBU = ownerList // 联系人列表
          })
          // 公司信息所在城市
-         let uWho = '110100,310100,440100'//userInfo.uWho
+         let uWho =  this.sessionData.uWho // '110100,310100,440100'
          let uWhoArr = uWho.split(',') // ['440100','110100','330100']
          let cityList = []
          for (let j = 0; j < uWhoArr.length; j++) {

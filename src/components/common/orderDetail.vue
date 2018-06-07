@@ -82,21 +82,21 @@
 							</h4>
 							<div style="display:inline-block;margin-left: 30px;margin-top: 20px;" class="search-wrap">
 								<span>
-									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="init()">
 										<el-select v-model="selectRecName" slot="prepend" placeholder="请选择">
 											<el-option label="资源名称" value="1"></el-option>
 										</el-select>
 									</el-input>
 								</span>
 								<span>
-									<el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+									<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
 								</span>
 							</div>
 
 							<div class="table_wrap">
 								<el-table
 									border
-									:data="orderList"
+									:data="currentSetpoint"
 									style="width: 100%"
 									:default-sort="{prop: 'recName', order: 'descending'}"
 								>
@@ -104,60 +104,55 @@
 										<template slot-scope="props">
 											<el-form label-position="left" inline class="demo-table-expand">
 												<el-form-item label="商圈：">
-													<span>{{ props.row.businessOrigin}}</span>
+													<span>{{ props.row.tradingArea}}</span>
 												</el-form-item>
 												<el-form-item label="楼栋数量：">
-													<span>{{ props.row.buildNum }}</span>
+													<span>{{ props.row.fNum }}</span>
 												</el-form-item>
 												<el-form-item label="资产编号：">
-													<span>{{ props.row.assetID }}</span>
+													<span>{{ props.row.assetTag }}</span>
 												</el-form-item>
 												<el-form-item label="入住年份：">
-													<span>{{ props.row.liveYear }}</span>
+													<span>{{ props.row.chDay }}</span>
 												</el-form-item>
 												<el-form-item label="广告限制：">
-													<span>{{ props.row.adLimit }}</span>
+													<span>{{ props.row.notPush }}</span>
 												</el-form-item>
 											</el-form>
 										</template>
 									</el-table-column>
 
-									<!-- <el-table-column
-										label="资源名称"
-										min-width="16.1%"
-										prop="recName"
-										:filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
-										:filter-method="filterRecName"
-									> -->
 									<el-table-column
 										label="资源名称"
 										min-width="16.1%"
-										prop="recName"
+										prop="resName"
 									>
 									</el-table-column>
 									<el-table-column
-										prop="mediaName"
+										prop="mTitle"
 										label="媒体名称"
 										min-width="10.3%"
 										class="tar"
 									>
 									</el-table-column>
 									<el-table-column
-										prop="putAB"
+										prop="asLab"
 										label="投放面"
 										min-width="8.8%"
 									>
 									</el-table-column>
 									<el-table-column
-										prop="city"
 										label="城市"
 										min-width="6%"
-										:filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
+										:filters="filterCityData"
 										:filter-method="filterCity"
 									>
+										<template slot-scope="scope">
+											<span>{{cityToText(scope.row.rID)}}</span>
+										</template>
 									</el-table-column>
 									<el-table-column
-										prop="origin"
+										prop="rName"
 										label="区域"
 										min-width="7.4%"
 										:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
@@ -165,23 +160,25 @@
 									>
 									</el-table-column>
 									<el-table-column
-										prop="buildType"
+										prop="cType"
 										label="楼盘类型"
 										min-width="8.8%"
 									>
 									</el-table-column>
 									<el-table-column
-										prop="houseNum"
+										prop="hNum"
 										label="小区户数"
 										min-width="7.3%"
 										class="tar"
 									>
 									</el-table-column>
 									<el-table-column
-										prop="buildPrice"
 										label="楼盘价格"
 										min-width="7.3%"
 									>
+										<template slot-scope="scope">
+											<span>{{priceFormat(scope.row.hPrice/100)}}</span>
+										</template>
 									</el-table-column>
 									<el-table-column
 										prop="schedules"
@@ -190,21 +187,11 @@
 										:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
 										:filter-method="filterSchedules"
 									>
-									</el-table-column>
-									<el-table-column
-										label="操作"
-										min-width="6.3%"
-										v-if="showHandel"
-									>
 										<template slot-scope="scope">
-											<el-button type="text" @click="confirmHandel">中止</el-button>
+											<span>{{scope.row.pbStar +"-"+ scope.row.pbEnd}}</span>
 										</template>
 									</el-table-column>
 								</el-table>
-								<div class="content_bottom_btn" v-if="!showBtn">
-									<el-button type="primary" @click="saveChangePoint">保存</el-button>
-									<el-button type="default" @click="cancelChangePoint">取消</el-button>
-								</div>
 							</div>
 							<!--添加点位对话框-->
 							<el-dialog
@@ -2181,11 +2168,6 @@ export default {
 		elForm: Form,
 		elFormItem: FormItem
 	},
-	created(){
-		// this.getInitData();
-		// 报价单
-		this.getPriceData();
-	},
 	data() {
 		return {
 			// 订单详情头部
@@ -2205,6 +2187,9 @@ export default {
 				pdSendFee: 0,
 				pdOtherFee: 0
 			},
+			// 选点排期
+			setpointArr: [],
+			currentSetpoint: [],
 			// 报价单详情
 			priceSheet: [],
 
@@ -2716,7 +2701,7 @@ export default {
 			showHandel: false,
 			//选点排期资源名称搜索
 			keyword: "",
-			selectRecName: '资源名称',
+			selectRecName: '1',
 			//物料信息
 			materialInfo: [
 			{
@@ -2883,6 +2868,13 @@ export default {
 			allPic: '',
 		};
 	},
+	created(){
+		// this.getInitData();
+		// 选点排期
+		this.getSetPoint();
+		// 报价单
+		this.getPriceData();
+	},
 	methods: {
 		// 获取选点排期列表数据
 		getInitData(){
@@ -2903,6 +2895,38 @@ export default {
 					Message.warning(res.data.MSG);
 				}
 			}).catch(res => {
+				console.log(res);
+			});
+		},
+		// 获取选点排期
+		getSetPoint(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('order_apid');
+			let info = {
+				uid: uid,
+				apid: apid
+				// apid: 2
+			};
+
+			this.setpointArr = [
+				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
+				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
+				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
+				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"}
+			];
+			this.currentSetpoint = this.setpointArr;
+			
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			api.getApi('/GetADB', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					this.setpointArr = res.data;
+					this.currentSetpoint = this.setpointArr;
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res =>{
 				console.log(res);
 			});
 		},
@@ -3008,6 +3032,10 @@ export default {
 			// });
 
 		},
+		// 城市转换为中文
+		cityToText(rid){
+			return areaToText.toText(rid).city;
+		},
 		// 状态转换成文本
 		stateToText(val){
 			let state = [
@@ -3031,6 +3059,33 @@ export default {
 		priceFormat(price){
 			console.log('price', price);
 			return commaFormat.init(price);
+		},
+		// 当搜索框为空的时候进行重置显示
+		init(){
+			if(!this.keyword){
+				this.currentSetpoint = this.setpointArr;
+			}
+		},
+		// 搜索
+		search(){
+			// 账号，姓名
+			console.log(this.selectRecName);
+			console.log(this.keyword);
+			let select = this.selectRecName;
+			let keyword = this.keyword;
+			if(this.keyword){
+				let arr = [];
+				for(let data of this.setpointArr){
+					if(data.resName){
+						if((select=='1') && data.resName.includes(keyword)){
+							arr.push(data);
+						}
+					}
+				}
+				this.currentSetpoint = arr;
+				return;
+			}
+			this.currentSetpoint = this.setpointArr;
 		},
 		show2H5() {
 			this.$router.push('/upReport')

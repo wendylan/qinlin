@@ -147,6 +147,7 @@ export default {
 				} else if (userMsg.uType === 'MD') {
 					this.$router.push('/media')
 				} else if (userMsg.uType === 'BD') {
+          sessionStorage.setItem("username", name);   // 用户为销售时，存起username以便创建方案的时候使用
 					this.$router.push('/sale')
 				} else if (userMsg.uType ==='OP'){
 					this.$router.push('/operate')
@@ -361,6 +362,7 @@ export default {
   .login .loginType {
     width: 100%;
     text-align: center;
+    font-size: 16px;
   }
 
   .loginType li {

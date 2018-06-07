@@ -387,7 +387,7 @@ export default {
 		// 跳转到详情页面
 		ToDetail(apid){
 			console.log(apid);
-			sessionStorage.setItem('order_apid', apid);
+			sessionStorage.setItem('plan_apid', apid);
 			this.$router.push('./planDetail');
 		},
 		//确认框

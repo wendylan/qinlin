@@ -353,12 +353,12 @@ export default {
 				puid        int                 所属所属销售uID，当utype是AD时必填
 		accountForm: {account: '',realName: '',role: '',PermissionCity: '',boss: '',position:'',phone: '',division: '',email:'',},*/
 			let account = {realname:'',sname:'',utype:'',uwho:'', division:'',position:'',phone:'',email:'',rID: 440100,puid:''}
-			account.realname = actFrom.realName   // 姓名
+			account.realname = actFrom.realName                 // 姓名
 			account.sname = actFrom.account
-			account.utype = actFrom.role    // 用户类型：SM、OP、BD、MD、AD
-			account.uwho = actFrom.PermissionCity[0]   // 所属公司ID，新增客户这里必填
-			account.division = actFrom.division     // 职务
-			account.position = actFrom.position     // 部门
+			account.utype = actFrom.role                        // 用户类型：SM、OP、BD、MD、AD
+			account.uwho = actFrom.PermissionCity.join(',')   // 所属公司ID，新增客户这里必填
+			account.division = actFrom.division               // 职务
+			account.position = actFrom.position               // 部门
 			account.phone = actFrom.phone
 			account.email = actFrom.email
 			if(actFrom.puID){

@@ -579,7 +579,7 @@ export default {
 		// 获取三个费用价格(报价单)
 		getPriceData(){
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			let apid = sessionStorage.getItem('order_apid');
+			let apid = sessionStorage.getItem('plan_apid');
 			let info = {
 				uid: uid,
 				apid: apid
