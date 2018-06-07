@@ -769,8 +769,8 @@ export default {
     }
   }
 
-  /*1920*/
-  @media all and (min-width: 1920px) {
+  /*1900*/
+  @media all and (min-width: 1900px) {
 
     .mediaList_wrap {
       width: 1800px !important;

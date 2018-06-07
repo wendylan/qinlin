@@ -15,7 +15,7 @@
 						</h4>
 						<div class="handleBtn">
 							<el-button plain>导出</el-button>
-							<el-button type="primary">编辑</el-button>
+							<el-button type="primary" @click="edit()">编辑</el-button>
 						</div>
 					</div>
 					<div>
@@ -29,7 +29,7 @@
 									<li><span>投放城市：</span><em>{{planDetail.rIDs}}</em></li>
 									<li><span>资源置换：</span><em>¥ {{planDetail.pdSendFee}}</em></li>
 									<li><span>联系人：</span><em>{{planDetail.cuName}}</em></li>
-									<li><span>方案备注：</span><em>{{planDetail.remark||"无"}}</em></li>
+									<li><span>方案备注：</span><em>{{planDetail.apRemark||"无"}}</em></li>
 									<li><span>其他费用：</span><em>¥ {{planDetail.pdOtherFee}}</em></li>
 								</ul>
 							</div>
@@ -136,15 +136,12 @@
 													</template>
 												</el-table-column>
 												<el-table-column
-													prop="schedules"
+													prop="timeRange"
 													label="排期"
 													min-width="14.2%"
 													:filters="filtersData"
-													:filter-method="filterSchedules"
+													:filter-method="filterTimeRange"
 												>
-													<template slot-scope="scope">
-														<span>{{formatTime(scope.row.pbStar) +"-"+ formatTime(scope.row.pbEnd)}}</span>
-													</template>
 												</el-table-column>
 											</el-table>
 										</div>
@@ -162,7 +159,7 @@
 													<div class="tab-info">
 														<div class="pqxx">
 															<h4>排期信息</h4>
-															<p>{{item.pdStar+'-'+item.pdEnd}}</p>
+															<p>{{item.timeRange+" "+"("+item.pdDays+"面)"}}</p>
 															<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
 														</div>
 														<div class="price">
@@ -190,7 +187,7 @@
 														<div class="bottom">
 															<div class="bottom-detail">
 																<div class="remark">
-																<p>备注：无</p>
+																<p>备注：{{item.pdRemark||'无'}}</p>
 																</div>
 																<div class="bill-title-right">
 																<ul>
@@ -571,9 +568,13 @@ export default {
 			for(let data of this.setpointArr){
 				// data.city = this.cityToText(data.rID);
 				this.$set(data, 'city', areaToText.toText(data.rID).city);
+				let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+				this.$set(data, 'timeRange', time);
 			}
 			this.filterCityData = filterFormat(this.setpointArr, 'city');
 			this.filtersArea = filterFormat(this.setpointArr, 'rName');
+			this.filtersData = filterFormat(this.setpointArr, 'timeRange');
+			this.currentSetpoint = this.setpointArr;
 
 			// 接口真实情况
 			// uid         int【必填】     当前账户UserID
@@ -586,10 +587,14 @@ export default {
 					for(let data of this.setpointArr){
 						// data.city = this.cityToText(data.rID);
 						this.$set(data, 'city', areaToText.toText(data.rID).city);
+						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+						this.$set(data, 'timeRange', time);
 					}
 					// 城市筛选过滤
 					this.filterCityData = filterFormat(this.setpointArr, 'city');
 					this.filtersArea = filterFormat(this.setpointArr, 'rName');
+					this.filtersData = filterFormat(this.setpointArr, 'timeRange');
+					this.currentSetpoint = this.setpointArr;
 				}else{
 					Message.warning(res.data.MSG);
 				}
@@ -724,12 +729,16 @@ export default {
 		},
 		// 价格加上逗号
 		priceFormat(price){
-			console.log('price', price);
+			// console.log('price', price);
 			return commaFormat.init(price);
 		},
 		// 返回
 		goBack(){
 			this.$router.push('./planList');
+		},
+		// 编辑
+		edit(){
+			this.$router.push('./createPlan');
 		},
 		filterCity(value, row) {
 			return row.city === value;
@@ -737,8 +746,8 @@ export default {
 		filterOrigin(value, row) {
 			return row.rName === value;
 		},
-		filterSchedules(value, row) {
-			return row.schedules === value;
+		filterTimeRange(value, row) {
+			return row.timeRange === value;
 		},
 		tableRowClassName({row, rowIndex}) {
 			//状态行 根据状态判断
@@ -1281,7 +1290,7 @@ export default {
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
     .tab-info .price h4 {
       width: 94%;
     }

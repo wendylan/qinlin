@@ -2301,6 +2301,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /deep/ .el-table .el-table_1_column_3 .cell{
+    width: 95px;
+  }
 
   /*筛选*/
   /deep/ .el-table__column-filter-trigger {
@@ -2490,7 +2493,7 @@
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
 
     .mediaList_wrap {
       width: 1800px !important;

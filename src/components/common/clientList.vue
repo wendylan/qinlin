@@ -1,7 +1,7 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-      <p class="clearfix"><a href="#">客户管理</a></p>
+      <p class="clearfix"><a href="#" style="color: #999">客户管理</a></p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -609,6 +609,9 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /deep/ .el-table .el-table_1_column_1  .cell {
+    width: 80px;
+  }
   /deep/ .el-table .el-table_1_column_3  .cell {
     width: 102px;
   }
@@ -617,6 +620,9 @@ export default {
   }
   /deep/ .el-table .el-table_1_column_7  .cell {
     width: 145px;
+  }
+  /deep/ .el-table .el-table_1_column_9  .cell {
+    width: 99px;
   }
 
   /*筛选*/
@@ -698,7 +704,7 @@ export default {
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
 
     .mediaList_wrap {
       width: 1800px !important;
@@ -707,6 +713,22 @@ export default {
 
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1764px !important;
+    }
+
+    /deep/ .el-table .el-table_1_column_1  .cell {
+      width: 115px;
+    }
+    /deep/ .el-table .el-table_1_column_3  .cell {
+      width: 120px;
+    }
+    /deep/ .el-table .el-table_1_column_5  .cell {
+      width: 350px;
+    }
+    /deep/ .el-table .el-table_1_column_7  .cell {
+      width: 228px;
+    }
+    /deep/ .el-table .el-table_1_column_9  .cell {
+      width: 150px;
     }
   }
 </style>

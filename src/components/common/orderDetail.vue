@@ -179,15 +179,12 @@
 										</template>
 									</el-table-column>
 									<el-table-column
-										prop="schedules"
+										prop="timeRange"
 										label="排期"
 										min-width="14.2%"
-										:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
-										:filter-method="filterSchedules"
+										:filters="filtersData"
+										:filter-method="filterTimeRange"
 									>
-										<template slot-scope="scope">
-											<span>{{scope.row.pbStar +"-"+ scope.row.pbEnd}}</span>
-										</template>
 									</el-table-column>
 								</el-table>
 							</div>
@@ -433,7 +430,7 @@
 										<div class="tab-info">
 											<div class="pqxx">
 												<h4>排期信息</h4>
-												<p>{{item.pdStar+'-'+item.pdEnd}}</p>
+												<p>{{item.timeRange+" "+"("+item.pdDays+"面)"}}</p>
 												<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
 											</div>
 											<div class="price">
@@ -2143,6 +2140,8 @@ import areaToText from '../../commonFun/areaToText_new.js';
 import commaFormat from '../../commonFun/commaFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
+// 时间格式化
+import dateFormat  from '../../commonFun/timeFormat.js';
 import { Table, TableColumn, Tabs, TabPane, Button, Upload, Card, Dialog, Checkbox, Select, Option, Input, Cascader, Progress, Pagination, Popover, Form, FormItem, MessageBox, Message } from 'element-ui';
 export default {
 	name: "orderDetail",
@@ -2194,6 +2193,8 @@ export default {
 			filterCityData: [],
 			// 地区过滤结果
 			filtersArea: [],
+			// 排期时间过滤
+			filtersData: [],
 
 			isShow1: false,
 			isShow2: false,
@@ -2920,9 +2921,12 @@ export default {
 			for(let data of this.setpointArr){
 				// data.city = this.cityToText(data.rID);
 				this.$set(data, 'city', areaToText.toText(data.rID).city);
+				let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+				this.$set(data, 'timeRange', time);
 			}
 			this.filterCityData = filterFormat(this.setpointArr, 'city');
 			this.filtersArea = filterFormat(this.setpointArr, 'rName');
+			this.filtersData = filterFormat(this.setpointArr, 'timeRange');
 			this.currentSetpoint = this.setpointArr;
 
 			// 接口真实情况
@@ -2936,10 +2940,13 @@ export default {
 					for(let data of this.setpointArr){
 						// data.city = this.cityToText(data.rID);
 						this.$set(data, 'city', areaToText.toText(data.rID).city);
+						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+						this.$set(data, 'timeRange', time);
 					}
 					// 城市筛选过滤
 					this.filterCityData = filterFormat(this.setpointArr, 'city');
 					this.filtersArea = filterFormat(this.setpointArr, 'rName');
+					this.filtersData = filterFormat(this.setpointArr, 'timeRange');
 					this.currentSetpoint = this.setpointArr;
 				}else{
 					Message.warning(res.data.MSG);
@@ -3071,11 +3078,11 @@ export default {
 		},
 		// 时间格式规范
 		formatTime(val){
-			return dateFormat.date(val);
+			return dateFormat.toDate(val, '.');
 		},
 		// 价格加上逗号
 		priceFormat(price){
-			console.log('price', price);
+			// console.log('price', price);
 			return commaFormat.init(price);
 		},
 		// 当搜索框为空的时候进行重置显示
@@ -3134,8 +3141,8 @@ export default {
 		filterOrigin(value, row) {
 			return row.origin === value;
 		},
-		filterSchedules(value, row) {
-			return row.schedules === value;
+		filterTimeRange(value, row) {
+			return row.timeRange === value;
 		},
 		//生成任务
 		makeMission() {
@@ -4517,7 +4524,7 @@ export default {
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
     .tab-info .price h4 {
       width: 94%;
     }

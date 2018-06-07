@@ -1536,7 +1536,7 @@
   }
 
   /*1920*/
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1900px) {
     .mediaMana_content_bottom .content_bottom_btn {
       position: absolute;
       bottom: -66px;

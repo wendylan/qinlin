@@ -551,7 +551,7 @@ export default {
     font-size: 14px;
     padding: 10px 10px;
     height: 34px;
-    line-height: 14px;
+    /*line-height: 14px;*/
   }
 
   /deep/ .el-table th > .cell.highlight {
@@ -646,7 +646,7 @@ export default {
 
   /deep/ .el-input__inner {
     height: 34px;
-    line-height: 34px;
+    /*line-height: 34px;*/
     /*position: relative;
     top: -1px;*/
   }
@@ -740,6 +740,17 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /deep/ .el-table .el-table_1_column_5 .cell{
+    width: 126px;
+  }
+
+  /deep/ .el-table .el-table_1_column_7 .cell{
+    width: 96px;
+  }
+
+  /deep/ .el-table .el-table_1_column_8 .cell{
+    width: 156px;
   }
 
   /*筛选*/
@@ -858,7 +869,7 @@ export default {
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
 
     .mediaList_wrap {
       width: 1800px !important;
@@ -867,6 +878,18 @@ export default {
 
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1764px;
+    }
+
+    /deep/ .el-table .el-table_1_column_5 .cell{
+      width: 195px;
+    }
+
+    /deep/ .el-table .el-table_1_column_7 .cell{
+      width: 105px;
+    }
+
+    /deep/ .el-table .el-table_1_column_8 .cell{
+      width: 235px;
     }
 
   }
