@@ -3191,7 +3191,7 @@
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .filter-input input {
       border: 1px solid #C2C2C2;
       border-radius: 4px;

@@ -2980,7 +2980,7 @@ export default {
 							{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
 							{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
 						];
-						
+
 						let pdTotal = 0;
 						let pdSendFee = 0;
 						let pdOtherFee = 0;
@@ -2989,7 +2989,7 @@ export default {
 							pdTotal+= price.pdTotal;
 							pdSendFee+= price.pdSendFee;
 							pdOtherFee+= price.pdOtherFee;
-							
+
 							let obj = {
 								"pdID":price.pdID,
 								"apID":price.apID,
@@ -3029,7 +3029,7 @@ export default {
 							for(let ad of adPrice){
 								if(ad.rID == ta.rID){
 									ta.adPrice = ad.adPrice/(100*2); // 刊例价(面/周)
-									let onedayPrice = ta.adPrice/7;  
+									let onedayPrice = ta.adPrice/7;
 									ta.discount = Math.round(ta.pdAdFee/( onedayPrice * ta.pdDays )*10000) / 100; // 广告费折扣百分比
 									ta.ADMakeDiscount = Math.round( ta.pdAdMake /(100*ta.pdNum) *10000) / 100; // 制作费折扣百分比
 									break;
@@ -3037,14 +3037,14 @@ export default {
 							}
 						}
 						this.priceSheet = arr;
-					
+
 			// 		}else{
 			// 			Message.warning(res.data.MSG);
 			// 		}
 			// 	}).catch(res => {
 			// 		console.log(res);
 			// 	});
-				
+
 			// }).catch(res =>{
 			// 	console.log(res);
 			// });
@@ -4500,7 +4500,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .tab-info .price h4 {
       width: 92%;
     }

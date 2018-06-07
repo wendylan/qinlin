@@ -270,7 +270,11 @@ export default {
 								// }, Number(uWhoArr[i]));
 
 								let res = areaToText.toText(Number(uWhoArr[i])).city
-								result = result +'/'+res;
+								if(uWhoArr.length >1){
+									result = result +'/'+res;
+								}else{
+									result = res;
+								}
 								let cityObj = {
 									text: res,
 									value: res,
@@ -300,7 +304,7 @@ export default {
 		},
 		// 时间格式化
 		formatTime(time){
-			return dateFormat.date(time);
+			return dateFormat.toDate(time);
 		},
 		// 角色格式化
 		roleToText(role){
@@ -749,7 +753,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;

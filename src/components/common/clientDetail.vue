@@ -287,7 +287,7 @@ export default {
 
 
 /*1440*/
-@media all and (min-width: 1440px) {
+@media all and (min-width: 1420px) {
 	.ad_mediaInfo,.ad_ad{
 		width: 1320px;
 	}

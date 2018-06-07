@@ -812,7 +812,7 @@
 
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .mediaMana_content_top,.plan-panel{
       width: 1320px;
     }

@@ -1511,7 +1511,7 @@
   }
 
   /*1440*/
-  @media screen and (min-width: 1440px) {
+  @media screen and (min-width: 1420px) {
 
     /deep/ .lngNlat.RlngNlat.el-form-item {
       min-width: 15.13%;

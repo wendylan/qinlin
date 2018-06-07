@@ -139,11 +139,11 @@
 													prop="schedules"
 													label="排期"
 													min-width="14.2%"
-													:filters="[{text: '2017.08.30-2017.09.30', value: '2017.08.30-2017.09.30'}, {text: '2017.09.30', value: '2017.09.30'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
+													:filters="filtersData"
 													:filter-method="filterSchedules"
 												>
 													<template slot-scope="scope">
-														<span>{{scope.row.pbStar +"-"+ scope.row.pbEnd}}</span>
+														<span>{{formatTime(scope.row.pbStar) +"-"+ formatTime(scope.row.pbEnd)}}</span>
 													</template>
 												</el-table-column>
 											</el-table>
@@ -240,6 +240,8 @@ import areaToText from '../../commonFun/areaToText_new.js';
 import commaFormat from '../../commonFun/commaFormat.js';
 // 筛选过滤
 import filterFormat from '../../commonFun/filterTableData.js';
+// 时间格式化
+import dateFormat  from '../../commonFun/timeFormat.js';
 import { Table, TableColumn, Tabs, TabPane, Button, Message } from 'element-ui';
 export default {
 	name: "planDetail",
@@ -275,6 +277,8 @@ export default {
 			priceSheet: [],
 			// 城市过滤结果
 			filterCityData: [],
+			// 排期时间过滤
+			filtersData: [],
 			// 地区过滤结果
 			filtersArea: [],
 			//监播备注
@@ -625,7 +629,7 @@ export default {
 						// 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
 						// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
 						// ];
-						
+
 						let pdTotal = 0;
 						let pdSendFee = 0;
 						let pdOtherFee = 0;
@@ -634,7 +638,7 @@ export default {
 							pdTotal+= price.pdTotal;
 							pdSendFee+= price.pdSendFee;
 							pdOtherFee+= price.pdOtherFee;
-							
+
 							let obj = {
 								"pdID":price.pdID,
 								"apID":price.apID,
@@ -674,7 +678,7 @@ export default {
 							for(let ad of adPrice){
 								if(ad.rID == ta.rID){
 									ta.adPrice = ad.adPrice/(100*2); // 刊例价(面/周)
-									let onedayPrice = ta.adPrice/7;  
+									let onedayPrice = ta.adPrice/7;
 									ta.discount = Math.round(ta.pdAdFee/( onedayPrice * ta.pdDays )*10000) / 100; // 广告费折扣百分比
 									ta.ADMakeDiscount = Math.round( ta.pdAdMake /(100*ta.pdNum) *10000) / 100; // 制作费折扣百分比
 									break;
@@ -682,14 +686,14 @@ export default {
 							}
 						}
 						this.priceSheet = arr;
-					
+
 					}else{
 						Message.warning(res.data.MSG);
 					}
 				}).catch(res => {
 					console.log(res);
 				});
-				
+
 			}).catch(res =>{
 				console.log(res);
 			});
@@ -716,7 +720,7 @@ export default {
 		},
 		// 时间格式规范
 		formatTime(val){
-			return dateFormat.date(val);
+			return dateFormat.toDate(val, ".");
 		},
 		// 价格加上逗号
 		priceFormat(price){
@@ -1264,7 +1268,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .tab-info .price h4 {
       width: 92%;
     }

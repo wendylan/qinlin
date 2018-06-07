@@ -248,7 +248,7 @@ export default {
 		},
 		// 时间格式规范
 		formatTime(val){
-			return dateFormat.date(val);
+			return dateFormat.toDate(val);
 		},
 		// 价格加上逗号
 		priceFormat(price){
@@ -270,8 +270,8 @@ export default {
 				for(let data of this.orderList){
 					if(range && keyword){
 						if(
-							dateFormat.date(data.apcTime) >= range[0] &&
-							dateFormat.date(data.apcTime) <= range[1]
+							dateFormat.toDate(data.apcTime) >= range[0] &&
+							dateFormat.toDate(data.apcTime) <= range[1]
 						){
 							if(data.apName){
 								if((select == '1') && data.apName.includes(keyword) ){
@@ -291,8 +291,8 @@ export default {
 						}
 					}else if(range){
 						if(
-							dateFormat.date(data.apcTime) >= range[0] &&
-							dateFormat.date(data.apcTime) <= range[1] 
+							dateFormat.toDate(data.apcTime) >= range[0] &&
+							dateFormat.toDate(data.apcTime) <= range[1] 
 						){
 							arr.push(data);
 						}
@@ -598,10 +598,14 @@ export default {
   }
 
   /deep/ .el-table td {
-    padding: 8px 0;
+    padding: 6px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
+  /deep/ .el-table td .cell{
+    display: flex;
+  }
+
 
   /deep/ .el-table--border {
     border-radius: 4px;

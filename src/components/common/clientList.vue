@@ -202,8 +202,8 @@ export default {
 				for(let data of this.planList){
 					if(range && keyword){
 						if(
-							dateFormat.date(data.joinTime) >= range[0] &&
-							dateFormat.date(data.joinTime) <= range[1]
+							dateFormat.toDate(data.joinTime) >= range[0] &&
+							dateFormat.toDate(data.joinTime) <= range[1]
 						){
 							if(data.cBrand){
 								if((select == '1') && data.cBrand.includes(keyword) ){
@@ -223,8 +223,8 @@ export default {
 						}
 					}else if(range){
 						if(
-							dateFormat.date(data.joinTime) >= range[0] &&
-							dateFormat.date(data.joinTime) <= range[1]
+							dateFormat.toDate(data.joinTime) >= range[0] &&
+							dateFormat.toDate(data.joinTime) <= range[1]
 						){
 							arr.push(data);
 						}
@@ -254,7 +254,7 @@ export default {
 		},
 		// 时间格式化
 		formatTime(time){
-			return dateFormat.date(time);
+			return dateFormat.toDate(time);
 		},
 		// 新建按钮
 		newClient(){
@@ -681,7 +681,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;

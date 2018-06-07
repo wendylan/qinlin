@@ -2464,7 +2464,7 @@
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;

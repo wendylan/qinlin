@@ -688,10 +688,14 @@ export default {
   }
 
   /deep/ .el-table td {
-    padding: 8px 0;
+    padding: 6px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
+  /deep/ .el-table td .cell{
+    display: flex;
+  }
+
 
   /deep/ .el-table--border {
     border-radius: 4px;
@@ -836,7 +840,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;

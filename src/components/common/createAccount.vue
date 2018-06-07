@@ -657,7 +657,7 @@ export default {
     height: 672px;
   }
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .bottom{
       height: 802px;
     }
