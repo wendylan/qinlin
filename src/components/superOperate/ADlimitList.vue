@@ -391,7 +391,7 @@ export default {
 
   }
   /deep/ .el-table td{
-    padding: 4px 0;
+    padding: 10px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
@@ -487,7 +487,7 @@ export default {
 
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
     .ad_mediaDetail_nav p {
       padding-left: 60px;
     }
@@ -503,7 +503,7 @@ export default {
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
 
 
     .mediaList_wrap{

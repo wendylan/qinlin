@@ -292,7 +292,7 @@ export default {
 					}else if(range){
 						if(
 							dateFormat.toDate(data.apcTime) >= range[0] &&
-							dateFormat.toDate(data.apcTime) <= range[1] 
+							dateFormat.toDate(data.apcTime) <= range[1]
 						){
 							arr.push(data);
 						}
@@ -504,9 +504,10 @@ export default {
   }
   .input-with-select /deep/ .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    /*line-height: 14px;*/
+    vertical-align: middle;
   }
 
   /*日期控件*/
@@ -518,7 +519,15 @@ export default {
   /deep/ .el-input__inner {
     width: 260px;
     height: 34px;
+  }
 
+  /deep/ .el-range-input{
+    font-size: 14px;
+    padding: 10px 10px;
+    height: 32px;
+    line-height: 14px;
+    box-sizing: border-box;
+    /*vertical-align: middle;*/
   }
 
   /deep/ .el-date-editor .el-range__icon {
@@ -656,6 +665,10 @@ export default {
     white-space: nowrap;
   }
 
+  /deep/ .el-table__row td:nth-child(7) .cell {
+    width: 90px;
+  }
+
   /*筛选*/
   /deep/ .el-table__column-filter-trigger {
     margin-left: 10px;
@@ -726,7 +739,7 @@ export default {
   }
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
     .ad_mediaDetail_nav p {
       padding-left: 60px;

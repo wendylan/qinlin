@@ -1958,15 +1958,17 @@
   /*搜索到的图片列表*/
   .input-with-select /deep/ .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    /*line-height: 14px;*/
+    vertical-align: middle;
   }
   /deep/ .plan-select .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    /*line-height: 14px;*/
+    vertical-align: middle;;
   }
 
   .find {
@@ -2417,11 +2419,7 @@
     border-radius: 4px;
   }
 
-  /deep/ .el-input__inner {
-    height: 34px;
-    /*position: relative;
-    top: -1px;*/
-  }
+
 
   /*按钮*/
   /deep/ .el-button--default:focus, .el-button--default:hover {

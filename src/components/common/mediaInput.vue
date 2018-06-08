@@ -1298,6 +1298,7 @@
     width: 240px;
     height: 34px;
     text-align: left;
+    line-height: 35px;
   }
 
   /*计数器*/

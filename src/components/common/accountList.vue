@@ -449,15 +449,17 @@ export default {
 
   .input-with-select /deep/ .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    line-height: 34px;
+    /*vertical-align: middle;*/
   }
   /deep/ .plan-select .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    line-height: 34px;
+    /*vertical-align: middle;*/
   }
 
 

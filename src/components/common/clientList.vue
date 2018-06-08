@@ -357,9 +357,10 @@ export default {
 
   .input-with-select /deep/ .el-input__inner{
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    line-height: 19px;
+    /*vertical-align: middle;*/
   }
 
   .typeBox p {
@@ -396,7 +397,7 @@ export default {
   /deep/ .el-input__inner {
     width: 260px;
     height: 34px;
-    line-height: 34px;
+    /*line-height: 34px;*/
   }
 
 
@@ -542,14 +543,6 @@ export default {
     border-radius: 4px;
   }
 
-  /deep/ .el-input__inner {
-    height: 34px;
-    /*position: relative;
-    top: -1px;*/
-  }
-
-
-
 
   /*表格*/
 
@@ -609,20 +602,20 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /deep/ .el-table .el-table_1_column_1  .cell {
+  /deep/ .el-table__row td:nth-child(1)  .cell {
     width: 80px;
   }
-  /deep/ .el-table .el-table_1_column_3  .cell {
-    width: 102px;
+  /deep/ .el-table__row td:nth-child(3)  .cell {
+    width: 100px;
   }
-  /deep/ .el-table .el-table_1_column_5  .cell {
-    width: 200px;
+  /deep/ .el-table__row td:nth-child(5)  .cell {
+    width: 247px;
   }
-  /deep/ .el-table .el-table_1_column_7  .cell {
+  /deep/ .el-table__row td:nth-child(7)  .cell {
     width: 145px;
   }
-  /deep/ .el-table .el-table_1_column_9  .cell {
-    width: 99px;
+  /deep/ .el-table__row td:nth-child(9)  .cell {
+    width: 108px;
   }
 
   /*筛选*/
@@ -715,19 +708,19 @@ export default {
       width: 1764px !important;
     }
 
-    /deep/ .el-table .el-table_1_column_1  .cell {
+    /deep/ .el-table__row td:nth-child(1) .cell {
       width: 115px;
     }
-    /deep/ .el-table .el-table_1_column_3  .cell {
+    /deep/ .el-table__row td:nth-child(3)  .cell {
       width: 120px;
     }
-    /deep/ .el-table .el-table_1_column_5  .cell {
+    /deep/ .el-table__row td:nth-child(5)  .cell {
       width: 350px;
     }
-    /deep/ .el-table .el-table_1_column_7  .cell {
+    /deep/ .el-table__row td:nth-child(7)  .cell {
       width: 228px;
     }
-    /deep/ .el-table .el-table_1_column_9  .cell {
+    /deep/ .el-table__row td:nth-child(9)  .cell {
       width: 150px;
     }
   }

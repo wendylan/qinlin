@@ -154,7 +154,7 @@
 										label="区域"
 										min-width="7.4%"
 										:filters="filtersArea"
-										:filter-method="filterOrigin"
+										:filter-method="filterRName"
 									>
 									</el-table-column>
 									<el-table-column
@@ -430,7 +430,7 @@
 										<div class="tab-info">
 											<div class="pqxx">
 												<h4>排期信息</h4>
-												<p>{{item.timeRange+" "+"("+item.pdDays+"面)"}}</p>
+												<p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p>
 												<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
 											</div>
 											<div class="price">
@@ -488,13 +488,15 @@
 							<h4>物料信息</h4>
 							<div class="table_wrap">
 								<el-table
-								:data="materialInfo"
-								border
-								style="width: 100%">
+									:data="materialInfo"
+									border
+									style="width: 100%">
 								<el-table-column
-									prop="no"
 									label="序号"
 									min-width="5.9%">
+									<template slot-scope="scope">
+										<span>{{scope.$index+1}}</span>
+									</template>
 								</el-table-column>
 								<el-table-column
 									prop="adSize"
@@ -2466,234 +2468,6 @@ export default {
 			//修改合同号
 			changeCID: false,
 			planPanel: 'first',
-			//选点排期
-			orderList: [
-			{
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				putAB: 'A面',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}],
 			//选点排期标题
 			showTitle: false,
 			//选点排期按钮
@@ -2872,7 +2646,7 @@ export default {
 		};
 	},
 	created(){
-		// this.getInitData();
+		this.getInitData();
 		// 选点排期
 		this.getSetPoint();
 		// 报价单
@@ -2881,82 +2655,171 @@ export default {
 	methods: {
 		// 获取选点排期列表数据
 		getInitData(){
+			// 测试数据
+			let order = {
+				realName: "黄启炜",
+				apState: 1,
+				rIDs: "广州市,北京市,重庆市",
+				cName: "新光百货",
+				apID: 1,
+				apcTime: "May 9, 2018 6:29:47 PM",
+				cuName: "赵爽",
+				bTitle: "新光百货",
+				apTotal: 465200,
+				apName: "第一个投放方案",
+				apQC: "QC201803284401001",
+				pdTotal: 0,
+				pdSendFee: 0,
+				pdOtherFee: 0
+			};
+			order.apTotal = this.priceFormat(order.apTotal);
+			this.orderDetail = order;
+
+			// 真实数据
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			let apid = sessionStorage.getItem('plan_apid');
+			let apid = sessionStorage.getItem('order_apid');
 			let info = {
 				uid: uid,
 				apid: apid
 			};
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
-			api.postApi('/GetFanganInfo', info).then(res =>{
-				console.log(res.data);
-				if(!res.data.SysCode){
-					this.orderDetail = res.data;
-					this.orderDetail.apTotal = priceFormat(res.data.apTotal);
-				}else{
-					Message.warning(res.data.MSG);
-				}
-			}).catch(res => {
-				console.log(res);
-			});
+			// api.postApi('/GetFanganInfo', info).then(res =>{
+			// 	console.log(res.data);
+			// 	if(!res.data.SysCode){
+			// 		let info = res.data;
+			// 		if(info.apTotal){
+			// 			info.apTotal = this.priceFormat(info.apTotal);
+			// 		}
+			// 		this.orderDetail = info;
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res => {
+			// 	console.log(res);
+			// });
 		},
 		// 获取选点排期
 		getSetPoint(){
+			// 测试数据
+			let testInfo = [
+				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: "", pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018", adSize: "1181*841", adViewSize: "118*84"},
+				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
+				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
+				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"}
+			];
+
+			let arr = [];
+			// 组装数据
+			for(let data of testInfo){
+				// 城市中文名称
+				// this.$set(data, 'city', areaToText.toText(data.rID).city);
+				data.city = areaToText.toText(data.rID).city;
+				let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+				data.timeRange = time;
+				// 物料信息
+				if(!arr.length){
+					arr.push({
+						adSize: data.adSize,
+						visualPic: data.adViewSize,
+						resolution: '150dpi',
+						colorMode: 'CMYK',
+						photoFormat: 'JPG/TIF/AI/PSD/CDR',
+						pointNum: 1
+					});
+				}else{
+					for(let test of arr){
+						if((data.adSize != test.adSize)&& (data.adViewSize != test.visualPic)){
+							arr.push({
+								adSize: data.adSize,
+								visualPic: data.adViewSize,
+								resolution: '150dpi',
+								colorMode: 'CMYK',
+								photoFormat: 'JPG/TIF/AI/PSD/CDR',
+								pointNum: 1
+							});
+						}else{
+							test.pointNum++;
+							
+						}
+					}
+				}
+			}
+			console.log('arr', arr);
+			// 城市筛选过滤
+			this.filterCityData = filterFormat(testInfo, 'city');
+			this.filtersArea = filterFormat(testInfo, 'rName');
+			this.filtersData = filterFormat(testInfo, 'timeRange');
+			this.setpointArr = testInfo;
+			this.currentSetpoint = this.setpointArr;
+			this.materialInfo = arr;
+
+			// 真实数据
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 			let apid = sessionStorage.getItem('order_apid');
 			let info = {
 				uid: uid,
-				// apid: apid
-				apid: 2
+				apid: apid
 			};
-
-			// 虚拟数据情况
-			this.setpointArr = [
-				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
-				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
-				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
-				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"}
-			];
-			for(let data of this.setpointArr){
-				// data.city = this.cityToText(data.rID);
-				this.$set(data, 'city', areaToText.toText(data.rID).city);
-				let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
-				this.$set(data, 'timeRange', time);
-			}
-			this.filterCityData = filterFormat(this.setpointArr, 'city');
-			this.filtersArea = filterFormat(this.setpointArr, 'rName');
-			this.filtersData = filterFormat(this.setpointArr, 'timeRange');
-			this.currentSetpoint = this.setpointArr;
-
-			// 接口真实情况
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
-			api.getApi('/GetADB', info).then(res =>{
-				console.log(res.data);
-				if(!res.data.SysCode){
-					this.setpointArr = res.data;
-					// 城市中文名称
-					for(let data of this.setpointArr){
-						// data.city = this.cityToText(data.rID);
-						this.$set(data, 'city', areaToText.toText(data.rID).city);
-						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
-						this.$set(data, 'timeRange', time);
-					}
-					// 城市筛选过滤
-					this.filterCityData = filterFormat(this.setpointArr, 'city');
-					this.filtersArea = filterFormat(this.setpointArr, 'rName');
-					this.filtersData = filterFormat(this.setpointArr, 'timeRange');
-					this.currentSetpoint = this.setpointArr;
-				}else{
-					Message.warning(res.data.MSG);
-				}
-			}).catch(res =>{
-				console.log(res);
-			});
+			// api.getApi('/GetADB', info).then(res =>{
+			// 	console.log(res.data);
+			// 	if(!res.data.SysCode){
+			// 		let info = res.data;
+			// 		let arr = [];
+			// 		// 组装数据
+			// 		for(let data of info){
+			// 			// 城市中文名称
+			// 			// this.$set(data, 'city', areaToText.toText(data.rID).city);
+			// 			data.city = areaToText.toText(data.rID).city;
+			// 			let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+			// 			data.timeRange = time;
+			// 			// this.$set(data, 'timeRange', time);
+			// 			let material = {
+			// 				adSize: '',
+			// 				visualPic: '',
+			// 				resolution: '150dpi',
+			// 				colorMode: 'CMYK',
+			// 				photoFormat: 'JPG/TIF/AI/PSD/CDR',
+			// 				pointNum: ''
+			// 			};
+			// 			material.adSize = data.adSize;
+			// 			material.visualPic = data.adViewSize;
+			// 			matrial.pointNum = 1;
+			// 			arr.push(material);
+			// 		}
+			// 		// 城市筛选过滤
+			// 		this.filterCityData = filterFormat(info, 'city');
+			// 		this.filtersArea = filterFormat(info, 'rName');
+			// 		this.filtersData = filterFormat(info, 'timeRange');
+			// 		this.setpointArr = info;
+			// 		this.currentSetpoint = this.setpointArr;
+			// 		this.materialInfo = arr;
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res =>{
+			// 	console.log(res);
+			// });
 		},
 		// 获取三个费用价格(报价单)
 		getPriceData(){
+			// 测试数据
+			// let ADPriceList = [
+			// 	{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
+			// 	{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
+			// 	{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
+			// 	{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
+			// 	{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
+			// let adPrice = ADPriceList;
+			// let plandata = [
+			// 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+			// 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+			// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+			// ];
+
+			// 真实数据
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 			let apid = sessionStorage.getItem('order_apid');
 			let info = {
@@ -2965,29 +2828,15 @@ export default {
 			};
 			// 获取各个城市的刊例价
 			// uid         int【必填】     当前账户UserID
-			// api.getApi('/GetAdPrice', {uid: uid}).then(res =>{
-			// 	console.log(res.data);
-			// 	let adPrice = res.data;
-			// 	// uid         int【必填】     当前账户UserID
-			// 	// apid        int             公司对应方案apID
-			// 	api.getApi('/GetAPD', info).then(res => {
-			// 		console.log(res.data);
-			// 		if(!res.data.SysCode){
-
-			// 			let plandata = res.data;
-						let ADPriceList = [
-							{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
-							{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
-							{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
-							{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-							{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
-						let adPrice = ADPriceList;
-						let plandata = [
-							{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-							{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-							{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-						];
-
+			api.getApi('/GetAdPrice', {uid: uid}).then(res =>{
+				console.log(res.data);
+				let adPrice = res.data;
+				// uid         int【必填】     当前账户UserID
+				// apid        int             公司对应方案apID
+				api.getApi('/GetAPD', info).then(res => {
+					console.log(res.data);
+					if(!res.data.SysCode){
+						let plandata = res.data;
 						let pdTotal = 0;
 						let pdSendFee = 0;
 						let pdOtherFee = 0;
@@ -3044,17 +2893,16 @@ export default {
 							}
 						}
 						this.priceSheet = arr;
+					}else{
+						Message.warning(res.data.MSG);
+					}
+				}).catch(res => {
+					console.log(res);
+				});
 
-			// 		}else{
-			// 			Message.warning(res.data.MSG);
-			// 		}
-			// 	}).catch(res => {
-			// 		console.log(res);
-			// 	});
-
-			// }).catch(res =>{
-			// 	console.log(res);
-			// });
+			}).catch(res =>{
+				console.log(res);
+			});
 
 		},
 		// 城市转换为中文
@@ -3138,8 +2986,8 @@ export default {
 		filterCity(value, row) {
 			return row.city === value;
 		},
-		filterOrigin(value, row) {
-			return row.origin === value;
+		filterRName(value, row) {
+			return row.rName === value;
 		},
 		filterTimeRange(value, row) {
 			return row.timeRange === value;
@@ -3216,8 +3064,8 @@ export default {
 		},
 		//中止操作确认操作对话框
 		confirmHandel(e) {
-			let recName = this.orderList[0].recName;
-			let schedules = this.orderList[0].schedules;
+			let recName = this.currentSetpoint[0].recName;
+			let schedules = this.currentSetpoint[0].schedules;
 			if (e.target.innerText === '中止') {
 			//中止
 			MessageBox.confirm('是否停止 ' + recName + ' 在 ' + schedules + ' 的投放？\n', '提示', {
@@ -3247,8 +3095,8 @@ export default {
 		},
 		/*  //取消中止
 			confirmCancelHandel(){
-			let recName = this.orderList[0].recName;
-			let schedules = this.orderList[0].schedules;
+			let recName = this.currentSetpoint[0].recName;
+			let schedules = this.currentSetpoint[0].schedules;
 			MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的投放？\n', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
@@ -3480,13 +3328,11 @@ export default {
   }
 
   /deep/ .el-input__inner {
-    height: 34px;
-    /*position: relative;
-    top: -1px;*/
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
-    line-height: 14px;
+    /*line-height: 14px;*/
+    vertical-align: middle;
   }
 
   /*按钮*/

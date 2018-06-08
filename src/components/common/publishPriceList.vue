@@ -483,7 +483,7 @@ export default {
 
   }
   /deep/ .el-table td{
-    padding: 4px 0;
+    padding: 10px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
