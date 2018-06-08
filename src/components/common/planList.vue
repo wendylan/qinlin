@@ -130,7 +130,7 @@
 							<template slot-scope="scope">
 								<el-dropdown size="small" split-button trigger="click">操作
 									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item @click.native.prevent="preload">预锁</el-dropdown-item>
+										<el-dropdown-item @click.native.prevent="preload(scope.row)">预锁</el-dropdown-item>
 										<el-dropdown-item @click.native.prevent="release(scope.row)">发布</el-dropdown-item>
 										<el-dropdown-item disabled="disabled">解除预锁</el-dropdown-item>
 										<el-dropdown-item @click="deleteOne(scope.row)">删除</el-dropdown-item>
@@ -145,10 +145,12 @@
 					title="请选择预锁城市"
 					:visible.sync="dialogVisible"
 					width="30%"
+					center
 				>
 					<el-checkbox-group v-model="cityChoose">
-						<el-checkbox label="广州市" checked border></el-checkbox>
-						<el-checkbox label="深圳市" border></el-checkbox>
+						<el-checkbox :label="item.rName" v-for="item of cityList" :key="item.value" border></el-checkbox>
+						<!-- <el-checkbox label="广州市" checked border></el-checkbox> -->
+						<!-- <el-checkbox label="深圳市" border></el-checkbox> -->
 					</el-checkbox-group>
 					<span slot="footer" class="dialog-footer">
 						<el-button @click="cancelLock">取 消</el-button>
@@ -162,8 +164,14 @@
 
 <script>
 import api  from '../../api/api.js';
+// 城市区域变成中文
+import areaToText from '../../commonFun/areaToText_new.js';
+// 价格格式化
+import commaFormat from '../../commonFun/commaFormat.js';
+// 筛选过滤
+import filterFormat from '../../commonFun/filterTableData.js';
+// 时间格式化
 import dateFormat  from '../../commonFun/timeFormat.js';
-import commaFormat  from '../../commonFun/commaFormat.js';
 import { Button, CheckboxGroup, Checkbox, Input, Dropdown, DropdownItem, DropdownMenu, Row, Table, TableColumn, DatePicker,Tooltip, Dialog, MessageBox, Message, Select, Option } from 'element-ui';
 export default {
     name: "projectList",
@@ -184,14 +192,19 @@ export default {
 		elSelect: Select,
 		elOption: Option
 	},
-	created(){
-		this.getPlanListData();
-		this.getRole();
-	},
+	
     data() {
 		return {
+			Info: {},
+			// 预锁弹出框
 			dialogVisible: false,
+			// 选择要预锁的城市
 			cityChoose: [],
+			// 预锁的城市列表
+			cityList: [
+				{rName: '广州市', rID: 440104},
+				{rName: '北京市', rID: 110100},
+			],
 			rangeDate: '',
 			keyword: '',
 			showNewBtn:true,
@@ -225,8 +238,20 @@ export default {
 				}
 			]
 		}
-    },
+	},
+	created(){
+		this.getUID();
+		this.getPlanListData();
+		this.getRole();
+	},
     methods: {
+		getUID(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			this.Info = {
+				uid: uid,
+				apid: ''
+			};
+		},
 		// 判断角色是否有新建按钮(媒介和销售有)
 		getRole(){
 			let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
@@ -378,7 +403,7 @@ export default {
 		// 发布
 		release(row){
 			console.log(row);
-			// 测试数据
+			// // 测试数据
 			// let uid = 3;
 			// let pdidArr = [
 			// 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
@@ -445,163 +470,157 @@ export default {
 			// 	}
 			// }
 			// console.log('resultArr', arr);
-
-
-			// 组装数据
-			// let arr = [];
-			// for(let pdData of pdidArr){
-			// 	if(!arr.length){
-			// 		arr.push({
-			// 			uid: uid,
-			// 			act: 'R',
-			// 			pdid: pdData.pdID,
-			// 			rID: pdData.rID,
-			// 			ds: pdData.pdStar,
-			// 			de: pdData.pdEnd,
-			// 			asidlist: ''
-			// 		});
-			// 	}else{
-			// 		for(let test of arr){
-			// 			if((pdData.pdID != test.pdid) || (pdData.pdStar != test.ds) || (pdData.pdEnd != test.de)){
-			// 				arr.push({
-			// 					uid: uid,
-			// 					act: 'R',
-			// 					pdid: pdData.pdID,
-			// 					rID: pdData.rID,
-			// 					ds: pdData.pdStar,
-			// 					de: pdData.pdEnd,
-			// 					asidlist: ''
-			// 				});
-			// 				break;
-			// 			}
+			// let result = [];
+			// let citySelect = [
+			// 	{value: 440100, rName: '广州市'},
+			// 	{value: 110100, rName: '北京市'},
+			// ];
+			// for(let arrData of arr){
+			// 	for(let city of citySelect){
+			// 		let arrRID = arrData.rID.toString().substring(0, 4);
+			// 		let cityRID = city.value.toString().substring(0, 4);
+			// 		if(arrRID == cityRID){
+			// 			result.push(arrData);
 			// 		}
 			// 	}
 			// }
-			// console.log('arr', arr);
-			// // 获取asid
-			// for(let result of arr){
-			// 	let as = '';
-			// 	for(let res of asid){
-			// 		let resultRID = result.rID.toString().substring(0, 4);
-			// 		let resRID = res.rID.toString().substring(0, 4);
-			// 		let start = dateFormat.toDate(res.pbStar);
-			// 		let end = dateFormat.toDate(res.pbEnd);
-			// 		// console.log(resultRID ==resRID, start == result.ds, end == result.de);
-			// 		if((resultRID ==resRID) && (start >= result.ds) && (end <= result.de)){
-			// 			as=res.asID+','+as;
-			// 		}
-			// 	}
-			// 	console.log('asid', as);
-			// 	result.asidlist = as;
-			// }
-			// console.log('resultArr', arr);
+			// console.log('resulttelajt', result);
+			// // this.ctrlFangan(result);
 
 			// 真实数据
-			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			let apid = row.apID;
-			let info = {
-				uid: uid,
-				apid: apid
-			};
-			// uid         int【必填】     当前账户UserID
-            // apid        int             公司对应方案apID
-			api.postApi('/GetFanganInfo', info).then(res =>{
-				console.log(res.data);
-				if(!res.data.SysCode){
-					let text = res.data;
-					let QCinfo = this.getContractNo(text.rID);
-					console.log(QCinfo);
-					MessageBox.prompt('合同编号:', {
-						confirmButtonText: '是',
-						cancelButtonText: '否',
-						inputValue: QCinfo
-					}).then(() => {
-						// 获取pdid
-						api.getApi('/GetAPD', info).then(res=>{
-							console.log(res.data);
-							let pdidArr = res.data;
-							// 获取asid列表GetADB
-							api.getApi('/GetADB', info).then(res=>{
-								console.log(res.data);
-								let asidArr = res.data;
-								// 组装数据
-								let arr = [];
-								// 组合asid
-								for(let asid of asidArr){
-									let start = dateFormat.toDate(asid.pbStar);
-									let end = dateFormat.toDate(asid.pbEnd);
-									if(!arr.length){
-										arr.push({
-											uid: uid,
-											act: 'R',
-											pdid: '',
-											rID: asid.rID,
-											ds: start,
-											de: end,
-											asidlist: asid.asID.toString()
-										});
-									}else{
-										for(let arrData of arr){
-											let asIdRID = asid.rID.toString().substring(0, 4);
-											let arrRID = arrData.rID.toString().substring(0, 4);
-											console.log('bool', arrRID != asIdRID, start != arrData.ds, end != arrData.de);
-											if((arrRID != asIdRID) || (start != arrData.ds) || (end != arrData.de)){
-												arr.push({
-													uid: uid,
-													act: 'R',
-													pdid: '',
-													rID: asid.rID,
-													ds: start,
-													de: end,
-													asidlist: asid.asID.toString()
-												});
-											}else{
-												arrData.asidlist = asid.asID+','+arrData.asidlist;
-											}
-												break;
-										}
-									}
-								}
+			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// let apid = row.apID;
+			// let info = {
+			// 	uid: uid,
+			// 	apid: apid
+			// };
 
-								console.log('arr', arr);
-								// 组合pdid
-								for(let arrData of arr ){
-									for(let pdData of pdidArr){
-										let pdDataRID = pdData.rID.toString().substring(0, 4);
-										let arrRID = arrData.rID.toString().substring(0, 4);
-										if( (pdDataRID == arrRID) && (arrData.ds >= pdData.pdStar) && (arrData.de <= pdData.pdEnd) ){
-											arrData.pdid = pdData.pdID;
-											break;
-										}
-									}
-								}
-								console.log('resultArr', arr);
-								// 循环发布
-								this.ctrlFangan(arr);
-								
-							}).catch(res=>{
-								console.log(res);
-							});
-						}).catch(res=>{
-							console.log(res);
-						});
+			// this.Info.apid = row.apID;
+			// let info = this.Info;
+			// // uid         int【必填】     当前账户UserID
+            // // apid        int             公司对应方案apID
+			// api.postApi('/GetFanganInfo', info).then(res =>{
+			// 	console.log(res.data);
+			// 	if(!res.data.SysCode){
+			// 		let text = res.data;
+			// 		let QCinfo = this.getContractNo(text.rID);
+			// 		console.log(QCinfo);
+			// 		MessageBox.prompt('合同编号:', {
+			// 			confirmButtonText: '是',
+			// 			cancelButtonText: '否',
+			// 			inputValue: QCinfo
+			// 		}).then(() => {
+			// 			// 组合数据并发布
+			// 			this.getDataOfSetPrice(info, 'R');
 						
-					}).catch(() => {
-						Message({
-							type: 'info',
-							message: '已取消操作'
-						})
-					})
+			// 		}).catch(() => {
+			// 			Message({
+			// 				type: 'info',
+			// 				message: '已取消操作'
+			// 			})
+			// 		})
 
-				}else{
-					Message.warning(res.data.MSG);
-				}
-			}).catch(res => {
-				console.log(res);
-			});
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res => {
+			// 	console.log(res);
+			// });
 
 		},
-		// 循环发布
+		// 发布需要请求的数据组合
+		getDataOfSetPrice(info, act, citySelect=[]){
+			// 获取pdid
+			api.getApi('/GetAPD', info).then(res=>{
+				console.log(res.data);
+				let pdidArr = res.data;
+				// 获取asid列表GetADB
+				api.getApi('/GetADB', info).then(res=>{
+					console.log(res.data);
+					let asidArr = res.data;
+					let arr = this.initContruct(asidArr, pdidArr, info.uid, act);
+					if(act = 'R'){
+						// 循环发布
+						this.ctrlFangan(arr);
+					}else{
+						let result = [];
+						for(let arrData of arr){
+							for(let city of citySelect){
+								let arrRID = arrData.rID.toString().substring(0, 4);
+								let cityRID = city.value.toString().substring(0, 4);
+								if(arrRID == cityRID){
+									result.push(arrData);
+								}
+							}
+						}
+						console.log('resulttelajt', result);
+						this.ctrlFangan(result);
+					}
+					
+				}).catch(res=>{
+					console.log(res);
+				});
+			}).catch(res=>{
+				console.log(res);
+			});
+		},
+		// 组装数据不同点位不同排期
+		initContruct(asidArr, pdidArr, uid, act){
+			// 组装数据
+			let arr = [];
+			// 组合asid
+			for(let asid of asidArr){
+				let start = dateFormat.toDate(asid.pbStar);
+				let end = dateFormat.toDate(asid.pbEnd);
+				if(!arr.length){
+					arr.push({
+						uid: uid,
+						act: act,
+						pdid: '',
+						rID: asid.rID,
+						ds: start,
+						de: end,
+						asidlist: asid.asID.toString()
+					});
+				}else{
+					for(let arrData of arr){
+						let asIdRID = asid.rID.toString().substring(0, 4);
+						let arrRID = arrData.rID.toString().substring(0, 4);
+						console.log('bool', arrRID != asIdRID, start != arrData.ds, end != arrData.de);
+						if((arrRID != asIdRID) || (start != arrData.ds) || (end != arrData.de)){
+							arr.push({
+								uid: uid,
+								act: act,
+								pdid: '',
+								rID: asid.rID,
+								ds: start,
+								de: end,
+								asidlist: asid.asID.toString()
+							});
+						}else{
+							arrData.asidlist = asid.asID+','+arrData.asidlist;
+						}
+							break;
+					}
+				}
+			}
+
+			console.log('arr', arr);
+			// 组合pdid
+			for(let arrData of arr ){
+				for(let pdData of pdidArr){
+					let pdDataRID = pdData.rID.toString().substring(0, 4);
+					let arrRID = arrData.rID.toString().substring(0, 4);
+					if( (pdDataRID == arrRID) && (arrData.ds >= pdData.pdStar) && (arrData.de <= pdData.pdEnd) ){
+						arrData.pdid = pdData.pdID;
+						break;
+					}
+				}
+			}
+			console.log('resultArr', arr);
+			return arr;
+		},
+		// 循环发布、预锁
 		ctrlFangan(arr){
 			// uid         int【必填】         当前账户UserID
 			// act         String【必填】      事务类型：L锁点；R发布
@@ -625,36 +644,54 @@ export default {
 			this.$router.push('./planDetail');
 		},
 		//确认框
-		preload(e) {
+		preload(row) {
 			this.dialogVisible = true;
-			// var Status = e.target.innerText;
-
-			// MessageBox.confirm(`<el-checkbox-group v-model="cityChoose">
-			//                   <el-checkbox label="广州市" border></el-checkbox>
-			//                   <el-checkbox label="深圳市" border></el-checkbox>
-			//               </el-checkbox-group>`, '提示', {
-			//   confirmButtonText: '确定',
-			//   cancelButtonText: '取消',
-			//   dangerouslyUseHTMLString: true,
-			//   type: 'warning'
-			// }).then(() => {
-			//   //确定
-			//   Message({
-			//     type: 'success',
-			//     message: '成功更改状态'
-			//   });
-			// }).catch(() => {
-			//   Message({
-			//     type: 'info',
-			//     message: '已取消操作'
-			//   })
-			// })
+			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// let apid = row.apID;
+			// let info = {
+			// 	uid: uid,
+			// 	apid: apid
+			// };
+			this.Info.apid = row.apID;
+			let info = this.Info;
+			// 获取城市
+			api.getApi('/GetAPD', info).then(res=>{
+				console.log(res.data);
+				// let pdidArr = res.data;
+				let pdidArr = [
+					{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+					{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+					{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+					{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+				];
+				let cityCode = filterFormat(pdidArr, 'rID');
+				for(let item of cityCode){
+					item.rName = areaToText.toText(item.value).city;
+				}
+				this.cityList = cityCode;
+				console.log(cityCode);
+			}).catch(res=>{
+				console.log(res);
+			});
 		},
 		cancelLock() {
 			this.dialogVisible = false;
 			Message.info('已取消操作');
 		},
+		// 确定预锁
 		confirmLock() {
+			console.log(this.cityChoose);
+			let arr = [];
+			for(let select of this.cityChoose){
+				for(let data of this.cityList){
+					if(data.rName == select){
+						arr.push(data);
+						break;
+					}
+				}
+			}
+			this.getDataOfSetPrice(this.Info, 'L', arr);
+			console.log('test', arr);
 			this.dialogVisible = false;
 			Message.success('成功更改状态');
 		},
@@ -1075,6 +1112,8 @@ export default {
       width: 156px;
     }
   }
-
+.el-dialog__footer span{
+	float: none !important;
+}
 
 </style>

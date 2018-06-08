@@ -78,11 +78,11 @@
                     v-for="tag in dynamicTags"
                     closable
                     :disable-transitions="false"
-                    @close="handleClose1(tag)">
+                    @close="spliceCity(tag)">
                     {{tag}}
                   </el-tag>
                   <el-cascader
-                    style="width: 150px"
+                    style="width: 140px"
                     class="inputNewTag"
                     v-if="inputVisible"
                     v-model="selectedOptions"
@@ -758,6 +758,7 @@
         ADchanger: {rid: '', GMDate: 0, reaPrice: 0,}, // 广告费修改
         makeChange: {rid: '', MReaPrice: 0},            // 制作费修改
         totalChange: {rid: '', cash: 0, zyzh: 0, other: 0, total: 0, remark: ''},   // 合计费用修改
+        CSMList:[],          // 城市不同排期的所有面数
         /*  GMDate: 0,                  // 赠送面.天
           discount: '100%',         // 广告费折扣
           advertyPrice: 0,           // 广告费
@@ -940,8 +941,21 @@
     },
     methods: {
       // step1投放城市权限是全国时handleClose1、showInput、handleInputConfirm
-      handleClose1(tag) {
+      spliceCity(tag) { // step1方案创建,删除选择城市
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+        let city_arr = this.cityOptions
+        for(let i=0;i<city_arr.length;i++){       // 遍历城市查找城市名对应的rid，用于删除勾选的城市
+          for(let j=0;j<city_arr[i].children.length;j++){
+            if(city_arr[i].children[j].label === tag){
+              let city_rid = city_arr[i].children[j].value
+              for(let n=0;n<this.planForm.throwCity.length;n++){
+                if(city_rid === this.planForm.throwCity[n]){
+                  this.planForm.throwCity.splice(n,1)
+                }
+              }
+            }
+          }
+        }
       },
       showInput() {
         this.inputVisible = true;
@@ -1301,7 +1315,6 @@
       },
       // 设置城市区域
       getAreaFun() {
-        // let rid = 440100
         let throwCityList = this.planForm.throwCity
         console.log('****************', throwCityList)
         let cityArr = []
@@ -1565,7 +1578,7 @@
                   adObj.box.B = true
                 }
                 if (i % 2) {
-                  adObj.schedules = '2018.06.23' + '-' + '2018.07.07'
+                  adObj.schedules = '2018.06.24' + '-' + '2018.07.08'
                 }
                 let asIDArr = ADList[i].asIDs.split(',')
                 let asLabArr = ADList[i].asLabs.split(',')
@@ -1741,6 +1754,7 @@
       next() {
         console.log('planForm', this.planForm)
         if (this.active === 0) {
+          console.log('this.dynamicTags', this.dynamicTags)
           this.submitForm('planForm')
         } else if (this.active === 1) {
           this.active++
@@ -1801,6 +1815,7 @@
         if (letter === 'AD') {
           this.changeAD = true
           this.ADchanger.rid = info.rid
+          this.ADchanger.GMDate = info.GMDate
           this.ADchanger.reaPrice = info.advertyPrice
         } else if (letter === 'M') {
           this.changeMake = true
@@ -1845,9 +1860,10 @@
                   // alert('2')
                   this.ADchanger.reaPrice = this.quotation[i].advertyPrice
                   this.quotation[i].reaPrice = this.quotation[i].advertyPrice
-                  this.quotation[i].discount = '100%'
+                  // this.quotation[i].discount = '100%'
+                  this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].oldPrice * 10000) / 100.00 + "%" // 折扣百分比
                   this.hideBox()
-                } else if (this.ADchanger.reaPrice > this.quotation[i].reaPrice) {
+                } else if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
                   // alert('3')
                   this.ADchanger.reaPrice = this.quotation[i].advertyPrice
                   this.$message({
@@ -1865,13 +1881,15 @@
                   } else {
                     this.quotation[i].reaPrice = this.quotation[i].advertyPrice
                     this.quotation[i].advertyPrice = this.ADchanger.reaPrice
-                    this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                    // this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                    this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].oldPrice * 10000) / 100.00 + "%" // 折扣百分比
                     this.hideBox()
                   }
                 }
               } else {
                 // alert('0')
                 if (this.ADchanger.reaPrice > this.quotation[i].oldPrice) {
+                  this.ADchanger.reaPrice = this.quotation[i].advertyPrice
                   this.$message({
                     message: '大于原价格',
                     type: 'warning'
@@ -1879,12 +1897,14 @@
                 } else {
                   this.quotation[i].advertyPrice = this.ADchanger.reaPrice
                   this.quotation[i].reaPrice = this.quotation[i].oldPrice
-                  this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                  // this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
+                  this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].oldPrice * 10000) / 100.00 + "%" // 折扣百分比
                   this.hideBox()
                 }
               }
               // break
               this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+              this.computeTotal()
             }
           }
         } else if (letter === 'M') {         // 制作费修改
@@ -1902,6 +1922,7 @@
               }
               // break
               this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+              this.computeTotal()
             }
           }
         } else if (letter === 'TP') {     // 修改结算方式
@@ -1969,23 +1990,21 @@
           if (i >= this.city.length - 1) {
             this.quotation = quotationArr
           }
-          // 从购物车列表获取排期
+          // 从购物车列表获取排期及同一排期下的面数
           let shopingArr = this.shopingList
           for (let j = 0; j < this.shopingList.length; j++) {
             let shoping = this.shopingList[j]
             // console.log('从购物车列表获取排期',shoping.schedules)
             for (let t = 0; t < this.quotation.length; t++) {
               if (shoping.city === this.quotation[t].city) {
-                // this.quotation[t].schedules = shoping.schedules
-                if (j === 0) {
-                  // console.log('第一个排期',shoping.schedules)
-                  this.quotation[t].schedules = shoping.schedules
-                } else {
                   if (this.quotation[t].schedules.indexOf(shoping.schedules) === -1) {
                     // console.log('增加排期',shoping.schedules)
-                    this.quotation[t].schedules = this.quotation[t].schedules + '、' + shoping.schedules
+                    if(this.quotation[t].schedules == '' || this.quotation[t].schedules == null){
+                      this.quotation[t].schedules = shoping.schedules
+                    }else{
+                      this.quotation[t].schedules = this.quotation[t].schedules + '、' + shoping.schedules
+                    }
                   }
-                }
               }
             }
           }
@@ -2010,17 +2029,53 @@
           if (i >= this.shopingList.length - 1) {
             console.log('购物车城市列表', cityList)
             this.shopListCity = cityList
+            this.getPM_numByCityList()
+          }
+
+        }
+      },
+      // 根据购物车列表城市获取不同排期的所有面数
+      getPM_numByCityList() {
+        let arr = []
+        for (let i = 0; i < this.shopListCity.length; i++) {
+          for (let t = 0; t < this.quotation.length; t++) {
+            if (this.shopListCity[i] === this.quotation[t].city) { // 购物车中对应城市的不同排期的所有面数
+              let q_schedulesArr = this.quotation[t].schedules.split('、')
+              for (let t = 0; t < q_schedulesArr.length; t++) {
+                let csm_obj = {
+                  city: this.shopListCity[i],
+                  schedules: q_schedulesArr[t],
+                  mNum: ''
+                }
+                for (let j = 0; j < this.shopingList.length; j++) {
+                  let list = this.shopingList[j]
+                  if (list.schedules == q_schedulesArr[t] && this.shopListCity[i] === list.city) {
+                    csm_obj.mNum++
+                  }
+                  if(j >= this.shopingList.length-1){
+                    console.log('获取不同排期的所有面数',csm_obj)
+                    this.CSMList.push(csm_obj)
+                  }
+                }
+                // if(t >= q_schedulesArr.length-1){
+                //   console.log('城市不同排期的所有面数',this.CSMList)
+                // }
+              }
+            }
           }
         }
+        console.log('城市不同排期的所有面数',this.CSMList)
       },
       // step3 报价单
       quotationFun() {
         let ADPriceList = [
-          {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
+          {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 480000},
           {amID: 91, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
           {amID: 90, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
           {amID: 89, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-          {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}]
+          {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800},
+          {amID: 87, rID: 320100, rName: "南京市", mVehicle: "广告门", adPrice: 544400},
+          {amID: 86, rID: 330100, rName: "杭州市", mVehicle: "广告门", adPrice: 644400},]
         let uid = this.sessionData.uID
         api.getApi('/GetAdPrice', {uid: uid}).then(res => {
           console.log('刊例价信息', res)
@@ -2028,22 +2083,32 @@
           console.log('投放城市信息', this.planForm.throwCity)
           // let throwCityList = this.planForm.throwCity
           let quotation = this.quotation
-          for (let i = 0; i < ADPriceList.length; i++) {
-            for (let j = 0; j < quotation.length; j++) {
+          for (let i = 0; i < ADPriceList.length; i++) {    // 报价单过滤
+            for (let j = 0; j < quotation.length; j++) {    // 投放城市过滤
               let quotationObj = quotation[j]
-              for (let g = 0; g < this.shopListCity.length; g++) {
+              for (let g = 0; g < this.shopListCity.length; g++) {          // 购物车里有的城市（选中点对应的城市）
                 if (ADPriceList[i].rID == quotationObj.rid && this.shopListCity[g] === quotationObj.city) {
                   // alert(ADPriceList[i].adPrice)
-                  console.log('该城市的排期', quotationObj.schedules)
-                  let schedulesArr = quotationObj.schedules.split('-')
-                  // for(){
-                  //
-                  // }
+                  let mDate = 0
+                  let mNUm = 0
+                  let csm_arr = this.CSMList
+                  for(let t=0;t<csm_arr.length;t++){
+                    if(csm_arr[t].city === quotationObj.city){
+                      let begin = csm_arr[t].schedules.split('-')[0]
+                      let end = csm_arr[t].schedules.split('-')[1]
+                      console.log('begin',begin,',end',end)
+                      let schedul = this.DateDiff(begin,end)
+                      console.log('schedul',schedul)
+                      mDate += schedul * csm_arr[t].mNum
+                      mNUm += csm_arr[t].mNum
+                    }
+                  }
+                  console.log('天数mDate',mDate,',面数mNUm',mNUm)
                   console.log(ADPriceList[i].rName, '广告门价格为', ADPriceList[i].adPrice)
                   // 广告费计算
                   quotationObj.ADPrice = ADPriceList[i].adPrice / (100 * 2)       // 刊例价(面/周)
                   console.log('刊例价(面/周)', quotationObj.ADPrice)
-                  quotationObj.tfl = this.badgeNumber * 14                    // 投放量(面·天)
+                  quotationObj.tfl =  mDate   //this.badgeNumber * 14                     // 投放量(面·天)
                   quotationObj.reaPrice = quotationObj.tfl * (quotationObj.ADPrice / 7)        // 广告费总价
                   quotationObj.oldPrice = quotationObj.reaPrice               // 保存最初计算的价格
 
@@ -2052,7 +2117,7 @@
                   quotationObj.discount = Math.round(quotationObj.advertyPrice / quotationObj.reaPrice * 10000) / 100.00 + "%" // 广告费折扣百分比
 
                   // 制作费计算
-                  quotationObj.ADNumber = this.badgeNumber                    // 广告画数量
+                  quotationObj.ADNumber = mNUm //this.badgeNumber                    // 广告画数量
                   quotationObj.makePrice = quotationObj.ADNumber * quotationObj.MPrice       // 制作费 = 广告画数量 * 制作费单价
                   quotationObj.MReaPrice = quotationObj.makePrice
                   quotationObj.makeDiscount = Math.round(quotationObj.makePrice / quotationObj.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
@@ -2409,13 +2474,23 @@
       searchFun() {
         console.log('搜索排期时间', this.dateInput)
       },
+      //计算天数差的函数，通用
+     DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2002-12-18格式
+       let aDate, oDate1, oDate2, iDays
+       aDate = sDate1.split(".")
+       oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0])    //转换为12-18-2002格式
+       aDate = sDate2.split(".")
+       oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0])
+       iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24)    //把相差的毫秒数转换为天数
+       return iDays
+     },
     }
   }
 </script>
 
 <style scoped>
-  .inputNewTag > > > .el-input__inner {
-    width: 140px;
+  .inputNewTag /deep/ .el-input__inner {
+    width: 140px !important;
   }
 
   .input-with-select /deep/ .el-input__inner {
