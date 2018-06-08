@@ -377,17 +377,18 @@ export default {
 			api.getApi('/GetADB', info).then(res =>{
 				console.log(res.data);
 				if(!res.data.SysCode){
-					this.setpointArr = res.data;
+					let resInfo = res.data;
 					// 城市中文名称
-					for(let data of this.setpointArr){
+					for(let data of resInfo){
 						this.$set(data, 'city', areaToText.toText(data.rID).city);
 						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
 						this.$set(data, 'timeRange', time);
 					}
 					// 城市筛选过滤
-					this.filterCityData = filterFormat(this.setpointArr, 'city');
-					this.filtersArea = filterFormat(this.setpointArr, 'rName');
-					this.filtersData = filterFormat(this.setpointArr, 'timeRange');
+					this.filterCityData = filterFormat(resInfo, 'city');
+					this.filtersArea = filterFormat(resInfo, 'rName');
+					this.filtersData = filterFormat(resInfo, 'timeRange');
+					this.setpointArr = resInfo;
 					this.currentSetpoint = this.setpointArr;
 				}else{
 					Message.warning(res.data.MSG);

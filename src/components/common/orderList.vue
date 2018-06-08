@@ -38,7 +38,7 @@
 				<div class="table_wrap">
 					<el-table
 						border
-						:data="orderList"
+						:data="currentOrder"
 						style="width: 100%"
 						:default-sort="{prop: 'date', order: 'descending'}"
 					>
@@ -55,13 +55,13 @@
 							min-width="10.4%"
 						>
 							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.clientName" placement="bottom">
-								<span title="">{{scope.row.clientName}}</span>
+								<el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+								<span title="">{{scope.row.cName}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
 						<el-table-column
-							prop="brandName"
+							prop="bTitle"
 							label="品牌名称"
 							min-width="6.0%"
 						>
@@ -72,8 +72,8 @@
 							min-width="7.9%"
 						>
 							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.contractID" placement="bottom">
-								<span title="">{{scope.row.contractID}}</span>
+								<el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom">
+								<span title="">{{scope.row.apQC}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
@@ -105,18 +105,21 @@
 						</el-table-column>
 						<el-table-column
 							class="Status"
-							prop="Status"
+							prop="apState"
 							label="状态"
 							min-width="6%"
 							:filters="[
-								{ text: '投放中', value: '投放中' },
-								{ text: '已完成', value: '已完成' },
-								{ text: '未投放', value: '未投放' },
-								{ text: '强制结束', value: '强制结束' }
+								{ text: '投放中', value: 0 },
+								{ text: '已完成', value: 1 },
+								{ text: '未投放', value: 2 },
+								{ text: '强制结束', value: 3 }
 							]"
 							:filter-method="filterStatus"
 							:filter-multiple="false"
 						>
+							<template slot-scope="scope">
+								<span>{{ stateToText(scope.row.apState) }}</span>
+							</template>
 						</el-table-column>
 						<el-table-column
 							label="操作"
@@ -241,7 +244,7 @@ export default {
 				{ text: '强制结束', value: 3 }
 			];
 			for(let data of state ){
-				if(val == data.state){
+				if(val == data.value){
 					return data.text;
 				}
 			}
@@ -350,7 +353,7 @@ export default {
 		},
 		//筛选
 		filterStatus(value, row) {
-			return row.Status === value;
+			return row.apState === value;
 		},
 		//状态
 

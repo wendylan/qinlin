@@ -106,14 +106,15 @@
 						</el-table-column>
 						<el-table-column
 							class="tac"
+							prop="apState"
 							label="状态"
 							min-width="6.1%"
 							:filters="[
-								{ text: '进行中', value: '进行中' },
-								{ text: '投放中', value: '投放中' },
-								{ text: '已完成', value: '已完成' },
-								{ text: '未投放', value: '未投放' },
-								{ text: '强制结束', value: '强制结束' }
+								{ text: '已完成', value: 0 },
+								{ text: '进行中', value: 1 },
+								{ text: '未投放', value: 2 },
+								{ text: '投放中', value: 3 },
+								{ text: '强制结束', value: 5 }
 							]"
 							:filter-method="filterStatus"
 							:filter-multiple="false"
@@ -266,14 +267,14 @@ export default {
 		// 状态转换成文本
 		stateToText(val){
 			let state = [
-				{text: '已完成', state: 0},
-				{text: '进行中', state: 1},
-				{text: '未投放', state: 2},
-				{text: '投放中', state: 3},
-				{text: '强行结束', state: 5}
+				{text: '已完成', value: 0},
+				{text: '进行中', value: 1},
+				{text: '未投放', value: 2},
+				{text: '投放中', value: 3},
+				{text: '强行结束', value: 5}
 			];
 			for(let data of state ){
-				if(val == data.state){
+				if(val == data.value){
 					return data.text;
 				}
 			}
@@ -358,7 +359,7 @@ export default {
 		},
 		//筛选
 		filterStatus(value, row) {
-			return row.Status === value;
+			return row.apState === value;
 		},
 		// 删除
 		deleteOne(row){
