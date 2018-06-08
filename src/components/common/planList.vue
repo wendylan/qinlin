@@ -201,10 +201,7 @@ export default {
 			// 选择要预锁的城市
 			cityChoose: [],
 			// 预锁的城市列表
-			cityList: [
-				{rName: '广州市', rID: 440104},
-				{rName: '北京市', rID: 110100},
-			],
+			cityList: [],
 			rangeDate: '',
 			keyword: '',
 			showNewBtn:true,
@@ -495,37 +492,37 @@ export default {
 			// 	apid: apid
 			// };
 
-			// this.Info.apid = row.apID;
-			// let info = this.Info;
-			// // uid         int【必填】     当前账户UserID
-            // // apid        int             公司对应方案apID
-			// api.postApi('/GetFanganInfo', info).then(res =>{
-			// 	console.log(res.data);
-			// 	if(!res.data.SysCode){
-			// 		let text = res.data;
-			// 		let QCinfo = this.getContractNo(text.rID);
-			// 		console.log(QCinfo);
-			// 		MessageBox.prompt('合同编号:', {
-			// 			confirmButtonText: '是',
-			// 			cancelButtonText: '否',
-			// 			inputValue: QCinfo
-			// 		}).then(() => {
-			// 			// 组合数据并发布
-			// 			this.getDataOfSetPrice(info, 'R');
+			this.Info.apid = row.apID;
+			let info = this.Info;
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			api.postApi('/GetFanganInfo', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					let text = res.data;
+					let QCinfo = this.getContractNo(text.rID);
+					console.log(QCinfo);
+					MessageBox.prompt('合同编号:', {
+						confirmButtonText: '是',
+						cancelButtonText: '否',
+						inputValue: QCinfo
+					}).then(() => {
+						// 组合数据并发布
+						this.getDataOfSetPrice(info, 'R');
 						
-			// 		}).catch(() => {
-			// 			Message({
-			// 				type: 'info',
-			// 				message: '已取消操作'
-			// 			})
-			// 		})
+					}).catch(() => {
+						Message({
+							type: 'info',
+							message: '已取消操作'
+						})
+					})
 
-			// 	}else{
-			// 		Message.warning(res.data.MSG);
-			// 	}
-			// }).catch(res => {
-			// 	console.log(res);
-			// });
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res => {
+				console.log(res);
+			});
 
 		},
 		// 发布需要请求的数据组合
@@ -629,9 +626,24 @@ export default {
 			// de          String【必填】      广告投放结束日期
 			// asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
 			// 发布接口
-			for(let upInfo of arr){
-				api.postApi('/CtrlFangan', upInfo).then(res =>{
+			for(let i = 0; i<arr.length; i++){
+				api.postApi('/CtrlFangan', arr[i]).then(res =>{
 					console.log(res.data);
+					if(res.data.length&& (i>=arr.length-1)){
+						// 存在点位被占，是否立即去方案详情修改？
+						MessageBox.confirm(`存在点位被占，是否立即去方案详情修改？`, '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							this.ToDetail(this.Info.apid);
+
+						}).catch(() => {
+							Message.info('已取消操作');
+						}); 
+					}else{
+						Message.info(res.data.MSG);
+					}
 				}).catch(res =>{
 					console.log(res);
 				});
@@ -657,13 +669,13 @@ export default {
 			// 获取城市
 			api.getApi('/GetAPD', info).then(res=>{
 				console.log(res.data);
-				// let pdidArr = res.data;
-				let pdidArr = [
-					{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-					{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-					{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-					{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-				];
+				let pdidArr = res.data;
+				// let pdidArr = [
+				// 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+				// 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+				// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+				// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+				// ];
 				let cityCode = filterFormat(pdidArr, 'rID');
 				for(let item of cityCode){
 					item.rName = areaToText.toText(item.value).city;
@@ -693,7 +705,6 @@ export default {
 			this.getDataOfSetPrice(this.Info, 'L', arr);
 			console.log('test', arr);
 			this.dialogVisible = false;
-			Message.success('成功更改状态');
 		},
 	},
     //实时计算  数据发生变化时执行相应函数

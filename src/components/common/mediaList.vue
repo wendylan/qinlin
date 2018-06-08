@@ -262,7 +262,6 @@ export default {
 			'color': '#666666'
 			})
 		});
-
 		this.getData();
 	},
 	methods: {

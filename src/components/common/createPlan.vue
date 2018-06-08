@@ -1062,7 +1062,7 @@
           this.ownerBU = ownerList // 联系人列表
         })
         // 公司信息所在城市
-        let uWho = '0'// this.sessionData.uWho // '110100,310100,440100'
+        let uWho = this.sessionData.uWho // '110100,310100,440100'
         if (uWho == '0') {
           this.cityOther = true
           this.cityOptions = areaArr.province()
@@ -1499,9 +1499,9 @@
           let rName = throwCity[t].rName
           api.getApi('/GetAdS', {uid: uid, rid: rid}).then(res => {
             console.log('选点列表：', res)
-            // let ADList = res.data
-            // if(ADList.length !==0){
-            let ADList = tempADList
+            let ADList = res.data
+            if(ADList.length !==0){
+            // let ADList = tempADList
             // 被占广告点位列表【选点】GetAdLaunch
             let LaunchParams = {uid: uid, rid: 440100, ls: starTime, le: endTime}
             api.getApi('/GetAdLaunch', LaunchParams).then(res => {
@@ -1577,9 +1577,9 @@
                 if (ADList[i].asLabs.indexOf('B') === -1) {
                   adObj.box.B = true
                 }
-                if (i % 2) {
-                  adObj.schedules = '2018.06.24' + '-' + '2018.07.08'
-                }
+                // if (i % 2) {
+                //   adObj.schedules = '2018.06.24' + '-' + '2018.07.08'
+                // }
                 let asIDArr = ADList[i].asIDs.split(',')
                 let asLabArr = ADList[i].asLabs.split(',')
                 for (let j = 0; j < adLaunch.length; j++) {
@@ -1608,12 +1608,12 @@
                 this.planList = this.totalPlanList[0]
               }
             })
-            // }else{
-            // this.$message({
-            //   message: '该城市暂无可选的投放点',
-            //   type: 'warning'
-            // });
-            // }
+            }else{
+            this.$message({
+              message: '该城市暂无可选的投放点',
+              type: 'warning'
+            });
+            }
           })
         }
 
@@ -2068,18 +2068,18 @@
       },
       // step3 报价单
       quotationFun() {
-        let ADPriceList = [
-          {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 480000},
-          {amID: 91, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
-          {amID: 90, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
-          {amID: 89, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-          {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800},
-          {amID: 87, rID: 320100, rName: "南京市", mVehicle: "广告门", adPrice: 544400},
-          {amID: 86, rID: 330100, rName: "杭州市", mVehicle: "广告门", adPrice: 644400},]
+        // let ADPriceList = [
+        //   {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 480000},
+        //   {amID: 91, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
+        //   {amID: 90, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
+        //   {amID: 89, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
+        //   {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800},
+        //   {amID: 87, rID: 320100, rName: "南京市", mVehicle: "广告门", adPrice: 544400},
+        //   {amID: 86, rID: 330100, rName: "杭州市", mVehicle: "广告门", adPrice: 644400},]
         let uid = this.sessionData.uID
         api.getApi('/GetAdPrice', {uid: uid}).then(res => {
           console.log('刊例价信息', res)
-          // let ADPriceList = res.data
+          let ADPriceList = res.data
           console.log('投放城市信息', this.planForm.throwCity)
           // let throwCityList = this.planForm.throwCity
           let quotation = this.quotation
