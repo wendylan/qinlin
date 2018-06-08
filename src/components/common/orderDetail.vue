@@ -2656,24 +2656,24 @@ export default {
 		// 获取选点排期列表数据
 		getInitData(){
 			// 测试数据
-			let order = {
-				realName: "黄启炜",
-				apState: 1,
-				rIDs: "广州市,北京市,重庆市",
-				cName: "新光百货",
-				apID: 1,
-				apcTime: "May 9, 2018 6:29:47 PM",
-				cuName: "赵爽",
-				bTitle: "新光百货",
-				apTotal: 465200,
-				apName: "第一个投放方案",
-				apQC: "QC201803284401001",
-				pdTotal: 0,
-				pdSendFee: 0,
-				pdOtherFee: 0
-			};
-			order.apTotal = this.priceFormat(order.apTotal);
-			this.orderDetail = order;
+			// let order = {
+			// 	realName: "黄启炜",
+			// 	apState: 1,
+			// 	rIDs: "广州市,北京市,重庆市",
+			// 	cName: "新光百货",
+			// 	apID: 1,
+			// 	apcTime: "May 9, 2018 6:29:47 PM",
+			// 	cuName: "赵爽",
+			// 	bTitle: "新光百货",
+			// 	apTotal: 465200,
+			// 	apName: "第一个投放方案",
+			// 	apQC: "QC201803284401001",
+			// 	pdTotal: 0,
+			// 	pdSendFee: 0,
+			// 	pdOtherFee: 0
+			// };
+			// order.apTotal = this.priceFormat(order.apTotal);
+			// this.orderDetail = order;
 
 			// 真实数据
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
@@ -2684,75 +2684,75 @@ export default {
 			};
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
-			// api.postApi('/GetFanganInfo', info).then(res =>{
-			// 	console.log(res.data);
-			// 	if(!res.data.SysCode){
-			// 		let info = res.data;
-			// 		if(info.apTotal){
-			// 			info.apTotal = this.priceFormat(info.apTotal);
-			// 		}
-			// 		this.orderDetail = info;
-			// 	}else{
-			// 		Message.warning(res.data.MSG);
-			// 	}
-			// }).catch(res => {
-			// 	console.log(res);
-			// });
+			api.postApi('/GetFanganInfo', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					let info = res.data;
+					if(info.apTotal){
+						info.apTotal = this.priceFormat(info.apTotal);
+					}
+					this.orderDetail = info;
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res => {
+				console.log(res);
+			});
 		},
 		// 获取选点排期
 		getSetPoint(){
-			// 测试数据
-			let testInfo = [
-				{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: "", pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018", adSize: "1181*841", adViewSize: "118*84"},
-				{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
-				{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
-				{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"}
-			];
+			// // 测试数据
+			// let testInfo = [
+			// 	{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: "", pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018", adSize: "1181*841", adViewSize: "118*84"},
+			// 	{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
+			// 	{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
+			// 	{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"}
+			// ];
 
-			let arr = [];
-			// 组装数据
-			for(let data of testInfo){
-				// 城市中文名称
-				// this.$set(data, 'city', areaToText.toText(data.rID).city);
-				data.city = areaToText.toText(data.rID).city;
-				let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
-				data.timeRange = time;
-				// 物料信息
-				if(!arr.length){
-					arr.push({
-						adSize: data.adSize,
-						visualPic: data.adViewSize,
-						resolution: '150dpi',
-						colorMode: 'CMYK',
-						photoFormat: 'JPG/TIF/AI/PSD/CDR',
-						pointNum: 1
-					});
-				}else{
-					for(let test of arr){
-						if((data.adSize != test.adSize)&& (data.adViewSize != test.visualPic)){
-							arr.push({
-								adSize: data.adSize,
-								visualPic: data.adViewSize,
-								resolution: '150dpi',
-								colorMode: 'CMYK',
-								photoFormat: 'JPG/TIF/AI/PSD/CDR',
-								pointNum: 1
-							});
-						}else{
-							test.pointNum++;
+			// let arr = [];
+			// // 组装数据
+			// for(let data of testInfo){
+			// 	// 城市中文名称
+			// 	// this.$set(data, 'city', areaToText.toText(data.rID).city);
+			// 	data.city = areaToText.toText(data.rID).city;
+			// 	let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+			// 	data.timeRange = time;
+			// 	// 物料信息
+			// 	if(!arr.length){
+			// 		arr.push({
+			// 			adSize: data.adSize,
+			// 			visualPic: data.adViewSize,
+			// 			resolution: '150dpi',
+			// 			colorMode: 'CMYK',
+			// 			photoFormat: 'JPG/TIF/AI/PSD/CDR',
+			// 			pointNum: 1
+			// 		});
+			// 	}else{
+			// 		for(let test of arr){
+			// 			if((data.adSize != test.adSize)&& (data.adViewSize != test.visualPic)){
+			// 				arr.push({
+			// 					adSize: data.adSize,
+			// 					visualPic: data.adViewSize,
+			// 					resolution: '150dpi',
+			// 					colorMode: 'CMYK',
+			// 					photoFormat: 'JPG/TIF/AI/PSD/CDR',
+			// 					pointNum: 1
+			// 				});
+			// 			}else{
+			// 				test.pointNum++;
 							
-						}
-					}
-				}
-			}
-			console.log('arr', arr);
-			// 城市筛选过滤
-			this.filterCityData = filterFormat(testInfo, 'city');
-			this.filtersArea = filterFormat(testInfo, 'rName');
-			this.filtersData = filterFormat(testInfo, 'timeRange');
-			this.setpointArr = testInfo;
-			this.currentSetpoint = this.setpointArr;
-			this.materialInfo = arr;
+			// 			}
+			// 		}
+			// 	}
+			// }
+			// console.log('arr', arr);
+			// // 城市筛选过滤
+			// this.filterCityData = filterFormat(testInfo, 'city');
+			// this.filtersArea = filterFormat(testInfo, 'rName');
+			// this.filtersData = filterFormat(testInfo, 'timeRange');
+			// this.setpointArr = testInfo;
+			// this.currentSetpoint = this.setpointArr;
+			// this.materialInfo = arr;
 
 			// 真实数据
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
@@ -2763,45 +2763,45 @@ export default {
 			};
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
-			// api.getApi('/GetADB', info).then(res =>{
-			// 	console.log(res.data);
-			// 	if(!res.data.SysCode){
-			// 		let info = res.data;
-			// 		let arr = [];
-			// 		// 组装数据
-			// 		for(let data of info){
-			// 			// 城市中文名称
-			// 			// this.$set(data, 'city', areaToText.toText(data.rID).city);
-			// 			data.city = areaToText.toText(data.rID).city;
-			// 			let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
-			// 			data.timeRange = time;
-			// 			// this.$set(data, 'timeRange', time);
-			// 			let material = {
-			// 				adSize: '',
-			// 				visualPic: '',
-			// 				resolution: '150dpi',
-			// 				colorMode: 'CMYK',
-			// 				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-			// 				pointNum: ''
-			// 			};
-			// 			material.adSize = data.adSize;
-			// 			material.visualPic = data.adViewSize;
-			// 			matrial.pointNum = 1;
-			// 			arr.push(material);
-			// 		}
-			// 		// 城市筛选过滤
-			// 		this.filterCityData = filterFormat(info, 'city');
-			// 		this.filtersArea = filterFormat(info, 'rName');
-			// 		this.filtersData = filterFormat(info, 'timeRange');
-			// 		this.setpointArr = info;
-			// 		this.currentSetpoint = this.setpointArr;
-			// 		this.materialInfo = arr;
-			// 	}else{
-			// 		Message.warning(res.data.MSG);
-			// 	}
-			// }).catch(res =>{
-			// 	console.log(res);
-			// });
+			api.getApi('/GetADB', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					let info = res.data;
+					let arr = [];
+					// 组装数据
+					for(let data of info){
+						// 城市中文名称
+						// this.$set(data, 'city', areaToText.toText(data.rID).city);
+						data.city = areaToText.toText(data.rID).city;
+						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+						data.timeRange = time;
+						// this.$set(data, 'timeRange', time);
+						let material = {
+							adSize: '',
+							visualPic: '',
+							resolution: '150dpi',
+							colorMode: 'CMYK',
+							photoFormat: 'JPG/TIF/AI/PSD/CDR',
+							pointNum: ''
+						};
+						material.adSize = data.adSize;
+						material.visualPic = data.adViewSize;
+						matrial.pointNum = 1;
+						arr.push(material);
+					}
+					// 城市筛选过滤
+					this.filterCityData = filterFormat(info, 'city');
+					this.filtersArea = filterFormat(info, 'rName');
+					this.filtersData = filterFormat(info, 'timeRange');
+					this.setpointArr = info;
+					this.currentSetpoint = this.setpointArr;
+					this.materialInfo = arr;
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res =>{
+				console.log(res);
+			});
 		},
 		// 获取三个费用价格(报价单)
 		getPriceData(){
