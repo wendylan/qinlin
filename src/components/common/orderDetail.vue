@@ -188,237 +188,6 @@
 									</el-table-column>
 								</el-table>
 							</div>
-							<!--添加点位对话框-->
-							<el-dialog
-								title="添加点位"
-								:visible.sync="dialogAddPoint"
-								width="30%"
-							>
-								<div class="step2">
-								<div>
-									<div class="search-nav">
-									<div class="search-wrap">
-										<span>
-											<el-select v-model="value" placeholder="请选择" class="type-select">
-											<el-option v-for="item in typeSelect" :key="item.value" :label="item.value"
-														:value="item.value"></el-option>
-											<el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-											</el-select>
-										</span>
-
-										<span>
-										<el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select">
-										<el-option label="区域一" value="shanghai"></el-option>
-										<el-option label="区域二" value="beijing"></el-option>
-										</el-select>
-										</span>
-										<span>
-										<el-date-picker
-										v-model="dateInput"
-										type="daterange"
-										start-placeholder="开始日期"
-										end-placeholder="结束日期"
-										class="date-select"
-										>
-										</el-date-picker>
-									</span>
-										<span>
-										<el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-									</span>
-									</div>
-									</div>
-									<!--类型区域选择面板-->
-									<div class="dw-panel">
-									<dl style="position: relative">
-										<dt>资源类型：</dt>
-										<dd class="active">社区</dd>
-										<dd>写字楼</dd>
-										<el-button type="text" style="position: absolute; right: 10px; top:2px;">重置选项</el-button>
-									</dl>
-									<dl>
-										<dt>媒体类型：</dt>
-										<dd class="active">社区广告门</dd>
-										<dd>电梯广告</dd>
-									</dl>
-									<dl style="border: none">
-										<dt>城市区域：</dt>
-										<dd class="active">广州</dd>
-										<dd>深圳</dd>
-									</dl>
-									<dl class="city-proper">
-										<dd class="active">全市</dd>
-										<dd>天河区</dd>
-										<dd>越秀区</dd>
-										<dd>海珠区</dd>
-										<dd>荔湾区</dd>
-										<dd>黄浦区</dd>
-										<dd>白云区</dd>
-										<dd>番禺区</dd>
-										<dd>花都区</dd>
-										<dd>南沙区</dd>
-										<dd>从化区</dd>
-										<dd>增城区</dd>
-									</dl>
-									<dl style="border: none">
-										<dt>广告限制：</dt>
-										<dd>医学</dd>
-										<dd>汽车</dd>
-										<dd>地产</dd>
-									</dl>
-									</div>
-									<!--数量价格年份输入筛选框-->
-									<div class="filter-input">
-									<ul>
-										<li style="margin-left: 0">
-										<span>住户数量:</span>
-										<div class="input-wrap">
-											<input type="text" class="input">
-											-
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-										</li>
-										<li>
-										<span>楼栋数量:</span>
-										<div class="input-wrap">
-											<input type="text" class="input">
-											-
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-
-										</li>
-										<li>
-										<span>楼盘价格:</span>
-										<div class="input-wrap">
-											<input type="text" class="input">
-											-
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-
-										</li>
-										<li>
-										<span>入住年份:</span>
-										<div class="input-wrap">
-											<input type="text" class="input">
-											-
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-										</li>
-										<li>
-										<span>楼盘类型:</span>
-										<el-select v-model="buildValue" placeholder="请选择" class="buildType">
-											<el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue"
-													:value="item.buildValue"></el-option>
-										</el-select>
-										</li>
-									</ul>
-									</div>
-									<!--表格-->
-									<div class="table_wrap">
-									<el-table
-										border
-										:data="planList"
-										style="width: 100%"
-										:default-sort="{prop: 'recName', order: 'descending'}"
-									>
-										<el-table-column type="expand">
-										<template slot-scope="props">
-											<el-form label-position="left" inline class="demo-table-expand">
-											<el-form-item label="商圈：">
-												<span>{{ props.row.businessOrigin}}</span>
-											</el-form-item>
-											<el-form-item label="楼栋数量：">
-												<span>{{ props.row.buildNum }}</span>
-											</el-form-item>
-											<el-form-item label="资产编号：">
-												<span>{{ props.row.assetID }}</span>
-											</el-form-item>
-											<el-form-item label="入住年份：">
-												<span>{{ props.row.liveYear }}</span>
-											</el-form-item>
-											<el-form-item label="广告限制：">
-												<span>{{ props.row.adLimit }}</span>
-											</el-form-item>
-											</el-form>
-										</template>
-										</el-table-column>
-										<el-table-column
-										type="selection"
-										width="41px">
-										</el-table-column>
-
-										<el-table-column
-										label="资源名称"
-										min-width="16.1%"
-										prop="recName"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="mediaName"
-										label="媒体名称"
-										min-width="10.3%"
-										class="tar"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="city"
-										label="城市"
-										min-width="6%"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="origin"
-										label="区域"
-										min-width="7.4%"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="buildType"
-										label="楼盘类型"
-										min-width="8.8%"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="houseNum"
-										label="小区户数"
-										min-width="7.3%"
-										class="tar"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="buildPrice"
-										label="楼盘价格"
-										min-width="7.3%"
-										>
-										</el-table-column>
-										<el-table-column
-										prop="schedules"
-										label="排期"
-										min-width="14.2%"
-										>
-										</el-table-column>
-										<el-table-column width="132px">
-										<template slot-scope="scope">
-											<el-checkbox>A面</el-checkbox>
-											<el-checkbox>B面</el-checkbox>
-										</template>
-										</el-table-column>
-									</el-table>
-									</div>
-								</div>
-								</div>
-								<span slot="footer" class="dialog-footer">
-									<el-button @click="cancelAddPoint">取 消</el-button>
-									<el-button type="primary" @click="confirmAddPoint">确 定</el-button>
-								</span>
-							</el-dialog>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="报价单" name="second">
@@ -560,758 +329,72 @@
 									</div>
 								</div>
 								<div class="imgs-box">
-									<div class="up-loader-Imgpanel">
+									<div class="up-loader-Imgpanel" v-for="updata of upReportArr" :key="updata.asID">
 										<el-card class="box-card" shadow="never">
 											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
+												<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
+												<span>{{updata.city+"-"+updata.rName+"-"+updata.resName+"-"+updata.mTitle+"-"+updata.asLab}}</span>
+												<el-popover
+													placement="top-start"
+													width="200"
+													trigger="hover">
+													<ol slot-scope="scope" style="text-align:center">
+														<li>{{updata.timeRange}}</li>
+														<!-- <li>2017.10.10-2018.10.10</li>
+														<li>2017.10.10-2018.10.10</li> -->
+													</ol>
+													<i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
+												</el-popover>
 											</div>
 											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
+												<el-upload
+													:action="doUpload"
+													list-type="picture-card"
+													:on-success="handleUpSuccess"
+													:on-preview="handlePictureCardPreview"
+													:on-remove="handleRemove">
+													<i class="el-icon-plus"></i>
+													<span @click="saveId(updata)">点击上传照片</span>
+												</el-upload>
 											</div>
 											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
+												<el-upload
+													:action="doUpload"
+													list-type="picture-card"
+													:on-success="handleUpSuccess"
+													:on-preview="handlePictureCardPreview"
+													:on-remove="handleRemove">
+													<i class="el-icon-plus"></i>
+													<span @click="saveId(updata)">点击上传照片</span>
+												</el-upload>
 											</div>
 											<!-- 是否显示更多的图片上传框打开 -->
 											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
+												<i class="fa fa-angle-double-down"></i>
 											</div>
 											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框关闭 -->
-											<div class="showimgbox closeMoreImg">
-												<i class="fa fa-angle-double-up"></i>
-											</div>
-											</div>
-										</el-card>
-									</div>
-									<div class="up-loader-Imgpanel">
-										<el-card class="box-card" shadow="never">
-											<div slot="header" class="clearfix img-car">
-											<span>广州市-天河区-东方雅苑-西门-B</span>
-											<el-popover
-												placement="top-start"
-												width="200"
-												trigger="hover">
-												<ol slot-scope="scope" style="text-align:center">
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												<li>2017.10.10-2018.10.10</li>
-												</ol>
-												<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"
-												slot="reference"></i>
-											</el-popover>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<div class="upload-img">
-											<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>点击上传照片</span>
-											</el-upload>
-											</div>
-											<!-- 是否显示更多的图片上传框打开 -->
-											<div class="showimgbox openMoreImg">
-											<i class="fa fa-angle-double-down"></i>
-											</div>
-											<div class="moreImgBox" style="display: none">
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
-											<div class="upload-img">
-												<el-upload
-												action="https://jsonplaceholder.typicode.com/posts/"
-												list-type="picture-card"
-												:on-preview="handlePictureCardPreview"
-												:on-remove="handleRemove">
-												<i class="el-icon-plus"></i>
-												<span>上传远景照片</span>
-												</el-upload>
-											</div>
+												<div class="upload-img">
+													<el-upload
+														:action="doUpload"
+														list-type="picture-card"
+														:on-success="handleUpSuccess"
+														:on-preview="handlePictureCardPreview"
+														:on-remove="handleRemove">
+													<i class="el-icon-plus"></i>
+													<span @click="saveId(updata)">点击上传照片</span>
+													</el-upload>
+												</div>
+												<div class="upload-img">
+													<el-upload
+														:action="doUpload"
+														list-type="picture-card"
+														:on-success="handleUpSuccess"
+														:on-preview="handlePictureCardPreview"
+														:on-remove="handleRemove">
+														<i class="el-icon-plus"></i>
+														<span @click="saveId(updata)">点击上传照片</span>
+													</el-upload>
+												</div>
 											<!-- 是否显示更多的图片上传框关闭 -->
 											<div class="showimgbox closeMoreImg">
 												<i class="fa fa-angle-double-up"></i>
@@ -1322,27 +405,27 @@
 								</div>
 								<div class="pager">
 									<el-pagination
-									small
-									background
-									@size-change="handleSizeChange"
-									@current-change="handleCurrentChange"
-									:current-page="1"
-									:page-sizes="[6, 12]"
-									:page-size="6"
-									layout=" sizes, prev, pager, next, jumper"
-									:total="30">
+										small
+										background
+										@size-change="handleSizeChange"
+										@current-change="handleCurrentChange"
+										:current-page="1"
+										:page-sizes="[6, 12]"
+										:page-size="6"
+										layout=" sizes, prev, pager, next, jumper"
+										:total="30">
 									</el-pagination>
 								</div>
 								<div class="up-report-bottom">
 									<div class="up-report-bottom-checkbox">
-									<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
-										<el-button type="text">修改</el-button>
-									</el-checkbox>
+										<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
+											<el-button type="text">修改</el-button>
+										</el-checkbox>
 									</div>
 									<div class="up-report-bottom-btns">
-									<el-button type="primary">生成报告</el-button>
-									<el-button plain>下载PDF</el-button>
-									<el-button plain @click="show2H5">查看H5</el-button>
+										<el-button type="primary">生成报告</el-button>
+										<el-button plain>下载PDF</el-button>
+										<el-button plain @click="show2H5">查看H5</el-button>
 									</div>
 								</div>
 							</div>
@@ -1351,783 +434,363 @@
 					</el-tab-pane>
 					<el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn">
 						<div class="forth-wrap box-wrap">
-						<h4>下刊报告</h4>
-						<div class="panel">
-							<div class="up-report">
-							<div class="up-loader-header">
-								<el-cascader
-								:options="citys"
-								v-model="selectedOptions"
-								>
-								</el-cascader>
-								<el-select placeholder="请选择资源" filterable v-model="allhouse">
-								<el-option label="全部资源" value="allHouse"></el-option>
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-								</el-select>
-								<el-select placeholder="请选择监播图" v-model="allPic">
-								<el-option label="全部监播图" value="allHouse"></el-option>
-								<el-option label="已上传" value="shanghai"></el-option>
-								<el-option label="未上传" value="beijing"></el-option>
-								</el-select>
-								<!--进度条-->
-								<div class="progress">
-								<el-progress :percentage="50"></el-progress>
-								<span>130 / 260</span>
+							<h4>下刊报告</h4>
+							<div class="panel">
+								<div class="up-report">
+									<div class="up-loader-header">
+										<el-cascader
+											:options="citys"
+											v-model="selectedOptions"
+										>
+										</el-cascader>
+										<el-select placeholder="请选择资源" filterable v-model="allhouse">
+											<el-option label="全部资源" value="allHouse"></el-option>
+											<el-option label="区域一" value="shanghai"></el-option>
+											<el-option label="区域二" value="beijing"></el-option>
+										</el-select>
+										<el-select placeholder="请选择监播图" v-model="allPic">
+											<el-option label="全部监播图" value="allHouse"></el-option>
+											<el-option label="已上传" value="shanghai"></el-option>
+											<el-option label="未上传" value="beijing"></el-option>
+										</el-select>
+										<!--进度条-->
+										<div class="progress">
+											<el-progress :percentage="50"></el-progress>
+											<span>130 / 260</span>
+										</div>
+									</div>
+									<div class="imgs-box">
+										<div class="up-loader-Imgpanel" v-for="downData of downReportArr" :key="downData.asID">
+											<el-card class="box-card" shadow="never">
+												<div slot="header" class="clearfix img-car">
+													<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
+													<span>{{downData.city+"-"+downData.rName+"-"+downData.resName+"-"+downData.mTitle+"-"+downData.asLab}}</span>
+													<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+												</div>
+												<div class="upload-img">
+													<el-upload
+														:action="doUpload"
+														list-type="picture-card"
+														:on-success="handleDownSuccess"
+														:on-preview="handlePictureCardPreview"
+														:on-remove="handleRemove">
+														<i class="el-icon-plus"></i>
+														<span @click="saveId(downData)">点击上传照片</span>
+													</el-upload>
+												</div>
+												<div class="upload-img">
+													<el-upload
+														:action="doUpload"
+														list-type="picture-card"
+														:on-success="handleDownSuccess"
+														:on-preview="handlePictureCardPreview"
+														:on-remove="handleRemove">
+														<i class="el-icon-plus"></i>
+														<span @click="saveId(downData)">点击上传照片</span>
+													</el-upload>
+												</div>
+												<!-- 是否显示更多的图片上传框打开 -->
+												<div class="showimgbox" @click="isShow1=true" v-if="isShow1==false">
+													<i class="fa fa-angle-double-down"></i>
+												</div>
+												<div v-if="isShow1">
+													<div class="upload-img">
+														<el-upload
+															:action="doUpload"
+															list-type="picture-card"
+															:on-success="handleDownSuccess"
+															:on-preview="handlePictureCardPreview"
+															:on-remove="handleRemove">
+															<i class="el-icon-plus"></i>
+														<span @click="saveId(downData)">上传远景照片</span>
+														</el-upload>
+													</div>
+													<div class="upload-img">
+														<el-upload
+															:action="doUpload"
+															list-type="picture-card"
+															:on-success="handleDownSuccess"
+															:on-preview="handlePictureCardPreview"
+															:on-remove="handleRemove">
+															<i class="el-icon-plus"></i>
+															<span @click="saveId(downData)">上传远景照片</span>
+														</el-upload>
+													</div>
+													<!-- 是否显示更多的图片上传框关闭 -->
+													<div class="showimgbox" @click="isShow1=false">
+														<i class="fa fa-angle-double-up"></i>
+													</div>
+												</div>
+											</el-card>
+										</div>
+									</div>
+									<div class="pager">
+										<el-pagination
+											small
+											background
+											@size-change="handleSizeChange"
+											@current-change="handleCurrentChange"
+											:current-page="1"
+											:page-sizes="[6, 12]"
+											:page-size="6"
+											layout=" sizes, prev, pager, next, jumper"
+											:total="30">
+										</el-pagination>
+									</div>
+									<div class="up-report-bottom">
+										<div class="up-report-bottom-checkbox">
+											<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
+												<el-button type="text">修改</el-button>
+											</el-checkbox>
+										</div>
+										<div class="up-report-bottom-btns">
+											<el-button type="primary">生成报告</el-button>
+											<el-button plain>下载PDF</el-button>
+											<el-button plain @click="showH5">查看H5</el-button>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div class="imgs-box">
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>点击上传照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>点击上传照片</span>
-									</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow1=true" v-if="isShow1==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow1">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow1=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow2=true" v-if="isShow2==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow2">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow2=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									<el-dialog :visible.sync="dialogVisible">
-										<img width="100%" :src="dialogImageUrl" alt="">
-									</el-dialog>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow3=true" v-if="isShow3==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow3">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow3=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow4=true" v-if="isShow4==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow4">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow4=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow5=true" v-if="isShow5==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow5">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow5=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow6=true" v-if="isShow6==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow6">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow6=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>点击上传照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>点击上传照片</span>
-									</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow1=true" v-if="isShow1==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow1">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow1=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow2=true" v-if="isShow2==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow2">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow2=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									<el-dialog :visible.sync="dialogVisible">
-										<img width="100%" :src="dialogImageUrl" alt="">
-									</el-dialog>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow3=true" v-if="isShow3==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow3">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow3=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow4=true" v-if="isShow4==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow4">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow4=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow5=true" v-if="isShow5==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow5">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow5=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-								<div class="up-loader-Imgpanel">
-								<el-card class="box-card" shadow="never">
-									<div slot="header" class="clearfix img-car">
-									<span>广州市-天河区-东方雅苑-西门-B</span>
-									<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-									<div class="upload-img">
-									<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-									</el-upload>
-									</div>
-
-									<!-- 是否显示更多的图片上传框打开 -->
-									<div class="showimgbox" @click="isShow6=true" v-if="isShow6==false">
-									<i class="fa fa-angle-double-down"></i>
-									</div>
-									<div v-if="isShow6">
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<div class="upload-img">
-										<el-upload
-										action="https://jsonplaceholder.typicode.com/posts/"
-										list-type="picture-card"
-										:on-preview="handlePictureCardPreview"
-										:on-remove="handleRemove">
-										<i class="el-icon-plus"></i>
-										<span>上传远景照片</span>
-										</el-upload>
-									</div>
-									<!-- 是否显示更多的图片上传框关闭 -->
-									<div class="showimgbox" @click="isShow6=false">
-										<i class="fa fa-angle-double-up"></i>
-									</div>
-									</div>
-								</el-card>
-								</div>
-							</div>
-							<div class="pager">
-								<el-pagination
-								small
-								background
-								@size-change="handleSizeChange"
-								@current-change="handleCurrentChange"
-								:current-page="1"
-								:page-sizes="[6, 12]"
-								:page-size="6"
-								layout=" sizes, prev, pager, next, jumper"
-								:total="30">
-								</el-pagination>
-							</div>
-							<div class="up-report-bottom">
-								<div class="up-report-bottom-checkbox">
-								<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
-									<el-button type="text">修改</el-button>
-								</el-checkbox>
-								</div>
-								<div class="up-report-bottom-btns">
-								<el-button type="primary">生成报告</el-button>
-								<el-button plain>下载PDF</el-button>
-								<el-button plain @click="showH5">查看H5</el-button>
-								</div>
-							</div>
-							</div>
-						</div>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
 
+
+				<!--添加点位对话框-->
+				<el-dialog
+					title="添加点位"
+					:visible.sync="dialogAddPoint"
+					width="30%"
+				>
+					<div class="step2">
+						<div>
+							<div class="search-nav">
+								<div class="search-wrap">
+									<span>
+										<el-select v-model="value" placeholder="请选择" class="type-select">
+											<el-option v-for="item in typeSelect" :key="item.value" :label="item.value" :value="item.value"></el-option>
+											<el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
+										</el-select>
+									</span>
+
+									<span>
+										<el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select">
+											<el-option label="区域一" value="shanghai"></el-option>
+											<el-option label="区域二" value="beijing"></el-option>
+										</el-select>
+									</span>
+									<span>
+										<el-date-picker
+											v-model="dateInput"
+											type="daterange"
+											start-placeholder="开始日期"
+											end-placeholder="结束日期"
+											class="date-select"
+										>
+										</el-date-picker>
+									</span>
+									<span>
+										<el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+									</span>
+								</div>
+							</div>
+							<!--类型区域选择面板-->
+							<div class="dw-panel">
+								<dl style="position: relative">
+									<dt>资源类型：</dt>
+									<dd class="active">社区</dd>
+									<dd>写字楼</dd>
+									<el-button type="text" style="position: absolute; right: 10px; top:2px;">重置选项</el-button>
+								</dl>
+								<dl>
+									<dt>媒体类型：</dt>
+									<dd class="active">社区广告门</dd>
+									<dd>电梯广告</dd>
+								</dl>
+								<dl style="border: none">
+									<dt>城市区域：</dt>
+									<dd class="active">广州</dd>
+									<dd>深圳</dd>
+								</dl>
+								<dl class="city-proper">
+									<dd class="active">全市</dd>
+									<dd>天河区</dd>
+									<dd>越秀区</dd>
+									<dd>海珠区</dd>
+									<dd>荔湾区</dd>
+									<dd>黄浦区</dd>
+									<dd>白云区</dd>
+									<dd>番禺区</dd>
+									<dd>花都区</dd>
+									<dd>南沙区</dd>
+									<dd>从化区</dd>
+									<dd>增城区</dd>
+								</dl>
+								<dl style="border: none">
+									<dt>广告限制：</dt>
+									<dd>医学</dd>
+									<dd>汽车</dd>
+									<dd>地产</dd>
+								</dl>
+							</div>
+							<!--数量价格年份输入筛选框-->
+							<div class="filter-input">
+								<ul>
+									<li style="margin-left: 0">
+										<span>住户数量:</span>
+										<div class="input-wrap">
+											<input type="text" class="input">
+											-
+											<input type="text" class="input">
+											<el-button size="mini">清除</el-button>
+											<el-button size="mini" type="primary">确定</el-button>
+										</div>
+									</li>
+									<li>
+										<span>楼栋数量:</span>
+										<div class="input-wrap">
+											<input type="text" class="input">
+											-
+											<input type="text" class="input">
+											<el-button size="mini">清除</el-button>
+											<el-button size="mini" type="primary">确定</el-button>
+										</div>
+									</li>
+									<li>
+										<span>楼盘价格:</span>
+										<div class="input-wrap">
+											<input type="text" class="input">
+											-
+											<input type="text" class="input">
+											<el-button size="mini">清除</el-button>
+											<el-button size="mini" type="primary">确定</el-button>
+										</div>
+									</li>
+									<li>
+										<span>入住年份:</span>
+										<div class="input-wrap">
+											<input type="text" class="input">
+											-
+											<input type="text" class="input">
+											<el-button size="mini">清除</el-button>
+											<el-button size="mini" type="primary">确定</el-button>
+										</div>
+									</li>
+									<li>
+										<span>楼盘类型:</span>
+										<el-select v-model="buildValue" placeholder="请选择" class="buildType">
+											<el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue"
+													:value="item.buildValue"></el-option>
+										</el-select>
+									</li>
+								</ul>
+							</div>
+							<!--表格-->
+							<div class="table_wrap">
+								<el-table
+									border
+									:data="planList"
+									style="width: 100%"
+									:default-sort="{prop: 'recName', order: 'descending'}"
+								>
+									<el-table-column type="expand">
+										<template slot-scope="props">
+											<el-form label-position="left" inline class="demo-table-expand">
+												<el-form-item label="商圈：">
+													<span>{{ props.row.businessOrigin}}</span>
+												</el-form-item>
+												<el-form-item label="楼栋数量：">
+													<span>{{ props.row.buildNum }}</span>
+												</el-form-item>
+												<el-form-item label="资产编号：">
+													<span>{{ props.row.assetID }}</span>
+												</el-form-item>
+												<el-form-item label="入住年份：">
+													<span>{{ props.row.liveYear }}</span>
+												</el-form-item>
+												<el-form-item label="广告限制：">
+													<span>{{ props.row.adLimit }}</span>
+												</el-form-item>
+											</el-form>
+										</template>
+									</el-table-column>
+									<el-table-column
+										type="selection"
+										width="41px">
+									</el-table-column>
+
+									<el-table-column
+										label="资源名称"
+										min-width="16.1%"
+										prop="recName"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="mediaName"
+										label="媒体名称"
+										min-width="10.3%"
+										class="tar"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="city"
+										label="城市"
+										min-width="6%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="origin"
+										label="区域"
+										min-width="7.4%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="buildType"
+										label="楼盘类型"
+										min-width="8.8%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="houseNum"
+										label="小区户数"
+										min-width="7.3%"
+										class="tar"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="buildPrice"
+										label="楼盘价格"
+										min-width="7.3%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="schedules"
+										label="排期"
+										min-width="14.2%"
+									>
+									</el-table-column>
+									<el-table-column width="132px">
+										<template slot-scope="scope">
+											<el-checkbox>A面</el-checkbox>
+											<el-checkbox>B面</el-checkbox>
+										</template>
+									</el-table-column>
+								</el-table>
+							</div>
+						</div>
+					</div>
+					<span slot="footer" class="dialog-footer">
+						<el-button @click="cancelAddPoint">取 消</el-button>
+						<el-button type="primary" @click="confirmAddPoint">确 定</el-button>
+					</span>
+				</el-dialog>
 				<!-- 图片查看显示 -->
 				<el-dialog :visible.sync="dialogVisible">
-				<img width="100%" :src="dialogImageUrl" alt="">
+					<img width="100%" :src="dialogImageUrl" alt="">
 				</el-dialog>
 				<!-- 返回框 -->
 				<div class="content_bottom_btn">
-				<el-button type="default">返回</el-button>
+					<el-button type="default">返回</el-button>
 				</div>
 			</div>
 		</div>
@@ -2197,6 +860,23 @@ export default {
 			filtersArea: [],
 			// 排期时间过滤
 			filtersData: [],
+			//物料信息
+			materialInfo: [],
+			// 上刊报告Arr
+			upReportArr: [],
+			// 下刊报告Arr
+			downReportArr: [],
+			// 上传图片地址
+			doUpload: 'https://beta.qinlinad.com/QADN/UpLoad',
+			// 上传图片附带参数
+			upLoadData: {
+				uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+				pid: '',
+				palt: '',
+				ptype: '',
+				ptid: '',
+				ptp: ''
+			},
 
 			isShow1: false,
 			isShow2: false,
@@ -2239,217 +919,218 @@ export default {
 			planSelect: '',
 			//添加点位列表
 			planList: [
-			{
-				recName: '珠江帝景',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}, {
-				recName: '珠江帝景花园',
-				city: '广州',
-				origin: '海珠区',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				buildNum: '12',
-				schedules: '2017.08.30-2017.09.30',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车'
-			}],
+				{
+					recName: '珠江帝景',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}, {
+					recName: '珠江帝景花园',
+					city: '广州',
+					origin: '海珠区',
+					buildType: '高端住宅',
+					houseNum: '600',
+					buildPrice: '￥30,000',
+					mediaName: '广州市中山大道',
+					buildNum: '12',
+					schedules: '2017.08.30-2017.09.30',
+					businessOrigin: '白云万达广场',
+					assetID: 'GZ201871024',
+					liveYear: '1999年',
+					adLimit: '地产/医药/汽车'
+				}
+			],
 			//生成任务按钮
 			usableMakeBtn: false,
 			//按钮
@@ -2479,121 +1160,6 @@ export default {
 			//选点排期资源名称搜索
 			keyword: "",
 			selectRecName: '1',
-			//物料信息
-			materialInfo: [
-			{
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}, {
-				no: 1,
-				adSize: '840*1180',
-				visualPic: '840*1180',
-				resolution: '150dpi',
-				colorMode: 'CMYK',
-				photoFormat: 'JPG/TIF/AI/PSD/CDR',
-				pointNum: '28'
-			}],
 			//上刊报告省市级联
 			citys: [
 			{
@@ -2703,19 +1269,23 @@ export default {
 		getSetPoint(){
 			// // 测试数据
 			// let testInfo = [
-			// 	{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: "", pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018", adSize: "1181*841", adViewSize: "118*84"},
-			// 	{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
-			// 	{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"},
-			// 	{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学",pbEnd:"Jun 21, 2018",pbStar:"Jun 7, 2018",adSize: "1181*841", adViewSize: "118*84"}
+			// 	{asID: 1,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+			// 	{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
 			// ];
-
+			// // let testInfo = [
+			// // 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
+			// // 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
+			// // ];
+			
+			// // 广州市-天河区-东方雅苑-西门-B
+			
 			// let arr = [];
 			// // 组装数据
 			// for(let data of testInfo){
 			// 	// 城市中文名称
 			// 	// this.$set(data, 'city', areaToText.toText(data.rID).city);
 			// 	data.city = areaToText.toText(data.rID).city;
-			// 	let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+			// 	let time = this.formatTime(data.lStar) +"-"+ this.formatTime(data.lEnd);
 			// 	data.timeRange = time;
 			// 	// 物料信息
 			// 	if(!arr.length){
@@ -2751,6 +1321,8 @@ export default {
 			// this.filtersArea = filterFormat(testInfo, 'rName');
 			// this.filtersData = filterFormat(testInfo, 'timeRange');
 			// this.setpointArr = testInfo;
+			// this.upReportArr = testInfo;
+			// this.downReportArr = testInfo;
 			// this.currentSetpoint = this.setpointArr;
 			// this.materialInfo = arr;
 
@@ -2763,7 +1335,8 @@ export default {
 			};
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
-			api.getApi('/GetADB', info).then(res =>{
+			// api.getApi('/GetADB', info).then(res =>{
+			api.getApi('/GetAdLaunch', info).then(res =>{
 				console.log(res.data);
 				if(!res.data.SysCode){
 					let info = res.data;
@@ -2773,7 +1346,7 @@ export default {
 						// 城市中文名称
 						// this.$set(data, 'city', areaToText.toText(data.rID).city);
 						data.city = areaToText.toText(data.rID).city;
-						let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
+						let time = this.formatTime(data.lStar) +"-"+ this.formatTime(data.lEnd);
 						data.timeRange = time;
 						// this.$set(data, 'timeRange', time);
 						let material = {
@@ -2794,6 +1367,7 @@ export default {
 					this.filtersArea = filterFormat(info, 'rName');
 					this.filtersData = filterFormat(info, 'timeRange');
 					this.setpointArr = info;
+					this.upReportArr = info;
 					this.currentSetpoint = this.setpointArr;
 					this.materialInfo = arr;
 				}else{
@@ -3022,6 +1596,49 @@ export default {
 			this.changeRemark = false;
 			Message.success('修改监播备注成功');
 		},
+		saveId(row){
+			console.log('row', row);
+			this.upLoadData.ptid = row.asID;
+			this.upLoadData.palt = row.city+"-"+row.rName+"-"+row.resName+"-"+row.mTitle+"-"+row.asLab;
+		},
+		handleUpSuccess(res, file){
+			// uid         int【必填】         当前账户UserID
+            // pid         int【必填】         图库pID
+            // palt        String              图片标题
+            // ptype       String              关联类型
+            // ptid        int                 关联类型对应唯一ID
+			// ptp         String              关联类型区分属性
+			this.upLoadData.pid = res.pID;
+			this.upLoadData.ptype = 'upReport';
+			this.upLoadData.ptp = 'asID';
+			console.log('uploaddata', this.upLoadData);
+
+			let info = this.upLoadData;
+			api.postApi('/SetImg', info).then(res =>{
+				console.log(res.data);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		handleDownSuccess(res, file){
+			// uid         int【必填】         当前账户UserID
+            // pid         int【必填】         图库pID
+            // palt        String              图片标题
+            // ptype       String              关联类型
+            // ptid        int                 关联类型对应唯一ID
+			// ptp         String              关联类型区分属性
+			this.upLoadData.pid = res.pID;
+			this.upLoadData.ptype = 'downReport';
+			this.upLoadData.ptp = 'asID';
+			console.log('uploaddata', this.upLoadData);
+
+			let info = this.upLoadData;
+			api.postApi('/SetImg', info).then(res =>{
+				console.log(res.data);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
 		//上传照片
 		handleRemove(file, fileList) {
 			console.log(file, fileList);
@@ -3132,6 +1749,7 @@ export default {
 			$(this).parents('.moreImgBox').hide();
 			$(this).parents('.moreImgBox').siblings('.openMoreImg').show();
 			});
+			
 			//事件委托
 			$('.content_top_wrap').on('click', 'dd', function () {
 			if ($(this).hasClass('active')) {

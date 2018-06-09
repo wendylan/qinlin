@@ -2438,7 +2438,7 @@
   }
 
   /deep/ .el-cascader {
-    line-height: 34px;
+    line-height: 19px;
   }
 
   .content_bottom_btn /deep/ .el-button span {

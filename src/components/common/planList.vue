@@ -93,7 +93,9 @@
 							min-width="23.6%"
 						>
 							<template slot-scope="scope">
-								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}<i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
+								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
+									<!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
+								</p>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -216,6 +218,7 @@ export default {
 				apTotal: 465200,
 				realName: "黄启炜",
 				rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+				// apcTime: "2018-05-09 18:29:47.0",
 				apcTime: "2018-05-09 18:29:47.0",
 				apState: 1
 				}

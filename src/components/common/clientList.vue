@@ -152,21 +152,21 @@ export default {
 			//表格
 			planList: [],
 			currentPlan: [
-        {
-          recName: '珠江1',
-          city: '广州1',
-          origin: '海珠区',
-          buildType: '高端住宅',
-          houseNum: '600',
-          buildPrice: '￥30,000',
-          mediaName: '广州市中山大道',
-          buildNum: '12',
-          schedules: '2017.08.30-2017.09.30',
-          businessOrigin: '白云万达广场',
-          assetID: 'GZ201871024'
-        }
-
-      ],
+				{
+				recName: '珠江1',
+				city: '广州1',
+				origin: '海珠区',
+				buildType: '高端住宅',
+				houseNum: '600',
+				buildPrice: '￥30,000',
+				mediaName: '广州市中山大道',
+				buildNum: '12',
+				joinTime: 'May 29, 2018 6:29:47 PM',
+				// joinTime: '2018-05-08 18:17:00.0',
+				businessOrigin: '白云万达广场',
+				assetID: 'GZ201871024'
+				}
+			],
 		}
 	},
 	mounted:function(){
