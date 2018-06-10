@@ -350,6 +350,7 @@
 												<el-upload
 													:action="doUpload"
 													list-type="picture-card"
+													:file-list="updata.upImg.one"
 													:on-success="handleUpSuccess"
 													:on-preview="handlePictureCardPreview"
 													:on-remove="handleRemove">
@@ -361,6 +362,7 @@
 												<el-upload
 													:action="doUpload"
 													list-type="picture-card"
+													:file-list="updata.upImg.two"
 													:on-success="handleUpSuccess"
 													:on-preview="handlePictureCardPreview"
 													:on-remove="handleRemove">
@@ -377,6 +379,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
+														:file-list="updata.upImg.three"
 														:on-success="handleUpSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -388,6 +391,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
+														:file-list="updata.upImg.four"
 														:on-success="handleUpSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -471,6 +475,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
+														:file-list="updata.downImg.one"
 														:on-success="handleDownSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -482,6 +487,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
+														:file-list="updata.downImg.two"
 														:on-success="handleDownSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -498,6 +504,7 @@
 														<el-upload
 															:action="doUpload"
 															list-type="picture-card"
+															:file-list="updata.downImg.three"
 															:on-success="handleDownSuccess"
 															:on-preview="handlePictureCardPreview"
 															:on-remove="handleRemove">
@@ -509,6 +516,7 @@
 														<el-upload
 															:action="doUpload"
 															list-type="picture-card"
+															:file-list="updata.downImg.four"
 															:on-success="handleDownSuccess"
 															:on-preview="handlePictureCardPreview"
 															:on-remove="handleRemove">
@@ -860,6 +868,9 @@ export default {
 			filtersArea: [],
 			// 排期时间过滤
 			filtersData: [],
+			//选点排期资源名称搜索
+			keyword: "",
+			selectRecName: '1',
 			//物料信息
 			materialInfo: [],
 			// 上刊报告Arr
@@ -883,13 +894,6 @@ export default {
 			downImg: [],
 
 			isShow1: false,
-			isShow2: false,
-			isShow3: false,
-			isShow4: false,
-			isShow5: false,
-			isShow6: false,
-			resource_name: '',
-			resourceNameArr: [],
 			//添加点位
 			dialogAddPoint: false,
 			dateInput: '',
@@ -1165,9 +1169,6 @@ export default {
 			cancelbtnShow: false,
 			//选点排期操作
 			showHandel: false,
-			//选点排期资源名称搜索
-			keyword: "",
-			selectRecName: '1',
 			//上刊报告省市级联
 			citys: [
 				{
@@ -1295,48 +1296,48 @@ export default {
 		// 获取选点排期
 		getSetPoint(){
 			// 测试数据
-			let testInfo = [
-				{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
-				{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
-			];
-			let upimginfo = [
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			];
-			let downimginfo = [
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			];
 			// let testInfo = [
-			// 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
-			// 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
+			// 	{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+			// 	{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
 			// ];
+			// let upimginfo = [
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			// ];
+			// let downimginfo = [
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			// ];
+			// // let testInfo = [
+			// // 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
+			// // 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
+			// // ];
 			
-			// 广州市-天河区-东方雅苑-西门-B
+			// // 广州市-天河区-东方雅苑-西门-B
 			
-			// this.getMaterialInfo(testInfo);
-			// 城市筛选过滤
-			this.filterCityData = filterFormat(testInfo, 'city');
-			this.filtersArea = filterFormat(testInfo, 'rName');
-			this.filtersData = filterFormat(testInfo, 'timeRange');
-			// 选点排期
-			this.setpointArr = testInfo;
-			this.currentSetpoint = this.setpointArr;
-			// 物料信息
-			this.materialInfo = this.getMaterialInfo(testInfo);
-			console.log('materialInfo', this.materialInfo);
+			// // this.getMaterialInfo(testInfo);
+			// // 城市筛选过滤
+			// this.filterCityData = filterFormat(testInfo, 'city');
+			// this.filtersArea = filterFormat(testInfo, 'rName');
+			// this.filtersData = filterFormat(testInfo, 'timeRange');
+			// // 选点排期
+			// this.setpointArr = testInfo;
+			// this.currentSetpoint = this.setpointArr;
+			// // 物料信息
+			// this.materialInfo = this.getMaterialInfo(testInfo);
+			// console.log('materialInfo', this.materialInfo);
 			
-			// 初始图片
-			this.upLoadImg = upimginfo;
-			this.downImg = downimginfo;
-			// 上刊数据(组合图片)
-			testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-			this.upReportArr = testInfo;
-			console.log('upimginfo', this.upReportArr);
-			// 下刊数据(组合图片)
-			testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-			this.downReportArr = testInfo;
-			console.log('downimginfo', this.downReportArr);
+			// // 初始图片
+			// this.upLoadImg = upimginfo;
+			// this.downImg = downimginfo;
+			// // 上刊数据(组合图片)
+			// testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
+			// this.upReportArr = testInfo;
+			// console.log('upimginfo', this.upReportArr);
+			// // 下刊数据(组合图片)
+			// testInfo = this.constructImg(testInfo, this.downImg, 'XK');
+			// this.downReportArr = testInfo;
+			// console.log('downimginfo', this.downReportArr);
 
 
 			// 真实数据
@@ -1349,39 +1350,39 @@ export default {
 			// uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
 			// api.getApi('/GetADB', info).then(res =>{
-			// api.getApi('/GetAdLaunch', info).then(res =>{
-			// 	console.log(res.data);
-			// 	if(!res.data.SysCode){
-			// 		let info = res.data;
-			// 		// 城市筛选过滤
-			// 		this.filterCityData = filterFormat(info, 'city');
-			// 		this.filtersArea = filterFormat(info, 'rName');
-			// 		this.filtersData = filterFormat(info, 'timeRange');
-			// 		// 选点排期
-			// 		this.setpointArr = info;
-			// 		this.currentSetpoint = this.setpointArr;
-			// 		// 物料信息
-			// 		this.materialInfo = this.getMaterialInfo(info);
-			// 		console.log('materialInfo', this.materialInfo);
+			api.getApi('/GetAdLaunch', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					let info = res.data;
+					// 城市筛选过滤
+					this.filterCityData = filterFormat(info, 'city');
+					this.filtersArea = filterFormat(info, 'rName');
+					this.filtersData = filterFormat(info, 'timeRange');
+					// 选点排期
+					this.setpointArr = info;
+					this.currentSetpoint = this.setpointArr;
+					// 物料信息
+					this.materialInfo = this.getMaterialInfo(info);
+					console.log('materialInfo', this.materialInfo);
 					
-			// 		// 初始图片
-			// 		this.upLoadImg = this.getImgInfo('SK');
-			// 		this.downImg = this.getImgInfo('XK');
-			// 		// 上刊数据(组合图片)
-			// 		testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-			// 		this.upReportArr = testInfo;
-			// 		console.log('upimginfo', this.upReportArr);
-			// 		// 下刊数据(组合图片)
-			// 		testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-			// 		this.downReportArr = testInfo;
-			// 		console.log('downimginfo', this.downReportArr);
+					// 初始图片
+					this.upLoadImg = this.getImgInfo('SK');
+					this.downImg = this.getImgInfo('XK');
+					// 上刊数据(组合图片)
+					testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
+					this.upReportArr = testInfo;
+					console.log('upimginfo', this.upReportArr);
+					// 下刊数据(组合图片)
+					testInfo = this.constructImg(testInfo, this.downImg, 'XK');
+					this.downReportArr = testInfo;
+					console.log('downimginfo', this.downReportArr);
 					
-			// 	}else{
-			// 		Message.warning(res.data.MSG);
-			// 	}
-			// }).catch(res =>{
-			// 	console.log(res);
-			// });
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res =>{
+				console.log(res);
+			});
 		},
 		// 组装成物料信息数据
 		getMaterialInfo(info){
@@ -1433,18 +1434,54 @@ export default {
 				for(let item of imgArr){
 					if(data.asID == item.ptID){
 						if(type=='SK'){
-							img.push(item);
+							// uid         int【必填】         当前账户UserID
+							// pid         int【必填】         图库pID
+							// palt        String              图片标题
+							// ptype       String              关联类型
+							// ptid        int                 关联类型对应唯一ID
+							// ptp         String              关联类型区分属性
+							img.push({
+								name: item.pID+'.png',
+								url: item.pURL,
+								uid: item.puID,
+								pid: item.pID,
+								palt: item.pAlt,
+								ptype: item.pType,
+								ptid: item.ptID,
+								ptp: item.ptP
+							});
 						}
 						if(type=='XK'){
-							img.push(item);
+							img.push({
+								name: item.pID+'.png',
+								url: item.pURL,
+								uid: item.puID,
+								pid: item.pID,
+								palt: item.pAlt,
+								ptype: item.pType,
+								ptid: item.ptID,
+								ptp: item.ptP
+							});
 						}
 					}
 				}
 				if(type == 'SK'){
 					data.upImgArr = img;
+					data.upImg = {
+						one: img[0]?[img[0]]: [],
+						two: img[1]?[img[1]]: [],
+						three: img[2]?[img[2]]: [],
+						four: img[3]?[img[3]]: [],
+					};
 				}
 				if(type == "XK"){
 					data.downImgArr = img;
+					data.downImg = {
+						one: img[0]?[img[0]]: [],
+						two: img[1]?[img[1]]: [],
+						three: img[2]?[img[2]]: [],
+						four: img[3]?[img[3]]: [],
+					};
 				}
 			}
 			return arr;
@@ -1606,37 +1643,91 @@ export default {
 			}
 			this.currentSetpoint = this.setpointArr;
 		},
+		// 城市筛选
+		filterCity(value, row) {
+			return row.city === value;
+		},
+		// 地区筛选
+		filterRName(value, row) {
+			return row.rName === value;
+		},
+		// 排期筛选
+		filterTimeRange(value, row) {
+			return row.timeRange === value;
+		},
+		// 点击上传图片按钮之时进行储存所需数据(asid, ptp等)
+		saveId(row){
+			console.log('row', row);
+			this.upLoadData.ptid = row.asID;
+			this.upLoadData.palt = row.city+"-"+row.rName+"-"+row.resName+"-"+row.mTitle+"-"+row.asLab;
+			this.upLoadData.ptp = sessionStorage.getItem('order_apid');
+		},
+		// 上传上刊图片并关联
+		handleUpSuccess(res, file){
+			// uid         int【必填】         当前账户UserID
+            // pid         int【必填】         图库pID
+            // palt        String              图片标题
+            // ptype       String              关联类型
+            // ptid        int                 关联类型对应唯一ID
+			// ptp         String              关联类型区分属性
+			this.upLoadData.pid = res.pID;
+			this.upLoadData.ptype = 'SK';
+			console.log('uploaddata', this.upLoadData);
+
+			let info = this.upLoadData;
+			api.postApi('/SetImg', info).then(res =>{
+				console.log(res.data);
+				Message.success(res.data.MSG);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		// 上传下刊图片并关联
+		handleDownSuccess(res, file){
+			// uid         int【必填】         当前账户UserID
+            // pid         int【必填】         图库pID
+            // palt        String              图片标题
+            // ptype       String              关联类型
+            // ptid        int                 关联类型对应唯一ID
+			// ptp         String              关联类型区分属性
+			this.upLoadData.pid = res.pID;
+			this.upLoadData.ptype = 'XK';
+			console.log('uploaddata', this.upLoadData);
+
+			let info = this.upLoadData;
+			api.postApi('/SetImg', info).then(res =>{
+				console.log(res.data);
+				Message.success(res.data.MSG);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		//删除照片
+		handleRemove(file, fileList) {
+			console.log(file);
+			let info = file;
+			file.ptype = 'del';
+			api.postApi('/SetImg', info).then(res =>{
+				console.log(res.data);
+				// Message.success(res.data.MSG);
+			}).catch(res =>{
+				console.log(res);
+			});
+			console.log(file, fileList);
+		},
+		// 查看预览图片
+		handlePictureCardPreview(file) {
+			this.dialogImageUrl = file.url;
+			this.dialogVisible = true;
+		},
+
+
 		show2H5() {
 			this.$router.push('/upReport')
 		},
 		//跳转
 		showH5() {
 			this.$router.push('/downReport')
-		},
-		// 过滤来获取唯一的资源名称
-		getResourceNameArr(dataArr) {
-			let arr = [];
-			let door = 1;
-			for (let data of dataArr) {
-			for (let item of arr) {
-				if (data.recName == item.value) {
-				door = 0;
-				}
-			}
-			if (door) {
-				arr.push({label: data.recName, value: data.recName});
-			}
-			}
-			return arr;
-		},
-		filterCity(value, row) {
-			return row.city === value;
-		},
-		filterRName(value, row) {
-			return row.rName === value;
-		},
-		filterTimeRange(value, row) {
-			return row.timeRange === value;
 		},
 		//生成任务
 		makeMission() {
@@ -1667,58 +1758,6 @@ export default {
 		confirmChangeRemark() {
 			this.changeRemark = false;
 			Message.success('修改监播备注成功');
-		},
-		saveId(row){
-			console.log('row', row);
-			this.upLoadData.ptid = row.asID;
-			this.upLoadData.palt = row.city+"-"+row.rName+"-"+row.resName+"-"+row.mTitle+"-"+row.asLab;
-			this.upLoadData.ptp = sessionStorage.getItem('order_apid');
-		},
-		handleUpSuccess(res, file){
-			// uid         int【必填】         当前账户UserID
-            // pid         int【必填】         图库pID
-            // palt        String              图片标题
-            // ptype       String              关联类型
-            // ptid        int                 关联类型对应唯一ID
-			// ptp         String              关联类型区分属性
-			this.upLoadData.pid = res.pID;
-			this.upLoadData.ptype = 'SK';
-			console.log('uploaddata', this.upLoadData);
-
-			let info = this.upLoadData;
-			api.postApi('/SetImg', info).then(res =>{
-				console.log(res.data);
-				Message.success(res.data.MSG);
-			}).catch(res =>{
-				console.log(res);
-			});
-		},
-		handleDownSuccess(res, file){
-			// uid         int【必填】         当前账户UserID
-            // pid         int【必填】         图库pID
-            // palt        String              图片标题
-            // ptype       String              关联类型
-            // ptid        int                 关联类型对应唯一ID
-			// ptp         String              关联类型区分属性
-			this.upLoadData.pid = res.pID;
-			this.upLoadData.ptype = 'XK';
-			console.log('uploaddata', this.upLoadData);
-
-			let info = this.upLoadData;
-			api.postApi('/SetImg', info).then(res =>{
-				console.log(res.data);
-				Message.success(res.data.MSG);
-			}).catch(res =>{
-				console.log(res);
-			});
-		},
-		//上传照片
-		handleRemove(file, fileList) {
-			console.log(file, fileList);
-		},
-		handlePictureCardPreview(file) {
-			this.dialogImageUrl = file.url;
-			this.dialogVisible = true;
 		},
 		//页码
 		handleSizeChange(val) {
@@ -1810,7 +1849,6 @@ export default {
 		}
 	},
 	mounted: function () {
-		this.resourceNameArr = this.getResourceNameArr(this.planList);
 		$(function () {
 			//上下刊报告展开上传
 			$('.openMoreImg').click(function () {
