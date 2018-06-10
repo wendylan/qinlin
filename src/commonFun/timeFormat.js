@@ -3,17 +3,13 @@
 var timeFormat = {};
 // 获取时间年月日
 timeFormat.toDate = function(time, format='-'){
-	if(!document.all){
-		time = new Date();
-	}else{
-		if(time){
-			let str = time.substring(time.length-2);
-			if(str ==".0"){
-				time = time.substring(0, time.length-2);
-			}
+	if(time){
+		let str = time.substring(time.length-2);
+		if(str ==".0"){
+			time = time.substring(0, time.length-2);
 		}
-		time =  new Date(Date.parse(time.replace(/-/g,"/")));
 	}
+	time =  new Date(Date.parse(time.replace(/-/g,"/")));
 
 	let year = time.getFullYear();
 	let month = time.getMonth()+1;//js从0开始取 
@@ -31,17 +27,14 @@ timeFormat.toDate = function(time, format='-'){
 }
 // 获取时间年月日时分秒
 timeFormat.toDateTime = function(time){
-	if(!document.all){
-		time = new Date();
-	}else{
-		if(time){
-			let str = time.substring(time.length-2);
-			if(str ==".0"){
-				time = time.substring(0, time.length-2);
-			}
+	if(time){
+		let str = time.substring(time.length-2);
+		if(str ==".0"){
+			time = time.substring(0, time.length-2);
 		}
-		time =  new Date(Date.parse(time.replace(/-/g,"/")));
 	}
+	time =  new Date(Date.parse(time.replace(/-/g,"/")));
+	
 	let year = time.getFullYear();
 	let month = time.getMonth()+1;//js从0开始取 
 	let date = time.getDate(); 

@@ -25,7 +25,6 @@
 						</el-dialog>
 						<div class="handleBtn">
 							<el-button plain @click="changeRemark = true" :disabled="usableBtn">监播备注</el-button>
-							<el-button plain :disabled="usableMakeBtn" @click="makeMission">生成任务</el-button>
 							<el-button type="primary" :disabled="usableBtn" @click="changePoint">换点</el-button>
 							<!--监播备注对话框-->
 							<el-dialog
@@ -1143,8 +1142,6 @@ export default {
 					adLimit: '地产/医药/汽车'
 				}
 			],
-			//生成任务按钮
-			usableMakeBtn: false,
 			//按钮
 			usableBtn: false,
 			//发送报告
@@ -1729,19 +1726,6 @@ export default {
 		showH5() {
 			this.$router.push('/downReport')
 		},
-		//生成任务
-		makeMission() {
-			MessageBox.confirm('是否生成任务？', '提示', {
-				confirmButtonText: '是',
-				cancelButtonText: '否',
-				type: 'warning'
-			}).then(() => {
-				//按钮不可用
-				this.usableMakeBtn = true;
-			}).catch(() => {
-
-			});
-		},
 		cancelChangeID() {
 			this.changeCID = false;
 			Message.info('取消修改合同编号');
@@ -1768,7 +1752,6 @@ export default {
 		},
 		//点击换点
 		changePoint() {
-			this.usableMakeBtn = true;
 			this.usableBtn = true;
 			$(window).scrollTop(288);
 			this.showTitle = true;
@@ -1778,7 +1761,6 @@ export default {
 		//保存更换点位
 		saveChangePoint() {
 			this.usableBtn = false;
-			this.usableMakeBtn = false;
 			this.showTitle = false;
 			this.showBtn = true;
 			this.showHandel = false;
@@ -1786,7 +1768,6 @@ export default {
 		//取消更换点位
 		cancelChangePoint() {
 			this.usableBtn = false;
-			this.usableMakeBtn = false;
 			this.showTitle = false;
 			this.showBtn = true;
 			this.showHandel = false;

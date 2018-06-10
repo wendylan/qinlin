@@ -1,1809 +1,653 @@
 <template>
-  <div>
-    <div class="ad_mediaMana_wrap">
-      <div class="ad_mediaMana_nav clearfix">
-        <p><a href="#">图片库</a></p>
-      </div>
-      <div class="mediaList_wrap">
-        <div class="mediaList_container">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <!--搜索框-->
-            <div class="search-wrap" v-if="!ludan">
-              <span>
-                  <div style="display:inline-block">
-                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
-                  <el-select v-model="select" slot="prepend" placeholder="请选择">
-                    <el-option label="方案名称" value="1"></el-option>
-                    <el-option label="媒体名称" value="2"></el-option>
-                    <el-option label="资源名称" value="3"></el-option>
-                  </el-select>
-                </el-input>
-              </div>
-              </span>
+	<div>
+		<div class="ad_mediaMana_wrap">
+			<div class="ad_mediaMana_nav clearfix">
+				<p><a href="#">图片库</a></p>
+			</div>
+			<div class="mediaList_wrap">
+				<div class="mediaList_container">
+					<el-tabs v-model="activeName" @tab-click="handleClick">
+						<!--搜索框-->
+						<div class="search-wrap" v-if="!ludan">
+							<span>
+								<div style="display:inline-block">
+									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+										<el-select v-model="select" slot="prepend" placeholder="请选择">
+											<el-option label="方案名称" value="1"></el-option>
+											<el-option label="媒体名称" value="2"></el-option>
+											<el-option label="资源名称" value="3"></el-option>
+										</el-select>
+									</el-input>
+								</div>
+							</span>
+							<el-cascader
+								:options="citys"
+								v-model="selectedOptions"
+								class="plan-select"
+								placeholder="选择地区"
+								change-on-select
+							>
+							</el-cascader>
+							<span>
+								<el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select">
+									<el-option label="A面" value="Amian"></el-option>
+									<el-option label="B面" value="Bmian"></el-option>
+								</el-select>
+							</span>
+							<span>
+								<div class="block">
+									<el-date-picker
+										v-model="date"
+										type="daterange"
+										range-separator="-"
+										start-placeholder="投放日期"
+										end-placeholder="投放日期">
+									</el-date-picker>
+								</div>
+							</span>
+							<span>
+								<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
+							</span>
+							<span>
+								<el-button plain class="map">一键导出</el-button>
+							</span>
+						</div>
+						<el-tab-pane label="上刊" name="first">
+							<div class="search-nav">
+								<!--提示或图片显示区域-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(item, index) of upImgArr" :key="index">
+											<div class="imgBox">
+												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" style="display: none">
+													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+													<a href="#" download="name.jpg">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>珠江帝景地产三月投放</p>
+												<span>华南碧桂园二期-东门</span>
+												<div class="icons">
+													<span class="el-icon-location">广州市</span>
+													<span>
+														<i class="fa  fa-file-text"></i>
+														A面
+													</span>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{assetID}}</p>
+															<p>{{address}}</p>
+														</div>
+													</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>guangzhoumeijie</span>
+												<em>2018.08.30</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination
+												small
+												background
+												:current-page="1"
+												:page-sizes="[10, 20]"
+												:page-size="10"
+												layout=" sizes, prev, pager, next, jumper"
+												:total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="下刊" name="second">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(item, index) of downImgArr" :key="index">
+											<div class="imgBox">
+												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" style="display: none">
+												<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+												<a href="#" download="name.jpg">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>珠江帝景地产三月投放</p>
+												<span>华南碧桂园二期-东门</span>
+												<div class="icons">
+												<span class="el-icon-location">广州市</span>
+												<span>
+													<i class="fa  fa-file-text"></i>
+													A面
+													</span>
+												<el-tooltip placement="bottom" effect="light">
+													<span class="el-icon-info"></span>
+													<div slot="content" class="content">
+													<p>{{assetID}}</p>
+													<p>{{address}}</p>
+													</div>
+												</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>guangzhoumeijie</span>
+												<em>2018.08.30</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination
+												small
+												background
+												:current-page="1"
+												:page-sizes="[10, 20]"
+												:page-size="10"
+												layout=" sizes, prev, pager, next, jumper"
+												:total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
 
-              <el-cascader
-                :options="citys"
-                v-model="selectedOptions"
-                class="plan-select"
-                placeholder="选择地区"
-                change-on-select
-              >
-              </el-cascader>
-
-              <span>
-               <el-select v-model="mianSelect" placeholder="选择投放面" class="plan-select">
-                <el-option label="A面" value="Amian"></el-option>
-                <el-option label="B面" value="Bmian"></el-option>
-              </el-select>
-            </span>
-              <span>
-               <div class="block">
-                <el-date-picker
-                  v-model="date"
-                  type="daterange"
-                  range-separator="-"
-                  start-placeholder="投放日期"
-                  end-placeholder="投放日期">
-                </el-date-picker>
-              </div>
-             </span>
-              <span>
-                <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
-              </span>
-              <span>
-                <el-button plain class="map">一键导出</el-button>
-              </span>
-            </div>
-            <el-tab-pane label="上刊" name="first">
-              <div class="search-nav">
-                <!--提示或图片显示区域-->
-                <div class="tempPic">
-                  <div class="noFind" v-if="showPic === 1">
-                    <img src="../../assets/images/tempPic.png" alt="">
-                    <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                  </div>
-                  <div class="cantFind" v-if="showPic === 2">
-                    <img src="../../assets/images/noPic.png" alt="">
-                    <h4>无匹配结果</h4>
-                    <p>可以尝试扩大搜索范围重新搜索哦</p>
-                  </div>
-                  <!--图片列表-->
-                  <div class="find clearfix" v-if="showPic === 3">
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <!--页码-->
-                    <div class="pager">
-                      <el-pagination
-                        small
-                        background
-                        :current-page="1"
-                        :page-sizes="[10, 20]"
-                        :page-size="10"
-                        layout=" sizes, prev, pager, next, jumper"
-                        :total="60">
-                      </el-pagination>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-            </el-tab-pane>
-            <el-tab-pane label="下刊" name="second">
-              <div class="search-nav">
-                <!--未搜索占位图-->
-                <div class="tempPic">
-                  <div class="noFind" v-if="showPic === 1">
-                    <img src="../../assets/images/tempPic.png" alt="">
-                    <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                  </div>
-                  <div class="cantFind" v-if="showPic === 2">
-                    <img src="../../assets/images/noPic.png" alt="">
-                    <h4>无匹配结果</h4>
-                    <p>可以尝试扩大搜索范围重新搜索哦</p>
-                  </div>
-                  <!--图片列表-->
-                  <div class="find clearfix" v-if="showPic === 3">
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span>
-							  <i class="fa  fa-file-text"></i>
-							  A面
-							</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <!--页码-->
-                    <div class="pager">
-                      <el-pagination
-                        small
-                        background
-                        :current-page="1"
-                        :page-sizes="[10, 20]"
-                        :page-size="10"
-                        layout=" sizes, prev, pager, next, jumper"
-                        :total="60">
-                      </el-pagination>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-            </el-tab-pane>
-            <el-tab-pane label="安装" name="third">
-              <div class="search-nav">
-                <!--未搜索占位图-->
-                <div class="tempPic">
-                  <div class="noFind" v-if="showPic === 1">
-                    <img src="../../assets/images/tempPic.png" alt="">
-                    <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                  </div>
-                  <div class="cantFind" v-if="showPic === 2">
-                    <img src="../../assets/images/noPic.png" alt="">
-                    <h4>无匹配结果</h4>
-                    <p>可以尝试扩大搜索范围重新搜索哦</p>
-                  </div>
-                  <!--图片列表-->
-                  <div class="find clearfix" v-if="showPic === 3">
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <!--页码-->
-                    <div class="pager">
-                      <el-pagination
-                        small
-                        background
-                        :current-page="1"
-                        :page-sizes="[10, 20]"
-                        :page-size="10"
-                        layout=" sizes, prev, pager, next, jumper"
-                        :total="60">
-                      </el-pagination>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </el-tab-pane>
-            <el-tab-pane label="巡点" name="fourth">
-              <div class="search-nav">
-                <!--未搜索占位图-->
-                <div class="tempPic">
-                  <div class="noFind" v-if="showPic === 1">
-                    <img src="../../assets/images/tempPic.png" alt="">
-                    <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                  </div>
-                  <div class="cantFind" v-if="showPic === 2">
-                    <img src="../../assets/images/noPic.png" alt="">
-                    <h4>无匹配结果</h4>
-                    <p>可以尝试扩大搜索范围重新搜索哦</p>
-                  </div>
-                  <!--图片列表-->
-                  <div class="find clearfix" v-if="showPic === 3">
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <div class="photoCard">
-                      <div class="imgBox">
-                        <img :src="dialogImageUrl" alt="" class="smallImg">
-                        <!--查看缩略图和下载-->
-                        <div class="mask-btn" style="display: none">
-                          <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                          <a href="#" download="name.jpg">下载图片</a>
-                        </div>
-                      </div>
-                      <div class="detailBox">
-                        <p>珠江帝景地产三月投放</p>
-                        <span>华南碧桂园二期-东门</span>
-                        <div class="icons">
-                          <span class="el-icon-location">广州市</span>
-                          <span class="el-icon-menu">钣金门</span>
-                          <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                          <el-tooltip placement="bottom" effect="light">
-                            <span class="el-icon-info"></span>
-                            <div slot="content" class="content">
-                              <p>{{assetID}}</p>
-                              <p>{{address}}</p>
-                            </div>
-                          </el-tooltip>
-                        </div>
-                      </div>
-                      <div class="infoBox">
-                        <i>超</i>
-                        <span>guangzhoumeijie</span>
-                        <em>2018.08.30</em>
-                      </div>
-                    </div>
-                    <!--页码-->
-                    <div class="pager">
-                      <el-pagination
-                        small
-                        background
-                        :current-page="1"
-                        :page-sizes="[10, 20]"
-                        :page-size="10"
-                        layout=" sizes, prev, pager, next, jumper"
-                        :total="60">
-                      </el-pagination>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </el-tab-pane>
-            <el-tab-pane label="录单" name="fifth">
-              <div class="mediaList_container">
-                <div style="display:inline-block" v-if="ludan">
-                  <span>
-                    <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
-                    <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
-                      <el-option label="任务名称" value="1"></el-option>
-                      <el-option label="创建人" value="2"></el-option>
-                    </el-select>
-                  </el-input>
-                  </span>
-                  <span>
-                    <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                  </span>
-                </div>
-                <div class="table_wrap">
-                  <el-table
-                    border
-                    width="98%"
-                    :data="caseList"
-                    style="width: 100%"
-                    :default-sort="{prop: 'date', order: 'descending'}"
-                  >
-                    <el-table-column
-                      label="任务名称"
-                      min-width="18.3%"
-                    >
-                      <template slot-scope="scope">
-                        <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="caseType"
-                      label="任务类型"
-                      min-width="11%"
-                      :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
-                      :filter-method="filterCaseType"
-                      :filter-multiple="false"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="dwNum"
-                      label="点位数量"
-                      min-width="11%"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="uploadImg"
-                      label="已上传图片"
-                      min-width="11%"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="creater"
-                      label="创建人"
-                      min-width="11%"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="account"
-                      label="创建账号"
-                      min-width="13.8%"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="createDate"
-                      label="创建时间"
-                      min-width="11.3%"
-                    >
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </div>
-            </el-tab-pane>
-          </el-tabs>
-          <!--缩略图对话框-->
-          <el-dialog :visible.sync="dialogVisible">
-            <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </div>
-      </div>
-      <div class="bottom-btn">
-        <el-button plain>返回</el-button>
-      </div>
-    </div>
-  </div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="安装" name="third">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+								<div class="noFind" v-if="showPic === 1">
+									<img src="../../assets/images/tempPic.png" alt="">
+									<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+								</div>
+								<div class="cantFind" v-if="showPic === 2">
+									<img src="../../assets/images/noPic.png" alt="">
+									<h4>无匹配结果</h4>
+									<p>可以尝试扩大搜索范围重新搜索哦</p>
+								</div>
+								<!--图片列表-->
+								<div class="find clearfix" v-if="showPic === 3">
+									<div class="photoCard" v-for="(item, index) of installArr" :key="index">
+										<div class="imgBox">
+											<img :src="dialogImageUrl" alt="" class="smallImg">
+											<!--查看缩略图和下载-->
+											<div class="mask-btn" style="display: none">
+											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+											<a href="#" download="name.jpg">下载图片</a>
+											</div>
+										</div>
+										<div class="detailBox">
+											<p>珠江帝景地产三月投放</p>
+											<span>华南碧桂园二期-东门</span>
+											<div class="icons">
+											<span class="el-icon-location">广州市</span>
+											<span class="el-icon-menu">钣金门</span>
+											<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+											<el-tooltip placement="bottom" effect="light">
+												<span class="el-icon-info"></span>
+												<div slot="content" class="content">
+												<p>{{address}}</p>
+												</div>
+											</el-tooltip>
+											</div>
+										</div>
+										<div class="infoBox">
+											<i>超</i>
+											<span>guangzhoumeijie</span>
+											<em>2018.08.30</em>
+										</div>
+									</div>
+									<!--页码-->
+									<div class="pager">
+										<el-pagination
+											small
+											background
+											:current-page="1"
+											:page-sizes="[10, 20]"
+											:page-size="10"
+											layout=" sizes, prev, pager, next, jumper"
+											:total="60">
+										</el-pagination>
+									</div>
+								</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="巡点" name="fourth">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+								<div class="noFind" v-if="showPic === 1">
+									<img src="../../assets/images/tempPic.png" alt="">
+									<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+								</div>
+								<div class="cantFind" v-if="showPic === 2">
+									<img src="../../assets/images/noPic.png" alt="">
+									<h4>无匹配结果</h4>
+									<p>可以尝试扩大搜索范围重新搜索哦</p>
+								</div>
+								<!--图片列表-->
+								<div class="find clearfix" v-if="showPic === 3">
+									<div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
+										<div class="imgBox">
+											<img :src="dialogImageUrl" alt="" class="smallImg">
+											<!--查看缩略图和下载-->
+											<div class="mask-btn" style="display: none">
+											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+											<a href="#" download="name.jpg">下载图片</a>
+											</div>
+										</div>
+										<div class="detailBox">
+											<p>珠江帝景地产三月投放</p>
+											<span>华南碧桂园二期-东门</span>
+											<div class="icons">
+											<span class="el-icon-location">广州市</span>
+											<span class="el-icon-menu">钣金门</span>
+											<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+											<el-tooltip placement="bottom" effect="light">
+												<span class="el-icon-info"></span>
+												<div slot="content" class="content">
+												<p>{{assetID}}</p>
+												<p>{{address}}</p>
+												</div>
+											</el-tooltip>
+											</div>
+										</div>
+										<div class="infoBox">
+											<i>超</i>
+											<span>guangzhoumeijie</span>
+											<em>2018.08.30</em>
+										</div>
+									</div>
+									<!--页码-->
+									<div class="pager">
+										<el-pagination
+											small
+											background
+											:current-page="1"
+											:page-sizes="[10, 20]"
+											:page-size="10"
+											layout=" sizes, prev, pager, next, jumper"
+											:total="60">
+										</el-pagination>
+									</div>
+								</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<!-- <el-tab-pane label="录单" name="fifth">
+							<div class="mediaList_container">
+								<div style="display:inline-block" v-if="ludan">
+								<span>
+									<el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+									<el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+									<el-option label="任务名称" value="1"></el-option>
+									<el-option label="创建人" value="2"></el-option>
+									</el-select>
+								</el-input>
+								</span>
+								<span>
+									<el-button type="primary" icon="el-icon-search">搜索</el-button>
+								</span>
+								</div>
+								<div class="table_wrap">
+								<el-table
+									border
+									width="98%"
+									:data="caseList"
+									style="width: 100%"
+									:default-sort="{prop: 'date', order: 'descending'}"
+								>
+									<el-table-column
+									label="任务名称"
+									min-width="18.3%"
+									>
+									<template slot-scope="scope">
+										<span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
+									</template>
+									</el-table-column>
+									<el-table-column
+									prop="caseType"
+									label="任务类型"
+									min-width="11%"
+									:filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
+									:filter-method="filterCaseType"
+									:filter-multiple="false"
+									>
+									</el-table-column>
+									<el-table-column
+									prop="dwNum"
+									label="点位数量"
+									min-width="11%"
+									>
+									</el-table-column>
+									<el-table-column
+									prop="uploadImg"
+									label="已上传图片"
+									min-width="11%"
+									>
+									</el-table-column>
+									<el-table-column
+									prop="creater"
+									label="创建人"
+									min-width="11%"
+									>
+									</el-table-column>
+									<el-table-column
+									prop="account"
+									label="创建账号"
+									min-width="13.8%"
+									>
+									</el-table-column>
+									<el-table-column
+									prop="createDate"
+									label="创建时间"
+									min-width="11.3%"
+									>
+									</el-table-column>
+								</el-table>
+								</div>
+							</div>
+						</el-tab-pane> -->
+					</el-tabs>
+					<!--缩略图对话框-->
+					<el-dialog :visible.sync="dialogVisible">
+						<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+					</el-dialog>
+				</div>
+			</div>
+			<div class="bottom-btn">
+				<el-button plain>返回</el-button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-  import {
-    Button,
-    Input,
-    Dialog,
-    Table,
-    TableColumn,
-    Row,
-    Tooltip,
-    Tabs,
-    TabPane,
-    Select,
-    Option,
-    Cascader,
-    DatePicker,
-    Pagination
-  } from 'element-ui';
+import {Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane, Select, Option, Cascader, DatePicker, Pagination} from 'element-ui';
 
-  export default {
-    name: "PhotoGallery",
-    components: {
-      elButton: Button,
-      elInput: Input,
-      elDialog: Dialog,
-      elTable: Table,
-      elTableColumn: TableColumn,
-      elRow: Row,
-      elTooltip: Tooltip,
-      elTabs: Tabs,
-      elTabPane: TabPane,
-      elSelect: Select,
-      elOption: Option,
-      elCascader: Cascader,
-      elDatePicker: DatePicker,
-      elPagination: Pagination,
-    },
-    data() {
-      return {
-        //缩略图
-        dialogImageUrl: '../../../static/images/testPic.png',
-        dialogVisible: false,
-        showBtn: false,
-        assetID: `005B201803GZ-X446`,
-        address: `广东广州市天河区黄埔大道中`,
-        activeName: 'first',
-        //上刊搜索行
-        select: '',
-        keyword: '',
-        keyword2: '',
-        mianSelect: '',
-        date: '',
-        selectedOptions: [],
-        //录单搜索行
-        ludan: false,
-        ludanSelect: '任务名称',
-        //地区搜索
-        citys: [
-          {
-            value: 'guangzhou',
-            label: '广州',
-            children: [{
-              value: 'tianhequ',
-              label: '天河区',
-              children: [{
-                value: 'tiyuzhongxin',
-                label: '体育中心',
-              }, {
-                value: 'shipaiqiao',
-                label: '石牌桥'
-              }]
-            }]
-          }, {
-            value: 'beijing',
-            label: '北京',
-            children: [{
-              value: 'chaoyangqu',
-              label: '朝阳区',
-              children: [{
-                value: 'tiyuzhongxin',
-                label: '体育中心',
-              }, {
-                value: 'shipaiqiao',
-                label: '石牌桥'
-              }]
-            }, {
-              value: 'haizhuqu',
-              label: '海珠区',
-              children: [{
-                value: 'tiyuzhongxin',
-                label: '体育中心',
-              }, {
-                value: 'shipaiqiao',
-                label: '石牌桥'
-              }]
-            }]
-          }],
+export default {
+	name: "PhotoGallery",
+	components: {
+		elButton: Button,
+		elInput: Input,
+		elDialog: Dialog,
+		elTable: Table,
+		elTableColumn: TableColumn,
+		elRow: Row,
+		elTooltip: Tooltip,
+		elTabs: Tabs,
+		elTabPane: TabPane,
+		elSelect: Select,
+		elOption: Option,
+		elCascader: Cascader,
+		elDatePicker: DatePicker,
+		elPagination: Pagination,
+	},
+	data() {
+		return {
+			// 上刊
+			upImgArr: [],
+			// 下刊
+			downImgArr: [],
+			// 安装
+			installArr: [],
+			// 巡点
+			searchAreaArr:[],
 
-        //是否搜索到图片
-        showPic: 2,
-        //  录单
-        input: '',
-        value6: '',
-        //表格
-        caseList: [
-          {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }, {
-            caseName: '珠江帝景地产三月份方案',
-            caseType: '上刊',
-            dwNum: '60',
-            uploadImg: '73',
-            creater: '冯少宏',
-            account: 'fengshaohong',
-            createDate: '2018.05.26',
-          }]
-      };
-    },
-    mounted: function () {
-      $(function () {
-        $('.smallImg').mouseenter(function () {
-          $(this).siblings('.mask-btn').show();
-        });
-        $('.mask-btn').mouseleave(function () {
-          $(this).hide();
-        });
-        $('.photoCard').hover(function () {
-          $(this).css('box-shadow', '0px 0px 20px rgba(0, 0, 0, 0.20)')
-        }, function () {
-          $(this).css('box-shadow', 'none')
-        })
-      })
+			//缩略图
+			dialogImageUrl: '../../../static/images/testPic.png',
+			dialogVisible: false,
+			showBtn: false,
+			assetID: `005B201803GZ-X446`,
+			address: `广东广州市天河区黄埔大道中`,
+			activeName: 'first',
+			//上刊搜索行
+			select: '',
+			keyword: '',
+			keyword2: '',
+			mianSelect: '',
+			date: '',
+			selectedOptions: [],
+			//录单搜索行
+			ludan: false,
+			ludanSelect: '任务名称',
+			//地区搜索
+			citys: [
+			{
+				value: 'guangzhou',
+				label: '广州',
+				children: [{
+				value: 'tianhequ',
+				label: '天河区',
+				children: [{
+					value: 'tiyuzhongxin',
+					label: '体育中心',
+				}, {
+					value: 'shipaiqiao',
+					label: '石牌桥'
+				}]
+				}]
+			}, {
+				value: 'beijing',
+				label: '北京',
+				children: [{
+				value: 'chaoyangqu',
+				label: '朝阳区',
+				children: [{
+					value: 'tiyuzhongxin',
+					label: '体育中心',
+				}, {
+					value: 'shipaiqiao',
+					label: '石牌桥'
+				}]
+				}, {
+				value: 'haizhuqu',
+				label: '海珠区',
+				children: [{
+					value: 'tiyuzhongxin',
+					label: '体育中心',
+				}, {
+					value: 'shipaiqiao',
+					label: '石牌桥'
+				}]
+				}]
+			}],
 
-    },
+			//是否搜索到图片
+			showPic: 2,
+			//  录单
+			input: '',
+			value6: '',
+			//表格
+			caseList: [
+			{
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}, {
+				caseName: '珠江帝景地产三月份方案',
+				caseType: '上刊',
+				dwNum: '60',
+				uploadImg: '73',
+				creater: '冯少宏',
+				account: 'fengshaohong',
+				createDate: '2018.05.26',
+			}]
+		};
+	},
+	mounted: function () {
+		$(function () {
+			$('.smallImg').mouseenter(function () {
+				$(this).siblings('.mask-btn').show();
+			});
+			$('.mask-btn').mouseleave(function () {
+				$(this).hide();
+			});
+			$('.photoCard').hover(function () {
+				$(this).css('box-shadow', '0px 0px 20px rgba(0, 0, 0, 0.20)')
+			}, function () {
+				$(this).css('box-shadow', 'none')
+			})
+		})
 
-    methods: {
-      //请求
-      PostIMg() {
+	},
 
-      },
-      handleClick(tab, event) {
-        if (this.activeName === 'fifth') {
-          this.ludan = true;
-        } else {
-          this.ludan = false
-        }
-      },
-      handlePictureCardPreview() {
-        // this.dialogImageUrl = this.dialogImageUrl;
-        this.dialogVisible = true;
-      },
-      //筛选
-      filterCaseType(value, row) {
-        return row.tag === value;
-      },
-      searchPic() {
-        if (!this.select && !this.keyword && !this.mianSelect && !this.date && this.selectedOptions.length == 0) {
-          this.$message({
-            message: '请先输入搜索条件',
-            type: 'warning'
-          });
-        }
-      },
-      newPath() {
-        this.$router.push('./ludanReport')
-      }
+	methods: {
+	//请求
+	PostIMg() {
 
-    }
-  }
+	},
+	handleClick(tab, event) {
+		if (this.activeName === 'fifth') {
+		this.ludan = true;
+		} else {
+		this.ludan = false
+		}
+	},
+	handlePictureCardPreview() {
+		// this.dialogImageUrl = this.dialogImageUrl;
+		this.dialogVisible = true;
+	},
+	//筛选
+	filterCaseType(value, row) {
+		return row.tag === value;
+	},
+	searchPic() {
+		if (!this.select && !this.keyword && !this.mianSelect && !this.date && this.selectedOptions.length == 0) {
+		this.$message({
+			message: '请先输入搜索条件',
+			type: 'warning'
+		});
+		}
+	},
+	newPath() {
+		this.$router.push('./ludanReport')
+	}
+
+	}
+}
 </script>
 
 <style scoped>

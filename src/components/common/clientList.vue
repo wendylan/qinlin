@@ -161,8 +161,8 @@ export default {
 				buildPrice: '￥30,000',
 				mediaName: '广州市中山大道',
 				buildNum: '12',
-				joinTime: 'May 29, 2018 6:29:47 PM',
-				// joinTime: '2018-05-08 18:17:00.0',
+				// joinTime: 'May 29, 2018 6:29:47 PM',
+				joinTime: '2018-05-08 18:17:00.0',
 				businessOrigin: '白云万达广场',
 				assetID: 'GZ201871024'
 				}
