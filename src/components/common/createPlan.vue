@@ -1208,7 +1208,7 @@
             if (APDData.length !== 0) {
             let pointParams = {
               uid: uid,
-              pdid: 1,//APDData[0].pdID,
+              pdid: APDData[0].pdID, // 1
               pbs: csmArr[n].schedules.split('-')[0],
               pbe: csmArr[n].schedules.split('-')[1],
               asids: asIDs,
