@@ -24,19 +24,19 @@
 								<h4>投放详情</h4>
 								<div class="search-wrap">
 									<span>
-										<el-select v-model="value" placeholder="请选择" class="type-select">
-											<el-option v-for="item in typeSelect" :key="item.value" :label="item.value" :value="item.value"></el-option>
+										<el-select v-model="select" placeholder="请选择" class="type-select">
+											<el-option v-for="item in typeSelect" :key="item.value" :label="item.label" :value="item.value"></el-option>
 										</el-select>
-										<el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
+										<el-input v-model="keyword" placeholder="请输入要搜索的内容" class="searchInput" @change="initData"></el-input>
 									</span>
 									<span>
-										<el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+										<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
 									</span>
 								</div>
 								<div class="table_wrap">
 									<el-table
 										border
-										:data="putDetail"
+										:data="currPutDetail"
 										style="width: 100%"
 										:default-sort="{prop: 'recName', order: 'descending'}"
 									>
@@ -44,19 +44,19 @@
 											<template slot-scope="props">
 												<el-form label-position="left" inline class="demo-table-expand">
 													<el-form-item label="商圈：">
-														<span>{{ props.row.businessOrigin}}</span>
+														<span>{{ props.row.tradingArea}}</span>
 													</el-form-item>
 													<el-form-item label="楼栋数量：">
-														<span>{{ props.row.buildNum }}</span>
+														<span>{{ props.row.fNum }}</span>
 													</el-form-item>
 													<el-form-item label="资产编号：">
-														<span>{{ props.row.assetID }}</span>
+														<span>{{ props.row.assetTag }}</span>
 													</el-form-item>
 													<el-form-item label="入住年份：">
-														<span>{{ props.row.liveYear }}</span>
+														<span>{{ props.row.chDay }}</span>
 													</el-form-item>
 													<el-form-item label="广告限制：">
-														<span>{{ props.row.adLimit }}</span>
+														<span>{{ props.row.notPush }}</span>
 													</el-form-item>
 												</el-form>
 											</template>
@@ -65,60 +65,56 @@
 											prop="city"
 											label="城市"
 											min-width="6.7%"
-											:filters="[{text: '广州', value: '广州'}, {text: '深圳', value: '深圳'}, {text: '成都', value: '成都'}, {text: '北京', value: '北京'}]"
+											:filters="filterCityData"
 											:filter-method="filterCity"
 										>
 										</el-table-column>
 										<el-table-column
-											prop="origin"
+											prop="rName"
 											label="区域"
 											min-width="6.7%"
-											:filters="[{text: '天河区', value: '天河区'}, {text: '海珠区', value: '海珠区'}, {text: '越秀区', value: '越秀区'}, {text: '白云区', value: '白云区'}]"
-											:filter-method="filterOrigin"
+											:filters="filtersArea"
+											:filter-method="filterRName"
 										>
 										</el-table-column>
 										<el-table-column
-											prop="recName"
+											prop="resName"
 											label="资源名称"
-											min-width="10.9%"
+											min-width="11.9%"
 											class="tar"
 										>
 										</el-table-column>
 										<el-table-column
 											prop="address"
 											label="地址"
-											min-width="17.5%"
+											min-width="19.5%"
 										>
 										</el-table-column>
 										<el-table-column
-											prop="buildType"
+											prop="cType"
 											label="楼盘类型"
 											min-width="6.1%"
 										>
 										</el-table-column>
 										<el-table-column
-											prop="liveTime"
+											prop="chDay"
 											label="入住时间"
 											min-width="6.1%"
 											class="tar"
 										>
 										</el-table-column>
 										<el-table-column
-											prop="buildPrice"
 											label="楼盘价格"
 											min-width="7.6%"
 										>
+											<template slot-scope="scope">
+												<span>{{priceFormat(scope.row.hPrice/100)}}</span>
+											</template>
 										</el-table-column>
 										<el-table-column
-											prop="houseNum"
+											prop="hNum"
 											label="户数"
 											min-width="5.6%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="cpm"
-											label="CPM"
-											min-width="8.6%"
 										>
 										</el-table-column>
 										<el-table-column
@@ -517,6 +513,15 @@
 </template>
 
 <script>
+import { api } from '../../api/api';
+// 城市区域变成中文
+import areaToText from '../../commonFun/areaToText_new.js';
+// 价格格式化
+import commaFormat from '../../commonFun/commaFormat.js';
+// 筛选过滤
+import filterFormat from '../../commonFun/filterTableData.js';
+// 时间格式化
+import dateFormat  from '../../commonFun/timeFormat.js';
 import {Dialog, Tabs, TabPane, Table, TableColumn, Input, Button, Upload, Select, Option, Checkbox, Card, Progress, Cascader, Pagination, MessageBox, Message, Form, FormItem, Carousel, CarouselItem} from 'element-ui';
 export default {
 	name: "upReport",
@@ -543,270 +548,159 @@ export default {
 	},
 	data() {
 		return {
-			planPanel: 'first',
+			//投放详情
+			putDetail: [],
+			currPutDetail: [],
+			// 城市过滤
+			filterCityData: [],
+			// 区域过滤
+			filtersArea: [],
+			//搜索类型
+			typeSelect: [
+				{value: 1,label: '资源名称'},
+				{value: 2,label: '商圈'}
+			],
 			//搜索框
-			searchInput: '',
-			planSelect: '',
+			keyword: '',
+			select: 1,
+			// tab选项
+			planPanel: 'first',
+			//发布情况
+			postDetail:[],
+			
 			//监播图片内容
 			isActive1: true,
-			//搜索类型
-			typeSelect: [{
-			value: '资源名称',
-			label: '资源名称'
-			}, {
-			value: '商圈',
-			label: '商圈'
-			}, {
-			value: '城市',
-			label: '城市'
-			}],
-			//默认
-			value: '资源名称',
-			//投放详情
-			putDetail: [
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-			{
-				recName: '珠江帝景花园二期',
-				city: '广州',
-				origin: '海珠区',
-				address: '广州市天河区中山大道西109号',
-				buildType: '高端住宅',
-				houseNum: '600',
-				buildPrice: '￥30,000',
-				mediaName: '广州市中山大道',
-				cpm:"￥300,000.00",
-				buildNum: '12',
-				businessOrigin: '白云万达广场',
-				assetID: 'GZ201871024',
-				liveYear: '1999年',
-				adLimit: '地产/医药/汽车',
-				mediaNum: 1,
-				liveTime: '2006'
-			},
-
-			],
-			//发布情况
-			postDetail:[
-			{
-				city:'广州',
-				planNum:200,
-				realNum:200,
-				wrongNum:0,
-				resolveNum:0,
-			},
-			{
-				city:'深圳',
-				planNum:200,
-				realNum:200,
-				wrongNum:0,
-				resolveNum:0,
-			},
-			],
 			//缩略图对话框
 			dialogVisible:false,
 			dialogImageUrl: '../../../static/images/testPic.png',
 		}
 	},
-	mounted() {
-		$(function () {
-			$('.tabs').find('button').click(function () {
-			$(this).addClass('active').siblings().removeClass('active');
-			});
-			$('.picBox').mouseenter(function () {
-			$(this).find('.mask-btn').show()
-			}).mouseleave(function () {
-			$(this).find('.mask-btn').hide()
-			})
-		});
+	created(){
+		// 投放城市
+		this.getInitData();
+		//发布情况
+		this.getPostDetail();
 	},
 	methods: {
-		box1Change() {
-			this.isActive1 = !this.isActive1;
+		// 投放详情
+		getInitData(){
+			// 测试数据
+			let tempADList = [
+				{resName: "尚东3",mTitle: "尚东3东门",rID: 440104,rName: "荔湾区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "一般住宅",hNum: 100,hPrice: 56000,asIDs: "7",asLabs: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
+				{resName: "帝景山庄改1",mTitle: "帝景1门",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 120,hPrice: 6100000,asIDs: "1,2",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 9,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
+				{resName: "帝景山庄改1",mTitle: "帝景2门2",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 170,hPrice: 6600000,asIDs: "4,3",asLabs: "B,A",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
+				{resName: "帝景山庄改1",mTitle: "帝景3门3",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 150,hPrice: 5100000,asIDs: "5,6",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 22,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"},
+				{resName: "帝景山庄",mTitle: "帝景门",rID: 440104,rName: "白云区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "别墅",hNum: 171,hPrice: 4600000,asIDs: "7,8",asLabs: "A,B",asStates: "1,1", tradingArea: "山泉",fNum: 15,assetTag: "201707GZ-1328",chDay: "2014",notPush: "医学"},
+				{resName: "尚东",mTitle: "尚东一号",rID: 440104,rName: "天河区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "别墅",hNum: 210,hPrice: 7600000,asIDs: "9,10",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉",fNum: 30,assetTag: "201707GZ-1329",chDay: "2015",notPush: "汽车"},
+			];
+			
+			for(let temp of tempADList){
+				temp.city = areaToText.toText(temp.rID).city;
+			}
+			this.filterCityData = filterFormat(tempADList, 'city');
+			this.filtersArea = filterFormat(tempADList, 'rName');
+			this.putDetail = tempADList;
+			this.currPutDetail = this.putDetail;
+			// 真实数据
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let info = {
+				uid: uid,
+				apid: 2
+			};
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			// api.postApi('/GetADB', info).then(res => {
+			// 	console.log(res.data);
+			// 	if(!res.data.SysCode){
+			// 		this.putDetail = res.data;
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res =>{
+			// 	console.log(res);
+			// });
+		},
+		//发布情况
+		getPostDetail(){
+			// 测试数据
+			let tmp = [
+				{city:'广州',planNum:200,realNum:200,wrongNum:0,resolveNum:0},
+				{city:'深圳',planNum:200,realNum:200,wrongNum:0,resolveNum:0}
+			];
+			this.postDetail = tmp;
+
+			// 真实数据
+			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// let info = {
+			// 	uid: uid,
+			// 	apid: 2
+			// };
+			// api.getApi('/GetADB', info).then(res=>{
+			// 	console.log(res);
+			// 	if(!res.data.SysCode){
+			// 		this.postDetail = res.data;
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res =>{
+			// 	console.log(res);
+			// });
+		},
+		// 当搜索框为空的时候进行重置显示
+		initData(){
+			if(!this.keyword){
+				this.currPutDetail = this.putDetail;
+			}
+		},
+		// 搜索
+		search(){
+			// 账号，姓名
+			console.log(this.select);
+			console.log(this.keyword);
+			let select = this.select;
+			let keyword = this.keyword;
+			if(this.keyword){
+				let arr = [];
+				for(let data of this.putDetail){
+					if(data.resName){
+						if((select=='1') && data.resName.includes(keyword)){
+							arr.push(data);
+						}
+					}
+					if(data.tradingArea){
+						if((select =='2') && data.tradingArea.includes(keyword)){
+							arr.push(data);
+						}
+					}
+				}
+				this.currPutDetail = arr;
+				return;
+			}
+			this.currPutDetail = this.putDetail;
+		},
+		// 城市转换为中文
+		cityToText(rid){
+			return areaToText.toText(rid).city;
+		},
+		// 时间格式规范
+		formatTime(val){
+			return dateFormat.toDate(val, '.');
+		},
+		// 价格加上逗号
+		priceFormat(price){
+			// console.log('price', price);
+			return commaFormat.init(price);
 		},
 		filterCity(value, row) {
 			return row.city === value;
 		},
-		filterOrigin(value, row) {
-			return row.origin === value;
+		filterRName(value, row) {
+			return row.rName === value;
+		},
+
+
+		box1Change() {
+			this.isActive1 = !this.isActive1;
 		},
 		//页码
 		handleSizeChange(val) {
@@ -819,7 +713,19 @@ export default {
 		handlePictureCardPreview(){
 			this.dialogVisible = true;
 		}
-	}
+	},
+	mounted() {
+		$(function () {
+			$('.tabs').find('button').click(function () {
+				$(this).addClass('active').siblings().removeClass('active');
+			});
+			$('.picBox').mouseenter(function () {
+				$(this).find('.mask-btn').show()
+			}).mouseleave(function () {
+				$(this).find('.mask-btn').hide()
+			})
+		});
+	},
 }
 </script>
 
