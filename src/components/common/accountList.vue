@@ -114,7 +114,7 @@
 				min-width="7.1%"
             >
 				<template slot-scope="scope">
-					<span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span>
+					<!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
 					<span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
 					<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
 				</template>
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { Row, Input, Button, Table, TableColumn, MessageBox, Message, Select, Option } from 'element-ui';
+import { Row, Input, Button, Table, TableColumn, MessageBox, Message, Select, Option, Loading } from 'element-ui';
 import { api } from '../../api/api';
 // 时间控件格式化
 import dateFormat from '../../commonFun/timeFormat.js';
@@ -229,6 +229,7 @@ export default {
 	methods: {
 		// 初始数据
 		getAccountList(){
+			let loadingInstance = Loading.service({ fullscreen: true, text : "正在加载数据,请耐心等待..." });
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 			api.postApi('/GetUserList', { uid: uid}).then(res => {
 				console.log(res.data);
@@ -295,10 +296,13 @@ export default {
 					}
 
 					this.currAccount = this.accountList;
+					loadingInstance.close();
 				}else{
+					loadingInstance.close();
 					Message.warning(res.data.MSG);
 				}
 			}).catch( res => {
+				loadingInstance.close();
 				console.log(res);
 			});
 		},

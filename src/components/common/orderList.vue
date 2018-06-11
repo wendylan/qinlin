@@ -129,7 +129,7 @@
 								<el-dropdown size="small" split-button trigger="click">操作
 									<el-dropdown-menu slot="dropdown">
 										<el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
-										<el-dropdown-item class="update">更换点位</el-dropdown-item>
+										<el-dropdown-item class="update" @click="changePoint(scope.row.apID)">更换点位</el-dropdown-item>
 										<el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item>
 										<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
 									</el-dropdown-menu>
@@ -232,6 +232,11 @@ export default {
 		// 跳转到详情页面
 		ToDetail(apid){
 			console.log(apid);
+			sessionStorage.setItem('order_apid', apid);
+			this.$router.push('./orderDetail');
+		},
+		// 更换点位
+		changePoint(apid){
 			sessionStorage.setItem('order_apid', apid);
 			this.$router.push('./orderDetail');
 		},

@@ -107,21 +107,28 @@
               <el-form-item label="备注:" prop="recRemark">
                 <el-input type="textarea" v-model="recForm.recRemark" placeholder="请填写备注信息"></el-input>
               </el-form-item>
-              <el-form-item label="小区全貌:">
-                <div class="upload_img_wrap" style="width: 120px;">
+              <el-form-item label="小区全貌:" prop="mImg" >
+                <div class="upload_img_wrap" style="width: 120px;"><!--:auto-upload = 'false'-->
                   <el-upload
-                    action=""
+                    :action="doUpload"
                     list-type="picture-card"
+                    :file-list="updata"
                     :limit = '1'
-                    :auto-upload = 'false'
-                    :on-change="recUploadChange"
+                    :on-success="handleDownSuccess"
                     :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove">
+                    :on-remove="handleRemoveR">
                     <i class="el-icon-plus"></i>
                   </el-upload>
-                  <!-- <el-dialog :visible.sync="dialogVisible">
-                     <img width="100%" :src="dialogImageUrl" alt="">
-                   </el-dialog>-->
+                  <!-- <el-upload
+                     action="doUpload"
+                     list-type="picture-card"
+                     :limit = '1'
+                     :auto-upload = 'false'
+                     :on-change="recUploadChange"
+                     :on-preview="handlePictureCardPreview"
+                     :on-remove="handleRemove">
+                     <i class="el-icon-plus"></i>
+                   </el-upload>-->
                 </div>
               </el-form-item>
             </el-form>
@@ -210,23 +217,21 @@
               <el-form-item label="备注:" prop="mediaRemark">
                 <el-input type="textarea" v-model="item.mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
               </el-form-item>
-              <el-form-item label="门禁照片:" pro="mImg">
-                <div class="upload_img_wrap" style="width: 120px;">
+              <el-form-item label="门禁照片:" prop="mImg">
+                <div class="upload_img_wrap" style="width: 120px;"><!--:auto-upload='false'-->
                   <el-upload
-                    action=""
-                    v-model="item.mediaForm.mImg"
+                    :action="doUpload"
                     list-type="picture-card"
                     :limit='1'
-                    :auto-upload='false'
+                    :file-list="updataMedia"
+                    :on-success="mediaUploadSuccess"
                     :on-change="mediaUploadChange"
-                    :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove">
-                    <i class="el-icon-plus"></i>
+                    :on-preview="handlePictureCardPreview">
+                    <i class="el-icon-plus" @click="saveImgInfo(item.text)"></i>
                   </el-upload>
                 </div>
               </el-form-item>
             </el-form>
-
           </div>
         </div>
         <div class="addMedia">
@@ -352,7 +357,10 @@
               visualH: '',      //可视画面
               mediaRemark: '',  //备注 mrk
               adLimit: '',     //请选择广告限制 notpush
-              mImg: ''
+              mImg: {
+                uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+                pid: '', palt: '', ptype: '', ptid: '', ptp: ''
+              },
             },
           },
         ],
@@ -544,8 +552,29 @@
         selectedOptions: [],        // 城市默认选项
         PathHaveEdit: false,        //  新建/编辑
         recImg: {},                 // 上传的资源图片
-        mediaImg: {},                // 媒体图片
+        mediaImg_title:'',          // 媒体图片对应的媒体信息
+        mediaImg: {                 // 媒体图片
+          uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+          pid: '',                // 图片id
+          palt: '',               // 图片标题
+          ptype: '',              // 关联类型
+          ptid: '',               // 关联类型对应唯一ID
+          ptp: ''                 // 关联类型区分属性
+        },
         liveTime:'',                // 资源时间
+        doUpload: '/api'+ '/UpLoad',
+        upLoadData: {             // 上传图片附带参数
+          uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+          pid: '',                // 图片id
+          palt: '',               // 图片标题
+          ptype: '',              // 关联类型
+          ptid: '',               // 关联类型对应唯一ID
+          ptp: ''                 // 关联类型区分属性
+        },
+        updata:[
+          /* {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
+           {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}*/],        // 上传图片的数据
+        updataMedia:[],
       };
     },
     beforeCreate: function () {
@@ -573,7 +602,7 @@
               visualW: '',
               visualH: '',
               mediaRemark: '',
-              adLimit: ''
+              adLimit: '',
             }
           },
         ]
@@ -773,6 +802,11 @@
             console.log('资源数据：', res.data)
             let recData = res.data
             if (!recData.SysCode) {
+              // 设置资源图片信息
+              this.upLoadData.ptid = recData.resID
+              this.upLoadData.palt = this.recForm.resname +'-'+ recData.rID
+              this.setImg()
+              // 设置媒体信息
               let mediaArr = this.arrMedia//[0].mediaForm
               for (let j = 0; j < mediaArr.length; j++) {
                 let arr_media = mediaArr[j].mediaForm
@@ -794,7 +828,9 @@
                   mrk: arr_media.mediaRemark,
                   mstate: arr_media.mstate
                 }
-                console.log('mediaObj', mediaObj)
+                let mediaImg = arr_media.mImg
+                mediaImg.palt = arr_media.mediaName + '门禁'
+                console.log('mediaObj', mediaObj, mediaImg)
                 /*arrMedia: [
                { text: '媒体一' ,
                  mediaForm:{
@@ -852,20 +888,83 @@
           mrk         String          媒体备注*/
       },
       // 创建媒体
-      createMedia(mediaObj,n){
+      createMedia(mediaObj,n,mediaImg){
         let temp = mediaObj
         api.postApi('/CreateMedia', temp).then(res => {
           console.log('创建媒体返回信息',res)
-          if (n >= this.arrMedia.length-1) {
-            this.resetForm()  // 请求成功后重置表单
-            Message({
-              message: '资源媒体创建成功！',
-              type: 'success'
-            })
+          let mData = res.data
+          if(!res.SysCode){
+            mediaImg.ptid = mData.mid
+            mediaImg.ptp = ''
+            this.setImg(mediaImg)
+            if (n >= this.arrMedia.length-1) {
+              this.resetForm()  // 请求成功后重置表单
+              Message({
+                message: '资源媒体创建成功！',
+                type: 'success'
+              })
+            }
           }
         })
       },
-      //缩略图
+
+      // 上传图片
+    /*  submitUpload() {
+        this.$refs.upload.submit();
+      },*/
+      handleRemoveR(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handlePictureCardPreview(file) {
+        console.log(file)
+      },
+      mediaUploadChange(){
+
+      },
+      handleDownSuccess(res){
+        console.log('上传资源图片',res)
+        this.upLoadData.pid = res.pID
+        this.upLoadData.ptype = 'resImg'
+      },
+      // 上传图片与资源关联
+      setImg(mediaImg){
+        console.log('上传图片的信息',this.upLoadData)
+        let info = []
+        if(mediaImg == undefined){
+          console.log('上传资源图片的信息',this.upLoadData)
+          info = this.upLoadData
+        }else{
+          console.log('上传媒体图片的信息',mediaImg)
+          info = mediaImg
+        }
+        api.postApi('/SetImg', info).then(res =>{
+          console.log(res.data);
+          Message.success(res.data.MSG);
+        }).catch(res =>{
+          console.log(res);
+        });
+      },
+      // 设置媒体图片信息
+      saveImgInfo(m_title){
+        console.log('获取当前媒体标题',m_title) // mediaImg_title
+        this.mediaImg_title = m_title
+      },
+      mediaUploadSuccess(res){
+        console.log('上传媒体图片',res)
+        this.mediaImg.pid = res.pID
+        this.mediaImg.ptype = 'mediaImg'
+        let arrMedia = this.arrMedia
+        for(let i=0;i<arrMedia.length;i++){
+          if(arrMedia[i].text === this.mediaImg_title){
+            arrMedia[i].mediaForm.mImg = this.mediaImg
+          }
+        }
+        console.log('媒体信息',this.arrMedia)
+      },
+      /*//缩略图
       handleRemove(file, fileList) {
         console.log(file, fileList);
       },
@@ -888,13 +987,13 @@
           this.$message.error('上传文件大小不能超过 1MB!');
           return false;
         }
-        /*  let that = this
+        /!*  let that = this
           let reader = new FileReader();
           reader.readAsDataURL(file.raw);
           reader.onload = function(e){
             console.log(this.result)//图片的base64数据
             console.log(that.recFormImg)
-          }*/
+          }*!/
       },
       mediaUploadChange(file) {
         const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
@@ -909,14 +1008,14 @@
           return false;
         }
         this.arrMedia[0].mediaForm.mImg = file.raw
-        /*  let that = this
+        /!*  let that = this
           let reader = new FileReader();
           reader.readAsDataURL(file.raw);
           reader.onload = function(e){
             console.log(this.result)//图片的base64数据
             console.log(that.mediaFormImg)
-          }*/
-      },
+          }*!/
+      },*/
 
       // 表单验证
       submitForm(r_item, m_item) {

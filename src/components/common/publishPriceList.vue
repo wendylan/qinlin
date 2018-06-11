@@ -157,10 +157,10 @@ export default {
 				if(!res.data.SysCode){
 					this.publishPriceList = res.data;
 					this.filtCity = filterFormat(this.publishPriceList, 'rName');
-					this.filtCity.unshift({
-						text: '全国',
-						value: '全国'
-					});
+					// this.filtCity.unshift({
+					// 	text: '全部',
+					// 	value: '全部'
+					// });
 					for(let data of this.publishPriceList){
 						data.showInput = false;
 						data.changeBtn = false;
@@ -206,9 +206,9 @@ export default {
 		},
 		filterCity(value, row) {
 			console.log(value, row);
-			if(value =='全国'){
-				return true;
-			}
+			// if(value =='全部'){
+			// 	return true;
+			// }
 			return row.rName === value;
 		},
 		filterMedia(value, row){
@@ -372,6 +372,25 @@ export default {
 </script>
 <style scoped>
 
+
+
+  /*下拉框*/
+  /deep/ .el-table-filter__list{
+   /*修改源代码*/
+  }
+
+  /deep/ .el-table-filter__list::-webkit-scrollbar{
+    width: 4px;
+    background: #FAFAFA;
+
+  }
+  /deep/ .el-table-filter__list::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #C1C1C1;
+    border-radius: 4px;
+  }
+
+
   .changeInput{
     width: 150px;
     display: none;
@@ -490,11 +509,11 @@ export default {
 
   }
   /deep/ .el-table td{
-    padding: 10px 0;
+    padding: 5px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
-  /deep/.el-table--border{
+  /deep/ .el-table--border{
     border-radius: 4px;
   }
 
@@ -527,7 +546,6 @@ export default {
 
   }
   /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     background: #C1C1C1;
     border-radius: 4px;

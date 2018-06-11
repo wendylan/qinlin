@@ -4,14 +4,15 @@
 			<div class="mediaMana_content_top">
 				<div class="content_top_wrap">
 					<div class="title">
-						<h1>亲邻科技上刊报告</h1>
-						<h3>广州探鱼 &nbsp;&nbsp;2017/11/11-2017/12/12</h3>
+						<h1>亲邻科技下刊报告</h1>
+						<!-- <h3>广州探鱼 &nbsp;&nbsp;2017/11/11-2017/12/12</h3> -->
+						<h3>{{upReport.apName}} &nbsp;&nbsp;{{formatTime(upReport.apcTime)}}</h3>
 					</div>
 					<div class="detail">
 						<p>
-							<em>公司名称：</em><i>深圳市亲邻科技有限公司</i>
-							<em>投放城市：</em><i>广州、深圳</i>
-							<em>投放面数：</em><i>300面</i>
+							<em>公司名称：</em><i>{{upReport.cName}}</i>
+							<em>投放城市：</em><i>{{upReport.rIDs}}</i>
+							<em>投放面数：</em><i>{{upReport.totalNum}}</i>
 						</p>
 					</div>
 				</div>
@@ -151,286 +152,42 @@
 							</div>
 							<div class="typeOfRec" v-if="isActive1">
 								<div>
-									<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
+									<div class="picBox" v-for="up of upReportArr" :key="up.asID">
+										<el-carousel :autoplay="false" trigger="click">
+											<el-carousel-item v-for="(item, index) in up.upImgArr" :key="index" >
+												<img :src="item.url" alt="">
+												<!--缩略图-->
+												<div class="mask-btn">
+													<i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
+												</div>
+											</el-carousel-item>
+										</el-carousel>
+										<div class="pic-title">{{up.resName}}</div>
 									</div>
 								</div>
-							<div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
+								<div class="pager">
+									<el-pagination
+										small
+										background
+										@size-change="handleSizeChange"
+										@current-change="handleCurrentChange"
+										:current-page="1"
+										:page-sizes="[5, 10]"
+										:page-size="5"
+										layout=" sizes, prev, pager, next, jumper"
+										:total="30">
+									</el-pagination>
 								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 4" :key="item" >
-										<!--<h3>{{item}}</h3>-->
-										<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">珠江新城小区</div>
-								</div>
-							</div>
-							<div class="pager">
-								<el-pagination
-									small
-									background
-									@size-change="handleSizeChange"
-									@current-change="handleCurrentChange"
-									:current-page="1"
-									:page-sizes="[5, 10]"
-									:page-size="5"
-									layout=" sizes, prev, pager, next, jumper"
-									:total="30">
-								</el-pagination>
-							</div>
 							</div>
 							<div class="typeOfPic" v-if="!isActive1">
 								<div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
+									<div class="picBox" v-for="(img, index) of imgInfo" :key="index">
+										<img :src="img.pURL" alt="">
 										<!--缩略图-->
 										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+											<i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
 										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-								</div>
-								<div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-									</div>
-									<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
+										<div class="pic-title">{{img.resName}}</div>
 									</div>
 								</div>
 								<div class="pager">
@@ -546,6 +303,13 @@ export default {
 	},
 	data() {
 		return {
+			upReport: {
+				apName: "第一个投放方案",
+				cName: "新光百货",
+				rIDs: "广州市,北京市,重庆市",
+				apcTime: "May 9, 2018 6:29:47 PM",
+				totalNum: '200'
+			},
 			//投放详情
 			putDetail: [],
 			currPutDetail: [],
@@ -584,14 +348,16 @@ export default {
 		getInitData(){
 			// 测试数据
 			let tempADList = [
-				{resName: "尚东3",mTitle: "尚东3东门",rID: 440104,rName: "荔湾区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "一般住宅",hNum: 100,hPrice: 56000,asIDs: "7",asLabs: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
-				{resName: "帝景山庄改1",mTitle: "帝景1门",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 120,hPrice: 6100000,asIDs: "1,2",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 9,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
-				{resName: "帝景山庄改1",mTitle: "帝景2门2",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 170,hPrice: 6600000,asIDs: "4,3",asLabs: "B,A",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
-				{resName: "帝景山庄改1",mTitle: "帝景3门3",rID: 440104,rName: "越秀区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "高端住宅",hNum: 150,hPrice: 5100000,asIDs: "5,6",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 22,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"},
-				{resName: "帝景山庄",mTitle: "帝景门",rID: 440104,rName: "白云区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "别墅",hNum: 171,hPrice: 4600000,asIDs: "7,8",asLabs: "A,B",asStates: "1,1", tradingArea: "山泉",fNum: 15,assetTag: "201707GZ-1328",chDay: "2014",notPush: "医学"},
-				{resName: "尚东",mTitle: "尚东一号",rID: 440104,rName: "天河区",address: '广东省广州市越秀区越秀公园',mediaNum:12,cType: "别墅",hNum: 210,hPrice: 7600000,asIDs: "9,10",asLabs: "A,B",asStates: "1,1",tradingArea: "山泉",fNum: 30,assetTag: "201707GZ-1329",chDay: "2015",notPush: "汽车"},
+				{asID: 5,lID: 6,cType: "高端住宅",address: '广东省广州市越秀区越秀公园',mediaNum:12,lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+				{asID: 2,lID: 7,cType: "高端住宅",address: '广东省广州市越秀区越秀公园',mediaNum:12,lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄2",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
 			];
-			
+			let upImginfo = [
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:245,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:2,ptP:"7",puID:3},
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:234,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:31:14.0",ptID:2,ptP:"7",puID:3},
+			];
+
 			for(let temp of tempADList){
 				temp.city = areaToText.toText(temp.rID).city;
 			}
@@ -599,24 +365,102 @@ export default {
 			this.filtersArea = filterFormat(tempADList, 'rName');
 			this.putDetail = tempADList;
 			this.currPutDetail = this.putDetail;
-			// 真实数据
-			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			let info = {
-				uid: uid,
-				apid: 2
-			};
-			// uid         int【必填】     当前账户UserID
-            // apid        int             公司对应方案apID
+
+			// 上刊数据(组合图片按资源分)
+			tempADList = this.constructImg(tempADList, upImginfo);
+			this.upReportArr = tempADList;
+			console.log('downimginfo', this.upReportArr);
+			// 上刊数据(组合图片按图片分)
+			this.imgInfo = this.initImg(tempADList, upImginfo);
+
+			// // 真实数据
+			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// let info = {
+			// 	uid: uid,
+			// 	apid: sessionStorage.getItem('order_apid')
+			// };
+			// // uid         int【必填】     当前账户UserID
+            // // apid        int             公司对应方案apID
 			// api.postApi('/GetADB', info).then(res => {
 			// 	console.log(res.data);
 			// 	if(!res.data.SysCode){
-			// 		this.putDetail = res.data;
+			// 		let resArr = res.data;
+			// 		for(let result of resArr){
+			// 			result.city = areaToText.toText(result.rID).city;
+			// 		}
+			// 		this.filterCityData = filterFormat(resArr, 'city');
+			// 		this.filtersArea = filterFormat(resArr, 'rName');
+			// 		this.putDetail = resArr;
+			// 		this.currPutDetail = this.putDetail;
+
+			// 		// uid         int【必填】         当前账户UserID
+			// 		// ptype       String【必填】      关联类型
+			// 		// ptid        int                 关联类型对应唯一ID
+			// 		// ptp         String              关联类型区分属性
+			// 		let imginfo = {
+			// 			uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
+			// 			ptype: 'XK',
+			// 			ptp: sessionStorage.getItem('order_apid')
+			// 		};
+			// 		api.postApi('/GetImg', imginfo).then(res =>{
+			// 			console.log(res.data);
+			// 			let upImginfo = res.data;
+			// 			// 下刊数据(组合图片)
+			// 			resArr = this.constructImg(resArr, upImginfo);
+			// 			this.upReportArr = resArr;
+			// 			console.log('upImginfo', this.upReportArr);
+			// 			// 下刊数据(组合图片按图片分)
+			// 			this.imgInfo = this.initImg(resArr, upImginfo);
+
+			// 		}).catch(res =>{
+			// 			console.log(res);
+			// 		});
 			// 	}else{
 			// 		Message.warning(res.data.MSG);
 			// 	}
 			// }).catch(res =>{
 			// 	console.log(res);
 			// });
+		},
+		// 按照图片分类
+		initImg(arr, imgArr){
+			for(let img of imgArr){
+				for(let data of arr){
+					if(data.asID == img.ptID){
+						img.resName = data.resName;
+						break;
+					}
+				}
+			}
+			return imgArr;
+		},
+		// 组合上下刊图片数据(按照资源分类)
+		constructImg(arr, imgArr){
+			for(let data of arr){
+				let img = [];
+				for(let item of imgArr){
+					if(data.asID == item.ptID){
+						// uid         int【必填】         当前账户UserID
+						// pid         int【必填】         图库pID
+						// palt        String              图片标题
+						// ptype       String              关联类型
+						// ptid        int                 关联类型对应唯一ID
+						// ptp         String              关联类型区分属性
+						img.push({
+							name: item.pID+'.png',
+							url: item.pURL,
+							uid: item.puID,
+							pid: item.pID,
+							palt: item.pAlt,
+							ptype: item.pType,
+							ptid: item.ptID,
+							ptp: item.ptP
+						});
+					}
+				}
+				data.upImgArr = img;
+			}
+			return arr;
 		},
 		//发布情况
 		getPostDetail(){
@@ -682,12 +526,18 @@ export default {
 		},
 		// 时间格式规范
 		formatTime(val){
-			return dateFormat.toDate(val, '.');
+			return dateFormat.toDate(val, '/');
 		},
 		// 价格加上逗号
 		priceFormat(price){
 			// console.log('price', price);
 			return commaFormat.init(price);
+		},
+		//缩略图
+		handlePictureCardPreview(url){
+			console.log('item', url);
+			this.dialogImageUrl = url;
+			this.dialogVisible = true;
 		},
 		filterCity(value, row) {
 			return row.city === value;
@@ -707,10 +557,6 @@ export default {
 		handleCurrentChange(val) {
 			console.log(`当前页: ${val}`);
 		},
-		//缩略图
-		handlePictureCardPreview(){
-			this.dialogVisible = true;
-		}
 	},
 	mounted() {
 		$(function () {

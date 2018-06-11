@@ -60,6 +60,7 @@ export default new Router({
 			component: admin,
 			children: [
 				{path: '/admin', component: accountList},
+				{path: '/admin/changePwd', component: changePwd},
 			]
 		},
 
