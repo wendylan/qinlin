@@ -128,7 +128,7 @@
 										min-width="6.1%"
 									>
 										<template slot-scope="scope">
-											<el-button type="text">查看监播</el-button>
+											<el-button type="text" @click="showImg(scope.row)">查看监播</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -256,6 +256,14 @@
 				<el-dialog :visible.sync="dialogVisible">
 					<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
 				</el-dialog>
+				<!--监播图-->
+				<el-dialog :visible.sync="isShowImgArr">
+					<el-carousel :autoplay="false" trigger="click">
+						<el-carousel-item v-for="(item, index) in ImgBoxArr" :key="index" >
+							<img :src="item.url" alt="" style="height:100%;">
+						</el-carousel-item>
+					</el-carousel>
+				</el-dialog>
 			</div>
 			<div class="ad_index_footer clearfix">
 				<p>
@@ -329,12 +337,16 @@ export default {
 			planPanel: 'first',
 			//发布情况
 			postDetail:[],
+			// 查看监播
+			isShowImgArr: false,
+			// 监播图片组合
+			ImgBoxArr: [],
 
 			//监播图片内容
 			isActive1: true,
 			//缩略图对话框
 			dialogVisible:false,
-			dialogImageUrl: '../../../static/images/testPic.png',
+			dialogImageUrl: '',
 		}
 	},
 	created(){
@@ -487,6 +499,12 @@ export default {
 			// }).catch(res =>{
 			// 	console.log(res);
 			// });
+		},
+		// 查看监播
+		showImg(row){
+			console.log(row);
+			this.ImgBoxArr = row.upImgArr;
+			this.isShowImgArr = true;
 		},
 		// 当搜索框为空的时候进行重置显示
 		initData(){

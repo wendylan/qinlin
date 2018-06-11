@@ -554,6 +554,9 @@ export default {
   /deep/ .el-picker-panel .el-date-range-picker .el-popper {
     left: 335px !important;
   }
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
 
   /*下拉搜索框*/
   /deep/ .el-input-group__prepend {

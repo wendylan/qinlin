@@ -128,7 +128,7 @@
 										min-width="6.1%"
 									>
 										<template slot-scope="scope">
-											<el-button type="text">查看监播</el-button>
+											<el-button type="text" @click="showImg(scope.row)">查看监播</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -182,7 +182,7 @@
 							</div>
 							<div class="typeOfPic" v-if="!isActive1">
 								<div>
-									<div class="picBox" v-for="(img, index) of imgInfo" :key="index">
+									<div class="picBox" v-for="(img, index) of imgInfo" :key="index" >
 										<img :src="img.pURL" alt="">
 										<!--缩略图-->
 										<div class="mask-btn">
@@ -256,6 +256,14 @@
 				<!--缩略图对话框-->
 				<el-dialog :visible.sync="dialogVisible">
 					<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+				</el-dialog>
+				<!--监播图-->
+				<el-dialog :visible.sync="isShowImgArr">
+					<el-carousel :autoplay="false" trigger="click">
+						<el-carousel-item v-for="(item, index) in ImgBoxArr" :key="index" >
+							<img :src="item.url" alt="" style="height:100%;">
+						</el-carousel-item>
+					</el-carousel>
 				</el-dialog>
 			</div>
 			<div class="ad_index_footer clearfix">
@@ -332,12 +340,16 @@ export default {
 			downReportArr:[],
 			//发布情况
 			postDetail:[],
+			// 查看监播
+			isShowImgArr: false,
+			// 监播图片组合
+			ImgBoxArr: [],
 			
 			//监播图片内容
 			isActive1: true,
 			//缩略图对话框
 			dialogVisible:false,
-			dialogImageUrl: '../../../static/images/testPic.png',
+			dialogImageUrl: '',
 		}
 	},
 	created(){
@@ -351,7 +363,7 @@ export default {
 		getInitData(){
 			// 测试数据
 			let tempADList = [
-				{asID: 5,lID: 6,cType: "高端住宅",address: '广东省广州市越秀区越秀公园',mediaNum:12,lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+				{asID: 5,lID: 6,cType: "高端住宅",address: '广东省广州市越秀区越秀公园',mediaNum:12,lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄1",chDay: "2013",hPrice: 6100000,rName: "天河区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
 				{asID: 2,lID: 7,cType: "高端住宅",address: '广东省广州市越秀区越秀公园',mediaNum:12,lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄2",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
 			];
 			let downImginfo = [
@@ -489,6 +501,12 @@ export default {
 			// }).catch(res =>{
 			// 	console.log(res);
 			// });
+		},
+		// 查看监播
+		showImg(row){
+			console.log(row);
+			this.ImgBoxArr = row.downImgArr;
+			this.isShowImgArr = true;
 		},
 		// 当搜索框为空的时候进行重置显示
 		initData(){

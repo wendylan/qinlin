@@ -912,6 +912,9 @@ export default {
     float: left;
     position: relative;
   }
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
 
 
   /*表格*/

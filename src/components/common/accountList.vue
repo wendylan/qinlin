@@ -279,7 +279,7 @@ export default {
 								let cityObj = {
 									text: res,
 									value: res,
-								}
+								};
 								// 去重城市
 								if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
 									cityList.push(cityObj);
@@ -504,6 +504,10 @@ export default {
     left: 335px !important;
   }
 
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
+
   /*面包屑导航*/
   .ad_mediaDetail_wrap {
     position: relative;
@@ -620,6 +624,10 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
+  /deep/ .el-table .el-table__row  td:nth-child(2){
+    width: 124px;
+  }
+
 
   /deep/ .el-table--border {
     border-radius: 4px;

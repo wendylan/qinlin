@@ -59,11 +59,16 @@
 				>
 				</el-table-column>
 				<el-table-column
-					prop="position"
 					label="职位"
 					class="tar"
 					min-width="7.2%"
 				>
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.position" placement="bottom">
+              <span>{{scope.row.position}}</span>
+            </el-tooltip>
+          </template>
+
 				</el-table-column>
 				<el-table-column
 					prop="phone"
@@ -72,10 +77,14 @@
 				>
 				</el-table-column>
 				<el-table-column
-					prop="cName"
 					label="公司名称"
 					min-width="18.4%"
 				>
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+              <span>{{scope.row.cName}}</span>
+            </el-tooltip>
+          </template>
 				</el-table-column>
 				<el-table-column
 					prop="rName"
@@ -398,6 +407,9 @@ export default {
     width: 260px;
     height: 34px;
     /*line-height: 34px;*/
+  }
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
   }
 
 

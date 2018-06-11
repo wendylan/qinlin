@@ -1237,6 +1237,9 @@ export default {
     float: left;
     position: relative;
   }
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
 
   /*下拉搜索框*/
   /deep/ .el-input-group__prepend {

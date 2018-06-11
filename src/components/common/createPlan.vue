@@ -1053,8 +1053,8 @@
       },
       //获取公司名称列表MyCustomer
       Get_cName() {
-        // api.getApi('/MyCustomer', {uid: this.BDData.uid}).then(res => {
-        api.getApi('/MyCustomer', {uid: 7}).then(res => {
+        api.getApi('/MyCustomer', {uid: this.BDData.uid}).then(res => {
+        // api.getApi('/MyCustomer', {uid: 7}).then(res => {
           console.log('MyCustomer:', res.data)
           let customerList = res.data
           this.customer = res.data    //保存所有信息，方便后面的过滤使用
@@ -1462,103 +1462,103 @@
         console.log('开始日期', starTime, '结束日期', endTime)
         this.dateInput = [starTime, endTime] // 设置默认时间
         let uid = this.sessionData.uID
-        let tempADList = [
-          {
-            resName: "尚东3",
-            mTitle: "尚东3东门",
-            rName: "荔湾区",
-            cType: "一般住宅",
-            hNum: 100,
-            hPrice: 56000,
-            asIDs: "7",
-            asLabs: "A",
-            asStates: "1",
-            tradingArea: "三里屯",
-            fNum: 3,
-            assetTag: "201805GZ-1324",
-            notPush: ""
-          },
-          {
-            resName: "帝景山庄改1",
-            mTitle: "帝景1门",
-            rName: "越秀区",
-            cType: "高端住宅",
-            hNum: 120,
-            hPrice: 6100000,
-            asIDs: "1,2",
-            asLabs: "A,B",
-            asStates: "1,1",
-            tradingArea: "山泉1",
-            fNum: 9,
-            assetTag: "201707GZ-13161",
-            chDay: "2013",
-            notPush: "美容"
-          },
-          {
-            resName: "帝景山庄改1",
-            mTitle: "帝景2门2",
-            rName: "越秀区",
-            cType: "高端住宅",
-            hNum: 170,
-            hPrice: 6600000,
-            asIDs: "4,3",
-            asLabs: "B,A",
-            asStates: "1,1",
-            tradingArea: "山泉1",
-            fNum: 12,
-            assetTag: "201707GZ-1324",
-            chDay: "2013",
-            notPush: "地产"
-          },
-          {
-            resName: "帝景山庄改1",
-            mTitle: "帝景3门3",
-            rName: "越秀区",
-            cType: "高端住宅",
-            hNum: 150,
-            hPrice: 5100000,
-            asIDs: "5,6",
-            asLabs: "A,B",
-            asStates: "1,1",
-            tradingArea: "山泉1",
-            fNum: 22,
-            assetTag: "201707GZ-1329",
-            chDay: "2013",
-            notPush: "医学"
-          },
-          {
-            resName: "帝景山庄",
-            mTitle: "帝景门",
-            rName: "白云区",
-            cType: "别墅",
-            hNum: 171,
-            hPrice: 4600000,
-            asIDs: "7,8",
-            asLabs: "A,B",
-            asStates: "1,1",
-            tradingArea: "山泉",
-            fNum: 15,
-            assetTag: "201707GZ-1328",
-            chDay: "2014",
-            notPush: "医学"
-          },
-          {
-            resName: "尚东",
-            mTitle: "尚东一号",
-            rName: "天河区",
-            cType: "别墅",
-            hNum: 210,
-            hPrice: 7600000,
-            asIDs: "9,10",
-            asLabs: "A,B",
-            asStates: "1,1",
-            tradingArea: "山泉",
-            fNum: 30,
-            assetTag: "201707GZ-1329",
-            chDay: "2015",
-            notPush: "汽车"
-          },
-        ]
+        // let tempADList = [
+        //   {
+        //     resName: "尚东3",
+        //     mTitle: "尚东3东门",
+        //     rName: "荔湾区",
+        //     cType: "一般住宅",
+        //     hNum: 100,
+        //     hPrice: 56000,
+        //     asIDs: "7",
+        //     asLabs: "A",
+        //     asStates: "1",
+        //     tradingArea: "三里屯",
+        //     fNum: 3,
+        //     assetTag: "201805GZ-1324",
+        //     notPush: ""
+        //   },
+        //   {
+        //     resName: "帝景山庄改1",
+        //     mTitle: "帝景1门",
+        //     rName: "越秀区",
+        //     cType: "高端住宅",
+        //     hNum: 120,
+        //     hPrice: 6100000,
+        //     asIDs: "1,2",
+        //     asLabs: "A,B",
+        //     asStates: "1,1",
+        //     tradingArea: "山泉1",
+        //     fNum: 9,
+        //     assetTag: "201707GZ-13161",
+        //     chDay: "2013",
+        //     notPush: "美容"
+        //   },
+        //   {
+        //     resName: "帝景山庄改1",
+        //     mTitle: "帝景2门2",
+        //     rName: "越秀区",
+        //     cType: "高端住宅",
+        //     hNum: 170,
+        //     hPrice: 6600000,
+        //     asIDs: "4,3",
+        //     asLabs: "B,A",
+        //     asStates: "1,1",
+        //     tradingArea: "山泉1",
+        //     fNum: 12,
+        //     assetTag: "201707GZ-1324",
+        //     chDay: "2013",
+        //     notPush: "地产"
+        //   },
+        //   {
+        //     resName: "帝景山庄改1",
+        //     mTitle: "帝景3门3",
+        //     rName: "越秀区",
+        //     cType: "高端住宅",
+        //     hNum: 150,
+        //     hPrice: 5100000,
+        //     asIDs: "5,6",
+        //     asLabs: "A,B",
+        //     asStates: "1,1",
+        //     tradingArea: "山泉1",
+        //     fNum: 22,
+        //     assetTag: "201707GZ-1329",
+        //     chDay: "2013",
+        //     notPush: "医学"
+        //   },
+        //   {
+        //     resName: "帝景山庄",
+        //     mTitle: "帝景门",
+        //     rName: "白云区",
+        //     cType: "别墅",
+        //     hNum: 171,
+        //     hPrice: 4600000,
+        //     asIDs: "7,8",
+        //     asLabs: "A,B",
+        //     asStates: "1,1",
+        //     tradingArea: "山泉",
+        //     fNum: 15,
+        //     assetTag: "201707GZ-1328",
+        //     chDay: "2014",
+        //     notPush: "医学"
+        //   },
+        //   {
+        //     resName: "尚东",
+        //     mTitle: "尚东一号",
+        //     rName: "天河区",
+        //     cType: "别墅",
+        //     hNum: 210,
+        //     hPrice: 7600000,
+        //     asIDs: "9,10",
+        //     asLabs: "A,B",
+        //     asStates: "1,1",
+        //     tradingArea: "山泉",
+        //     fNum: 30,
+        //     assetTag: "201707GZ-1329",
+        //     chDay: "2015",
+        //     notPush: "汽车"
+        //   },
+        // ]
         let throwCity = this.city
         let totalList = []        // 全部城市的选点列表
         console.log('投放城市333333333', throwCity)
@@ -1567,77 +1567,77 @@
         //  let rName = throwCity[t].rName
           api.getApi('/GetAdS', {uid: uid, rid: rid}).then(res => {
             console.log('选点列表：', res)
-            // let ADList = res.data
-            // if(ADList.length !==0){
-            let ADList = tempADList
+            let ADList = res.data
+            if(ADList.length !==0){
+            // let ADList = tempADList
             this.ADTotalList = ADList
          //   this.resetADList(ADList,starTime,endTime,rName,totalList,t)
             // 被占广告点位列表【选点】GetAdLaunch
-            let LaunchParams = {uid: uid, rid: 440100, ls: starTime, le: endTime}
+            let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
             api.getApi('/GetAdLaunch', LaunchParams).then(res => {
               console.log('被占选点列表', res)
-              // let adLaunch = res.data
-              let adLaunch = [
-                {
-                  lID: 1,
-                  asID: 1,
-                  pdID: 1,
-                  lStar: "2018-06-01",
-                  lEnd: "2018-06-09",
-                  uID: 1,
-                  lSetTime: "2018-05-17 18:19:15.0",
-                  lState: 1
-                },
-                {
-                  lID: 2,
-                  asID: 2,
-                  pdID: 1,
-                  lStar: "2018-06-01",
-                  lEnd: "2018-06-09",
-                  uID: 1,
-                  lSetTime: "2018-05-17 18:19:15.0",
-                  lState: 1
-                },
-                {
-                  lID: 3,
-                  asID: 3,
-                  pdID: 1,
-                  lStar: "2018-06-01",
-                  lEnd: "2018-06-09",
-                  uID: 1,
-                  lSetTime: "2018-05-17 18:19:15.0",
-                  lState: 1
-                },
-                {
-                  lID: 4,
-                  asID: 6,
-                  pdID: 1,
-                  lStar: "2018-06-01",
-                  lEnd: "2018-06-09",
-                  uID: 1,
-                  lSetTime: "2018-05-17 18:19:15.0",
-                  lState: 2
-                }]
+              let adLaunch = res.data
+              // let adLaunch = [
+              //   {
+              //     lID: 1,
+              //     asID: 1,
+              //     pdID: 1,
+              //     lStar: "2018-06-01",
+              //     lEnd: "2018-06-09",
+              //     uID: 1,
+              //     lSetTime: "2018-05-17 18:19:15.0",
+              //     lState: 1
+              //   },
+              //   {
+              //     lID: 2,
+              //     asID: 2,
+              //     pdID: 1,
+              //     lStar: "2018-06-01",
+              //     lEnd: "2018-06-09",
+              //     uID: 1,
+              //     lSetTime: "2018-05-17 18:19:15.0",
+              //     lState: 1
+              //   },
+              //   {
+              //     lID: 3,
+              //     asID: 3,
+              //     pdID: 1,
+              //     lStar: "2018-06-01",
+              //     lEnd: "2018-06-09",
+              //     uID: 1,
+              //     lSetTime: "2018-05-17 18:19:15.0",
+              //     lState: 1
+              //   },
+              //   {
+              //     lID: 4,
+              //     asID: 6,
+              //     pdID: 1,
+              //     lStar: "2018-06-01",
+              //     lEnd: "2018-06-09",
+              //     uID: 1,
+              //     lSetTime: "2018-05-17 18:19:15.0",
+              //     lState: 2
+              //   }]
               let planArr = []
               for (let i = 0; i < ADList.length; i++) {
                 console.log('遍历选点列表')
                 let adObj = {
                   rid: t.toString() + i.toString(),
-                  asIDs: tempADList[i].asIDs,
-                  asLabs: tempADList[i].asLabs,
-                  recName: tempADList[i].resName,
+                  asIDs: ADList[i].asIDs,
+                  asLabs: ADList[i].asLabs,
+                  recName: ADList[i].resName,
                   city: throwCity[t].rName, //'广州',
-                  origin: tempADList[i].rName,
-                  buildType: tempADList[i].cType,
-                  houseNum: tempADList[i].hNum,
-                  buildPrice: (tempADList[i].hPrice / 100),
-                  mediaName: tempADList[i].mTitle,
-                  buildNum: tempADList[i].fNum,
+                  origin: ADList[i].rName,
+                  buildType: ADList[i].cType,
+                  houseNum: ADList[i].hNum,
+                  buildPrice: (ADList[i].hPrice / 100),
+                  mediaName: ADList[i].mTitle,
+                  buildNum: ADList[i].fNum,
                   schedules: this.dateInput[0] + '-' + this.dateInput[1],
-                  businessOrigin: tempADList[i].tradingArea,
-                  assetID: tempADList[i].assetTag,
-                  liveYear: tempADList[i].chDay,
-                  adLimit: tempADList[i].notPush,
+                  businessOrigin: ADList[i].tradingArea,
+                  assetID: ADList[i].assetTag,
+                  liveYear: ADList[i].chDay,
+                  adLimit: ADList[i].notPush,
                   checkBox: {A: false, B: false},
                   box: {A: false, B: false},
                 }
@@ -1679,12 +1679,12 @@
                 this.copyPlanList = this.planList
               }
             })
-            // }else{
-            //   this.$message({
-            //     message: '该城市暂无可选的投放点',
-            //     type: 'warning'
-            //   });
-            // }
+            }else{
+              this.$message({
+                message: '该城市暂无可选的投放点',
+                type: 'warning'
+              });
+            }
           })
         }
       },
@@ -1701,7 +1701,7 @@
           let ADList = this.ADTotalList
           let tempADList = ADList
           // 被占广告点位列表【选点】GetAdLaunch
-          let LaunchParams = {uid: uid, rid: 440100, ls: this.dateInput[0], le: this.dateInput[1]}
+          let LaunchParams = {uid: uid, rid: rid, ls: this.dateInput[0], le: this.dateInput[1]}
           console.log('搜索被占点位列表的params',LaunchParams)
           api.getApi('/GetAdLaunch', LaunchParams).then(res => {
             console.log('被占选点列表', res)
@@ -3188,7 +3188,7 @@
   }
 
   /deep/ .el-textarea__inner {
-    width: 300px;
+    width: 260px;
     height: 80px;
     resize: vertical;
   }
@@ -3269,6 +3269,9 @@
 }
 /deep/ .el-date-editor .el-range__close-icon{
   line-height: 28px;
+}
+/deep/ .el-range-editor .el-range-input{
+  line-height: 20px;
 }
 
   .searchBtn, .map {
