@@ -378,9 +378,9 @@ export default {
 		// 筛选权限城市
 		filterUWho(value, row){
 			console.log(value, '-------------', row);
-			if(value =='全国'){
-				return true;
-			}
+			// if(value =='全国'){
+			// 	return true;
+			// }
 			return row.uWhoArr.includes(value);
 		},
 		// 筛选角色

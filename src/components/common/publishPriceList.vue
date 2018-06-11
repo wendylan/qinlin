@@ -157,6 +157,10 @@ export default {
 				if(!res.data.SysCode){
 					this.publishPriceList = res.data;
 					this.filtCity = filterFormat(this.publishPriceList, 'rName');
+					this.filtCity.unshift({
+						text: '全国',
+						value: '全国'
+					});
 					for(let data of this.publishPriceList){
 						data.showInput = false;
 						data.changeBtn = false;
@@ -202,6 +206,9 @@ export default {
 		},
 		filterCity(value, row) {
 			console.log(value, row);
+			if(value =='全国'){
+				return true;
+			}
 			return row.rName === value;
 		},
 		filterMedia(value, row){

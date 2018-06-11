@@ -21,7 +21,7 @@
 					>
 						<template slot-scope="scope">
 							<span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
-							<el-input v-model="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
+							<el-input v-model.trim="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -30,7 +30,7 @@
 					>
 						<template slot-scope="scope">
 							<span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
-							<el-input v-model="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
+							<el-input v-model.trim="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
 						</template>
 					</el-table-column>
 					<el-table-column

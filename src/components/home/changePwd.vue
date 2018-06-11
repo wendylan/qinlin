@@ -1,29 +1,26 @@
 <template>
-  <div style="flex: 1">
-    <h4>修改密码</h4>
-    <div class="changePwd-box">
-      <el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px"
-               class="demo-ruleForm">
-        <el-form-item label="" prop="currPwd">
-          <el-input type="password" v-model.trim="formChangePwd.currPwd" auto-complete="off"
-                    placeholder="请输入当前密码"></el-input>
-        </el-form-item>
-        <el-form-item label="" prop="newPwd">
-          <el-input type="password" v-model.trim="formChangePwd.newPwd" auto-complete="off" placeholder="请输入新的密码"></el-input>
-        </el-form-item>
-        <el-form-item label="" prop="confirmPwd">
-          <el-input type="password" v-model.trim="formChangePwd.confirmPwd" placeholder="请再次输入密码"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('formChangePwd')">确定</el-button>
-        </el-form-item>
-
-      </el-form>
-    </div>
-    <div class="changePwd-btn">
-      <el-button type="text" @click="goBack">取消</el-button>
-    </div>
-  </div>
+	<div style="flex: 1">
+		<h4>修改密码</h4>
+		<div class="changePwd-box">
+			<el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="" prop="currPwd">
+					<el-input type="password" v-model.trim="formChangePwd.currPwd" auto-complete="off" placeholder="请输入当前密码"></el-input>
+				</el-form-item>
+				<el-form-item label="" prop="newPwd">
+					<el-input type="password" v-model.trim="formChangePwd.newPwd" auto-complete="off" placeholder="请输入新的密码"></el-input>
+				</el-form-item>
+				<el-form-item label="" prop="confirmPwd">
+					<el-input type="password" v-model.trim="formChangePwd.confirmPwd" placeholder="请再次输入密码"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitForm('formChangePwd')">确定</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
+		<div class="changePwd-btn">
+			<el-button type="text" @click="goBack">取消</el-button>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -73,12 +70,18 @@ export default {
 			//规则
 			ChangePwdRule: {
 				currPwd: [
+					{ min: 6, message: '至少输入6个字节', trigger: 'blur' },
+					{ max: 10, message: '最多输入10个字节', trigger: 'blur' },
 					{validator: checkCurrPwd, trigger: 'blur'}
 				],
 				newPwd: [
+					{ min: 6, message: '至少输入6个字节', trigger: 'blur' },
+					{ max: 10, message: '最多输入10个字节', trigger: 'blur' },
 					{validator: validatePass, trigger: 'blur'}
 				],
 				confirmPwd: [
+					{ min: 6, message: '至少输入6个字节', trigger: 'blur' },
+					{ max: 10, message: '最多输入10个字节', trigger: 'blur' },
 					{validator: validatePass2, trigger: 'blur'}
 				]
 			}

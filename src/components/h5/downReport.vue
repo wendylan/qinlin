@@ -1,441 +1,291 @@
 <template>
 	<div>
-		<div>
-			<div class="ad_mediaMana_wrap">
-				<div class="mediaMana_content_top">
-					<div class="content_top_wrap">
-						<div class="title">
-							<h1>亲邻科技下刊报告</h1>
-							<h3>广州探鱼 &nbsp;&nbsp;2017/11/11-2017/12/12</h3>
-						</div>
-						<div class="detail">
-							<p>
-								<em>公司名称：</em><i>深圳市亲邻科技有限公司</i>
-								<em>投放城市：</em><i>广州、深圳</i>
-								<em>投放面数：</em><i>300面</i>
-							</p>
-						</div>
+		<div class="ad_mediaMana_wrap">
+			<div class="mediaMana_content_top">
+				<div class="content_top_wrap">
+					<div class="title">
+						<h1>亲邻科技下刊报告</h1>
+						<h3>广州探鱼 &nbsp;&nbsp;2017/11/11-2017/12/12</h3>
+					</div>
+					<div class="detail">
+						<p>
+							<em>公司名称：</em><i>深圳市亲邻科技有限公司</i>
+							<em>投放城市：</em><i>广州、深圳</i>
+							<em>投放面数：</em><i>300面</i>
+						</p>
 					</div>
 				</div>
-				<div class="plan-panel">
-					<el-tabs v-model="planPanel">
-						<el-tab-pane label="投放详情" name="first">
-							<div class="first-wrap box-wrap">
-								<h4>投放详情</h4>
-								<div class="search-wrap">
-									<span>
-										<el-select v-model="select" placeholder="请选择" class="type-select">
-											<el-option v-for="item in typeSelect" :key="item.value" :label="item.label" :value="item.value"></el-option>
-										</el-select>
-										<el-input v-model="keyword" placeholder="请输入要搜索的内容" class="searchInput" @change="initData"></el-input>
-									</span>
-									<span>
-										<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
-									</span>
-								</div>
-								<div class="table_wrap">
-									<el-table
-										border
-										:data="currPutDetail"
-										style="width: 100%"
-										:default-sort="{prop: 'recName', order: 'descending'}"
+			</div>
+			<div class="plan-panel">
+				<el-tabs v-model="planPanel">
+					<el-tab-pane label="投放详情" name="first">
+						<div class="first-wrap box-wrap">
+							<h4>投放详情</h4>
+							<div class="search-wrap">
+								<span>
+									<el-select v-model="select" placeholder="请选择" class="type-select">
+										<el-option v-for="item in typeSelect" :key="item.value" :label="item.label" :value="item.value"></el-option>
+									</el-select>
+									<el-input v-model="keyword" placeholder="请输入要搜索的内容" class="searchInput" @change="initData"></el-input>
+								</span>
+								<span>
+									<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
+								</span>
+							</div>
+							<div class="table_wrap">
+								<el-table
+									border
+									:data="currPutDetail"
+									style="width: 100%"
+									:default-sort="{prop: 'recName', order: 'descending'}"
+								>
+									<el-table-column type="expand">
+										<template slot-scope="props">
+											<el-form label-position="left" inline class="demo-table-expand">
+												<el-form-item label="商圈：">
+													<span>{{ props.row.tradingArea}}</span>
+												</el-form-item>
+												<el-form-item label="楼栋数量：">
+													<span>{{ props.row.fNum }}</span>
+												</el-form-item>
+												<el-form-item label="资产编号：">
+													<span>{{ props.row.assetTag }}</span>
+												</el-form-item>
+												<el-form-item label="入住年份：">
+													<span>{{ props.row.chDay }}</span>
+												</el-form-item>
+												<el-form-item label="广告限制：">
+													<span>{{ props.row.notPush }}</span>
+												</el-form-item>
+											</el-form>
+										</template>
+									</el-table-column>
+									<el-table-column
+										prop="city"
+										label="城市"
+										min-width="6.7%"
+										:filters="filterCityData"
+										:filter-method="filterCity"
 									>
-										<el-table-column type="expand">
-											<template slot-scope="props">
-												<el-form label-position="left" inline class="demo-table-expand">
-													<el-form-item label="商圈：">
-														<span>{{ props.row.tradingArea}}</span>
-													</el-form-item>
-													<el-form-item label="楼栋数量：">
-														<span>{{ props.row.fNum }}</span>
-													</el-form-item>
-													<el-form-item label="资产编号：">
-														<span>{{ props.row.assetTag }}</span>
-													</el-form-item>
-													<el-form-item label="入住年份：">
-														<span>{{ props.row.chDay }}</span>
-													</el-form-item>
-													<el-form-item label="广告限制：">
-														<span>{{ props.row.notPush }}</span>
-													</el-form-item>
-												</el-form>
-											</template>
-										</el-table-column>
-										<el-table-column
-											prop="city"
-											label="城市"
-											min-width="6.7%"
-											:filters="filterCityData"
-											:filter-method="filterCity"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="rName"
-											label="区域"
-											min-width="6.7%"
-											:filters="filtersArea"
-											:filter-method="filterRName"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="resName"
-											label="资源名称"
-											min-width="11.9%"
-											class="tar"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="address"
-											label="地址"
-											min-width="19.5%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="cType"
-											label="楼盘类型"
-											min-width="6.1%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="chDay"
-											label="入住时间"
-											min-width="6.1%"
-											class="tar"
-										>
-										</el-table-column>
-										<el-table-column
-											label="楼盘价格"
-											min-width="7.6%"
-										>
-											<template slot-scope="scope">
-												<span>{{priceFormat(scope.row.hPrice/100)}}</span>
-											</template>
-										</el-table-column>
-										<el-table-column
-											prop="hNum"
-											label="户数"
-											min-width="5.6%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="mediaNum"
-											label="媒体数量"
-											min-width="6.1%"
-										>
-										</el-table-column>
-										<el-table-column
-											label="操作"
-											min-width="6.1%"
-										>
-											<template slot-scope="scope">
-												<el-button type="text">查看监播</el-button>
-											</template>
-										</el-table-column>
-									</el-table>
-								</div>
+									</el-table-column>
+									<el-table-column
+										prop="rName"
+										label="区域"
+										min-width="6.7%"
+										:filters="filtersArea"
+										:filter-method="filterRName"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="resName"
+										label="资源名称"
+										min-width="11.9%"
+										class="tar"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="address"
+										label="地址"
+										min-width="19.5%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="cType"
+										label="楼盘类型"
+										min-width="6.1%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="chDay"
+										label="入住时间"
+										min-width="6.1%"
+										class="tar"
+									>
+									</el-table-column>
+									<el-table-column
+										label="楼盘价格"
+										min-width="7.6%"
+									>
+										<template slot-scope="scope">
+											<span>{{priceFormat(scope.row.hPrice/100)}}</span>
+										</template>
+									</el-table-column>
+									<el-table-column
+										prop="hNum"
+										label="户数"
+										min-width="5.6%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="mediaNum"
+										label="媒体数量"
+										min-width="6.1%"
+									>
+									</el-table-column>
+									<el-table-column
+										label="操作"
+										min-width="6.1%"
+									>
+										<template slot-scope="scope">
+											<el-button type="text">查看监播</el-button>
+										</template>
+									</el-table-column>
+								</el-table>
 							</div>
-						</el-tab-pane>
-						<el-tab-pane label="地图展示" name="second">
-							<div class="sec-wrap box-wrap">
-								<h4>地图展示</h4>
-								<div class="map">
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="地图展示" name="second">
+						<div class="sec-wrap box-wrap">
+							<h4>地图展示</h4>
+							<div class="map">
 
-								</div>
 							</div>
-						</el-tab-pane>
-						<el-tab-pane label="监播图片" name="third">
-							<div class="sec-wrap box-wrap">
-								<h4>监播图片</h4>
-								<div class="tabs">
-									<button class="active" @click="box1Change">按资源分</button>
-									<button @click="box1Change">按图片分</button>
-								</div>
-								<div class="typeOfRec" v-if="isActive1">
-									<div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="监播图片" name="third">
+						<div class="sec-wrap box-wrap">
+							<h4>监播图片</h4>
+							<div class="tabs">
+								<button class="active" @click="box1Change">按资源分</button>
+								<button @click="box1Change">按图片分</button>
+							</div>
+							<div class="typeOfRec" v-if="isActive1">
+								<div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
 									</div>
-									<div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
+									<div class="pic-title">珠江新城小区</div>
 									</div>
-									<div class="pager">
-										<el-pagination
-											small
-											background
-											@size-change="handleSizeChange"
-											@current-change="handleCurrentChange"
-											:current-page="1"
-											:page-sizes="[5, 10]"
-											:page-size="5"
-											layout=" sizes, prev, pager, next, jumper"
-											:total="30">
-										</el-pagination>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
 									</div>
 								</div>
-								<div class="typeOfPic" v-if="!isActive1">
-									<div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
+								<div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
 									</div>
-									<div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
-										<div class="picBox">
-										<el-carousel :autoplay="false" trigger="click">
-											<el-carousel-item v-for="item in 4" :key="item" >
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-											</el-carousel-item>
-										</el-carousel>
-										<!--缩略图-->
-										<div class="mask-btn">
-											<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-										</div>
-										<div class="pic-title">珠江新城小区</div>
-										</div>
+									<div class="pic-title">珠江新城小区</div>
 									</div>
-									<div class="pager">
-										<el-pagination
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+								</div>
+								<div class="pager">
+									<el-pagination
 										small
 										background
 										@size-change="handleSizeChange"
@@ -445,67 +295,215 @@
 										:page-size="5"
 										layout=" sizes, prev, pager, next, jumper"
 										:total="30">
-										</el-pagination>
+									</el-pagination>
+								</div>
+							</div>
+							<div class="typeOfPic" v-if="!isActive1">
+								<div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
 									</div>
 								</div>
-							</div>
-						</el-tab-pane>
-						<el-tab-pane label="发布情况" name="forth">
-							<div class="forth-wrap box-wrap">
-								<h4>发布情况</h4>
-								<div class="table_wrap">
-									<el-table
-										border
-										:data="postDetail"
-										style="width: 100%"
-										:default-sort="{prop: 'recName', order: 'descending'}"
-									>
-										<el-table-column
-											prop="city"
-											label="城市"
-											min-width="10.3%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="planNum"
-											label="计划点位数"
-											min-width="18.6%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="realNum"
-											label="实际执行点位数"
-											min-width="18.8%"
-											class="tar"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="wrongNum"
-											label="问题点位数"
-											min-width="19.3%"
-										>
-										</el-table-column>
-										<el-table-column
-											prop="resolveNum"
-											label="问题解决数"
-											min-width="19.8%"
-										>
-										</el-table-column>
-									</el-table>
+								<div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+									<div class="picBox">
+									<el-carousel :autoplay="false" trigger="click">
+										<el-carousel-item v-for="item in 4" :key="item" >
+										<!--<h3>{{item}}</h3>-->
+										<img :src=dialogImageUrl alt="">
+										</el-carousel-item>
+									</el-carousel>
+									<!--缩略图-->
+									<div class="mask-btn">
+										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+									</div>
+									<div class="pic-title">珠江新城小区</div>
+									</div>
+								</div>
+								<div class="pager">
+									<el-pagination
+									small
+									background
+									@size-change="handleSizeChange"
+									@current-change="handleCurrentChange"
+									:current-page="1"
+									:page-sizes="[5, 10]"
+									:page-size="5"
+									layout=" sizes, prev, pager, next, jumper"
+									:total="30">
+									</el-pagination>
 								</div>
 							</div>
-						</el-tab-pane>
-					</el-tabs>
-					<!--缩略图对话框-->
-					<el-dialog :visible.sync="dialogVisible">
-						<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-					</el-dialog>
-				</div>
-				<div class="ad_index_footer clearfix">
-					<p>
-						Copyright &copy;2018 亲邻科技线上产品部
-					</p>
-				</div>
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="发布情况" name="forth">
+						<div class="forth-wrap box-wrap">
+							<h4>发布情况</h4>
+							<div class="table_wrap">
+								<el-table
+									border
+									:data="postDetail"
+									style="width: 100%"
+									:default-sort="{prop: 'recName', order: 'descending'}"
+								>
+									<el-table-column
+										prop="city"
+										label="城市"
+										min-width="10.3%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="planNum"
+										label="计划点位数"
+										min-width="18.6%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="realNum"
+										label="实际执行点位数"
+										min-width="18.8%"
+										class="tar"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="wrongNum"
+										label="问题点位数"
+										min-width="19.3%"
+									>
+									</el-table-column>
+									<el-table-column
+										prop="resolveNum"
+										label="问题解决数"
+										min-width="19.8%"
+									>
+									</el-table-column>
+								</el-table>
+							</div>
+						</div>
+					</el-tab-pane>
+				</el-tabs>
+				<!--缩略图对话框-->
+				<el-dialog :visible.sync="dialogVisible">
+					<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+				</el-dialog>
+			</div>
+			<div class="ad_index_footer clearfix">
+				<p>
+					Copyright &copy;2018 亲邻科技线上产品部
+				</p>
 			</div>
 		</div>
 	</div>

@@ -2962,7 +2962,7 @@
 
   /deep/ .el-input__inner {
     font-size: 14px;
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
     height: 34px;
     line-height: 14px;
   }
@@ -3231,10 +3231,10 @@
   }
 
   /deep/ .date-select.el-input__inner {
-    width: 237px;
+    /*width: 237px;*/
     position: relative;
-    top: 3px;
-    left: -5px;
+    /*top: 3px;*/
+    /*left: -5px;*/
   }
 
   /deep/ .plan-select /deep/ .el-input__suffix {
@@ -3242,21 +3242,39 @@
     right: 10px;
   }
 
-  /deep/ .el-date-editor .el-range__icon {
-    line-height: 14px;
-    position: relative;
-  }
 
   /*日期*/
 
-  /deep/ .el-date-editor .el-range__close-icon {
-    line-height: 29px;
-  }
+.block {
+  display: inline-block;
+  margin-left: 2px;
+  position: relative;
+  /*top: 3px;*/
+}
+
+/deep/ .el-date-editor .el-range__icon {
+  position: relative;
+  /*top: -3px;*/
+  margin-right: 2px;
+  line-height: 14px;
+}
+/deep/ .el-range-separator{
+  position: relative;
+  top: 5px;
+}
+/deep/ .el-input__inner {
+  width: 260px;
+  height: 34px;
+  /*line-height: 34px;*/
+}
+/deep/ .el-date-editor .el-range__close-icon{
+  line-height: 28px;
+}
 
   .searchBtn, .map {
     position: relative;
     /*top: 3px;*/
-    left: -3px;
+    left: 5px;
   }
 
   /deep/ .searchBtn .el-icon-search {
@@ -3330,7 +3348,7 @@
     /*top: 3px;*/
     text-align: center;
     font-size: 14px;
-    margin-left: 2px;
+    margin-left: 5px;
   }
 
   /deep/ .map .el-icon-location-outline {
@@ -3352,7 +3370,7 @@
 
   .search-wrap span {
     float: left;
-    margin-left: 2px;
+    /*margin-left: 2px;*/
     margin-bottom: 30px;
   }
 

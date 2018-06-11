@@ -9,7 +9,7 @@ timeFormat.toDate = function(time, format='-'){
 			time = time.substring(0, time.length-2);
 		}
 	}
-	time =  new Date(Date.parse(time.replace(/-/g,"/")));
+	time =  new Date(Date.parse(time.replace(/-/g, "/")));
 
 	let year = time.getFullYear();
 	let month = time.getMonth()+1;//js从0开始取 
@@ -33,7 +33,7 @@ timeFormat.toDateTime = function(time){
 			time = time.substring(0, time.length-2);
 		}
 	}
-	time =  new Date(Date.parse(time.replace(/-/g,"/")));
+	time =  new Date(Date.parse(time.replace(/-/g, "/")));
 	
 	let year = time.getFullYear();
 	let month = time.getMonth()+1;//js从0开始取 
