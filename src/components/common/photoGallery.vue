@@ -448,38 +448,17 @@ export default {
 				label: '广州',
 				children: [{
 				value: 'tianhequ',
-				label: '天河区',
-				children: [{
-					value: 'tiyuzhongxin',
-					label: '体育中心',
-				}, {
-					value: 'shipaiqiao',
-					label: '石牌桥'
-				}]
+				label: '天河区'
 				}]
 			}, {
 				value: 'beijing',
 				label: '北京',
 				children: [{
 				value: 'chaoyangqu',
-				label: '朝阳区',
-				children: [{
-					value: 'tiyuzhongxin',
-					label: '体育中心',
-				}, {
-					value: 'shipaiqiao',
-					label: '石牌桥'
-				}]
+				label: '朝阳区'
 				}, {
 				value: 'haizhuqu',
-				label: '海珠区',
-				children: [{
-					value: 'tiyuzhongxin',
-					label: '体育中心',
-				}, {
-					value: 'shipaiqiao',
-					label: '石牌桥'
-				}]
+				label: '海珠区'
 				}]
 			}],
 
@@ -651,6 +630,10 @@ export default {
 </script>
 
 <style scoped>
+
+  /deep/ .el-cascader__label{
+    line-height: 34px;
+  }
   /*面包屑导航*/
   .ad_mediaMana_wrap {
     position: relative;

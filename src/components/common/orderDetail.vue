@@ -242,11 +242,6 @@
 											</div>
 										</div>
 									</el-tab-pane>
-
-
-
-									<!-- <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-									<el-tab-pane label="成都">成都内容</el-tab-pane> -->
 								</el-tabs>
 							</div>
 						</div>
@@ -308,18 +303,16 @@
 								<div class="up-loader-header">
 									<el-cascader
 										:options="citys"
-										v-model="selectedOptions"
+										v-model="citySelect"
 									>
 									</el-cascader>
-									<el-select placeholder="请选择资源" filterable v-model="allhouse">
-										<el-option label="全部资源" value="allHouse"></el-option>
-										<el-option label="区域一" value="shanghai"></el-option>
-										<el-option label="区域二" value="beijing"></el-option>
+									<el-select placeholder="请选择资源" filterable v-model="allhouse" v-for="(item, index) of allResource" :key="index">
+										<el-option :label="item.text" :value="item.value"></el-option>
 									</el-select>
 									<el-select placeholder="请选择监播图" v-model="allPic">
-										<el-option label="全部监播图" value="allHouse"></el-option>
-										<el-option label="已上传" value="shanghai"></el-option>
-										<el-option label="未上传" value="beijing"></el-option>
+										<el-option label="全部监播图" value="0"></el-option>
+										<el-option label="已上传" value="1"></el-option>
+										<el-option label="未上传" value="2"></el-option>
 									</el-select>
 									<!--进度条-->
 									<div class="progress">
@@ -327,6 +320,7 @@
 										<span>130 / 260</span>
 									</div>
 								</div>
+
 								<div class="imgs-box">
 									<div class="up-loader-Imgpanel" v-for="updata of upReportArr" :key="updata.asID">
 										<el-card class="box-card" shadow="never">
@@ -443,7 +437,7 @@
 									<div class="up-loader-header">
 										<el-cascader
 											:options="citys"
-											v-model="selectedOptions"
+											v-model="citySelect"
 										>
 										</el-cascader>
 										<el-select placeholder="请选择资源" filterable v-model="allhouse">
@@ -452,9 +446,9 @@
 											<el-option label="区域二" value="beijing"></el-option>
 										</el-select>
 										<el-select placeholder="请选择监播图" v-model="allPic">
-											<el-option label="全部监播图" value="allHouse"></el-option>
-											<el-option label="已上传" value="shanghai"></el-option>
-											<el-option label="未上传" value="beijing"></el-option>
+											<el-option label="全部监播图" value="0"></el-option>
+											<el-option label="已上传" value="1"></el-option>
+											<el-option label="未上传" value="2"></el-option>
 										</el-select>
 										<!--进度条-->
 										<div class="progress">
@@ -474,7 +468,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
-														:file-list="updata.downImg.one"
+														:file-list="downData.downImg.one"
 														:on-success="handleDownSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -486,7 +480,7 @@
 													<el-upload
 														:action="doUpload"
 														list-type="picture-card"
-														:file-list="updata.downImg.two"
+														:file-list="downData.downImg.two"
 														:on-success="handleDownSuccess"
 														:on-preview="handlePictureCardPreview"
 														:on-remove="handleRemove">
@@ -503,7 +497,7 @@
 														<el-upload
 															:action="doUpload"
 															list-type="picture-card"
-															:file-list="updata.downImg.three"
+															:file-list="downData.downImg.three"
 															:on-success="handleDownSuccess"
 															:on-preview="handlePictureCardPreview"
 															:on-remove="handleRemove">
@@ -515,7 +509,7 @@
 														<el-upload
 															:action="doUpload"
 															list-type="picture-card"
-															:file-list="updata.downImg.four"
+															:file-list="downData.downImg.four"
 															:on-success="handleDownSuccess"
 															:on-preview="handlePictureCardPreview"
 															:on-remove="handleRemove">
@@ -791,6 +785,7 @@
 						<el-button type="primary" @click="confirmAddPoint">确 定</el-button>
 					</span>
 				</el-dialog>
+
 				<!-- 图片查看显示 -->
 				<el-dialog :visible.sync="dialogVisible">
 					<img width="100%" :src="dialogImageUrl" alt="">
@@ -889,8 +884,16 @@ export default {
 			},
 			// 上刊图片
 			upLoadImg: [],
+			//上刊报告市区级联
+			citys: [],
+			citySelect: [],
+			//上刊报告社区和监播图
+			allResource: [],
+			allhouse: '',
+			allPic: '2',
 			// 下刊图片
 			downImg: [],
+
 
 			isShow1: false,
 			//添加点位
@@ -1166,56 +1169,7 @@ export default {
 			cancelbtnShow: false,
 			//选点排期操作
 			showHandel: false,
-			//上刊报告省市级联
-			citys: [
-				{
-					value: 'all',
-					label: '全部',
-				},
-				{
-					value: 'guangzhou',
-					label: '广州',
-					children: [{
-					value: 'tianhequ',
-					label: '天河区',
-					children: [{
-						value: 'tiyuzhongxin',
-						label: '体育中心',
-					}, {
-						value: 'shipaiqiao',
-						label: '石牌桥'
-					}]
-					}]
-				}, {
-					value: 'beijing',
-					label: '北京',
-					children: [{
-					value: 'chaoyangqu',
-					label: '朝阳区',
-					children: [{
-						value: 'tiyuzhongxin',
-						label: '体育中心',
-					}, {
-						value: 'shipaiqiao',
-						label: '石牌桥'
-					}]
-					}, {
-					value: 'haizhuqu',
-					label: '海珠区',
-					children: [{
-						value: 'tiyuzhongxin',
-						label: '体育中心',
-					}, {
-						value: 'shipaiqiao',
-						label: '石牌桥'
-					}]
-					}]
-				}
-			],
-			selectedOptions: [],
-			//上刊报告社区和监播图
-			allhouse: '',
-			allPic: '',
+			
 		};
 	},
 	created(){
@@ -1293,93 +1247,97 @@ export default {
 		// 获取选点排期
 		getSetPoint(){
 			// 测试数据
+			let testInfo = [
+				{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+				{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
+			];
+			let upimginfo = [
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			];
+			let downimginfo = [
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			];
 			// let testInfo = [
-			// 	{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
-			// 	{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
+			// 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
+			// 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
 			// ];
-			// let upimginfo = [
-			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			// ];
-			// let downimginfo = [
-			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			// ];
-			// // let testInfo = [
-			// // 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
-			// // 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
-			// // ];
 			
-			// // 广州市-天河区-东方雅苑-西门-B
+			// 广州市-天河区-东方雅苑-西门-B
 			
-			// // this.getMaterialInfo(testInfo);
-			// // 城市筛选过滤
-			// this.filterCityData = filterFormat(testInfo, 'city');
-			// this.filtersArea = filterFormat(testInfo, 'rName');
-			// this.filtersData = filterFormat(testInfo, 'timeRange');
-			// // 选点排期
-			// this.setpointArr = testInfo;
-			// this.currentSetpoint = this.setpointArr;
-			// // 物料信息
-			// this.materialInfo = this.getMaterialInfo(testInfo);
-			// console.log('materialInfo', this.materialInfo);
-			
-			// // 初始图片
-			// this.upLoadImg = upimginfo;
-			// this.downImg = downimginfo;
-			// // 上刊数据(组合图片)
-			// testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-			// this.upReportArr = testInfo;
-			// console.log('upimginfo', this.upReportArr);
-			// // 下刊数据(组合图片)
-			// testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-			// this.downReportArr = testInfo;
-			// console.log('downimginfo', this.downReportArr);
+			// this.getMaterialInfo(testInfo);
+			// 城市筛选过滤
+			this.filterCityData = filterFormat(testInfo, 'city');
+			this.filtersArea = filterFormat(testInfo, 'rName');
+			this.filtersData = filterFormat(testInfo, 'timeRange');
+			this.allResource = filterFormat(testInfo, 'resName');
+			// 选点排期
+			this.setpointArr = testInfo;
+			this.currentSetpoint = this.setpointArr;
+			// 物料信息
+			this.materialInfo = this.getMaterialInfo(testInfo);
+			console.log('materialInfo', this.materialInfo);
 
+			// 初始图片
+			this.upLoadImg = upimginfo;
+			this.downImg = downimginfo;
+			// 上刊数据(组合图片)
+			testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
+			this.upReportArr = testInfo;
+			console.log('upimginfo', this.upReportArr);
+			// 下刊数据(组合图片)
+			testInfo = this.constructImg(testInfo, this.downImg, 'XK');
+			this.downReportArr = testInfo;
+			console.log('downimginfo', this.downReportArr);
+			// 区域二级联动
+			this.citys = this.getCitys(testInfo);
 
-			// 真实数据
-			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			let apid = sessionStorage.getItem('order_apid');
-			let info = {
-				uid: uid,
-				apid: apid
-			};
-			// uid         int【必填】     当前账户UserID
-            // apid        int             公司对应方案apID
-			// api.getApi('/GetADB', info).then(res =>{
-			api.getApi('/GetAdLaunch', info).then(res =>{
-				console.log(res.data);
-				if(!res.data.SysCode){
-					let info = res.data;
-					// 城市筛选过滤
-					this.filterCityData = filterFormat(info, 'city');
-					this.filtersArea = filterFormat(info, 'rName');
-					this.filtersData = filterFormat(info, 'timeRange');
-					// 选点排期
-					this.setpointArr = info;
-					this.currentSetpoint = this.setpointArr;
-					// 物料信息
-					this.materialInfo = this.getMaterialInfo(info);
-					console.log('materialInfo', this.materialInfo);
+			// // 真实数据
+			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			// let apid = sessionStorage.getItem('order_apid');
+			// let info = {
+			// 	uid: uid,
+			// 	apid: apid
+			// };
+			// // uid         int【必填】     当前账户UserID
+            // // apid        int             公司对应方案apID
+			// // api.getApi('/GetADB', info).then(res =>{
+			// api.getApi('/GetAdLaunch', info).then(res =>{
+			// 	console.log(res.data);
+			// 	if(!res.data.SysCode){
+			// 		let info = res.data;
+			// 		// 城市筛选过滤
+			// 		this.filterCityData = filterFormat(info, 'city');
+			// 		this.filtersArea = filterFormat(info, 'rName');
+			// 		this.filtersData = filterFormat(info, 'timeRange');
+			// 		// 选点排期
+			// 		this.setpointArr = info;
+			// 		this.currentSetpoint = this.setpointArr;
+			// 		// 物料信息
+			// 		this.materialInfo = this.getMaterialInfo(info);
+			// 		console.log('materialInfo', this.materialInfo);
 					
-					// 初始图片
-					this.upLoadImg = this.getImgInfo('SK');
-					this.downImg = this.getImgInfo('XK');
-					// 上刊数据(组合图片)
-					testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-					this.upReportArr = testInfo;
-					console.log('upimginfo', this.upReportArr);
-					// 下刊数据(组合图片)
-					testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-					this.downReportArr = testInfo;
-					console.log('downimginfo', this.downReportArr);
-					
-				}else{
-					Message.warning(res.data.MSG);
-				}
-			}).catch(res =>{
-				console.log(res);
-			});
+			// 		// 初始图片
+			// 		this.upLoadImg = this.getImgInfo('SK');
+			// 		this.downImg = this.getImgInfo('XK');
+			// 		// 上刊数据(组合图片)
+			// 		testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
+			// 		this.upReportArr = testInfo;
+			// 		console.log('upimginfo', this.upReportArr);
+			// 		// 下刊数据(组合图片)
+			// 		testInfo = this.constructImg(testInfo, this.downImg, 'XK');
+			// 		this.downReportArr = testInfo;
+			// 		console.log('downimginfo', this.downReportArr);
+			// 		// 区域二级联动
+			// 		this.citys = this.getCitys(testInfo);
+
+			// 	}else{
+			// 		Message.warning(res.data.MSG);
+			// 	}
+			// }).catch(res =>{
+			// 	console.log(res);
+			// });
 		},
 		// 组装成物料信息数据
 		getMaterialInfo(info){
@@ -1420,6 +1378,29 @@ export default {
 				}
 			}
 			return arr;
+		},
+		// 区域二级联动
+		getCitys(arr){
+			let cityArr = [];
+			for(let data of arr){
+				let Obj = {
+					value: data.rName,
+					label: data.rName
+				};
+				if(!cityArr.length){
+					cityArr.push({value: data.city, label: data.city, children: [] });
+				}
+				for(let item of cityArr){
+					if(data.city == item.value){
+						// 去重
+						if(JSON.stringify(item.children).indexOf(JSON.stringify(Obj)) === -1){
+							item.children.push(Obj);
+							break;
+						}
+					}
+				}
+			}
+			return cityArr;
 		},
 		// 组合上下刊图片数据
 		constructImg(arr, imgArr, type){

@@ -624,7 +624,7 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
-  /deep/ .el-table .el-table__row  td:nth-child(2){
+  /deep/ .el-table__row  td:nth-child(2) .cell{
     width: 124px;
   }
 

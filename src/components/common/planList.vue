@@ -71,6 +71,11 @@
 							label="品牌名称"
 							min-width="6.6%"
 						>
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
+                  <span>{{scope.row.bTitle}}</span>
+                </el-tooltip>
+              </template>
 						</el-table-column>
 						<el-table-column
 							label="方案价格"
@@ -988,14 +993,14 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /deep/ .el-table__row td:nth-child(7)  .cell {
+  /deep/ .el-table__row td:nth-child(7)  .cell span{
     width: 80px;
   }
   /deep/ .el-table__row td:nth-child(3)  .cell {
     width: 70px;
   }
 
-  /deep/ .el-table__row td:nth-child(2)  .cell {
+  /deep/ .el-table__row td:nth-child(2)  .cell span{
     width: 156px;
   }
 
