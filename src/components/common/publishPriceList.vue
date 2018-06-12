@@ -610,7 +610,7 @@ export default {
     }
     .mediaList_wrap{
       width: 1321.3px!important;
-      margin-bottom: 177px!important;
+      /*margin-bottom: 177px!important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap{
@@ -624,7 +624,7 @@ export default {
 
     .mediaList_wrap{
       width: 1800px!important;
-      margin-bottom: 211px!important;
+      /*margin-bottom: 211px!important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap{

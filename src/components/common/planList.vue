@@ -80,6 +80,7 @@
 						<el-table-column
 							label="方案价格"
 							sortable
+							:sort-method="sortPrice"
 							class="tar"
 							min-width="8.3%"
 						>
@@ -226,7 +227,7 @@ export default {
 				// apcTime: "2018-05-09 18:29:47.0",
 				apcTime: "2018-05-09 18:29:47.0",
 				apState: 1
-				}
+				},
 			],
 			//所有数据
 			planList: [
@@ -240,7 +241,7 @@ export default {
 				rIDs: "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
 				apcTime: "2018-05-09 18:29:47.0",
 				apState: 1
-				}
+				},
 			]
 		}
 	},
@@ -316,6 +317,10 @@ export default {
 		// 价格加上逗号
 		priceFormat(price){
 			return commaFormat.init(price);
+		},
+		// 价格排序
+		sortPrice(a, b){
+			return a.apTotal>b.apTotal;
 		},
 		// 新建方案
 		addOne(){
@@ -805,7 +810,7 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 46px;
+    /*margin-bottom: 46px;*/
   }
 
   .mediaList_wrap .mediaList_head {
@@ -1102,7 +1107,7 @@ export default {
 
     .mediaList_wrap {
       width: 1321.3px !important;
-      margin-bottom: 177px !important;
+      /*margin-bottom: 177px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {
@@ -1116,7 +1121,7 @@ export default {
 
     .mediaList_wrap {
       width: 1800px !important;
-      margin-bottom: 250px !important;
+      /*margin-bottom: 250px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {

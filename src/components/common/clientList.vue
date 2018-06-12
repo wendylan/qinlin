@@ -477,7 +477,7 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 46px;
+    /*margin-bottom: 46px;*/
   }
 
   .mediaList_wrap .mediaList_head {
@@ -700,11 +700,15 @@ export default {
 
     .mediaList_wrap {
       width: 1321.3px !important;
-      margin-bottom: 177px !important;
+      /*margin-bottom: 177px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1284px;
+    }
+
+    /deep/ .el-table__row td:nth-child(3)  .cell {
+      width: 103px;
     }
   }
 
@@ -713,7 +717,7 @@ export default {
 
     .mediaList_wrap {
       width: 1800px !important;
-      margin-bottom: 211px !important;
+      /*margin-bottom: 211px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {

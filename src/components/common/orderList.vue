@@ -79,6 +79,7 @@
 						</el-table-column>
 						<el-table-column
 							sortable
+							:sort-method="sortPrice"
 							label="订单总价"
 							min-width="7.5%"
 						>
@@ -258,6 +259,10 @@ export default {
 		// 时间格式规范
 		formatTime(val){
 			return dateFormat.toDate(val);
+		},
+		// 价格排序
+		sortPrice(a, b){
+			return a.apTotal>b.apTotal;
 		},
 		// 价格加上逗号
 		priceFormat(price){
@@ -464,7 +469,7 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 46px;
+    /*margin-bottom: 46px;*/
   }
 
   .mediaList_wrap .mediaList_head {
@@ -761,7 +766,7 @@ export default {
 
     .mediaList_wrap {
       width: 1321.3px !important;
-      margin-bottom: 177px !important;
+      /*margin-bottom: 177px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {
@@ -775,7 +780,7 @@ export default {
 
     .mediaList_wrap {
       width: 1800px !important;
-      margin-bottom: 250px !important;
+      /*margin-bottom: 250px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {

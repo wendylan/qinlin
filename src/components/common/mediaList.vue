@@ -723,7 +723,7 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 26px;
+    /*margin-bottom: 26px;*/
   }
 
   .mediaList_wrap .mediaList_head {
@@ -994,7 +994,7 @@ export default {
 
     .mediaList_wrap {
       width: 1321.3px !important;
-      margin-bottom: 165px !important;
+      /*margin-bottom: 165px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {
@@ -1022,7 +1022,7 @@ export default {
 
     .mediaList_wrap {
       width: 1800px !important;
-      margin-bottom: 176px !important;
+      /*margin-bottom: 176px !important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap {
