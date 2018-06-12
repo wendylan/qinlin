@@ -1318,6 +1318,9 @@ export default {
 				console.log(res.data);
 				if(!res.data.SysCode){
 					let result = res.data;
+					// 物料信息
+					this.materialInfo = this.getMaterialInfo(result);
+					console.log('materialInfo', this.materialInfo);
 					// 城市筛选过滤
 					this.filterCityData = filterFormat(result, 'city');
 					this.filtersArea = filterFormat(result, 'rName');
@@ -1326,9 +1329,6 @@ export default {
 					// 选点排期
 					this.setpointArr = result;
 					this.currentSetpoint = this.setpointArr;
-					// 物料信息
-					this.materialInfo = this.getMaterialInfo(result);
-					console.log('materialInfo', this.materialInfo);
 
 					let upinfo = {
 						uid: uid,

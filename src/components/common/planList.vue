@@ -324,7 +324,7 @@ export default {
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if((!this.rangeDate) && (!this.keyword) ){
-				this.currentPlan = this.planList;
+				this.currentPlan = JSON.parse(JSON.stringify(this.planList));
 			}
 		},
 		// 搜索方案
@@ -385,7 +385,7 @@ export default {
 				console.log(arr);
 				return;
 			}
-			this.currentPlan = this.planList;
+			this.currentPlan = JSON.parse(JSON.stringify(this.planList));;
 		},
 		//筛选
 		filterStatus(value, row) {

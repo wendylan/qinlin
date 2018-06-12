@@ -194,7 +194,7 @@ export default {
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if((!this.date) && (!this.keyword) ){
-				this.currentPlan = this.planList;
+				this.currentPlan = JSON.parse(JSON.stringify(this.planList));
 			}
 		},
 		// 搜索
@@ -259,7 +259,7 @@ export default {
 				console.log(arr);
 				return;
 			}
-			this.currentPlan = this.planList;
+			this.currentPlan = JSON.parse(JSON.stringify(this.planList));
 		},
 		// 时间格式化
 		formatTime(time){

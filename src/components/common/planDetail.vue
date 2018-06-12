@@ -963,7 +963,7 @@ export default {
   }
 
   .plan-detail-left ul li:nth-child(3n-1) {
-    width: 248px;
+    /*width: 248px;*/
   }
 
   .plan-detail-left ul li em {
@@ -1094,7 +1094,7 @@ export default {
     }
 
     .plan-detail-left ul li:nth-child(3n-1) {
-      width: 400px;
+      /*width: 400px;*/
     }
     .up-loader-Imgpanel+.up-loader-Imgpanel{
       margin-left: 54px;

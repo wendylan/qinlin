@@ -342,7 +342,7 @@ export default {
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if(!this.keyword){
-				this.currAccount = this.accountList;
+				this.currAccount = JSON.parse(JSON.stringify(this.accountList));
 			}
 		},
 		// 搜索
@@ -369,7 +369,7 @@ export default {
 				this.currAccount = arr;
 				return;
 			}
-			this.currAccount = this.accountList;
+			this.currAccount =JSON.parse(JSON.stringify(this.accountList));
 		},
 		// 新建
 		newAccount(){
@@ -607,7 +607,6 @@ export default {
   }
 
   /*表格*/
-
   /deep/ .el-date-editor .el-range-separator {
     line-height: 26px;
   }

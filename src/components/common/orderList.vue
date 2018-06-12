@@ -98,7 +98,6 @@
 						</el-table-column>
 						<el-table-column
 							label="发布日期"
-							sortable
 							min-width="7.3%"
 						>
 							<template slot-scope="scope">
@@ -267,7 +266,7 @@ export default {
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if((!this.rangeDate) && (!this.keyword) ){
-				this.currentOrder = this.orderList;
+				this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
 			}
 		},
 		// 搜索方案
@@ -328,8 +327,9 @@ export default {
 				console.log(arr);
 				return;
 			}
-			this.currentOrder = this.orderList;
+			this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
 		},
+
 		//提示框
 		inputBox1() {
 			MessageBox.prompt('请输入监控备注', '提示', {

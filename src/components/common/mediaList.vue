@@ -633,7 +633,7 @@ export default {
 		// 当搜索框为空的时候进行重置显示
 		initData(){
 			if(!this.keyword){
-				this.currentPlan = this.planList;
+				this.currentPlan = JSON.parse(JSON.stringify(this.planList));
 			}
 		},
 		// 搜索按钮
@@ -660,7 +660,7 @@ export default {
 				this.currentPlan = arr;
 				return;
 			}
-			this.currentPlan = this.planList;
+			this.currentPlan = JSON.parse(JSON.stringify(this.planList));
 		},
 	}
 }

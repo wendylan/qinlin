@@ -112,7 +112,7 @@
                 min-width="6%"
               >
                 <template slot-scope="scope">
-                  <div style="color: #0077D6;cursor: pointer;">查看</div>
+                  <div style="color: #108EE9;cursor: pointer;">查看</div>
                 </template>
               </el-table-column>
             </el-table>
