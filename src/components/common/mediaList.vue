@@ -42,7 +42,7 @@
 						>
 							<template slot-scope="scope">
 								<el-tooltip class="item" effect="dark" :content="scope.row.resName" placement="bottom">
-								<span @click="mediaDetail(scope.row)" v-if="haveDetail" style="color: #1890ff;cursor: pointer">
+								<span @click="mediaDetail(scope.row)" v-if="haveDetail" style="color: #108ee9;cursor: pointer">
 									{{scope.row.resName}}
 								</span>
 								<span v-else>{{scope.row.resName}}</span>
@@ -288,7 +288,7 @@ export default {
           let sign = binding.def.heightSign
           const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
           console.log('滚动的距离',scrollDistance)
-          if (scrollDistance <= 50) {
+          if (scrollDistance <= 100) {
             binding.value()
             binding.def.heightSign = binding.def.heightSign + 358
           }
@@ -585,7 +585,7 @@ export default {
         this.$set(RMList[i], 'city', data);
         dataArr.push(RMList[i])
         console.log('RMList[i]',i,RMList[i])
-        if(i >= index + 10 && RMList.length > 10 + index){
+        if(i >= index + 20 && RMList.length > 20 + index){
           console.log('dataArr',dataArr)
           for(let j=0;j<dataArr.length;j++){
             this.planList.push(dataArr[j])
@@ -823,7 +823,6 @@ export default {
   }
 
 
-
   /deep/ .el-table--border {
     border-radius: 4px;
   }
@@ -856,7 +855,6 @@ export default {
   }
 
   /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
-
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: #C1C1C1;
     border-radius: 4px;
@@ -868,8 +866,13 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /deep/ .el-table__row td:nth-child(1) .cell{
-    width: 145px;
+  /deep/ .el-table .cell span{
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /deep/ .el-table__row td:nth-child(1) .cell span{
+    width: 135px;
   }
   /deep/ .el-table__row td:nth-child(5) .cell{
     width: 126px;
@@ -886,6 +889,8 @@ export default {
   /*筛选*/
   /deep/ .el-table__column-filter-trigger {
     margin-left: 10px;
+    line-height: 0px;
+    overflow-y: hidden;
   }
 
   /deep/ .el-table th > .cell.highlight {
@@ -996,6 +1001,20 @@ export default {
       width: 1284px;
     }
 
+    /deep/ .el-table__row td:nth-child(1) .cell span{
+      width: 135px;
+    }
+    /deep/ .el-table__row td:nth-child(5) .cell{
+      width: 126px;
+    }
+
+    /deep/ .el-table__row td:nth-child(7) .cell{
+      width: 96px;
+    }
+
+    /deep/ .el-table__row td:nth-child(8) .cell{
+      width: 156px;
+    }
   }
 
   /*1920*/
@@ -1009,16 +1028,19 @@ export default {
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1764px;
     }
+    /deep/ .el-table__row td:nth-child(1) .cell span{
+      width: 200px;
+    }
 
-    /deep/ .el-table .el-table_1_column_5 .cell{
+    /deep/ .el-table__row td:nth-child(5) .cell{
       width: 195px;
     }
 
-    /deep/ .el-table .el-table_1_column_7 .cell{
+    /deep/ .el-table__row td:nth-child(7) .cell{
       width: 105px;
     }
 
-    /deep/ .el-table .el-table_1_column_8 .cell{
+    /deep/ .el-table__row td:nth-child(8) .cell{
       width: 235px;
     }
 

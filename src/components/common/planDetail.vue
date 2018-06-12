@@ -23,12 +23,12 @@
 							<div class="plan-detail-left">
 								<ul>
 									<li><span>公司名称：</span><em>{{planDetail.cName}}</em></li>
-									<li><span>所属销售：</span><em>{{planDetail.realName}}</em></li>
+                  <li><span>联系人：</span><em>{{planDetail.cuName}}</em></li>
 									<li><span>现金结算：</span><em>¥ {{planDetail.pdTotal}}</em></li>
 									<li><span>公司品牌：</span><em>{{planDetail.bTitle}}</em></li>
 									<li><span>投放城市：</span><em>{{planDetail.rIDs}}</em></li>
 									<li><span>资源置换：</span><em>¥ {{planDetail.pdSendFee}}</em></li>
-									<li><span>联系人：</span><em>{{planDetail.cuName}}</em></li>
+                  <li><span>所属销售：</span><em>{{planDetail.realName}}</em></li>
 									<li><span>方案备注：</span><em>{{planDetail.apRemark||"无"}}</em></li>
 									<li><span>其他费用：</span><em>¥ {{planDetail.pdOtherFee}}</em></li>
 								</ul>
@@ -132,7 +132,7 @@
 													min-width="7.3%"
 												>
 													<template slot-scope="scope">
-														<span>{{priceFormat(scope.row.hPrice/100)}}</span>
+														<span>{{scope.row.hPrice?priceFormat(scope.row.hPrice/100):0}}</span>
 													</template>
 												</el-table-column>
 												<el-table-column
@@ -203,11 +203,6 @@
 														</div>
 													</div>
 												</el-tab-pane>
-
-
-
-												<!-- <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-												<el-tab-pane label="成都">成都内容</el-tab-pane> -->
 											</el-tabs>
 										</div>
 									</div>
@@ -335,7 +330,7 @@ export default {
 				if(!res.data.SysCode){
 					let info = res.data;
 					if(info.apTotal){
-						info.apTotal = this.priceFormat(info.apTotal);
+						info.apTotal = this.priceFormat(info.apTotal/100);
 					}
 					info.apcTime = dateFormat.toDateTime(info.apcTime);
 					this.planDetail = info;
@@ -581,7 +576,7 @@ export default {
 
   .plan-panel {
     position: absolute;
-    top: 190px;
+    top: 225px;
     width: 100%;
     left: 0;
   }
@@ -894,7 +889,7 @@ export default {
     padding: 34px 28px;
     background: #FFFFFF;
     border: 1px solid #DEDEDE;
-    height: 161px;
+    height: 195px;
     position: relative;
   }
 
@@ -952,6 +947,9 @@ export default {
   .plan-detail-left ul {
     width: 81%;
     float: left;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .plan-detail-left ul li {
@@ -961,7 +959,7 @@ export default {
   }
 
   .plan-detail-left ul li:nth-child(3n-2) {
-    width: 350px;
+    /*width: 350px;*/
   }
 
   .plan-detail-left ul li:nth-child(3n-1) {
@@ -1092,7 +1090,7 @@ export default {
     }
 
     .plan-detail-left ul li:nth-child(3n-2) {
-      width: 500px;
+      /*width: 500px;*/
     }
 
     .plan-detail-left ul li:nth-child(3n-1) {

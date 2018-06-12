@@ -83,7 +83,7 @@
 							min-width="7.5%"
 						>
 							<template slot-scope="scope">
-								<span>{{priceFormat(scope.row.apTotal)}}</span>
+								<span>{{(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0}}</span>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -91,7 +91,9 @@
 							min-width="19.2%"
 						>
 							<template slot-scope="scope">
-								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}<i class="fa fa-lock fa-lg" style="color:#999;"></i></p>
+								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
+									<!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
+								</p>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -260,7 +262,7 @@ export default {
 		},
 		// 价格加上逗号
 		priceFormat(price){
-			return commaFormat.format(price);
+			return commaFormat.init(price);
 		},
 		// 当搜索框为空的时候进行重置显示
 		initData(){
@@ -674,6 +676,7 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 24px;
   }
 
   /deep/ .el-table__row td:nth-child(7) .cell {

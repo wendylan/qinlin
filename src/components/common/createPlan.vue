@@ -724,6 +724,17 @@
           callback();
         }
       };
+      var validateName = (rule, value, callback) => {
+        if (value) {
+          if (value.match(/^\s+$/)) {
+            callback(new Error('方案名称不能为空格'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      };
       return {
         dynamicTags: [],
         inputVisible: false,
@@ -839,8 +850,9 @@
         },
         planRules: {
           planName: [
-            {required: true, message: '方案名称不能为空', trigger: 'blur'},
-            {max: 50, message: '最多只能输入40个字节', trigger: 'blur'}
+            {validator: validateName, trigger: 'blur'},
+            {required: true, type:'string', message: '方案名称不能为空', trigger: 'blur'},
+            {max: 40,message: '最多只能输入40个字节', trigger: 'blur'},
           ],
           concat: [
             {required: true, message: '请选择联系人', trigger: 'change'},
@@ -852,9 +864,9 @@
           companyName: [
             {required: true, message: '请选择公司名称', trigger: 'change'},
           ],
-          companyBrand: [
-            {required: true, message: '请选择公司品牌', trigger: 'change'},
-          ],
+         /* companyBrand: [
+            { message: '请选择公司品牌', trigger: 'change'},
+          ],*/
           throwCity: [
             {required: true, message: '请选择投放城市(可多选)', trigger: 'change'},
           ],
@@ -1062,6 +1074,7 @@
           let companyList = []      // 公司名称
           let ownerList = []      // 联系人
           for (let i = 0; i < customerList.length; i++) {
+            // console.log('公司名称',i,customerList[i].cName)
             let companyObj = {
               label: customerList[i].cName,
               value: customerList[i].cID,
@@ -1168,6 +1181,9 @@
           apname: this.planForm.planName,
           adcid: this.planForm.ownerBU,
           rid: this.planForm.throwCity.join(','),
+        }
+        if(this.sessionData.uType === 'BD'){
+          delete fangAnParams.suid;
         }
         console.log('创建方案时提交的数据：', fangAnParams)
         api.postApi('/CreateAdPlan', fangAnParams).then(res => {
@@ -1284,6 +1300,7 @@
             pdt         int【必填】     现金金额
             pdsf        int【必填】     置换金额
             pdof        int【必填】     其他金额*/
+
         for(let i=0;i<this.quotation.length;i++){
           let CAPDParams = {
             uid: this.sessionData.uID,      // 当前账户UserID
@@ -1302,14 +1319,12 @@
             pdsf: this.quotation[i].zyzh * 100,       // 置换金额
             pdof: this.quotation[i].other * 100,      // 其他金额
           }
-          // if(this.quotation[i].schedules.split('、').length === 1){
-          //   CAPDParams.ps = this.quotation[i].schedules.split('-')[0]       // 方案投放开始时间
-          //   CAPDParams.pe = this.quotation[i].schedules.split('-')[1]       // 投放结束日期
-          // }else{
-            let schedulesArr = this.quotation[i].schedules.split('-')
-            CAPDParams.ps = schedulesArr[0]
-            CAPDParams.pe = schedulesArr[schedulesArr.length-1]
-          // }
+          if(this.sessionData.uType === 'BD'){
+            delete CAPDParams.muid;
+          }
+          let schedulesArr = this.quotation[i].schedules.split('-')
+          CAPDParams.ps = schedulesArr[0]
+          CAPDParams.pe = schedulesArr[schedulesArr.length - 1]
           console.log('报价单数据提交:', CAPDParams)
           api.postApi('/CreateAPD', CAPDParams).then(res => {
             console.log('提交报价单后台返回数据：', res)
@@ -1454,6 +1469,7 @@
       //  stpe2, 切换区域
       activeArea(rName) {
         this.areaName = rName
+
       },
       // 获取广告点位列表
       getAdList() {
@@ -1576,48 +1592,48 @@
             let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
             api.getApi('/GetAdLaunch', LaunchParams).then(res => {
               console.log('被占选点列表', res)
-              let adLaunch = res.data
-              // let adLaunch = [
-              //   {
-              //     lID: 1,
-              //     asID: 1,
-              //     pdID: 1,
-              //     lStar: "2018-06-01",
-              //     lEnd: "2018-06-09",
-              //     uID: 1,
-              //     lSetTime: "2018-05-17 18:19:15.0",
-              //     lState: 1
-              //   },
-              //   {
-              //     lID: 2,
-              //     asID: 2,
-              //     pdID: 1,
-              //     lStar: "2018-06-01",
-              //     lEnd: "2018-06-09",
-              //     uID: 1,
-              //     lSetTime: "2018-05-17 18:19:15.0",
-              //     lState: 1
-              //   },
-              //   {
-              //     lID: 3,
-              //     asID: 3,
-              //     pdID: 1,
-              //     lStar: "2018-06-01",
-              //     lEnd: "2018-06-09",
-              //     uID: 1,
-              //     lSetTime: "2018-05-17 18:19:15.0",
-              //     lState: 1
-              //   },
-              //   {
-              //     lID: 4,
-              //     asID: 6,
-              //     pdID: 1,
-              //     lStar: "2018-06-01",
-              //     lEnd: "2018-06-09",
-              //     uID: 1,
-              //     lSetTime: "2018-05-17 18:19:15.0",
-              //     lState: 2
-              //   }]
+              // let adLaunch = res.data
+              let adLaunch = [
+                {
+                  lID: 1,
+                  asID: 1,
+                  pdID: 1,
+                  lStar: "2018-06-01",
+                  lEnd: "2018-06-09",
+                  uID: 1,
+                  lSetTime: "2018-05-17 18:19:15.0",
+                  lState: 1
+                },
+                {
+                  lID: 2,
+                  asID: 2,
+                  pdID: 1,
+                  lStar: "2018-06-01",
+                  lEnd: "2018-06-09",
+                  uID: 1,
+                  lSetTime: "2018-05-17 18:19:15.0",
+                  lState: 1
+                },
+                {
+                  lID: 3,
+                  asID: 3,
+                  pdID: 1,
+                  lStar: "2018-06-01",
+                  lEnd: "2018-06-09",
+                  uID: 1,
+                  lSetTime: "2018-05-17 18:19:15.0",
+                  lState: 1
+                },
+                {
+                  lID: 4,
+                  asID: 6,
+                  pdID: 1,
+                  lStar: "2018-06-01",
+                  lEnd: "2018-06-09",
+                  uID: 1,
+                  lSetTime: "2018-05-17 18:19:15.0",
+                  lState: 2
+                }]
               let planArr = []
               for (let i = 0; i < ADList.length; i++) {
                 console.log('遍历选点列表')
@@ -2097,6 +2113,7 @@
               }
               // break
               this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+              this.quotation[i].cash = this.quotation[i].total
               this.computeTotal()
             }
           }
@@ -2115,6 +2132,7 @@
               }
               // break
               this.quotation[i].total = Number(this.quotation[i].advertyPrice) + Number(this.quotation[i].makePrice)
+              this.quotation[i].cash = this.quotation[i].total
               this.computeTotal()
             }
           }
@@ -2131,9 +2149,9 @@
                 });
               } else {
                 this.totalChange.other = this.totalChange.total - (Number(this.totalChange.zyzh) + Number(this.totalChange.cash))
-                this.quotation[i].cash = this.totalChange.cash
-                this.quotation[i].zyzh = this.totalChange.zyzh
-                this.quotation[i].other = this.totalChange.other
+                this.quotation[i].cash = Number(this.totalChange.cash).toFixed(2)
+                this.quotation[i].zyzh = Number(this.totalChange.zyzh).toFixed(2)
+                this.quotation[i].other = Number(this.totalChange.other).toFixed(2)
                 this.quotation[i].remark = this.totalChange.remark
                 this.computeTotal()
                 this.hideBox()
@@ -2166,7 +2184,7 @@
             advertyPrice: 0,             // 广告费
             ADNumber: 0,                 // 广告画数量
             makeDiscount: '100%',      // 制作费折扣
-            MPrice: 100,                // 制作费单价
+            MPrice: 100.00,                // 制作费单价
             reaPrice: 0,                // 广告费每次修改前的价格
             oldPrice: 0,                 //  广告费初始价格
             MReaPrice: 0,              // 制作费原价
@@ -2228,6 +2246,7 @@
       },
       // 根据购物车列表城市获取不同排期的所有面数
       getPM_numByCityList() {
+        this.CSMList = []
         let arr = []
         for (let i = 0; i < this.shopListCity.length; i++) {
           for (let t = 0; t < this.quotation.length; t++) {
@@ -2289,7 +2308,7 @@
                       let begin = csm_arr[t].schedules.split('-')[0]
                       let end = csm_arr[t].schedules.split('-')[1]
                       console.log('begin',begin,',end',end)
-                      let schedul = this.DateDiff(begin,end)
+                      let schedul = this.DateDiff(begin,end) + 1
                       console.log('schedul',schedul)
                       mDate += schedul * csm_arr[t].mNum
                       mNUm += csm_arr[t].mNum
@@ -2298,10 +2317,10 @@
                   console.log('天数mDate',mDate,',面数mNUm',mNUm)
                   console.log(ADPriceList[i].rName, '广告门价格为', ADPriceList[i].adPrice)
                   // 广告费计算
-                  quotationObj.ADPrice = ADPriceList[i].adPrice / (100 * 2)       // 刊例价(面/周)
+                  quotationObj.ADPrice = (ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
                   console.log('刊例价(面/周)', quotationObj.ADPrice)
-                  quotationObj.tfl =  mDate   //this.badgeNumber * 14                     // 投放量(面·天)
-                  quotationObj.reaPrice = quotationObj.tfl * (quotationObj.ADPrice / 7)        // 广告费总价
+                  quotationObj.tfl =  mDate   //this.badgeNumber * 14                                         // 投放量(面·天)
+                  quotationObj.reaPrice = (quotationObj.tfl * (quotationObj.ADPrice / 7)).toFixed(2)        // 广告费总价
                   quotationObj.oldPrice = quotationObj.reaPrice               // 保存最初计算的价格
 
                   quotationObj.advertyPrice = quotationObj.reaPrice
@@ -2309,19 +2328,19 @@
                   quotationObj.discount = Math.round(quotationObj.advertyPrice / quotationObj.reaPrice * 10000) / 100.00 + "%" // 广告费折扣百分比
 
                   // 制作费计算
-                  quotationObj.ADNumber = mNUm //this.badgeNumber                    // 广告画数量
-                  quotationObj.makePrice = quotationObj.ADNumber * quotationObj.MPrice       // 制作费 = 广告画数量 * 制作费单价
+                  quotationObj.ADNumber = mNUm //this.badgeNumber                                           // 广告画数量
+                  quotationObj.makePrice = (quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
                   quotationObj.MReaPrice = quotationObj.makePrice
                   quotationObj.makeDiscount = Math.round(quotationObj.makePrice / quotationObj.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
 
-                  quotationObj.total = quotationObj.advertyPrice + quotationObj.makePrice
+                  quotationObj.total = (Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice)).toFixed(2)
                   quotationObj.cash = quotationObj.total
-
                   // 计算总价格
-                  this.totalPrice += quotationObj.total
-                  this.cash += quotationObj.cash
-                  this.other += quotationObj.other
-                  this.zyzh += quotationObj.zyzh
+                  // this.totalPrice += quotationObj.total
+                  // this.cash += quotationObj.cash
+                  // this.other += quotationObj.other
+                  // this.zyzh += quotationObj.zyzh
+                  this.computeTotal()
                 }
                 /*if (ADPriceList[i].rID == quotationObj.rid && this.shopListCity[g] === quotationObj.city) {
                   // alert(ADPriceList[i].adPrice)
@@ -2371,10 +2390,17 @@
         this.zyzh = 0
         for (let i = 0; i < this.quotation.length; i++) {
           this.totalPrice += this.quotation[i].total
-          this.cash += this.quotation[i].cash
-          this.other += this.quotation[i].other
-          this.zyzh += this.quotation[i].zyzh
+          this.cash= (Number(this.cash) + Number(this.quotation[i].cash)).toFixed(2) //cash
+          this.other = (Number(this.other) + Number(this.quotation[i].other)).toFixed(2)
+          this.zyzh =  (Number(this.zyzh) +  Number(this.quotation[i].zyzh)).toFixed(2)
         }
+        if(this.other == 0 && this.zyzh == 0){
+          this.totalPrice = this.cash
+        }
+       /* parseDouble(this.totalPrice)
+        parseDouble(this.cash)
+        parseDouble(this.other)
+        parseDouble(this.zyzh)*/
       },
       // dialog购物筐的显示全选中后添加都购物车
       dialogVisible() {

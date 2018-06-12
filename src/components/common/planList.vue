@@ -71,11 +71,11 @@
 							label="品牌名称"
 							min-width="6.6%"
 						>
-              <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
-                  <span>{{scope.row.bTitle}}</span>
-                </el-tooltip>
-              </template>
+							<template slot-scope="scope">
+								<el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
+									<span>{{scope.row.bTitle}}</span>
+								</el-tooltip>
+							</template>
 						</el-table-column>
 						<el-table-column
 							label="方案价格"
@@ -84,7 +84,7 @@
 							min-width="8.3%"
 						>
 							<template slot-scope="scope">
-								<span>{{priceFormat(scope.row.apTotal)}}</span>
+								<span>{{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -199,7 +199,7 @@ export default {
 		elSelect: Select,
 		elOption: Option
 	},
-	
+
     data() {
 		return {
 			Info: {},
@@ -315,7 +315,7 @@ export default {
 		},
 		// 价格加上逗号
 		priceFormat(price){
-			return commaFormat.format(price);
+			return commaFormat.init(price);
 		},
 		// 新建方案
 		addOne(){
@@ -517,7 +517,7 @@ export default {
 					}).then(() => {
 						// 组合数据并发布
 						this.getDataOfSetPrice(info, 'R');
-						
+
 					}).catch(() => {
 						Message({
 							type: 'info',
@@ -561,7 +561,7 @@ export default {
 						console.log('resulttelajt', result);
 						this.ctrlFangan(result);
 					}
-					
+
 				}).catch(res=>{
 					console.log(res);
 				});
@@ -648,9 +648,9 @@ export default {
 
 						}).catch(() => {
 							Message.info('已取消操作');
-						}); 
+						});
 					}else{
-						Message.info(res.data.MSG);
+						Message.success(res.data.MSG);
 					}
 				}).catch(res =>{
 					console.log(res);
@@ -715,27 +715,6 @@ export default {
 			this.dialogVisible = false;
 		},
 	},
-    //实时计算  数据发生变化时执行相应函数
-    /*computed: {
-      searchDate: function () {
-        //输入框传入的值
-        var search = this.keyword;
-        if (search) {
-          //filter  数组的方法，返回回调函数中满足条件的值
-          return this.planList.filter(function (plan) {
-            //Object.keys(car) 返回一个数组，如果传入对象，返回对象的属性名集合
-            //some() 数组的方法 用于检测数组中的元素是否满足指定条件，参数必需是函数。
-            return Object.keys(plan).some(function (key) {
-              //String 把对象的值转化成字符串
-              //toLowerCase()字符串转换成小写
-              //indexOf(search)>-1 输入框里输入的筛选内容存在符合条件的数据
-              return String(plan[key]).toLowerCase().indexOf(search) > -1
-            })
-          })
-        }
-        return this.planList;
-      }
-    }*/
 }
 
 </script>
@@ -935,6 +914,7 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
+
   /deep/ .el-table td .cell{
     display: flex;
     flex-direction: column;
@@ -961,6 +941,13 @@ export default {
 
   /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: #ecf5ff;
+  }
+
+  /deep/ .el-table__column-filter-trigger{
+    display: inline-block;
+    line-height: 15px;
+    cursor: pointer;
+    overflow-y: hidden;
   }
 
   /*滚动条*/
@@ -993,15 +980,22 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  /deep/ .el-table .cell span{
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   /deep/ .el-table__row td:nth-child(7)  .cell span{
     width: 80px;
   }
-  /deep/ .el-table__row td:nth-child(3)  .cell {
-    width: 70px;
+  /deep/ .el-table__row td:nth-child(3)  .cell span{
+    width: 68px;
   }
 
   /deep/ .el-table__row td:nth-child(2)  .cell span{
-    width: 156px;
+    width: 152px;
   }
 
   /*筛选*/
@@ -1094,6 +1088,11 @@ export default {
     margin-left: 2px;
   }
 
+
+  /deep/ .el-popper[x-placement^=bottom]{
+    margin-top: 0 !important;
+  }
+
   /*1440*/
   @media all and (min-width: 1420px) {
 
@@ -1123,15 +1122,15 @@ export default {
     .mediaList_wrap .mediaList_container .table_wrap {
       width: 1764px !important;
     }
-    /deep/ .el-table__row td:nth-child(7)  .cell {
+    /deep/ .el-table__row td:nth-child(7)  .cell span{
       width: 126px;
     }
-    /deep/ .el-table__row td:nth-child(3)  .cell {
-      width: 70px;
+    /deep/ .el-table__row td:nth-child(3)  .cell span{
+      width: 98px;
     }
 
-    /deep/ .el-table__row td:nth-child(2)  .cell {
-      width: 156px;
+    /deep/ .el-table__row td:nth-child(2)  .cell span{
+      width: 212px;
     }
   }
 .el-dialog__footer span{

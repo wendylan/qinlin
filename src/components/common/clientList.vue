@@ -618,7 +618,7 @@ export default {
     width: 80px;
   }
   /deep/ .el-table__row td:nth-child(3)  .cell {
-    width: 100px;
+    width: 103px;
   }
   /deep/ .el-table__row td:nth-child(5)  .cell {
     width: 247px;

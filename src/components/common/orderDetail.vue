@@ -174,7 +174,7 @@
 										min-width="7.3%"
 									>
 										<template slot-scope="scope">
-											<span>{{priceFormat(scope.row.hPrice/100)}}</span>
+											<span>{{(scope.row.hPrice)?priceFormat(scope.row.hPrice/100): 0 }}</span>
 										</template>
 									</el-table-column>
 									<el-table-column
@@ -306,8 +306,8 @@
 										v-model="citySelect"
 									>
 									</el-cascader>
-									<el-select placeholder="请选择资源" filterable v-model="allhouse" v-for="(item, index) of allResource" :key="index">
-										<el-option :label="item.text" :value="item.value"></el-option>
+									<el-select placeholder="请选择资源" filterable v-model="allhouse" >
+										<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
 									</el-select>
 									<el-select placeholder="请选择监播图" v-model="allPic">
 										<el-option label="全部监播图" value="0"></el-option>
@@ -422,7 +422,7 @@
 									<div class="up-report-bottom-btns">
 										<el-button type="primary">生成报告</el-button>
 										<el-button plain>下载PDF</el-button>
-										<el-button plain @click="show2H5">查看H5</el-button>
+										<el-button plain @click="showH5Up">查看H5</el-button>
 									</div>
 								</div>
 							</div>
@@ -440,10 +440,8 @@
 											v-model="citySelect"
 										>
 										</el-cascader>
-										<el-select placeholder="请选择资源" filterable v-model="allhouse">
-											<el-option label="全部资源" value="allHouse"></el-option>
-											<el-option label="区域一" value="shanghai"></el-option>
-											<el-option label="区域二" value="beijing"></el-option>
+										<el-select placeholder="请选择资源" filterable v-model="allhouse" >
+											<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
 										</el-select>
 										<el-select placeholder="请选择监播图" v-model="allPic">
 											<el-option label="全部监播图" value="0"></el-option>
@@ -547,7 +545,7 @@
 										<div class="up-report-bottom-btns">
 											<el-button type="primary">生成报告</el-button>
 											<el-button plain>下载PDF</el-button>
-											<el-button plain @click="showH5">查看H5</el-button>
+											<el-button plain @click="showH5Down">查看H5</el-button>
 										</div>
 									</div>
 								</div>
@@ -727,11 +725,15 @@
 									>
 									</el-table-column>
 									<el-table-column
-										prop="mediaName"
 										label="媒体名称"
 										min-width="10.3%"
 										class="tar"
 									>
+										<template slot-scope="scope">
+											<el-tooltip class="item" effect="dark" :content="scope.row.mediaName" placement="bottom">
+												<span>{{scope.row.mediaName}}</span>
+											</el-tooltip>
+										</template>
 									</el-table-column>
 									<el-table-column
 										prop="city"
@@ -746,10 +748,14 @@
 									>
 									</el-table-column>
 									<el-table-column
-										prop="buildType"
 										label="楼盘类型"
 										min-width="8.8%"
 									>
+										<template slot-scope="scope">
+											<el-tooltip class="item" effect="dark" :content="scope.row.buildType" placement="bottom">
+												<span>{{scope.row.buildType}}</span>
+											</el-tooltip>
+										</template>
 									</el-table-column>
 									<el-table-column
 										prop="houseNum"
@@ -769,6 +775,11 @@
 										label="排期"
 										min-width="14.2%"
 									>
+										<template slot-scope="scope">
+											<el-tooltip class="item" effect="dark" :content="scope.row.schedules" placement="bottom">
+												<span>{{scope.row.schedules}}</span>
+											</el-tooltip>
+										</template>
 									</el-table-column>
 									<el-table-column width="132px">
 										<template slot-scope="scope">
@@ -1169,7 +1180,7 @@ export default {
 			cancelbtnShow: false,
 			//选点排期操作
 			showHandel: false,
-			
+
 		};
 	},
 	created(){
@@ -1178,7 +1189,7 @@ export default {
 		this.getSetPoint();
 		// 报价单
 		this.getPriceData();
-		
+
 	},
 	methods: {
 		// 初始化查询图片
@@ -1234,7 +1245,7 @@ export default {
 				if(!res.data.SysCode){
 					let info = res.data;
 					if(info.apTotal){
-						info.apTotal = this.priceFormat(info.apTotal);
+						info.apTotal = this.priceFormat(info.apTotal/100);
 					}
 					this.orderDetail = info;
 				}else{
@@ -1246,98 +1257,119 @@ export default {
 		},
 		// 获取选点排期
 		getSetPoint(){
-			// 测试数据
-			let testInfo = [
-				{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
-				{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
-			];
-			let upimginfo = [
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			];
-			let downimginfo = [
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
-				{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
-			];
+			// // 测试数据
 			// let testInfo = [
-			// 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
-			// 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
+			// 	{asID: 5,lID: 6,cType: "高端住宅",lStar: "May 26, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 1, 2018"},
+			// 	{asID: 2,lID: 7,cType: "高端住宅",lStar: "Jun 6, 2018",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",adViewSize: "118*84",mTitle: "帝景1门",lEnd: "Jun 13, 2018"}
 			// ];
-			
-			// 广州市-天河区-东方雅苑-西门-B
-			
-			// this.getMaterialInfo(testInfo);
-			// 城市筛选过滤
-			this.filterCityData = filterFormat(testInfo, 'city');
-			this.filtersArea = filterFormat(testInfo, 'rName');
-			this.filtersData = filterFormat(testInfo, 'timeRange');
-			this.allResource = filterFormat(testInfo, 'resName');
-			// 选点排期
-			this.setpointArr = testInfo;
-			this.currentSetpoint = this.setpointArr;
-			// 物料信息
-			this.materialInfo = this.getMaterialInfo(testInfo);
-			console.log('materialInfo', this.materialInfo);
+			// let upimginfo = [
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			// ];
+			// let downimginfo = [
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:274,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",pUTime:"2018-06-09 18:31:14.0",ptID:5,ptP:"7",puID:3},
+			// 	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
+			// ];
+			// // let testInfo = [
+			// // 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 26, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 10,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 1, 2018"},
+			// // 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "Jun 6, 2018",fNum: 12,resName: "帝景山庄",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 11,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "Jun 13, 2018"}
+			// // ];
 
-			// 初始图片
-			this.upLoadImg = upimginfo;
-			this.downImg = downimginfo;
-			// 上刊数据(组合图片)
-			testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-			this.upReportArr = testInfo;
-			console.log('upimginfo', this.upReportArr);
-			// 下刊数据(组合图片)
-			testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-			this.downReportArr = testInfo;
-			console.log('downimginfo', this.downReportArr);
-			// 区域二级联动
-			this.citys = this.getCitys(testInfo);
+			// // 广州市-天河区-东方雅苑-西门-B
 
-			// // 真实数据
-			// let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			// let apid = sessionStorage.getItem('order_apid');
-			// let info = {
-			// 	uid: uid,
-			// 	apid: apid
-			// };
-			// // uid         int【必填】     当前账户UserID
-            // // apid        int             公司对应方案apID
-			// // api.getApi('/GetADB', info).then(res =>{
-			// api.getApi('/GetAdLaunch', info).then(res =>{
-			// 	console.log(res.data);
-			// 	if(!res.data.SysCode){
-			// 		let info = res.data;
-			// 		// 城市筛选过滤
-			// 		this.filterCityData = filterFormat(info, 'city');
-			// 		this.filtersArea = filterFormat(info, 'rName');
-			// 		this.filtersData = filterFormat(info, 'timeRange');
-			// 		// 选点排期
-			// 		this.setpointArr = info;
-			// 		this.currentSetpoint = this.setpointArr;
-			// 		// 物料信息
-			// 		this.materialInfo = this.getMaterialInfo(info);
-			// 		console.log('materialInfo', this.materialInfo);
-					
-			// 		// 初始图片
-			// 		this.upLoadImg = this.getImgInfo('SK');
-			// 		this.downImg = this.getImgInfo('XK');
-			// 		// 上刊数据(组合图片)
-			// 		testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
-			// 		this.upReportArr = testInfo;
-			// 		console.log('upimginfo', this.upReportArr);
-			// 		// 下刊数据(组合图片)
-			// 		testInfo = this.constructImg(testInfo, this.downImg, 'XK');
-			// 		this.downReportArr = testInfo;
-			// 		console.log('downimginfo', this.downReportArr);
-			// 		// 区域二级联动
-			// 		this.citys = this.getCitys(testInfo);
+			// // this.getMaterialInfo(testInfo);
+			// // 城市筛选过滤
+			// this.filterCityData = filterFormat(testInfo, 'city');
+			// this.filtersArea = filterFormat(testInfo, 'rName');
+			// this.filtersData = filterFormat(testInfo, 'timeRange');
+			// this.allResource = filterFormat(testInfo, 'resName');
+			// // 选点排期
+			// this.setpointArr = testInfo;
+			// this.currentSetpoint = this.setpointArr;
+			// // 物料信息
+			// this.materialInfo = this.getMaterialInfo(testInfo);
+			// console.log('materialInfo', this.materialInfo);
 
-			// 	}else{
-			// 		Message.warning(res.data.MSG);
-			// 	}
-			// }).catch(res =>{
-			// 	console.log(res);
-			// });
+			// // 初始图片
+			// this.upLoadImg = upimginfo;
+			// this.downImg = downimginfo;
+			// // 上刊数据(组合图片)
+			// testInfo = this.constructImg(testInfo, this.upLoadImg, 'SK');
+			// this.upReportArr = testInfo;
+			// console.log('upimginfo', this.upReportArr);
+			// // 下刊数据(组合图片)
+			// testInfo = this.constructImg(testInfo, this.downImg, 'XK');
+			// this.downReportArr = testInfo;
+			// console.log('downimginfo', this.downReportArr);
+			// // 区域二级联动
+			// this.citys = this.getCitys(testInfo);
+
+			// 真实数据
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let apid = sessionStorage.getItem('order_apid');
+			let info = {
+				uid: uid,
+				apid: apid
+			};
+			// uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+			// api.getApi('/GetADB', info).then(res =>{
+			api.getApi('/GetAdLaunch', info).then(res =>{
+				console.log(res.data);
+				if(!res.data.SysCode){
+					let result = res.data;
+					// 城市筛选过滤
+					this.filterCityData = filterFormat(result, 'city');
+					this.filtersArea = filterFormat(result, 'rName');
+					this.filtersData = filterFormat(result, 'timeRange');
+					this.allResource = filterFormat(result, 'resName');
+					// 选点排期
+					this.setpointArr = result;
+					this.currentSetpoint = this.setpointArr;
+					// 物料信息
+					this.materialInfo = this.getMaterialInfo(result);
+					console.log('materialInfo', this.materialInfo);
+
+					let upinfo = {
+						uid: uid,
+						ptype: 'SK',
+						ptp: sessionStorage.getItem('order_apid')
+					};
+					api.postApi('/GetImg', upinfo).then(res =>{
+						console.log(res.data);
+							// 初始图片
+							this.upLoadImg = res.data;
+							// 上刊数据(组合图片)
+							result = this.constructImg(result, this.upLoadImg, 'SK');
+							this.upReportArr = result;
+							console.log('upimginfo', this.upReportArr);
+					}).catch(res =>{
+						console.log(res);
+					});
+					let downinfo = {
+						uid: uid,
+						ptype: 'XK',
+						ptp: sessionStorage.getItem('order_apid')
+					};
+					api.postApi('/GetImg', downinfo).then(res =>{
+						console.log(res.data);
+							this.downImg = res.data;
+							// 下刊数据(组合图片)
+							result = this.constructImg(result, this.downImg, 'XK');
+							this.downReportArr = result;
+							console.log('downimginfo', this.downReportArr);
+					}).catch(res =>{
+						console.log(res);
+					});
+					// 区域二级联动
+					this.citys = this.getCitys(result);
+
+				}else{
+					Message.warning(res.data.MSG);
+				}
+			}).catch(res =>{
+				console.log(res);
+			});
 		},
 		// 组装成物料信息数据
 		getMaterialInfo(info){
@@ -1408,7 +1440,8 @@ export default {
 			// this.upLoadData.palt = row.city+"-"+row.rName+"-"+row.resName+"-"+row.mTitle+"-"+row.asLab;
 			// this.upLoadData.ptp = sessionStorage.getItem('order_apid');
 			for(let data of arr){
-				let img = [];
+				let upimg = [];
+				let downimg = [];
 				for(let item of imgArr){
 					if(data.asID == item.ptID){
 						if(type=='SK'){
@@ -1418,7 +1451,7 @@ export default {
 							// ptype       String              关联类型
 							// ptid        int                 关联类型对应唯一ID
 							// ptp         String              关联类型区分属性
-							img.push({
+							upimg.push({
 								name: item.pID+'.png',
 								url: item.pURL,
 								uid: item.puID,
@@ -1430,7 +1463,7 @@ export default {
 							});
 						}
 						if(type=='XK'){
-							img.push({
+							downimg.push({
 								name: item.pID+'.png',
 								url: item.pURL,
 								uid: item.puID,
@@ -1444,21 +1477,21 @@ export default {
 					}
 				}
 				if(type == 'SK'){
-					data.upImgArr = img;
+					data.upImgArr = upimg;
 					data.upImg = {
-						one: img[0]?[img[0]]: [],
-						two: img[1]?[img[1]]: [],
-						three: img[2]?[img[2]]: [],
-						four: img[3]?[img[3]]: [],
+						one: upimg[0]?[upimg[0]]:[],
+						two: upimg[1]?[upimg[1]]:[],
+						three: upimg[2]?[upimg[2]]:[],
+						four: upimg[3]?[upimg[3]]:[],
 					};
 				}
 				if(type == "XK"){
-					data.downImgArr = img;
+					data.downImgArr = downimg;
 					data.downImg = {
-						one: img[0]?[img[0]]: [],
-						two: img[1]?[img[1]]: [],
-						three: img[2]?[img[2]]: [],
-						four: img[3]?[img[3]]: [],
+						one: downimg[0]?[downimg[0]]:[],
+						two: downimg[1]?[downimg[1]]:[],
+						three: downimg[2]?[downimg[2]]:[],
+						four: downimg[3]?[downimg[3]]:[],
 					};
 				}
 			}
@@ -1700,11 +1733,11 @@ export default {
 		},
 
 
-		show2H5() {
+		showH5Up() {
 			this.$router.push('/upReport')
 		},
 		//跳转
-		showH5() {
+		showH5Down() {
 			this.$router.push('/downReport')
 		},
 		cancelChangeID() {
@@ -1822,7 +1855,7 @@ export default {
 			$(this).parents('.moreImgBox').hide();
 			$(this).parents('.moreImgBox').siblings('.openMoreImg').show();
 			});
-			
+
 			//事件委托
 			$('.content_top_wrap').on('click', 'dd', function () {
 			if ($(this).hasClass('active')) {
@@ -2279,7 +2312,7 @@ export default {
     padding: 34px 28px;
     background: #FFFFFF;
     border: 1px solid #DEDEDE;
-    height: 161px;
+    height: 205px;
     position: relative;
   }
 
@@ -2660,6 +2693,9 @@ export default {
   .first-wrap /deep/ .el-dialog {
     width: 1246px !important;
   }
+  /deep/ .el-dialog{
+    width: 87% !important;
+  }
 
   /*选择点位*/
   /deep/ .type-select .el-input, /deep/ .type-select .el-input__inner {
@@ -2695,16 +2731,11 @@ export default {
     border-top-left-radius: 0;
   }
 
-  /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
-    width: 180px;
-    margin-left: -6px;
-  }
-
   /deep/ .date-select.el-input__inner {
     width: 237px;
     position: relative;
-    top: 3px;
-    left: -5px;
+    /*top: 3px;*/
+    left: 1px;
     height: 34px;
   }
 
@@ -2757,7 +2788,9 @@ export default {
 
   .search-wrap {
     position: relative;
+    height: 34px;
   }
+
 
   .shopcar {
     width: 65px;
@@ -3026,10 +3059,13 @@ export default {
     white-space: nowrap;
   }
 
-  /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
+  /deep/ .plan-select .el-input__inner {
     width: 180px;
-    margin-left: -6px;
+    margin-left: -13px;
     height: 34px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+
   }
 
   /deep/ .el-date-editor .el-range__icon {
@@ -3042,6 +3078,51 @@ export default {
     float: left;
     margin-left: 2px;
   }
+
+  /*日期控件*/
+  .block {
+    display: inline-block;
+    margin-left: 2px;
+    position: relative;
+    /*top: 3px;*/
+  }
+  /deep/ .el-date-editor .el-range__icon {
+    position: relative;
+    top: -3px;
+    margin-right: 2px;
+  }
+  /deep/ .el-range-separator{
+    position: relative;
+    top: -2px;
+  }
+  /deep/ .el-input__inner {
+    width: 260px;
+    height: 34px;
+    line-height: 34px;
+  }
+  /deep/ .el-date-editor i, /deep/ .el-date-editor input, /deep/ .el-date-editor span {
+    float: left;
+    position: relative;
+  }
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
+
+  /deep/ .el-dialog__body{
+    padding: 30px 20px 0;
+  }
+  /deep/ .el-dialog__footer {
+    padding: 0 20px 20px;
+
+  }
+
+  /deep/ .el-pagination .el-select .el-input .el-input__inner{
+    width: 100px;
+  }
+  /deep/ .el-pagination__editor.el-input .el-input__inner{
+    width: 50px;
+  }
+
 
   /*1440*/
   @media all and (min-width: 1420px) {
