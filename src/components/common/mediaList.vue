@@ -30,6 +30,9 @@
 				</el-row>
 				<div class="table_wrap">
 					<el-table
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
             v-loadmore="loadMore"
 						border
 						:data="currentPlan"
@@ -197,6 +200,8 @@ export default {
 	},
 	data() {
 		return {
+		  //加载中
+      loading:true,
       loadSign: true,
 			role: '',
 			showNewBtn: true,   // 新建按钮
@@ -504,6 +509,8 @@ export default {
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
 			api.getApi('/GetRMList', {uid: uid}).then(res => {
 				console.log('资源媒体列表：', res.data)
+        //正在加载
+        this.loading = false;
 				let RMList = res.data
 				if (!RMList.SysCode) {
 					// let RMList = reclist
@@ -687,6 +694,10 @@ export default {
   /deep/ .el-tooltip__popper.is-light {
     color: #666666 !important;
     border: 1px solid #666666 !important;
+  }
+
+  /deep/ .el-table-filter{
+    height: 180px;
   }
 
   /*面包屑导航*/

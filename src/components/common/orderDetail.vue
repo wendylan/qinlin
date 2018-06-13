@@ -1670,7 +1670,22 @@ export default {
 		saveId(row){
 			console.log('row', row);
 			this.upLoadData.ptid = row.asID;
-			this.upLoadData.palt = row.city+"-"+row.rName+"-"+row.resName+"-"+row.mTitle+"-"+row.asLab;
+			let username = JSON.parse(sessionStorage.getItem('session_data')).realName;
+			let alt = {
+				plan: this.orderDetail.apName,
+				res: row.resName,
+				media: row.mTitle,
+				city: row.city,
+				area: row.rName,
+				asLab: row.asLab,
+				lstart: row.lStar,
+				lend: row.lEnd,
+				assettag: row.assetTag,
+				brand: this.orderDetail.bTitle,
+				username: username,
+				resid: row.resID
+			};
+			this.upLoadData.palt = JSON.stringify(alt);
 			this.upLoadData.ptp = sessionStorage.getItem('order_apid');
 		},
 		// 上传上刊图片并关联

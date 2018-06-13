@@ -13,7 +13,10 @@
 						border
 						:data="publishPriceList"
 						style="width: 100%"
-						:default-sort = "{prop: 'date', order: 'descending'}"
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
+
 					>
 						<el-table-column
 							prop="rName"
@@ -121,6 +124,8 @@ export default {
 	},
 	data(){
 		return {
+		  //加载中
+      loading:true,
 			role: '',
 			// 所有区域
 			allProvince: [],
@@ -154,6 +159,7 @@ export default {
 		getInitData(){
 			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
 			api.getApi('/GetAdPrice', {uid: uid}).then(res =>{
+        this.loading = false
 				if(!res.data.SysCode){
 					this.publishPriceList = res.data;
 					this.filtCity = filterFormat(this.publishPriceList, 'rName');
@@ -291,6 +297,7 @@ export default {
 				console.log('addinfo', info);
 
 				api.postApi('/AddPrice', info).then(res => {
+
 					console.log(res);
 					if(res.data.SysCode){
 						Message.success('该城市已存在刊例价，请勿重复添加');
@@ -333,6 +340,7 @@ export default {
 
 				console.log('editinfo', info);
 				api.postApi('/SetAdPrice', info).then(res =>{
+
 					console.log(res);
 					if(res.data.SysCode ==200200){
 						Message.success(res.data.MSG);
@@ -375,6 +383,12 @@ export default {
 
 
   /*下拉框*/
+  /deep/ .el-table-filter{
+    height: 176px;
+    /* overflow: hidden; */
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
   /deep/ .el-table-filter__list{
    /*修改源代码*/
   }

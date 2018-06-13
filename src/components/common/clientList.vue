@@ -43,14 +43,21 @@
 			<el-table
 				border
 				:data="currentPlan"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
 				style="width: 100%"
-				:default-sort="{prop: 'date', order: 'descending'}"
+        :default-sort = "{prop: 'joinTime', order: 'descending'}"
 			>
 				<el-table-column
-					prop="realName"
 					label="联系人"
 					min-width="6%"
 				>
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.realName" placement="bottom">
+              <span>{{scope.row.realName}}</span>
+            </el-tooltip>
+          </template>
 				</el-table-column>
 				<el-table-column
 					prop="clientRName"
@@ -110,6 +117,8 @@
 				<el-table-column
 					label="创建日期"
 					min-width="8.3%"
+          sortable
+          :sort-method="joinTime"
 				>
 					<template slot-scope="scope">
 						<span>{{ formatTime(scope.row.joinTime) }}</span>
@@ -153,6 +162,8 @@ export default {
 	},
 	data() {
 		return {
+		  //加载中
+      loading:true,
 			showNewBtn:true,
 			keyword: '',
 			date: '',
@@ -307,6 +318,10 @@ export default {
 		filterCity(value, row) {
 			return row.rName === value;
 		},
+    //日期排序
+    sortData(a, b) {
+      return a.joinTime > b.joinTime
+    },
 		// 获取客户列表
 		GetCustomer() {
 			// let uid = 3;
@@ -316,6 +331,7 @@ export default {
 			let puid = session.puID;
 			if(uType =='BD'){
 				api.getApi('/MyCustomer', {uid: uid}).then(res=>{
+          this.loading = false;
 					if(!res.data.SysCode){
 						this.planList = res.data;
 						for(let data of this.planList){
@@ -335,6 +351,7 @@ export default {
 			}else{
 				// uid=24&puid=2
 				api.getApi('/GetCustomer', {uid: uid, puid: puid}).then(res=>{
+          this.loading = false;
 					if(!res.data.SysCode){
 						this.planList = res.data;
 						for(let data of this.planList){
@@ -615,7 +632,7 @@ export default {
     white-space: nowrap;
   }
   /deep/ .el-table__row td:nth-child(1)  .cell {
-    width: 80px;
+    width: 90px;
   }
   /deep/ .el-table__row td:nth-child(3)  .cell {
     width: 103px;

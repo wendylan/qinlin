@@ -9,7 +9,7 @@
       </div>
       <div class="mediaList_container">
         <el-row>
-			<div class="mediaList_handel">
+          <div class="mediaList_handel">
 				<span>
 					<div style="display:inline-block">
 						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
@@ -20,50 +20,53 @@
 						</el-input>
 					</div>
 				</span>
-				<span>
+            <span>
 					<div class="block">
 						<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-						<el-button plain @click="newAccount" v-if="showNewBtn" >新建</el-button>
+						<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
 					</div>
 				</span>
-			</div>
+          </div>
         </el-row>
         <div class="table_wrap">
           <el-table
-				border
-				:data="currAccount"
-				style="width: 100%"
-				:default-sort="{prop: 'date', order: 'descending'}"
+            border
+            :data="currAccount"
+            style="width: 100%"
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
+            :default-sort="{prop: 'joinTime', order: 'descending'}"
           >
             <el-table-column
-				label="账号"
-				min-width="11.8%"
+              label="账号"
+              min-width="11.8%"
             >
-				<template slot-scope="scope">
-					<a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
-				</template>
+              <template slot-scope="scope">
+                <a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
+              </template>
             </el-table-column>
             <el-table-column
-				prop="realName"
-				label="姓名"
-				min-width="7.8%"
-            >
-            </el-table-column>
-            <el-table-column
-				prop="uWhoArr"
-				label="权限城市"
-				class="tar"
-				min-width="14.2%"
-				:filters="filterUWhoData"
-				:filter-method="filterUWho"
-				:filter-multiple="true"
+              prop="realName"
+              label="姓名"
+              min-width="7.8%"
             >
             </el-table-column>
             <el-table-column
-				prop="uType"
-				label="账号角色"
-				min-width="8.1%"
-				:filters="[
+              prop="uWhoArr"
+              label="权限城市"
+              class="tar"
+              min-width="14.2%"
+              :filters="filterUWhoData"
+              :filter-method="filterUWho"
+              :filter-multiple="true"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="uType"
+              label="账号角色"
+              min-width="8.1%"
+              :filters="[
 					{text: '系统管理员', value: 'SA'},
 					{text: '超级管理员', value: 'SM'},
 					{text: '运营', value: 'OP'},
@@ -72,52 +75,55 @@
 					{text: '广告主', value: 'AD'},
 					{text: '工程人员', value: 'EP'}
 				]"
-				:filter-method="filterUType"
-				:filter-multiple="false"
+              :filter-method="filterUType"
+              :filter-multiple="false"
             >
-				<template slot-scope="scope">
-					<span>{{roleToText(scope.row.uType)}}</span>
-				</template>
+              <template slot-scope="scope">
+                <span>{{roleToText(scope.row.uType)}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-				prop="puName"
-				label="上级"
-				min-width="7.8%"
+              prop="puName"
+              label="上级"
+              min-width="7.8%"
             >
             </el-table-column>
             <el-table-column
-				label="创建日期"
-				min-width="9.8%"
+              label="创建日期"
+              min-width="9.8%"
+              sortable
             >
-				<template slot-scope="scope">
-					<span>{{formatTime(scope.row.joinTime)}}</span>
-				</template>
+              <template slot-scope="scope">
+                <span>{{formatTime(scope.row.joinTime)}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-				prop="uState"
-				label="状态"
-				min-width="8.9%"
-				:filters="[
+              prop="uState"
+              label="状态"
+              min-width="8.9%"
+              :filters="[
 					{ text: '正常', value: 1 },
 					{ text: '禁用', value: 0 },
 					]"
-				:filter-method="filterState"
-				:filter-multiple="false"
+              :filter-method="filterState"
+              :filter-multiple="false"
             >
-				<template slot-scope="scope">
-					<span>{{stateToText(scope.row.uState)}}</span>
-				</template>
+              <template slot-scope="scope">
+                <span>{{stateToText(scope.row.uState)}}</span>
+              </template>
             </el-table-column>
 
             <el-table-column
-				label="操作"
-				min-width="7.1%"
+              label="操作"
+              min-width="7.1%"
             >
-				<template slot-scope="scope">
-					<!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
-					<span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
-					<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
-				</template>
+              <template slot-scope="scope">
+                <!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
+                <span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;"
+                      @click="isForbidden(scope.row)">禁用</span>
+                <span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;"
+                      @click="isForbidden(scope.row)">开通</span>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -127,338 +133,335 @@
 </template>
 
 <script>
-import { Row, Input, Button, Table, TableColumn, MessageBox, Message, Select, Option, Loading } from 'element-ui';
-import { api } from '../../api/api';
-// 时间控件格式化
-import dateFormat from '../../commonFun/timeFormat.js';
-// 角色转换为中文
-import uTypeToText from '../../commonFun/uTypeToText.js'
-// 城市转换为中文
-// import areaToText from '../../commonFun/areaToText.js';
-import areaToText from '../../commonFun/areaToText_new.js';
-export default {
-	name: "customList",
-	components:{
-		elRow: Row,
-		elInput: Input,
-		elButton: Button,
-		elTable: Table,
-		elTableColumn: TableColumn,
-		elSelect: Select,
-		elOption: Option
-	},
-	data() {
-		return {
-			keyword: '',
-			select: '1',
-			showNewBtn:true,
-			filterUWhoData: [],
-			//表格
-			accountList: [{
-				division:"产品研发部",
-				email:"kacent@qq.com",
-				joinTime:"2018-04-09 15:46:00.0",
-				phone:"13924447488",
-				position:"开发经理",
-				puID:1,
-				puName:"梁晓君",
-				rID:440100,
-				rName:"广州市",
-				realName:"林郑伟",
-				sName:"Kacent",
-				uID:2,
-				uState:1,
-				uType:"SA",
-				uWho:"440100"
-			},{
-				division:"产品研发部",
-				email:"kacent@qq.com",
-				joinTime:"2018-04-09 15:46:00.0",
-				phone:"13924447488",
-				position:"开发经理",
-				puID:1,
-				puName:"梁晓君",
-				rID:440100,
-				rName:"广州市",
-				realName:"林郑伟",
-				sName:"Kacent2",
-				uID:3,
-				uState:1,
-				uType:"SA",
-				uWho:"440000,440200"
-			}],
-			currAccount: [{
-				division:"产品研发部",
-				email:"kacent@qq.com",
-				joinTime:"2018-04-09 15:46:00.0",
-				phone:"13924447488",
-				position:"开发经理",
-				puID:1,
-				puName:"梁晓君",
-				rID:440100,
-				rName:"广州市",
-				realName:"林郑伟",
-				sName:"Kacent",
-				uID:2,
-				uState:1,
-				uType:"SA",
-				uWho:"440100"
-			},{
-				division:"产品研发部",
-				email:"kacent@qq.com",
-				joinTime:"2018-04-09 15:46:00.0",
-				phone:"13924447488",
-				position:"开发经理",
-				puID:1,
-				puName:"梁晓君",
-				rID:440100,
-				rName:"广州市",
-				realName:"林郑伟",
-				sName:"Kacent2",
-				uID:3,
-				uState:1,
-				uType:"SA",
-				uWho:"440000,440200"
-			}],
-		}
-	},
-	created(){
-		this.getAccountList();
-		this.getRole();
-	},
-	methods: {
-		// 初始数据
-		getAccountList(){
-			let loadingInstance = Loading.service({ fullscreen: true, text : "正在加载数据,请耐心等待..." });
-			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-			api.postApi('/GetUserList', { uid: uid}).then(res => {
-				console.log(res.data);
-				if(!res.data.SysCode){
-					this.accountList = res.data;
-					let cityList = [{
-						text:'全国',
-						value:'全国'
-					}];
-					let userUid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-					let account = this.accountList;
-					for(let index=0; index< account.length; index++){
-						if(account[index].uID == userUid){
-							account.splice(index, 1);
-						}
-						let result = '';
-						let uWhoArr = account[index].uWho.split(',');
-						if(account[index].uWho==0){
-							this.$set(account[index], 'uWhoArr', '全国');
-						}else{
-							for(let i=0; i<uWhoArr.length; i++){
-								// areaToText.toTextCity(res=>{
-								// 	result = result +'/'+res;
-								// 	let cityObj = {
-								// 		text: res,
-								// 		value: res,
-								// 	}
-								// 	// 去重城市
-								// 	if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
-								// 		cityList.push(cityObj);
-								// 	}
-								// 	if(i >= uWhoArr.length-1){
-								// 		console.log('result', result);
-								// 		// data.uWhoArr = result;
-								// 		this.$set(account[index], 'uWhoArr', result);
-								// 		this.filterUWhoData = cityList;
-								// 		console.log('cityList', cityList);
-								// 	}
-								// }, Number(uWhoArr[i]));
+  import {Row, Input, Button, Table, TableColumn, MessageBox, Message, Select, Option, Loading} from 'element-ui';
+  import {api} from '../../api/api';
+  // 时间控件格式化
+  import dateFormat from '../../commonFun/timeFormat.js';
+  // 角色转换为中文
+  import uTypeToText from '../../commonFun/uTypeToText.js'
+  // 城市转换为中文
+  // import areaToText from '../../commonFun/areaToText.js';
+  import areaToText from '../../commonFun/areaToText_new.js';
 
-								let res = areaToText.toText(Number(uWhoArr[i])).city
-								if(uWhoArr.length >1){
-									result = result +'/'+res;
-								}else{
-									result = res;
-								}
-								let cityObj = {
-									text: res,
-									value: res,
-								};
-								// 去重城市
-								if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
-									cityList.push(cityObj);
-								}
-								if(i >= uWhoArr.length-1){
-									console.log('result', result);
-									// data.uWhoArr = result;
-									this.$set(account[index], 'uWhoArr', result);
-									this.filterUWhoData = cityList;
-									console.log('cityList', cityList);
-								}
-							}
-						}
-					}
+  export default {
+    name: "customList",
+    components: {
+      elRow: Row,
+      elInput: Input,
+      elButton: Button,
+      elTable: Table,
+      elTableColumn: TableColumn,
+      elSelect: Select,
+      elOption: Option
+    },
+    data() {
+      return {
+        //加载中
+        loading: true,
+        keyword: '',
+        select: '1',
+        showNewBtn: true,
+        filterUWhoData: [],
+        //表格
+        accountList: [{
+          division: "产品研发部",
+          email: "kacent@qq.com",
+          joinTime: "2018-04-09 15:46:00.0",
+          phone: "13924447488",
+          position: "开发经理",
+          puID: 1,
+          puName: "梁晓君",
+          rID: 440100,
+          rName: "广州市",
+          realName: "林郑伟",
+          sName: "Kacent",
+          uID: 2,
+          uState: 1,
+          uType: "SA",
+          uWho: "440100"
+        }, {
+          division: "产品研发部",
+          email: "kacent@qq.com",
+          joinTime: "2018-04-09 15:46:00.0",
+          phone: "13924447488",
+          position: "开发经理",
+          puID: 1,
+          puName: "梁晓君",
+          rID: 440100,
+          rName: "广州市",
+          realName: "林郑伟",
+          sName: "Kacent2",
+          uID: 3,
+          uState: 1,
+          uType: "SA",
+          uWho: "440000,440200"
+        }],
+        currAccount: [{
+          division: "产品研发部",
+          email: "kacent@qq.com",
+          joinTime: "2018-04-09 15:46:00.0",
+          phone: "13924447488",
+          position: "开发经理",
+          puID: 1,
+          puName: "梁晓君",
+          rID: 440100,
+          rName: "广州市",
+          realName: "林郑伟",
+          sName: "Kacent",
+          uID: 2,
+          uState: 1,
+          uType: "SA",
+          uWho: "440100"
+        }, {
+          division: "产品研发部",
+          email: "kacent@qq.com",
+          joinTime: "2018-04-09 15:46:00.0",
+          phone: "13924447488",
+          position: "开发经理",
+          puID: 1,
+          puName: "梁晓君",
+          rID: 440100,
+          rName: "广州市",
+          realName: "林郑伟",
+          sName: "Kacent2",
+          uID: 3,
+          uState: 1,
+          uType: "SA",
+          uWho: "440000,440200"
+        }],
+      }
+    },
+    created() {
+      this.getAccountList();
+      this.getRole();
+    },
+    methods: {
+      // 初始数据
+      getAccountList() {
 
-					this.currAccount = this.accountList;
-					loadingInstance.close();
-				}else{
-					loadingInstance.close();
-					Message.warning(res.data.MSG);
-				}
-			}).catch( res => {
-				loadingInstance.close();
-				console.log(res);
-			});
-		},
-		// 时间格式化
-		formatTime(time){
-			return dateFormat.toDate(time);
-		},
-		// 角色格式化
-		roleToText(role){
-			return uTypeToText.toText(role);
-		},
-		// 城市转换
-		cityToText(item){
-			console.log(item);
-			let arr = item.split(',');
-			let result = '';
-			for(let data of arr){
-				areaToText.toTextCity(res=>{
-					result = res+'/'+ result;
-					console.log(result);
-				}, Number(data));
-			}
-			return result;
-		},
-		// 状态转换
-		stateToText(status){
-			let statusText = [
-				{text: '正常', status: 1},
-				{text: '禁用', status: 0}
-			];
-			for(let data of statusText){
-				if(data.status == status){
-					return data.text;
-				}
-			}
-		},
-		// 当搜索框为空的时候进行重置显示
-		initData(){
-			if(!this.keyword){
-				this.currAccount = JSON.parse(JSON.stringify(this.accountList));
-			}
-		},
-		// 搜索
-		search(){
-			// 账号，姓名
-			console.log(this.select);
-			console.log(this.keyword);
-			let select = this.select;
-			let keyword = this.keyword;
-			if(this.keyword){
-				let arr = [];
-				for(let data of this.accountList){
-					if(data.realName){
-						if((select=='1') && data.realName.includes(keyword)){
-							arr.push(data);
-						}
-					}
-					if(data.sName){
-						if((select =='2') && data.sName.includes(keyword)){
-							arr.push(data);
-						}
-					}
-				}
-				this.currAccount = arr;
-				return;
-			}
-			this.currAccount =JSON.parse(JSON.stringify(this.accountList));
-		},
-		// 新建
-		newAccount(){
-			this.$router.push('./createAccount')
-		},
-		//筛选
-		filterState(value, row) {
-			return row.uState == value;
-		},
-		// 筛选权限城市
-		filterUWho(value, row){
-			console.log(value, '-------------', row);
-			// if(value =='全国'){
-			// 	return true;
-			// }
-			return row.uWhoArr.includes(value);
-		},
-		// 筛选角色
-		filterUType(value, row){
-			return row.uType === value;
-		},
-		//权限功能暂未开放
-		authority(){
-			Message.warning('该功能暂未开放');
-		},
-		// 开通或者禁用：
-		isForbidden(row){
-			console.log(row);
-			// uid         int【必填】     当前用户UserID
-            // toid        int【必填】     被操作的UserID
-			// ustate      int【必填】     用户状态值
-			// this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
-			MessageBox.confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning'
-			}).then(() => {
-				let info = {};
-				info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-				info.toid = row.uID;
-				info.ustate = row.uState?0:1;
-				api.postApi('/CtrlUser', info).then(res => {
-					console.log(res.data);
-					if(res.data.SysCode ==100200){
-						Message.success('操作成功');
-						row.uState = row.uState?0:1;
-					}
-				}).catch(res => {
-					console.log(res);
-				});
-			}).catch(() => {
-				Message.info('已取消操作');
-			});
-		},
-		ToEdit(row){
-			console.log(row);
-			sessionStorage.setItem('account_detail', JSON.stringify(row));
-			this.$router.push('./createAccount?edit=y');
-		},
-		// 判断角色是否有新建按钮(系统管理员和超级管理员有)
-		getRole(){
-			let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
-			console.log(role);
-			if(role != 'SA' && role != 'SM'){
-				this.showNewBtn = false;
-			}
-		},
-	},
-}
+        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+        api.postApi('/GetUserList', {uid: uid}).then(res => {
+          console.log(res.data);
+          if (!res.data.SysCode) {
+            this.accountList = res.data;
+            this.loading = false;
+            let cityList = [{
+              text: '全国',
+              value: '全国'
+            }];
+            let userUid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+            let account = this.accountList;
+            for (let index = 0; index < account.length; index++) {
+              if (account[index].uID == userUid) {
+                account.splice(index, 1);
+              }
+              let result = '';
+              let uWhoArr = account[index].uWho.split(',');
+              if (account[index].uWho == 0) {
+                this.$set(account[index], 'uWhoArr', '全国');
+              } else {
+                for (let i = 0; i < uWhoArr.length; i++) {
+                  // areaToText.toTextCity(res=>{
+                  // 	result = result +'/'+res;
+                  // 	let cityObj = {
+                  // 		text: res,
+                  // 		value: res,
+                  // 	}
+                  // 	// 去重城市
+                  // 	if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
+                  // 		cityList.push(cityObj);
+                  // 	}
+                  // 	if(i >= uWhoArr.length-1){
+                  // 		console.log('result', result);
+                  // 		// data.uWhoArr = result;
+                  // 		this.$set(account[index], 'uWhoArr', result);
+                  // 		this.filterUWhoData = cityList;
+                  // 		console.log('cityList', cityList);
+                  // 	}
+                  // }, Number(uWhoArr[i]));
+
+                  let res = areaToText.toText(Number(uWhoArr[i])).city
+                  if (uWhoArr.length > 1) {
+                    result = result + '/' + res;
+                  } else {
+                    result = res;
+                  }
+                  let cityObj = {
+                    text: res,
+                    value: res,
+                  };
+                  // 去重城市
+                  if (JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1) {
+                    cityList.push(cityObj);
+                  }
+                  if (i >= uWhoArr.length - 1) {
+                    console.log('result', result);
+                    // data.uWhoArr = result;
+                    this.$set(account[index], 'uWhoArr', result);
+                    this.filterUWhoData = cityList;
+                    console.log('cityList', cityList);
+                  }
+                }
+              }
+            }
+
+            this.currAccount = this.accountList;
+
+          } else {
+
+            Message.warning(res.data.MSG);
+          }
+        }).catch(res => {
+
+          console.log(res);
+        });
+      },
+      // 时间格式化
+      formatTime(time) {
+        return dateFormat.toDate(time);
+      },
+      // 角色格式化
+      roleToText(role) {
+        return uTypeToText.toText(role);
+      },
+      // 城市转换
+      cityToText(item) {
+        console.log(item);
+        let arr = item.split(',');
+        let result = '';
+        for (let data of arr) {
+          areaToText.toTextCity(res => {
+            result = res + '/' + result;
+            console.log(result);
+          }, Number(data));
+        }
+        return result;
+      },
+      // 状态转换
+      stateToText(status) {
+        let statusText = [
+          {text: '正常', status: 1},
+          {text: '禁用', status: 0}
+        ];
+        for (let data of statusText) {
+          if (data.status == status) {
+            return data.text;
+          }
+        }
+      },
+      // 当搜索框为空的时候进行重置显示
+      initData() {
+        if (!this.keyword) {
+          this.currAccount = JSON.parse(JSON.stringify(this.accountList));
+        }
+      },
+      // 搜索
+      search() {
+        // 账号，姓名
+        console.log(this.select);
+        console.log(this.keyword);
+        let select = this.select;
+        let keyword = this.keyword;
+        if (this.keyword) {
+          let arr = [];
+          for (let data of this.accountList) {
+            if (data.realName) {
+              if ((select == '1') && data.realName.includes(keyword)) {
+                arr.push(data);
+              }
+            }
+            if (data.sName) {
+              if ((select == '2') && data.sName.includes(keyword)) {
+                arr.push(data);
+              }
+            }
+          }
+          this.currAccount = arr;
+          return;
+        }
+        this.currAccount = JSON.parse(JSON.stringify(this.accountList));
+      },
+      // 新建
+      newAccount() {
+        this.$router.push('./createAccount')
+      },
+      //筛选
+      filterState(value, row) {
+        return row.uState == value;
+      },
+      // 筛选权限城市
+      filterUWho(value, row) {
+        console.log(value, '-------------', row);
+        // if(value =='全国'){
+        // 	return true;
+        // }
+        return row.uWhoArr.includes(value);
+      },
+      // 筛选角色
+      filterUType(value, row) {
+        return row.uType === value;
+      },
+      //权限功能暂未开放
+      authority() {
+        Message.warning('该功能暂未开放');
+      },
+      // 开通或者禁用：
+      isForbidden(row) {
+        console.log(row);
+        // uid         int【必填】     当前用户UserID
+        // toid        int【必填】     被操作的UserID
+        // ustate      int【必填】     用户状态值
+        // this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
+        MessageBox.confirm(`是否${row.uState ? '禁用' : '开通'}该角色?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let info = {};
+          info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+          info.toid = row.uID;
+          info.ustate = row.uState ? 0 : 1;
+          api.postApi('/CtrlUser', info).then(res => {
+            console.log(res.data);
+            if (res.data.SysCode == 100200) {
+              Message.success('操作成功');
+              row.uState = row.uState ? 0 : 1;
+            }
+          }).catch(res => {
+            console.log(res);
+          });
+        }).catch(() => {
+          Message.info('已取消操作');
+        });
+      },
+      ToEdit(row) {
+        console.log(row);
+        sessionStorage.setItem('account_detail', JSON.stringify(row));
+        this.$router.push('./createAccount?edit=y');
+      },
+      // 判断角色是否有新建按钮(系统管理员和超级管理员有)
+      getRole() {
+        let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+        console.log(role);
+        if (role != 'SA' && role != 'SM') {
+          this.showNewBtn = false;
+        }
+      },
+    },
+  }
 
 </script>
 <style scoped>
-  a{
-    color: #108EE9 ;
+  a {
+    color: #108EE9;
   }
+
   /*筛选*/
   .el-checkbox + .el-checkbox {
     margin-left: 0;
   }
 
-
-  .input-with-select /deep/ .el-input__inner{
-    font-size: 14px;
-    /*padding: 10px 10px;*/
-    height: 34px;
-    line-height: 34px;
-    /*vertical-align: middle;*/
-  }
-  /deep/ .plan-select .el-input__inner{
+  .input-with-select /deep/ .el-input__inner {
     font-size: 14px;
     /*padding: 10px 10px;*/
     height: 34px;
@@ -466,6 +469,13 @@ export default {
     /*vertical-align: middle;*/
   }
 
+  /deep/ .plan-select .el-input__inner {
+    font-size: 14px;
+    /*padding: 10px 10px;*/
+    height: 34px;
+    line-height: 34px;
+    /*vertical-align: middle;*/
+  }
 
   .typeBox p {
     height: 30px;
@@ -474,8 +484,6 @@ export default {
     line-height: 30px;
     border-top: 1px solid #cccccc;
   }
-
-
 
   /deep/ .el-checkbox__label {
     font-size: 10px;
@@ -504,7 +512,7 @@ export default {
     left: 335px !important;
   }
 
-  /deep/ .el-range-editor .el-range-input{
+  /deep/ .el-range-editor .el-range-input {
     line-height: 20px;
   }
 
@@ -591,10 +599,11 @@ export default {
 
   }
 
-  .mediaList_handel span{
+  .mediaList_handel span {
     float: left;
     margin-left: 2px;
   }
+
   /deep/ .el-date-editor .el-range-separator {
     line-height: 26px;
   }
@@ -623,10 +632,10 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
-  /deep/ .el-table__row  td:nth-child(2) .cell{
+
+  /deep/ .el-table__row td:nth-child(2) .cell {
     width: 124px;
   }
-
 
   /deep/ .el-table--border {
     border-radius: 4px;
@@ -641,10 +650,6 @@ export default {
 
   /deep/ .el-table .caret-wrapper {
     width: 22px;
-  }
-
-  /deep/ .el-table_1_column_3 {
-    text-align: right;
   }
 
   /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {

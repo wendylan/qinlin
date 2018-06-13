@@ -67,37 +67,40 @@
 									</div>
 									<!--图片列表-->
 									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(item, index) of upImgArr" :key="index">
+										<div class="photoCard" v-for="upimg of upImgArr" :key="upimg.pID">
 											<div class="imgBox">
-												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<img :src="upimg.pURL" alt="" class="smallImg">
 												<!--查看缩略图和下载-->
 												<div class="mask-btn" style="display: none">
-													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-													<a href="#" download="name.jpg">下载图片</a>
+													<i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
+													<a href="#" :download="upimg.pSrc">下载图片</a>
 												</div>
 											</div>
 											<div class="detailBox">
-												<p>珠江帝景地产三月投放</p>
-												<span>华南碧桂园二期-东门</span>
+												<p>{{upimg.pAlt.plan}}</p>
+												<!-- <span>华南碧桂园二期-东门</span> -->
+												<span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
 												<div class="icons">
-													<span class="el-icon-location">广州市</span>
+													<span class="el-icon-location">{{upimg.pAlt.city}}</span>
+													<!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
 													<span>
-														<i class="fa  fa-file-text"></i>
-														A面
+														<i class="fa fa-file-text"></i>
+														{{upimg.pAlt.asLab}}面
 													</span>
 													<el-tooltip placement="bottom" effect="light">
 														<span class="el-icon-info"></span>
 														<div slot="content" class="content">
-															<p>{{assetID}}</p>
-															<p>{{address}}</p>
+															<p>{{upimg.pAlt.username}}上传</p>
+															<p>{{upimg.pAlt.assettag}}</p>
+															<p>{{upimg.pAlt.address}}</p>
 														</div>
 													</el-tooltip>
 												</div>
 											</div>
 											<div class="infoBox">
 												<i>超</i>
-												<span>guangzhoumeijie</span>
-												<em>2018.08.30</em>
+												<span>{{upimg.pAlt.brand}}</span>
+												<em>{{formatTime(upimg.pUTime)}}</em>
 											</div>
 										</div>
 										<!--页码-->
@@ -131,37 +134,40 @@
 									</div>
 									<!--图片列表-->
 									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(item, index) of downImgArr" :key="index">
+										<div class="photoCard" v-for="downimg of downImgArr" :key="downimg.pID">
 											<div class="imgBox">
-												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<img :src="downimg.pURL" alt="" class="smallImg">
 												<!--查看缩略图和下载-->
 												<div class="mask-btn" style="display: none">
-												<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-												<a href="#" download="name.jpg">下载图片</a>
+													<i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
+													<a href="#" :download="downimg.pSrc">下载图片</a>
 												</div>
 											</div>
 											<div class="detailBox">
-												<p>珠江帝景地产三月投放</p>
-												<span>华南碧桂园二期-东门</span>
+												<p>{{downimg.pAlt.plan}}</p>
+												<!-- <span>华南碧桂园二期-东门</span> -->
+												<span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
 												<div class="icons">
-												<span class="el-icon-location">广州市</span>
-												<span>
-													<i class="fa  fa-file-text"></i>
-													A面
+													<span class="el-icon-location">{{downimg.pAlt.city}}</span>
+													<!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
+													<span>
+														<i class="fa fa-file-text"></i>
+														{{downimg.pAlt.asLab}}面
 													</span>
-												<el-tooltip placement="bottom" effect="light">
-													<span class="el-icon-info"></span>
-													<div slot="content" class="content">
-													<p>{{assetID}}</p>
-													<p>{{address}}</p>
-													</div>
-												</el-tooltip>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{downimg.pAlt.username}}上传</p>
+															<p>{{downimg.pAlt.assettag}}</p>
+															<p>{{downimg.pAlt.address}}</p>
+														</div>
+													</el-tooltip>
 												</div>
 											</div>
 											<div class="infoBox">
 												<i>超</i>
-												<span>guangzhoumeijie</span>
-												<em>2018.08.30</em>
+												<span>{{downimg.pAlt.brand}}</span>
+												<em>{{formatTime(downimg.pUTime)}}</em>
 											</div>
 										</div>
 										<!--页码-->
@@ -393,8 +399,10 @@
 </template>
 
 <script>
+import { api } from '../../api/api.js';
+// 时间格式化
+import dateFormat  from '../../commonFun/timeFormat.js';
 import {Button, Input, Dialog, Table, TableColumn, Row, Tooltip, Tabs, TabPane, Select, Option, Cascader, DatePicker, Pagination} from 'element-ui';
-
 export default {
 	name: "PhotoGallery",
 	components: {
@@ -428,8 +436,8 @@ export default {
 			dialogImageUrl: '../../../static/images/testPic.png',
 			dialogVisible: false,
 			showBtn: false,
-			assetID: `005B201803GZ-X446`,
-			address: `广东广州市天河区黄埔大道中`,
+			// assetID: `005B201803GZ-X446`,
+			// address: `广东广州市天河区黄埔大道中`,
 			activeName: 'first',
 			//上刊搜索行
 			select: '',
@@ -463,7 +471,7 @@ export default {
 			}],
 
 			//是否搜索到图片
-			showPic: 2,
+			showPic: 3,
 			//  录单
 			input: '',
 			value6: '',
@@ -576,6 +584,113 @@ export default {
 			}]
 		};
 	},
+	created(){
+		// 获取上刊图片
+		this.getUpReport();
+		// 获取下刊图片
+		this.getDownReport();
+	},
+	methods: {
+		// 获取上刊图片
+		getUpReport(){
+			// let result = [
+			// 	{pAlt:'{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}', pID:321,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",pUTime:"2018-06-12 15:08:45.0",ptID:3758,ptP:"35",puID:3},
+			// 	{pAlt:'{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}', pID:320,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",pUTime:"2018-06-12 15:08:39.0",ptID:3758,ptP:"35",puID:3},
+			// 	{pAlt:'{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}', pID:319,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",pUTime:"2018-06-12 15:08:30.0",ptID:3758,ptP:"35",puID:3},
+			// 	{pAlt:'{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}', pID:318,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",pUTime:"2018-06-12 15:08:20.0",ptID:3758,ptP:"35",puID:3},
+			// ];
+			// for(let data of result){
+			// 	data.pAlt = JSON.parse(data.pAlt);
+			// }
+			// this.upImgArr = result;
+
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let upinfo = {
+				uid: uid,
+				ptype: 'SK'
+			};
+			api.postApi('/GetImg', upinfo).then(res =>{
+				console.log(res.data);
+					let result = res.data;
+					for(let data of result){
+						// data.pAlt = JSON.parse(data.pAlt);
+						this.$set(data, 'pAlt', JSON.parse(data.pAlt));
+					}
+					this.upImgArr = result;
+					console.log('upimginfo', this.upImgArr);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		// 获取下刊图片
+		getDownReport(){
+			let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+			let upinfo = {
+				uid: uid,
+				ptype: 'XK'
+			};
+			api.postApi('/GetImg', upinfo).then(res =>{
+				console.log(res.data);
+					let result = res.data;
+					for(let data of result){
+						// data.pAlt = JSON.parse(data.pAlt);
+						this.$set(data, 'pAlt', JSON.parse(data.pAlt));
+					}
+					this.downImgArr = result;
+					console.log('upimginfo', this.downImgArr);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		// 获取地址详细信息
+		getAddresss(row){
+            // resid       int【必填】     资源ID
+			// info        String          是否输出完整资源信息（小写：y）
+			let info = {
+				resid: row.resid,
+				info: 'y'
+			};
+			api.getApi('/GetResCT', info).then(res =>{
+				console.log(res.data);
+				this.$set(row, 'address', res.data.resAddress);
+			}).catch(res =>{
+				console.log(res);
+			});
+		},
+		// 时间格式规范
+		formatTime(val){
+			return dateFormat.toDate(val, '.');
+		},
+		// 查看图片
+		handlePictureCardPreview(item) {
+			this.dialogImageUrl = item.pURL;
+			this.dialogVisible = true;
+		},
+		handleClick(tab, event) {
+			if (this.activeName === 'fifth') {
+			this.ludan = true;
+			} else {
+			this.ludan = false
+			}
+		},
+		//筛选
+		filterCaseType(value, row) {
+			return row.tag === value;
+		},
+		searchPic() {
+			if (!this.select && !this.keyword && !this.mianSelect && !this.date && this.selectedOptions.length == 0) {
+			this.$message({
+				message: '请先输入搜索条件',
+				type: 'warning'
+			});
+			}
+		},
+		newPath() {
+			this.$router.push('./ludanReport')
+		}
+
+	},
+
 	mounted: function () {
 		$(function () {
 			$('.smallImg').mouseenter(function () {
@@ -592,40 +707,6 @@ export default {
 		})
 
 	},
-
-	methods: {
-	//请求
-	PostIMg() {
-
-	},
-	handleClick(tab, event) {
-		if (this.activeName === 'fifth') {
-		this.ludan = true;
-		} else {
-		this.ludan = false
-		}
-	},
-	handlePictureCardPreview() {
-		// this.dialogImageUrl = this.dialogImageUrl;
-		this.dialogVisible = true;
-	},
-	//筛选
-	filterCaseType(value, row) {
-		return row.tag === value;
-	},
-	searchPic() {
-		if (!this.select && !this.keyword && !this.mianSelect && !this.date && this.selectedOptions.length == 0) {
-		this.$message({
-			message: '请先输入搜索条件',
-			type: 'warning'
-		});
-		}
-	},
-	newPath() {
-		this.$router.push('./ludanReport')
-	}
-
-	}
 }
 </script>
 
@@ -881,6 +962,8 @@ export default {
     margin-top: 10px;
     border-bottom: 1px solid #eeeeee;
     padding-bottom: 13px;
+    display: flex;
+    flex-direction: column;
   }
 
   .detailBox p {
@@ -900,6 +983,9 @@ export default {
     position: relative;
   }
 
+  .icon span{
+    float: left;
+  }
   .icons img {
     width: 14px;
     height: 14px;
@@ -923,7 +1009,9 @@ export default {
   .icons .el-icon-info {
     position: absolute;
     right: 12px;
-    top: 3px;
+    top: 2px;
+
+
   }
 
   .infoBox {
@@ -952,6 +1040,9 @@ export default {
     font-size: 10px;
     color: #999999;
     margin-left: 20px;
+    float: right;
+    position: relative;
+    top: 5px;
   }
 
   /*页码*/
@@ -1262,7 +1353,7 @@ export default {
     float: left;
     margin-left: 4px;
   }
-  .mediaList_container span{
+  .mediaList_container .search-wrap span{
     float: left;
     margin-left: 4px;
   }

@@ -540,14 +540,14 @@ export default {
 		filterTimeRange(value, row) {
 			return row.timeRange === value;
 		},
-		tableRowClassName({row, rowIndex}) {
-			//状态行 根据状态判断
-			if (rowIndex === 0) {
-				//添加类名
-				return 'warning-row'
-			}
-			return '';
-		},
+		// tableRowClassName({row, rowIndex}) {
+		// 	//状态行 根据状态判断
+		// 	if (rowIndex === 0) {
+		// 		//添加类名
+		// 		return 'warning-row'
+		// 	}
+		// 	return '';
+		// },
 
 	}
 }
@@ -1101,6 +1101,10 @@ export default {
     }
     .up-loader-Imgpanel:nth-child(5){
       margin-left: 0;
+    }
+
+    .plan-detail-left ul li{
+      width: 400px;
     }
 
   }

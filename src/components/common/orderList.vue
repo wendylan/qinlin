@@ -40,7 +40,9 @@
 						border
 						:data="currentOrder"
 						style="width: 100%"
-						:default-sort="{prop: 'date', order: 'descending'}"
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
 					>
 						<el-table-column
 							label="订单名称"
@@ -65,6 +67,11 @@
 							label="品牌名称"
 							min-width="6.0%"
 						>
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
+                  <span title="">{{scope.row.bTitle}}</span>
+                </el-tooltip>
+              </template>
 						</el-table-column>
 						<el-table-column
 							label="合同编号"
@@ -100,6 +107,8 @@
 						<el-table-column
 							label="发布日期"
 							min-width="7.3%"
+              sortable
+              :sort-method="sortData"
 						>
 							<template slot-scope="scope">
 								<span>{{formatTime(scope.row.apcTime)}}</span>
@@ -173,6 +182,8 @@ export default {
 	},
 	data() {
 		return {
+		  //加载中
+      loading:true,
 			rangeDate: '',
 			keyword: '',
 			select: '1',
@@ -217,6 +228,7 @@ export default {
 				console.log(res.data);
 				if(!res.data.SysCode){
 					this.orderList = res.data;
+					this.loading = false
 					for(let item of this.orderList){
 						if(item.rIDs){
 							item.cityArea = item.rIDs.split(',');
@@ -264,6 +276,10 @@ export default {
 		sortPrice(a, b){
 			return a.apTotal>b.apTotal;
 		},
+    //日期排序
+    sortData(a, b) {
+      return a.apcTime > b.apcTime
+    },
 		// 价格加上逗号
 		priceFormat(price){
 			return commaFormat.init(price);
@@ -677,16 +693,26 @@ export default {
   }
 
   /*超出省略*/
-  /deep/ .el-table .cell {
+  /deep/ .el-table .cell ,/deep/ .el-table .cell span{
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 24px;
   }
 
-  /deep/ .el-table__row td:nth-child(7) .cell {
-    width: 90px;
+  /deep/ .el-table__row td:nth-child(7) .cell span{
+    width: 87px;
   }
+  /deep/ .el-table__row td:nth-child(3) .cell span{
+    width: 70px;
+  }
+
+  /deep/ .el-table__row td:nth-child(2)  .cell span{
+    width: 133px;
+  }
+
+
+
 
   /*筛选*/
   /deep/ .el-table__column-filter-trigger {

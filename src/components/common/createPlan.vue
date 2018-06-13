@@ -358,7 +358,9 @@
               <template slot-scope="scope">
                 <div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
                   <div class="car-title">
-                    <h4>已选1000个媒体 <p>投放2000面</p> <span>清空已选</span></h4>
+                    <h4>已选{{shopMedia_ADNum.mediaNum}}个媒体<p>投放{{shopMedia_ADNum.ADNum}}面</p>
+                      <span @click="clearShop" style="cursor: pointer">清空已选</span>
+                    </h4>
                   </div>
                   <el-table
                     border
@@ -394,7 +396,7 @@
                     <el-table-column
                       prop="mediaName"
                       label="媒体名称"
-                      width="130"
+                      width="120"
                     >
                     </el-table-column>
                     <el-table-column
@@ -427,8 +429,6 @@
                       width="80"
                     >
                     </el-table-column>
-
-
                     <el-table-column
                       prop="schedules"
                       label="排期"
@@ -875,8 +875,7 @@
         beforADTotalList: [],    // step2原始的所有点位列表
         ADTotalList:[],         // step2所有点位列表
         shopingList: [],        // step2购物车列表
-        planList: [             //step2可选点位列表
-          /*{
+        planList: [/*{
             rid: 1,
             recName: '珠江1',
             city: '广州1',
@@ -893,8 +892,8 @@
             adLimit: '地产/医药/汽车',
             checkBox: {A: false, B: false},
             box: {A:true, B: false}
-          },*/
-        ],
+          },*/],            //step2可选点位列表
+        AdLaunchList:[],        // 被占点位列表
         totalPlanList: [],   // step2全部城市的选点列表
         sessionData: '',    // 登录用户的数据
         shopListCity: [],    // 购物车的城市列表
@@ -908,7 +907,9 @@
         houseNum: ['',''],      // 表头搜索住户数量
         buildNum: ['',''],      // 表头搜索楼栋数量
         buildPrice: ['',''],    // 表头搜索楼盘价格
-        liveYear: ['','']       // 表头搜索入住年份
+        liveYear: ['',''],       // 表头搜索入住年份
+        loadSign:true,            // table滚轮
+        shopMedia_ADNum:{mediaNum:0,ADNum:0},
       };
     },
     created: function () {
@@ -969,15 +970,10 @@
         bind: function(el, binding) {
           const selectWrap = el.querySelector('.el-table__body-wrapper')
           console.log(binding.def.heightSign)
-          // let hSign = binding.def.heightSign
           selectWrap.addEventListener('scroll', function() {
-            // console.log('hSign',binding.def.heightSign)
-            // let sign = binding.def.heightSign
             const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
-            console.log('滚动的距离',scrollDistance)
             if (scrollDistance <= 100) {
               binding.value()
-              // binding.def.heightSign = binding.def.heightSign + 358
             }
           })
         }
@@ -988,15 +984,15 @@
       loadMore () {
         if (this.loadSign) {
           this.loadSign = false
-          // this.addMediaList()
-          console.log('滚动了')
+          this.addADList()
+          // console.log('滚动了')
           setTimeout(() => {
             this.loadSign = true
           }, 1000)
-          console.log('到底了')
+          // console.log('到底了')
         }
       },
-      openFullScreen2() {
+  /*    openFullScreen2() {
         const loading = this.$loading({
           lock: true,
           text: 'Loading',
@@ -1006,7 +1002,7 @@
         setTimeout(() => {
           loading.close();
         }, 2000);
-      },
+      },*/
       // step1投放城市权限是全国时handleClose1、showInput、handleInputConfirm
       spliceCity(tag) { // step1方案创建,删除选择城市
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
@@ -1017,6 +1013,11 @@
               let city_rid = city_arr[i].children[j].value
               for(let n=0;n<this.planForm.throwCity.length;n++){
                 if(city_rid === this.planForm.throwCity[n]){
+                  for(let t=0;t<this.throwCity.length;t++){
+                    if(city_rid === this.throwCity[t].value){
+                      this.throwCity.splice(t,1)
+                    }
+                  }
                   this.planForm.throwCity.splice(n,1)
                 }
               }
@@ -1080,12 +1081,10 @@
             if (res.data !== null) {
               this.BDData.uid = res.data.uID
               console.log('CheckUserName数据包', res.data)
-              // if( this.BDData.realName !== '' &&  this.BDData.realName !== null){
-              console.log('2')
+              res.data.value  =  res.data.realName; //queryString
               this.BDData.realName = queryString;
               this.planForm.ownerSales = queryString
               this.Get_cName()
-              // }
               let results = [res.data];
               clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
@@ -1446,34 +1445,6 @@
             }
           }
         }
-        /*for (let n = 0; n < throwCityList.length; n++) {
-          let rid = throwCityList[n]
-          console.log('投放城市rid', rid)
-          api.getApi('/ShowRegion', {rid: rid}).then(res => {
-            console.log('城市区域', res.data)
-            let areaList = res.data
-            let areaArr = []
-            for (let i = 0; i < areaList.length; i++) {
-              if (i === 0) {
-                let allArea = {
-                  rID: rid,
-                  rName: '全市'
-                }
-                areaArr.push(allArea)
-              }
-              if (rid.toString().substring(0, 4) === areaList[i].rID.toString().substring(0, 4) && areaList[i].rID.toString().substring(4, 6) !== '00') {
-                areaArr.push(areaList[i])
-              }
-              if (i >= areaList.length - 1) {
-                this.area.push(areaArr)
-              }
-            }
-          })
-          if (n >= throwCityList.length - 1) {
-            console.log('this.area', this.area)
-            // this.area = areaArr
-          }
-        }*/
       },
       // stpe2, tab切换城市
       activeCity(item, index) {
@@ -1486,17 +1457,24 @@
             this.planList = this.totalPlanList[i]
             this.copyPlanList = this.planList
             console.log('this.planList', this.planList)
-            let that = this
-            setTimeout(function () {
-              for (let j = 0; j < that.planList.length; j++) {
-                if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
-                  console.log('时间排期', that.dateInput)
-                  that.planList[j].schedules = that.dateInput[0] + '-' + that.dateInput[1],
-                    that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
+            if(this.planList.length !== 0){
+              let that = this
+              setTimeout(function () {
+                for (let j = 0; j < that.planList.length; j++) {
+                  if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
+                    console.log('时间排期', that.dateInput)
+                    that.planList[j].schedules = that.dateInput[0] + '-' + that.dateInput[1],
+                      that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
+                  }
                 }
-              }
-            }, 0)
-            break
+              }, 0)
+              break
+            }else{
+              this.$message({
+                    message: item.rName + '城市暂无可选的投放点',
+                    type: 'warning'
+              })
+            }
           }
         }
       },
@@ -1513,29 +1491,29 @@
         this.dateInput = [starTime, endTime] // 设置默认时间
         let uid = this.sessionData.uID
 //         let tempADList = [
-// {resName: "尚东3", mTitle: "尚东3东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "7", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄改1", mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "1,2", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改1", mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "4,3", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改1", mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "5,6", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄", mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "7,8", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东", mTitle: "尚东一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "9,10", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "尚东4", mTitle: "尚东4东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "11", asLabs: "A", asStates: "1", tradingArea: "三里屯4", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄1", mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "13,12", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄1", mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "14,15", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄1", mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "17,16", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄", mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "19,18", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东5", mTitle: "尚东5一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "21,20", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉5", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "尚东6", mTitle: "尚东6东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "27", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄改2", mTitle: "2帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "31,22", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改2", mTitle: "2帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "24,23", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改2", mTitle: "2帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "25,26", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄2", mTitle: "帝景门2", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "27,28", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉2", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东7", mTitle: "尚东7一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "29,30", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉7", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "帝景山庄改3", mTitle: "3帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "41,32", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改3", mTitle: "3帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "34,33", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改3", mTitle: "3帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "35,36", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄3", mTitle: "帝景门3", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "37,38", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉3", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东8", mTitle: "尚东8一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "39,40", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉8", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"}]
+// {resName: "尚东3", mID:'110101000001',mTitle: "尚东3东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "7", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
+// {resName: "帝景山庄改1",mID:'110101000023', mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "1,2", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
+// {resName: "帝景山庄改1",mID:'110101000002', mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "4,3", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
+// {resName: "帝景山庄改1",mID:'110101000003', mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "5,6", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
+// {resName: "帝景山庄",mID:'110101000004', mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "7,8", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
+// {resName: "尚东",mID:'110101000005', mTitle: "尚东一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "9,10", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
+// {resName: "尚东4",mID:'110101000006', mTitle: "尚东4东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "11", asLabs: "A", asStates: "1", tradingArea: "三里屯4", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
+// {resName: "帝景山庄1", mID:'110101000007',mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "13,12", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
+// {resName: "帝景山庄1",mID:'110101000002', mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "14,15", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
+// {resName: "帝景山庄1",mID:'110101000009', mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "17,16", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
+// {resName: "帝景山庄",mID:'110101000010', mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "19,18", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
+// {resName: "尚东5",mID:'110101000011', mTitle: "尚东5一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "21,20", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉5", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
+// {resName: "尚东6",mID:'110101000012', mTitle: "尚东6东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "27", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
+// {resName: "帝景山庄改2",mID:'110101000013', mTitle: "2帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "31,22", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
+// {resName: "帝景山庄改2",mID:'110101000014', mTitle: "2帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "24,23", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
+// {resName: "帝景山庄改2",mID:'110101000015', mTitle: "2帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "25,26", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
+// {resName: "帝景山庄2",mID:'110101000016', mTitle: "帝景门2", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "27,28", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉2", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
+// {resName: "尚东7", mID:'110101000017',mTitle: "尚东7一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "29,30", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉7", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
+// {resName: "帝景山庄改3",mID:'110101000018', mTitle: "3帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "41,32", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
+// {resName: "帝景山庄改3",mID:'110101000019', mTitle: "3帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "34,33", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
+// {resName: "帝景山庄改3",mID:'110101000020', mTitle: "3帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "35,36", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
+// {resName: "帝景山庄3",mID:'110101000021', mTitle: "帝景门3", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "37,38", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉3", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
+// {resName: "尚东8",mID:'110101000022', mTitle: "尚东8一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "39,40", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉8", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"}]
         let throwCity = this.city
         let totalList = []        // 全部城市的选点列表
         console.log('投放城市333333333', throwCity)
@@ -1545,7 +1523,7 @@
           api.getApi('/GetAdS', {uid: uid, rid: rid}).then(res => {
             console.log('选点列表：', res)
             let ADList = res.data
-            if(ADList.length !==0){
+            // if(ADList.length !==0){
             // let ADList = tempADList
             let listObj = {rid:rid,list:[]}
             listObj.list = ADList
@@ -1554,8 +1532,8 @@
             // 被占广告点位列表【选点】GetAdLaunch
             let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
             api.getApi('/GetAdLaunch', LaunchParams).then(res => {
-              console.log('被占选点列表', res)
-              // let adLaunch = res.data
+              console.log('被占选点列表', res) //AdLaunchList
+              let adLaunch = res.data
               // let adLaunch = [
               //   {
               //     lID: 1,
@@ -1597,11 +1575,15 @@
               //     lSetTime: "2018-05-17 18:19:15.0",
               //     lState: 2
               //   }]
+              let ADLaunchObj = {rid:rid,list:[]}
+              ADLaunchObj.list = adLaunch
+              this.AdLaunchList.push(ADLaunchObj)
               let planArr = []
               for (let i = 0; i < ADList.length; i++) {
                 console.log('遍历选点列表')
                 let adObj = {
                   rid: t.toString() + i.toString(),
+                  mID: ADList[i].mID,
                   asIDs: ADList[i].asIDs,
                   asLabs: ADList[i].asLabs,
                   recName: ADList[i].resName,
@@ -1626,9 +1608,6 @@
                 if (ADList[i].asLabs.indexOf('B') === -1) {
                   adObj.box.B = true
                 }
-                // if (i % 2) {
-                //   adObj.schedules = '2018.06.24' + '-' + '2018.07.08'
-                // }
                 let asIDArr = ADList[i].asIDs.split(',')
                 let asLabArr = ADList[i].asLabs.split(',')
                 for (let j = 0; j < adLaunch.length; j++) {   // 根据被占过滤禁用勾选
@@ -1645,7 +1624,7 @@
                 if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
                   planArr.push(adObj)
                 }
-                if(i >= 19 && ADList.length >=19){
+                if(i >= 11 && ADList.length >=11){
                   console.log('方案选点列表', planArr)
                   totalList.push(planArr)
                   break
@@ -1669,18 +1648,229 @@
                 this.copyPlanList = this.planList
               }
             })
-            }else{
-              this.$message({
-                message: '该城市暂无可选的投放点',
-                type: 'warning'
-              });
-            }
+            // }else{
+            //   this.$message({
+            //     message: throwCity[t].rName + '城市暂无可选的投放点',
+            //     type: 'warning'
+            //   });
+            // }
           })
         }
       },
       // 监听滚动，每次曾加20条数据
       addADList(){
-
+        console.log('监听到滚动，并调用了addADList')
+        let begin = this.dateInput[0]
+        let end = this.dateInput[1]
+        console.log('开始日期', begin, '结束日期', end)
+        let uid = this.sessionData.uID
+        let throwCity = this.city
+        let totalList = []        // 全部城市的选点列表
+        let beforAD = this.beforADTotalList   // 选点列表
+        let AdLaunch = this.AdLaunchList       // 被占点位
+        let index = this.planList.length
+        console.log('下标为',index)
+        console.log('投放城市333333333', throwCity)
+        console.log('this.beforADTotalList',this.beforADTotalList)
+        for (let t = 0; t < throwCity.length; t++) {
+          let rid = throwCity[t].rid
+          for (let n = 0; n < beforAD.length; n++) {
+              if(rid === beforAD[n].rid){
+                let ADList = beforAD[n].list
+                // 被占广告点位列表【选点】GetAdLaunch
+                for(let m=0;m<AdLaunch.length;m++){
+                  if (rid === AdLaunch[m].rid) {
+                    console.log('被占广告点位列表',rid,AdLaunch[m])
+                    let adLaunch = AdLaunch[m].list
+                    let planArr = []
+                    for (let i = index; i < ADList.length; i++) {
+                      console.log('遍历选点列表')
+                      let adObj = {
+                        rid: t.toString() + i.toString(),
+                        mID: ADList[i].mID,
+                        asIDs: ADList[i].asIDs,
+                        asLabs: ADList[i].asLabs,
+                        recName: ADList[i].resName,
+                        city: throwCity[t].rName, //'广州',
+                        origin: ADList[i].rName,
+                        buildType: ADList[i].cType,
+                        houseNum: ADList[i].hNum,
+                        buildPrice: (ADList[i].hPrice / 100),
+                        mediaName: ADList[i].mTitle,
+                        buildNum: ADList[i].fNum,
+                        schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                        businessOrigin: ADList[i].tradingArea,
+                        assetID: ADList[i].assetTag,
+                        liveYear: ADList[i].chDay,
+                        adLimit: ADList[i].notPush,
+                        checkBox: {A: false, B: false},
+                        box: {A: false, B: false},
+                      }
+                      if (ADList[i].asLabs.indexOf('A') === -1) {
+                        adObj.box.A = true
+                      }
+                      if (ADList[i].asLabs.indexOf('B') === -1) {
+                        adObj.box.B = true
+                      }
+                      let asIDArr = ADList[i].asIDs.split(',')
+                      let asLabArr = ADList[i].asLabs.split(',')
+                      for (let j = 0; j < adLaunch.length; j++) {   // 根据被占过滤禁用勾选
+                        for (let t = 0; t < 2; t++) {
+                          if (adLaunch[j].asID == asIDArr[t]) {
+                            if (asLabArr[t] === 'B') {
+                              adObj.box.B = true
+                            } else if (asLabArr[t] === 'A') {
+                              adObj.box.A = true
+                            }
+                          }
+                        }
+                      }
+                      if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
+                        planArr.push(adObj)
+                      }
+                      if (i >= index + 9 && ADList.length >= index + 9) {
+                        console.log('方案选点列表', planArr)
+                        totalList.push(planArr)
+                        break
+                      } else {
+                        if (i >= ADList.length - 1) {
+                          console.log('方案选点列表', planArr)
+                          totalList.push(planArr)
+                        }
+                      }
+                    }
+                    if (t >= throwCity.length - 1) {
+                      console.log('全部城市的选点列表', totalList)
+                      this.addListPush(totalList)
+                    }
+                  }
+                }
+              /*  let LaunchParams = {uid: uid, rid: rid, ls: begin, le: end}
+                api.getApi('/GetAdLaunch', LaunchParams).then(res => {
+                  console.log('被占选点列表', res) //AdLaunchList
+                  // let adLaunch = res.data
+                  let adLaunch = [
+                    {
+                      lID: 1,
+                      asID: 1,
+                      pdID: 1,
+                      lStar: "2018-06-01",
+                      lEnd: "2018-06-09",
+                      uID: 1,
+                      lSetTime: "2018-05-17 18:19:15.0",
+                      lState: 1
+                    },
+                    {
+                      lID: 2,
+                      asID: 2,
+                      pdID: 1,
+                      lStar: "2018-06-01",
+                      lEnd: "2018-06-09",
+                      uID: 1,
+                      lSetTime: "2018-05-17 18:19:15.0",
+                      lState: 1
+                    },
+                    {
+                      lID: 3,
+                      asID: 3,
+                      pdID: 1,
+                      lStar: "2018-06-01",
+                      lEnd: "2018-06-09",
+                      uID: 1,
+                      lSetTime: "2018-05-17 18:19:15.0",
+                      lState: 1
+                    },
+                    {
+                      lID: 4,
+                      asID: 6,
+                      pdID: 1,
+                      lStar: "2018-06-01",
+                      lEnd: "2018-06-09",
+                      uID: 1,
+                      lSetTime: "2018-05-17 18:19:15.0",
+                      lState: 2
+                    }]
+                  // let ADLaunchObj = {rid:rid,list:[]}
+                  // ADLaunchObj.list = adLaunch
+                  // this.AdLaunchList.push(ADLaunchObj)
+                  let planArr = []
+                  for (let i = index; i < ADList.length; i++) {
+                    console.log('遍历选点列表')
+                    let adObj = {
+                      rid: t.toString() + i.toString(),
+                      asIDs: ADList[i].asIDs,
+                      asLabs: ADList[i].asLabs,
+                      recName: ADList[i].resName,
+                      city: throwCity[t].rName, //'广州',
+                      origin: ADList[i].rName,
+                      buildType: ADList[i].cType,
+                      houseNum: ADList[i].hNum,
+                      buildPrice: (ADList[i].hPrice / 100),
+                      mediaName: ADList[i].mTitle,
+                      buildNum: ADList[i].fNum,
+                      schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                      businessOrigin: ADList[i].tradingArea,
+                      assetID: ADList[i].assetTag,
+                      liveYear: ADList[i].chDay,
+                      adLimit: ADList[i].notPush,
+                      checkBox: {A: false, B: false},
+                      box: {A: false, B: false},
+                    }
+                    if (ADList[i].asLabs.indexOf('A') === -1) {
+                      adObj.box.A = true
+                    }
+                    if (ADList[i].asLabs.indexOf('B') === -1) {
+                      adObj.box.B = true
+                    }
+                    let asIDArr = ADList[i].asIDs.split(',')
+                    let asLabArr = ADList[i].asLabs.split(',')
+                    for (let j = 0; j < adLaunch.length; j++) {   // 根据被占过滤禁用勾选
+                      for (let t = 0; t < 2; t++) {
+                        if (adLaunch[j].asID == asIDArr[t]) {
+                          if (asLabArr[t] === 'B') {
+                            adObj.box.B = true
+                          } else if (asLabArr[t] === 'A') {
+                            adObj.box.A = true
+                          }
+                        }
+                      }
+                    }
+                    if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
+                      planArr.push(adObj)
+                    }
+                    if(i >= index + 9 && ADList.length >= index+9){
+                      console.log('方案选点列表', planArr)
+                      totalList.push(planArr)
+                      break
+                    }else{
+                      if (i >= ADList.length - 1) {
+                        console.log('方案选点列表', planArr)
+                        totalList.push(planArr)
+                      }
+                    }
+                  }
+                  if (t >= throwCity.length - 1) {
+                    console.log('全部城市的选点列表', totalList)
+                    this.addListPush(totalList)
+                  }
+                })*/
+              }
+          }
+        }
+      },
+      // addADList完成push动作
+      addListPush(totalList){
+        this.totalPlanList = totalList
+        // this.planList = this.totalPlanList[0]
+        for(let i=0;i<this.totalPlanList.length;i++){
+          if(this.activeIndex == i){
+            let tempArr = this.totalPlanList[i]
+            for(let j=0;j<tempArr.length;j++){
+              this.planList.push(tempArr[j])
+            }
+          }
+        }
+        this.copyPlanList = this.planList
       },
       // 根据时间段获取被占点位，并重组选点列表
       resetADList(){
@@ -1731,6 +1921,7 @@
                   console.log('遍历选点列表')
                   let adObj = {
                     rid: t.toString() + i.toString(),
+                    mID: ADList[i].mID,
                     asIDs: tempADList[i].asIDs,
                     asLabs: tempADList[i].asLabs,
                     recName: tempADList[i].resName,
@@ -1771,11 +1962,22 @@
                   if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
                     planArr.push(adObj)
                   }
-                  if (i >= ADList.length - 1) {
+                  if(i >= 19 && ADList.length >=19){
+                    console.log('搜索后重组方案选点列表', planArr)
+                    totalList.push(planArr)
+                    break
+                  }else{
+                    if (i >= ADList.length - 1) {
+                      console.log('搜索后重组方案选点列表', planArr)
+                      // this.planList = planArr
+                      totalList.push(planArr)
+                    }
+                  }
+                 /* if (i >= ADList.length - 1) {
                     console.log('方案选点列表', planArr)
                     // this.planList = planArr
                     totalList.push(planArr)
-                  }
+                  }*/
                 }
                 if (t >= throwCity.length - 1) {
                   console.log('全部城市的选点列表', totalList)
@@ -2016,6 +2218,8 @@
           console.log('this.dynamicTags', this.dynamicTags)
           // this.openFullScreen2()
           this.submitForm('planForm')
+          this.shopingList = []
+          this.badgeNumber = 0
         } else if (this.active === 1) {
           this.active++
           this.creatTab()       // 报价单tab
@@ -2469,14 +2673,11 @@
         if(this.other == 0 && this.zyzh == 0){
           this.totalPrice = this.cash
         }
-       /* parseDouble(this.totalPrice)
-        parseDouble(this.cash)
-        parseDouble(this.other)
-        parseDouble(this.zyzh)*/
       },
       // dialog购物筐的显示全选中后添加都购物车
       dialogVisible() {
         this.dialogTableVisible = true
+        this.computeMedia_AD()
       },
       // 添加到购物车
       AddShopingInfo(info, letter) {
@@ -2484,6 +2685,7 @@
         console.log('选中的row信息', info)
         let selectInfo = {
           rid: info.rid,
+          mID: info.mID,
           asIDs: info.asIDs,
           asLabs: info.asLabs,
           recName: info.recName,
@@ -2643,6 +2845,7 @@
             for (let j = 0; j < 2; j++) {
               let selectInfo = {
                 rid: info.rid,
+                mID: info.mID,
                 asIDs: info.asIDs,
                 asLabs: info.asLabs,
                 recName: info.recName,
@@ -3034,11 +3237,61 @@
             }else{
               if(val === planList[i].buildType){
                 arr.push(planList[i])
+              }else{
+                this.$message({
+                  message:'查询数据为空',
+                  type:'warning',
+                  duration:2000
+                })
               }
             }
         }
         this.planList = arr
-      }
+      },
+      // 清空购物车
+      clearShop(){
+        let shopingArr = this.shopingList
+        // let planListCity = this.planList[0].city
+        console.log('this.city',this.city)
+        for(let j=0;j<this.city.length;j++){
+          for (let i = 0; i < shopingArr.length;) {
+            if (this.city[j].rName === shopingArr[i].city) {
+              console.log('删除城市为：', this.city[j].rName)
+              // shopingArr.splice(i, 1)
+              this.deleteRow(shopingArr[i])
+            } else {
+              i++
+            }
+            if (j >= shopingArr.length - 1) {
+              this.getBadeNumberByShopList()
+            }
+          }
+        }
+
+      },
+      // 统计购物车媒体数、面数
+      computeMedia_AD(){
+        let shopList = this.shopingList
+        console.log('购物车统计面数媒体数shopList',shopList)
+        let mediaArr = []
+        let mediaAD = []
+        for(let i=0;i<shopList.length;i++){
+          if(mediaArr.indexOf(shopList[i].mID) === -1){
+            mediaArr.push(shopList[i].mID)
+          }else{
+            console.log('重复的asIDs是',shopList[i].mID)
+          }
+          if(mediaAD.indexOf(shopList[i].asIDs) === -1){
+            mediaAD.push(shopList[i].asIDs)
+          }else{
+            console.log('重复的asIDs是',shopList[i].asIDs)
+          }
+        }
+        console.log('mediaArr',mediaArr)
+        console.log('mediaAD',mediaAD)
+        this.shopMedia_ADNum.mediaNum = mediaArr.length
+        this.shopMedia_ADNum.ADNum = mediaAD.length
+      },
     }
   }
 </script>
@@ -3047,6 +3300,16 @@
 /*  .filter-input .input-wrap .showBtn{
     opacity: 1;
   }*/
+
+
+/deep/ .el-select:hover .el-input__inner{
+  border-color: transparent;
+}
+/deep/ .el-select .el-input__inner:focus{
+  border-color: transparent;
+}
+
+
   .inputNewTag /deep/ .el-input__inner {
     width: 140px !important;
   }
@@ -3317,7 +3580,8 @@
     position: relative;
     left: -8px;
     top: 0;
-    height: 34px;
+    height: 33px;
+    line-height: 34px;
     /*border-left: none !important;*/
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
@@ -3326,6 +3590,7 @@
   /deep/ .plan-select .el-input, /deep/ .plan-select .el-input__inner {
     width: 215px;
     margin-left: -6px;
+    line-height: 34px;
   }
 
   /deep/ .date-select.el-input__inner {
@@ -3342,7 +3607,7 @@
 
 
   /*日期*/
-
+/*日期控件*/
 .block {
   display: inline-block;
   margin-left: 2px;
@@ -3352,24 +3617,57 @@
 
 /deep/ .el-date-editor .el-range__icon {
   position: relative;
-  /*top: -3px;*/
+  top: -3px;
   margin-right: 2px;
-  line-height: 14px;
 }
 /deep/ .el-range-separator{
   position: relative;
-  top: 5px;
+  top: -2px;
 }
 /deep/ .el-input__inner {
   width: 260px;
   height: 34px;
-  /*line-height: 34px;*/
+  line-height: 34px;
 }
-/deep/ .el-date-editor .el-range__close-icon{
-  line-height: 28px;
+/deep/ .el-date-editor i, /deep/ .el-date-editor input, /deep/ .el-date-editor span {
+  float: left;
+  position: relative;
 }
 /deep/ .el-range-editor .el-range-input{
   line-height: 20px;
+}
+
+/*.block {*/
+  /*display: inline-block;*/
+  /*margin-left: 2px;*/
+  /*position: relative;*/
+  /*!*top: 3px;*!*/
+/*}*/
+
+/*/deep/ .el-date-editor .el-range__icon {*/
+  /*position: relative;*/
+  /*!*top: -3px;*!*/
+  /*margin-right: 2px;*/
+  /*line-height: 14px;*/
+/*}*/
+/*/deep/ .el-range-separator{*/
+  /*position: relative;*/
+  /*top: 5px;*/
+/*}*/
+/*/deep/ .el-input__inner {*/
+  /*width: 260px;*/
+  /*height: 34px;*/
+  /*!*line-height: 34px;*!*/
+/*}*/
+/*/deep/ .el-date-editor .el-range__close-icon{*/
+  /*line-height: 28px;*/
+/*}*/
+/*/deep/ .el-range-editor .el-range-input{*/
+  /*line-height: 20px;*/
+/*}*/
+
+/deep/ .el-dialog__header{
+  font-weight: 700;
 }
 
   .searchBtn, .map {
@@ -3756,8 +4054,8 @@
   }
 
   .car-title h4 {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 14px;
+    /*font-weight: bold;*/
     display: inline-block;
   }
 
