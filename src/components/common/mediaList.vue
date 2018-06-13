@@ -105,12 +105,7 @@
 							prop="mVehicle"
 							label="媒体类型"
 							min-width="7.4%"
-							:filters="[
-							{ text: '广告门', value: '广告门' },
-							{ text: '社区门', value: '社区门' }
-							]"
-							:filter-method="filterMediaType"
-							:filter-multiple="true"
+
 						>
 						</el-table-column>
 						<el-table-column
@@ -177,7 +172,7 @@
 
 <script>
 import api from '../../api/api'
-// import areaToText from '../../commonFun/areaToText.js';
+// 区域换成中文
 import areaToText from '../../commonFun/areaToText_new.js';
 import { Form, FormItem, Table,	TableColumn, Dropdown, DropdownMenu, DropdownItem, Input, Row, Button, Tooltip, MessageBox, Message, Select, Option } from 'element-ui';
 
@@ -341,11 +336,32 @@ export default {
 		filterRegion(value, row) {
 			return row.rName === value;
 		},
-		filterMediaType(value, row) {
-			return row.mVehicle === value;
-		},
+		// filterMediaType(value, row) {
+      // if(!(row.mVehicle === value)){
+      //   this.$message({
+      //     message:'筛选数据为空',
+      //     type:'warning',
+      //     duration:2000
+      //   })
+      // }
+      // return row.mVehicle === value;
+		// },
 		filterPTStatus(value, row) {
-			return row.mState === value;
+      let sum = 0;
+      for (let data of this.planList) {
+        if (data.mState != value) {
+          sum++;
+        }
+      }
+      //sum和所有数据的长度相同时说明都不匹配
+      if (sum == this.planList.length) {
+        Message.warning({
+          message:'筛选数据为空',
+          duration:1500
+        });
+      }
+      return row.mState === value;
+
 		},
 		//确认框
 		confirmBox(e, index, rows) {
@@ -367,7 +383,7 @@ export default {
 				if (Status === '正常') {
 					Message({
 						type: 'warning',
-						message: '请完善资产编号'
+						message: '请在工程工具小程序上完成装门任务'
 					});
 				} else {
 					Message({
@@ -527,7 +543,7 @@ export default {
 							} else if (RMList[i].mState == '3') {
 								RMList[i].mState = '待维修'
 							}
-								let data = areaToText.toText(RMList[i].rID).city;
+								let data = areaToText.toTextCity(RMList[i].rID);
 								this.$set(RMList[i], 'city', data);
                 dataArr.push(RMList[i])
 								if(i >= 19 && RMList.length > 19){
@@ -558,10 +574,10 @@ export default {
 						this.currentPlan = this.planList;
             this.tableHeadCity_area()
 					} else {
-						Message({
-							type: 'warning',
-							message: '数据为空'
-						});
+            Message.warning({
+              message:'数据为空',
+              duration:1500
+            });
 					}
 				} else {
 					Message({
@@ -588,7 +604,7 @@ export default {
         } else if (RMList[i].mState == '3') {
           RMList[i].mState = '待维修'
         }
-        let data = areaToText.toText(RMList[i].rID).city;
+        let data = areaToText.toTextCity(RMList[i].rID);
         this.$set(RMList[i], 'city', data);
         dataArr.push(RMList[i])
         console.log('RMList[i]',i,RMList[i])
@@ -665,6 +681,12 @@ export default {
 					}
 				}
 				this.currentPlan = arr;
+				if(!arr.length){
+          Message.warning({
+            message:'查询数据为空',
+            duration:1500
+          });
+				}
 				return;
 			}
 			this.currentPlan = JSON.parse(JSON.stringify(this.planList));

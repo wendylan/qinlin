@@ -13,7 +13,10 @@
 					border
 					:data="ADlist"
 					style="width: 100%"
-					:default-sort = "{prop: 'date', order: 'descending'}"
+          v-loading="loading"
+          element-loading-text="拼命加载中"
+          element-loading-spinner="el-icon-loading"
+
 				>
 					<el-table-column
 					label="限制类型"
@@ -73,6 +76,8 @@ export default {
 	},
 	data() {
 		return {
+		  //加载中
+      loading:true,
 			role: '',
 			//表格
 			ADlist: [
@@ -109,6 +114,7 @@ export default {
 				console.log(res.data);
 				if(!res.data.SysCode){
 					this.ADlist = res.data;
+					this.loading = false;
 					for(let data of this.ADlist){
 						data.showInput = false;
 						data.changeBtn = false;
@@ -293,10 +299,11 @@ export default {
   /deep/ .el-input__inner{
     width: 100%;
     height: 30px;
-
   }
 
-
+  /deep/ .el-range-editor .el-range-input{
+    line-height: 20px;
+  }
 
   /deep/ .el-date-editor .el-range__icon{
     position: absolute;
@@ -340,7 +347,7 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E6E7E9;
     margin: 0 auto;
-    margin-bottom: 90px;
+    /*margin-bottom: 90px;*/
   }
 
   .mediaList_wrap .mediaList_head{
@@ -391,7 +398,7 @@ export default {
 
   }
   /deep/ .el-table td{
-    padding: 10px 0;
+    padding: 5px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
@@ -493,7 +500,7 @@ export default {
     }
     .mediaList_wrap{
       width: 1321.3px!important;
-      margin-bottom: 177px!important;
+      /*margin-bottom: 177px!important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap{
@@ -508,7 +515,7 @@ export default {
 
     .mediaList_wrap{
       width: 1800px!important;
-      margin-bottom: 211px!important;
+      /*margin-bottom: 211px!important;*/
     }
 
     .mediaList_wrap .mediaList_container .table_wrap{

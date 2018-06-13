@@ -1,7 +1,9 @@
 <template>
   <div class="ad_mediaDetail_wrap clearfix">
     <div class="ad_mediaDetail_nav ">
-      <p class="clearfix"><a href="#" style="color: #999">账号管理</a></p>
+      <p class="clearfix">
+        <a href="#" style="color: #999">账号管理</a>
+      </p>
     </div>
     <div class="mediaList_wrap">
       <div class="mediaList_head">
@@ -10,113 +12,67 @@
       <div class="mediaList_container">
         <el-row>
           <div class="mediaList_handel">
-				<span>
-					<div style="display:inline-block">
-						<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-							<el-select v-model="select" slot="prepend" placeholder="请选择">
-								<el-option label="姓名" value="1"></el-option>
-								<el-option label="账号" value="2"></el-option>
-							</el-select>
-						</el-input>
-					</div>
-				</span>
+						<span>
+							<div style="display:inline-block">
+								<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+									<el-select v-model="select" slot="prepend" placeholder="请选择">
+										<el-option label="姓名" value="1"></el-option>
+										<el-option label="账号" value="2"></el-option>
+									</el-select>
+								</el-input>
+							</div>
+						</span>
             <span>
-					<div class="block">
-						<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-						<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
-					</div>
-				</span>
+							<div class="block">
+								<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+								<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
+							</div>
+						</span>
           </div>
         </el-row>
         <div class="table_wrap">
-          <el-table
-            border
-            :data="currAccount"
-            style="width: 100%"
-            v-loading="loading"
-            element-loading-text="拼命加载中"
-            element-loading-spinner="el-icon-loading"
-            :default-sort="{prop: 'joinTime', order: 'descending'}"
-          >
-            <el-table-column
-              label="账号"
-              min-width="11.8%"
-            >
+          <el-table border :data="currAccount" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading" :default-sort="{prop: 'joinTime', order: 'descending'}">
+            <el-table-column label="账号" min-width="11.8%">
               <template slot-scope="scope">
                 <a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="realName"
-              label="姓名"
-              min-width="7.8%"
-            >
+            <el-table-column prop="realName" label="姓名" min-width="7.8%">
             </el-table-column>
-            <el-table-column
-              prop="uWhoArr"
-              label="权限城市"
-              class="tar"
-              min-width="14.2%"
-              :filters="filterUWhoData"
-              :filter-method="filterUWho"
-              :filter-multiple="true"
-            >
+            <el-table-column prop="uWhoArr" label="权限城市" class="tar" min-width="14.2%" :filters="filterUWhoData"
+                             :filter-method="filterUWho" :filter-multiple="true">
             </el-table-column>
-            <el-table-column
-              prop="uType"
-              label="账号角色"
-              min-width="8.1%"
-              :filters="[
-					{text: '系统管理员', value: 'SA'},
-					{text: '超级管理员', value: 'SM'},
-					{text: '运营', value: 'OP'},
-					{text: '媒介', value: 'MD'},
-					{text: '销售', value: 'BD'},
-					{text: '广告主', value: 'AD'},
-					{text: '工程人员', value: 'EP'}
-				]"
-              :filter-method="filterUType"
-              :filter-multiple="false"
-            >
+            <el-table-column prop="uType" label="账号角色" min-width="8.1%" :filters="[
+							{text: '系统管理员', value: 'SA'},
+							{text: '超级管理员', value: 'SM'},
+							{text: '运营', value: 'OP'},
+							{text: '媒介', value: 'MD'},
+							{text: '销售', value: 'BD'},
+							{text: '广告主', value: 'AD'},
+							{text: '工程人员', value: 'EP'}
+						]" :filter-method="filterUType" :filter-multiple="false">
               <template slot-scope="scope">
                 <span>{{roleToText(scope.row.uType)}}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="puName"
-              label="上级"
-              min-width="7.8%"
-            >
+            <el-table-column prop="puName" label="上级" min-width="7.8%">
             </el-table-column>
-            <el-table-column
-              label="创建日期"
-              min-width="9.8%"
-              sortable
-            >
+            <el-table-column label="创建日期" min-width="9.8%" sortable :sort-method="sortData">
               <template slot-scope="scope">
                 <span>{{formatTime(scope.row.joinTime)}}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="uState"
-              label="状态"
-              min-width="8.9%"
-              :filters="[
-					{ text: '正常', value: 1 },
-					{ text: '禁用', value: 0 },
-					]"
-              :filter-method="filterState"
-              :filter-multiple="false"
-            >
+            <el-table-column prop="uState" label="状态" min-width="8.9%" :filters="[
+							{ text: '正常', value: 1 },
+							{ text: '禁用', value: 0 },
+							]" :filter-method="filterState" :filter-multiple="false">
               <template slot-scope="scope">
                 <span>{{stateToText(scope.row.uState)}}</span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              label="操作"
-              min-width="7.1%"
-            >
+            <el-table-column label="操作" min-width="7.1%">
               <template slot-scope="scope">
                 <!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
                 <span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;"
@@ -133,15 +89,25 @@
 </template>
 
 <script>
-  import {Row, Input, Button, Table, TableColumn, MessageBox, Message, Select, Option, Loading} from 'element-ui';
-  import {api} from '../../api/api';
+  import {
+    Row,
+    Input,
+    Button,
+    Table,
+    TableColumn,
+    MessageBox,
+    Message,
+    Select,
+    Option,
+    Loading
+  } from "element-ui";
+  import {api} from "../../api/api";
   // 时间控件格式化
-  import dateFormat from '../../commonFun/timeFormat.js';
+  import dateFormat from "../../commonFun/timeFormat.js";
   // 角色转换为中文
-  import uTypeToText from '../../commonFun/uTypeToText.js'
+  import uTypeToText from "../../commonFun/uTypeToText.js";
   // 城市转换为中文
-  // import areaToText from '../../commonFun/areaToText.js';
-  import areaToText from '../../commonFun/areaToText_new.js';
+  import areaToText from "../../commonFun/areaToText_new.js";
 
   export default {
     name: "customList",
@@ -158,163 +124,167 @@
       return {
         //加载中
         loading: true,
-        keyword: '',
-        select: '1',
+        keyword: "",
+        select: "1",
         showNewBtn: true,
         filterUWhoData: [],
         //表格
-        accountList: [{
-          division: "产品研发部",
-          email: "kacent@qq.com",
-          joinTime: "2018-04-09 15:46:00.0",
-          phone: "13924447488",
-          position: "开发经理",
-          puID: 1,
-          puName: "梁晓君",
-          rID: 440100,
-          rName: "广州市",
-          realName: "林郑伟",
-          sName: "Kacent",
-          uID: 2,
-          uState: 1,
-          uType: "SA",
-          uWho: "440100"
-        }, {
-          division: "产品研发部",
-          email: "kacent@qq.com",
-          joinTime: "2018-04-09 15:46:00.0",
-          phone: "13924447488",
-          position: "开发经理",
-          puID: 1,
-          puName: "梁晓君",
-          rID: 440100,
-          rName: "广州市",
-          realName: "林郑伟",
-          sName: "Kacent2",
-          uID: 3,
-          uState: 1,
-          uType: "SA",
-          uWho: "440000,440200"
-        }],
-        currAccount: [{
-          division: "产品研发部",
-          email: "kacent@qq.com",
-          joinTime: "2018-04-09 15:46:00.0",
-          phone: "13924447488",
-          position: "开发经理",
-          puID: 1,
-          puName: "梁晓君",
-          rID: 440100,
-          rName: "广州市",
-          realName: "林郑伟",
-          sName: "Kacent",
-          uID: 2,
-          uState: 1,
-          uType: "SA",
-          uWho: "440100"
-        }, {
-          division: "产品研发部",
-          email: "kacent@qq.com",
-          joinTime: "2018-04-09 15:46:00.0",
-          phone: "13924447488",
-          position: "开发经理",
-          puID: 1,
-          puName: "梁晓君",
-          rID: 440100,
-          rName: "广州市",
-          realName: "林郑伟",
-          sName: "Kacent2",
-          uID: 3,
-          uState: 1,
-          uType: "SA",
-          uWho: "440000,440200"
-        }],
-      }
+        accountList: [
+          {
+            division: "产品研发部",
+            email: "kacent@qq.com",
+            joinTime: "2018-04-09 15:46:00.0",
+            phone: "13924447488",
+            position: "开发经理",
+            puID: 1,
+            puName: "梁晓君",
+            rID: 440100,
+            rName: "广州市",
+            realName: "林郑伟",
+            sName: "Kacent",
+            uID: 2,
+            uState: 1,
+            uType: "SA",
+            uWho: "440100"
+          },
+          {
+            division: "产品研发部",
+            email: "kacent@qq.com",
+            joinTime: "2018-04-09 15:46:00.0",
+            phone: "13924447488",
+            position: "开发经理",
+            puID: 1,
+            puName: "梁晓君",
+            rID: 440100,
+            rName: "广州市",
+            realName: "林郑伟",
+            sName: "Kacent2",
+            uID: 3,
+            uState: 1,
+            uType: "SA",
+            uWho: "440000,440200"
+          }
+        ],
+        currAccount: [
+          {
+            division: "产品研发部",
+            email: "kacent@qq.com",
+            joinTime: "2018-04-09 15:46:00.0",
+            phone: "13924447488",
+            position: "开发经理",
+            puID: 1,
+            puName: "梁晓君",
+            rID: 440100,
+            rName: "广州市",
+            realName: "林郑伟",
+            sName: "Kacent",
+            uID: 2,
+            uState: 1,
+            uType: "SA",
+            uWho: "440100"
+          },
+          {
+            division: "产品研发部",
+            email: "kacent@qq.com",
+            joinTime: "2018-04-09 15:46:00.0",
+            phone: "13924447488",
+            position: "开发经理",
+            puID: 1,
+            puName: "梁晓君",
+            rID: 440100,
+            rName: "广州市",
+            realName: "林郑伟",
+            sName: "Kacent2",
+            uID: 3,
+            uState: 1,
+            uType: "SA",
+            uWho: "440000,440200"
+          }
+        ]
+      };
     },
     created() {
       this.getAccountList();
       this.getRole();
     },
     methods: {
+      //日期排序
+      sortData(a, b) {
+        return a.apcTime > b.apcTime;
+      },
       // 初始数据
       getAccountList() {
-
-        let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-        api.postApi('/GetUserList', {uid: uid}).then(res => {
-          console.log(res.data);
-          if (!res.data.SysCode) {
-            this.accountList = res.data;
-            this.loading = false;
-            let cityList = [{
-              text: '全国',
-              value: '全国'
-            }];
-            let userUid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-            let account = this.accountList;
-            for (let index = 0; index < account.length; index++) {
-              if (account[index].uID == userUid) {
-                account.splice(index, 1);
-              }
-              let result = '';
-              let uWhoArr = account[index].uWho.split(',');
-              if (account[index].uWho == 0) {
-                this.$set(account[index], 'uWhoArr', '全国');
-              } else {
-                for (let i = 0; i < uWhoArr.length; i++) {
-                  // areaToText.toTextCity(res=>{
-                  // 	result = result +'/'+res;
-                  // 	let cityObj = {
-                  // 		text: res,
-                  // 		value: res,
-                  // 	}
-                  // 	// 去重城市
-                  // 	if(JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1){
-                  // 		cityList.push(cityObj);
-                  // 	}
-                  // 	if(i >= uWhoArr.length-1){
-                  // 		console.log('result', result);
-                  // 		// data.uWhoArr = result;
-                  // 		this.$set(account[index], 'uWhoArr', result);
-                  // 		this.filterUWhoData = cityList;
-                  // 		console.log('cityList', cityList);
-                  // 	}
-                  // }, Number(uWhoArr[i]));
-
-                  let res = areaToText.toText(Number(uWhoArr[i])).city
-                  if (uWhoArr.length > 1) {
-                    result = result + '/' + res;
-                  } else {
-                    result = res;
-                  }
-                  let cityObj = {
-                    text: res,
-                    value: res,
-                  };
-                  // 去重城市
-                  if (JSON.stringify(cityList).indexOf(JSON.stringify(cityObj)) === -1) {
-                    cityList.push(cityObj);
-                  }
-                  if (i >= uWhoArr.length - 1) {
-                    console.log('result', result);
-                    // data.uWhoArr = result;
-                    this.$set(account[index], 'uWhoArr', result);
-                    this.filterUWhoData = cityList;
-                    console.log('cityList', cityList);
+        let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+        api
+          .postApi("/GetUserList", {uid: uid})
+          .then(res => {
+            console.log(res.data);
+            if (!res.data.SysCode) {
+              this.accountList = res.data;
+              this.loading = false;
+              let cityList = [
+                {
+                  text: "全国",
+                  value: "全国"
+                }
+              ];
+              let userUid = JSON.parse(
+                sessionStorage.getItem("session_data")
+              ).uID;
+              let account = this.accountList;
+              for (let index = 0; index < account.length; index++) {
+                if (account[index].uID == userUid) {
+                  account.splice(index, 1);
+                }
+                let result = "";
+                let uWhoArr = account[index].uWho.split(",");
+                if (account[index].uWho == 0) {
+                  this.$set(account[index], "uWhoArr", "全国");
+                } else {
+                  for (let i = 0; i < uWhoArr.length; i++) {
+                    let res = areaToText.toTextCity(
+                      Number(uWhoArr[i])
+                    );
+                    if (uWhoArr.length > 1) {
+                      result = result + "/" + res;
+                    } else {
+                      result = res;
+                    }
+                    let cityObj = {
+                      text: res,
+                      value: res
+                    };
+                    // 去重城市
+                    if (
+                      JSON.stringify(cityList).indexOf(
+                        JSON.stringify(cityObj)
+                      ) === -1
+                    ) {
+                      cityList.push(cityObj);
+                    }
+                    if (i >= uWhoArr.length - 1) {
+                      console.log("result", result);
+                      // data.uWhoArr = result;
+                      this.$set(
+                        account[index],
+                        "uWhoArr",
+                        result
+                      );
+                      this.filterUWhoData = cityList;
+                      console.log("cityList", cityList);
+                    }
                   }
                 }
               }
+
+              this.currAccount = this.accountList;
+            } else {
+              Message.warning(res.data.MSG);
             }
-
-            this.currAccount = this.accountList;
-
-          } else {
-
-            Message.warning(res.data.MSG);
-          }
-        }).catch(res => {
-
-          console.log(res);
-        });
+          })
+          .catch(res => {
+            console.log(res);
+          });
       },
       // 时间格式化
       formatTime(time) {
@@ -324,24 +294,11 @@
       roleToText(role) {
         return uTypeToText.toText(role);
       },
-      // 城市转换
-      cityToText(item) {
-        console.log(item);
-        let arr = item.split(',');
-        let result = '';
-        for (let data of arr) {
-          areaToText.toTextCity(res => {
-            result = res + '/' + result;
-            console.log(result);
-          }, Number(data));
-        }
-        return result;
-      },
       // 状态转换
       stateToText(status) {
         let statusText = [
-          {text: '正常', status: 1},
-          {text: '禁用', status: 0}
+          {text: "正常", status: 1},
+          {text: "禁用", status: 0}
         ];
         for (let data of statusText) {
           if (data.status == status) {
@@ -366,32 +323,52 @@
           let arr = [];
           for (let data of this.accountList) {
             if (data.realName) {
-              if ((select == '1') && data.realName.includes(keyword)) {
+              if (select == "1" && data.realName.includes(keyword)) {
                 arr.push(data);
               }
             }
             if (data.sName) {
-              if ((select == '2') && data.sName.includes(keyword)) {
+              if (select == "2" && data.sName.includes(keyword)) {
                 arr.push(data);
               }
             }
           }
           this.currAccount = arr;
+          if (!arr.length) {
+            Message.warning({
+              message: '查询数据为空',
+              duration: 1500
+            });
+          }
           return;
         }
         this.currAccount = JSON.parse(JSON.stringify(this.accountList));
       },
       // 新建
       newAccount() {
-        this.$router.push('./createAccount')
+        this.$router.push("./createAccount");
       },
-      //筛选
+      //筛选状态
       filterState(value, row) {
-        return row.uState == value;
+        let sum = 0;
+        for (let data of this.accountList) {
+          if (data.uState != value) {
+            sum++;
+          }
+        }
+        //sum和所有数据的长度相同时说明都不匹配
+        if (sum == this.accountList.length) {
+          Message.warning({
+            message: '筛选数据为空',
+            duration: 1500
+          });
+        }
+
+        return row.uState === value;
       },
       // 筛选权限城市
       filterUWho(value, row) {
-        console.log(value, '-------------', row);
+        console.log(value, "-------------", row);
         // if(value =='全国'){
         // 	return true;
         // }
@@ -399,11 +376,25 @@
       },
       // 筛选角色
       filterUType(value, row) {
+        console.log(value, row);
+        let sum = 0;
+        for (let data of this.accountList) {
+          if (data.uType != value) {
+            sum++;
+          }
+        }
+        //sum和所有数据的长度相同时说明都不匹配
+        if (sum == this.accountList.length) {
+          Message.warning({
+            message: '筛选数据为空',
+            duration: 1500
+          });
+        }
         return row.uType === value;
       },
       //权限功能暂未开放
       authority() {
-        Message.warning('该功能暂未开放');
+        Message.warning("该功能暂未开放");
       },
       // 开通或者禁用：
       isForbidden(row) {
@@ -412,48 +403,58 @@
         // toid        int【必填】     被操作的UserID
         // ustate      int【必填】     用户状态值
         // this.$confirm(`是否${row.uState?'禁用':'开通'}该角色?`, '提示', {
-        MessageBox.confirm(`是否${row.uState ? '禁用' : '开通'}该角色?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          let info = {};
-          info.uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-          info.toid = row.uID;
-          info.ustate = row.uState ? 0 : 1;
-          api.postApi('/CtrlUser', info).then(res => {
-            console.log(res.data);
-            if (res.data.SysCode == 100200) {
-              Message.success('操作成功');
-              row.uState = row.uState ? 0 : 1;
-            }
-          }).catch(res => {
-            console.log(res);
+        MessageBox.confirm(
+          `是否${row.uState ? "禁用" : "开通"}该角色?`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() => {
+            let info = {};
+            info.uid = JSON.parse(
+              sessionStorage.getItem("session_data")
+            ).uID;
+            info.toid = row.uID;
+            info.ustate = row.uState ? 0 : 1;
+            api
+              .postApi("/CtrlUser", info)
+              .then(res => {
+                console.log(res.data);
+                if (res.data.SysCode == 100200) {
+                  Message.success("操作成功");
+                  row.uState = row.uState ? 0 : 1;
+                }
+              })
+              .catch(res => {
+                console.log(res);
+              });
+          })
+          .catch(() => {
+            Message.info("已取消操作");
           });
-        }).catch(() => {
-          Message.info('已取消操作');
-        });
       },
       ToEdit(row) {
         console.log(row);
-        sessionStorage.setItem('account_detail', JSON.stringify(row));
-        this.$router.push('./createAccount?edit=y');
+        sessionStorage.setItem("account_detail", JSON.stringify(row));
+        this.$router.push("./createAccount?edit=y");
       },
       // 判断角色是否有新建按钮(系统管理员和超级管理员有)
       getRole() {
-        let role = JSON.parse(sessionStorage.getItem('session_data')).uType;
+        let role = JSON.parse(sessionStorage.getItem("session_data")).uType;
         console.log(role);
-        if (role != 'SA' && role != 'SM') {
+        if (role != "SA" && role != "SM") {
           this.showNewBtn = false;
         }
-      },
-    },
-  }
-
+      }
+    }
+  };
 </script>
 <style scoped>
   a {
-    color: #108EE9;
+    color: #108ee9;
   }
 
   /*筛选*/
@@ -487,7 +488,7 @@
 
   /deep/ .el-checkbox__label {
     font-size: 10px;
-    color: #8A8A8A;
+    color: #8a8a8a;
   }
 
   /*日期控件*/
@@ -519,7 +520,6 @@
   /*面包屑导航*/
   .ad_mediaDetail_wrap {
     position: relative;
-
   }
 
   .ad_mediaDetail_nav p {
@@ -543,8 +543,8 @@
   /*wrap*/
   .mediaList_wrap {
     width: 1246px;
-    background: #FFFFFF;
-    border: 1px solid #E6E7E9;
+    background: #ffffff;
+    border: 1px solid #e6e7e9;
     margin: 0 auto;
     /*margin-bottom: 46px;*/
   }
@@ -553,12 +553,12 @@
     width: 100%;
     height: 24px;
     padding: 12px 0;
-    border-bottom: 1px solid #E6E7E9;
+    border-bottom: 1px solid #e6e7e9;
   }
 
   .mediaList_wrap .mediaList_head h2 {
     font-size: 16px;
-    color: #2C313C;
+    color: #2c313c;
     height: 24px;
 
     padding-left: 14px;
@@ -596,7 +596,6 @@
     width: 1210px;
     margin: 10px 0 0 0;
     border-radius: 4px;
-
   }
 
   .mediaList_handel span {
@@ -620,11 +619,11 @@
     line-height: 26px;
   }
 
-  /deep/ .el-table th, .el-table tr {
+  /deep/ .el-table th,
+  .el-table tr {
     height: 44px;
     padding: 0;
     background-color: #f7f7f7;
-
   }
 
   /deep/ .el-table td {
@@ -665,14 +664,14 @@
 
   /deep/ .el-table__body-wrapper::-webkit-scrollbar {
     width: 4px;
-    background: #FAFAFA;
-
+    background: #fafafa;
   }
 
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
 
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    background: #C1C1C1;
+    background: #c1c1c1;
     border-radius: 4px;
   }
 
@@ -689,7 +688,7 @@
   }
 
   /deep/ .el-table th > .cell.highlight {
-    color: #409EFF !important;
+    color: #409eff !important;
   }
 
   /deep/ div.el-table-filter {
@@ -697,7 +696,8 @@
   }
 
   /*操作*/
-  /deep/ .el-button--mini, .el-button--small {
+  /deep/ .el-button--mini,
+  .el-button--small {
     font-size: 14px !important;
   }
 
@@ -716,7 +716,6 @@
 
   /deep/ .el-dropdown .el-button-group .el-button {
     height: 28px;
-
   }
 
   /*下拉搜索框*/
@@ -739,7 +738,6 @@
   }
 
   .el-input {
-
     height: 34px !important;
     border-radius: 4px;
   }
@@ -751,7 +749,8 @@
   }
 
   /*按钮*/
-  /deep/ .el-button--default:focus, .el-button--default:hover {
+  /deep/ .el-button--default:focus,
+  .el-button--default:hover {
     color: #606266;
     border-color: #dcdfe6;
     background-color: #fcfcfc;
@@ -772,7 +771,6 @@
 
   /*1440*/
   @media all and (min-width: 1420px) {
-
     .ad_mediaDetail_nav p {
       padding-left: 60px;
     }
@@ -789,7 +787,6 @@
 
   /*1900*/
   @media all and (min-width: 1900px) {
-
     .mediaList_wrap {
       width: 1800px !important;
       /*margin-bottom: 211px !important;*/
@@ -799,5 +796,4 @@
       width: 1764px !important;
     }
   }
-
 </style>

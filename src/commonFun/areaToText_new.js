@@ -39,4 +39,35 @@ areaToText.toText = function(str){
 	return result;
 }
 
+// 市区返回数据格式： {city: '广州市', area: '越秀区'}
+// areaToText.toTextCityArea = function(str){
+// 	let result = {city: '', area: ''};
+
+// }
+
+// 市 返回数据格式: city: '广州市'
+areaToText.toTextCity = function(str){
+	let result = '';
+	let arr = cityData;
+    // province
+	let provinceStr = str.toString().substring(0, 2);
+	let cityStr = str.toString().substring(0, 4);
+	for(let data of arr){
+		let provinceCode = data.code.substring(0, 2);
+		if(provinceCode == provinceStr){
+            // city
+			for(let city of data.regionEntitys){
+				let cityCode = city.code.substring(0, 4);
+				if(cityStr == cityCode){
+					result = city.region;
+					break;
+				}
+			}
+			break;
+		}
+	}
+	console.log(result);
+	return result;
+}
+
 export default areaToText;

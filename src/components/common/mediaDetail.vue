@@ -122,8 +122,9 @@
 
       <div class="content_bottom_btn">
         <el-button type="primary" @click="edit">编辑</el-button>
-        <el-button type="default">
-          <router-link :to="{path:'/superOperate/mediaList'}" >返回</router-link>
+        <el-button type="default" @click="goBack">
+         <!-- <router-link :to="{path:'/superOperate/mediaList'}" >返回</router-link>-->
+          返回
         </el-button>
       </div>
     </div>

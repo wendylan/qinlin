@@ -297,8 +297,9 @@ export default {
 					console.log(res.data);
 					this.oldBrandTags = res.data;
 				});
+				let arr = JSON.parse(sessionStorage.getItem('industry'));
 				// 如果有行业id则cascader显示出对应的行业
-				let industryResult = [industryToText.getpiID(this.companyForm.iID), this.companyForm.iID];
+				let industryResult = [industryToText.getpiID(this.companyForm.iID, arr), this.companyForm.iID];
 				this.companyForm.industryIdArr = industryResult;
 				// 如果有市区id则cascader显示出对应的市区
 
@@ -319,7 +320,8 @@ export default {
 		},
 		// 获取所有行业信息
 		getIndustry(){
-			this.bussiness = industryToText.cascader();
+			let arr = JSON.parse(sessionStorage.getItem('industry'));
+			this.bussiness = industryToText.cascader(arr);
 		},
 		// 获取所有区域信息
 		getAreaData(){
@@ -346,7 +348,7 @@ export default {
 						data.cID != item.cID ||
 						data.cAddress != item.cAddress ||
 						data.cName != item.cName ||
-						data.cRemark != item.cRemark || 
+						data.cRemark != item.cRemark ||
 						(this.companyForm.industryIdArr[1] != item.iID) ||
 						(this.companyForm.cityArr[1] != item. rID)
 					){
@@ -392,7 +394,7 @@ export default {
 					this.updateUser();
 				}
 			}else{
-				
+
 				// 公司信息没有修改
 				// 如果有新填入品牌则新增品牌
 				if(this.companyTags.length){
@@ -444,7 +446,7 @@ export default {
 			}).catch( res => {
 				console.log(res);
 			});
-		}, 
+		},
 		// 新增品牌
 		addBrand(arr, cID){
 			for(let brand of arr){
@@ -787,12 +789,12 @@ export default {
 	}
 
   /*1440*/
-  @media all and (min-width: 1440px) {
+  @media all and (min-width: 1420px) {
 
   }
 
   /*1920*/
-  @media all and (min-width: 1920px) {
+  @media all and (min-width: 1900px) {
 	.mediaMana_content_bottom .content_bottom_btn {
 		position: absolute;
 		bottom: -66px;

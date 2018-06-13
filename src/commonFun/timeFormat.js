@@ -5,11 +5,11 @@ var timeFormat = {};
 timeFormat.toDate = function(time, format='-'){
 	let result = '';
 	if(time){
-		let str = time.substring(time.length-2);
+		let str = time.toString().substring(time.length-2);
 		if(str ==".0"){
-			time = time.substring(0, time.length-2);
+			time = time.toString().substring(0, time.length-2);
 		}
-		time =  new Date(Date.parse(time.replace(/-/g, "/")));
+		time =  new Date(Date.parse(time.toString().replace(/-/g,"/")));
 		let year = time.getFullYear();
 		let month = time.getMonth()+1;//js从0开始取 
 		let date = time.getDate(); 
@@ -30,11 +30,11 @@ timeFormat.toDate = function(time, format='-'){
 timeFormat.toDateTime = function(time){
 	let result = '';
 	if(time){
-		let str = time.substring(time.length-2);
+		let str = time.toString().substring(time.length-2);
 		if(str ==".0"){
-			time = time.substring(0, time.length-2);
+			time = time.toString().substring(0, time.length-2);
 		}
-		time =  new Date(Date.parse(time.replace(/-/g, "/")));
+		time =  new Date(Date.parse(time.toString().replace(/-/g,"/")));
 		let year = time.getFullYear();
 		let month = time.getMonth()+1;//js从0开始取 
 		let date = time.getDate(); 
