@@ -93,6 +93,8 @@ export default {
 		if (this.username !== '' && this.password !== '') {
 			this.remeAccount = true;
 		}
+		// 储存行业信息
+		this.getIndustry();
 	},
 	methods: {
 		// 获取所有行业信息并保存
@@ -153,7 +155,6 @@ export default {
 					this.$router.push('/operate')
 				}
 
-				this.getIndustry();
 			} else {
 			/* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
 				showClose: false,

@@ -1169,8 +1169,8 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-/deep/ .el-table__row td:nth-child(4){
-  text-align: right;
+/deep/ .el-table__row td:nth-child(4) {
+    text-align: right;
 }
 
 /deep/ .el-table__row td:nth-child(7) .cell span {

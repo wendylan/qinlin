@@ -380,7 +380,7 @@ import {
     Cascader,
     DatePicker,
     Pagination,
-Message
+    Message
 } from "element-ui";
 export default {
     name: "PhotoGallery",
@@ -602,7 +602,7 @@ export default {
                 data.pAlt = JSON.parse(data.pAlt);
                 let Obj = {
                     value: data.pAlt.area,
-                    label: data.pAlt.area,
+                    label: data.pAlt.area
                 };
                 if (!cityArr.length) {
                     cityArr.push({
@@ -696,49 +696,55 @@ export default {
                 !this.date &&
                 !this.citySelect.length
             ) {
-                Message.warning('请先输入搜索条件');
-            }else{
+                Message.warning("请先输入搜索条件");
+            } else {
                 // 搜索
-                console.log(this.select, this.keyword, this.LabSelect, this.date, this.citySelect);
+                console.log(
+                    this.select,
+                    this.keyword,
+                    this.LabSelect,
+                    this.date,
+                    this.citySelect
+                );
                 let arr = [];
                 let range = this.date;
                 let select = this.select;
                 let keyword = this.keyword;
                 let lab = this.LabSelect;
                 let city = this.citySelect;
-                if(range.length || keyword || lab || city.length){
-                    for(let data of initData){
+                if (range.length || keyword || lab || city.length) {
+                    for (let data of initData) {
                         let alt = data.pAlt;
-                        if(range && keyword && lab && city.length){
-                            if(
+                        if (range && keyword && lab && city.length) {
+                            if (
                                 dateFormat.toDate(alt.lstart) >= range[0] &&
                                 dateFormat.toDate(alt.lend)
-                            ){
-                                if(
-                                    select == '1' && 
+                            ) {
+                                if (
+                                    select == "1" &&
                                     alt.plan.includes(keyword) &&
-                                    alt.asLab == lab && 
+                                    alt.asLab == lab &&
                                     alt.city == city[0] &&
                                     alt.area == city[1]
-                                ){
+                                ) {
                                     arr.push(data);
                                 }
-                                if(
-                                    select == '2' && 
+                                if (
+                                    select == "2" &&
                                     alt.media.includes(keyword) &&
-                                    alt.asLab == lab && 
+                                    alt.asLab == lab &&
                                     alt.city == city[0] &&
                                     alt.area == city[1]
-                                ){
+                                ) {
                                     arr.push(data);
                                 }
-                                if(
-                                    select == '3' && 
+                                if (
+                                    select == "3" &&
                                     alt.res.includes(keyword) &&
-                                    alt.asLab == lab && 
+                                    alt.asLab == lab &&
                                     alt.city == city[0] &&
                                     alt.area == city[1]
-                                ){
+                                ) {
                                     arr.push(data);
                                 }
                             }
@@ -752,7 +758,6 @@ export default {
                     }
                     console.log(arr);
                 }
-
 
                 // if (range || this.keyword) {
                 //     for (let data of this.planList) {

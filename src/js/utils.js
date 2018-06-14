@@ -11,7 +11,7 @@ var utils = {
 			let c_start = document.cookie.indexOf(c_name + "=");
 			console.log(c_start);
 
-			if (c_start != -1)	{
+			if (c_start != -1) {
 				c_start = c_start + c_name.length + 1;
 				let c_end = document.cookie.indexOf(";", c_start);
 				console.log(c_end);

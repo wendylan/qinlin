@@ -1,220 +1,220 @@
 <template>
-	<div>
-		<div>
-			<div class="ad_mediaMana_wrap">
-				<div class="mediaMana_content_top">
-					<div class="content_top_wrap">
-						<div class="title">
-							<h1>亲邻科技上刊报告</h1>
-						</div>
-						<div class="detail">
-							<p>
-								<em>订单名称：</em>
-								<i>广州探鱼2期</i>
-								<em>任务类型：</em>
-								<i>上刊</i>
-								<em>点位数量：</em>
-								<i>100</i>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="plan-panel">
-					<div class="sec-wrap box-wrap">
-						<h4>监播图片</h4>
-						<div class="tabs">
-							<button class="active" @click="box1Change">按资源分</button>
-							<button @click="box1Change">按图片分</button>
-						</div>
-						<div class="typeOfPic">
-							<div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-							</div>
-							<div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-								<div class="picBox">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="item in 2" :key="item">
-											<!--<h3>{{item}}</h3>-->
-											<img :src=dialogImageUrl alt="">
-										</el-carousel-item>
-									</el-carousel>
-									<!--缩略图-->
-									<div class="mask-btn">
-										<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-									</div>
-									<div class="pic-title">
-										<p>小区名称：线上</p>
-										<p>门禁名称：大门B</p>
-										<p>资产编号：NSZ-0180</p>
-									</div>
-								</div>
-							</div>
-							<div class="pager">
-								<el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
-								</el-pagination>
-							</div>
-						</div>
-						<!--缩略图对话框-->
-						<el-dialog :visible.sync="dialogVisible">
-							<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-						</el-dialog>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div>
+        <div>
+            <div class="ad_mediaMana_wrap">
+                <div class="mediaMana_content_top">
+                    <div class="content_top_wrap">
+                        <div class="title">
+                            <h1>亲邻科技上刊报告</h1>
+                        </div>
+                        <div class="detail">
+                            <p>
+                                <em>订单名称：</em>
+                                <i>广州探鱼2期</i>
+                                <em>任务类型：</em>
+                                <i>上刊</i>
+                                <em>点位数量：</em>
+                                <i>100</i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="plan-panel">
+                    <div class="sec-wrap box-wrap">
+                        <h4>监播图片</h4>
+                        <div class="tabs">
+                            <button class="active" @click="box1Change">按资源分</button>
+                            <button @click="box1Change">按图片分</button>
+                        </div>
+                        <div class="typeOfPic">
+                            <div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                                <div class="picBox">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="item in 2" :key="item">
+                                            <!--<h3>{{item}}</h3>-->
+                                            <img :src=dialogImageUrl alt="">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <!--缩略图-->
+                                    <div class="mask-btn">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    </div>
+                                    <div class="pic-title">
+                                        <p>小区名称：线上</p>
+                                        <p>门禁名称：大门B</p>
+                                        <p>资产编号：NSZ-0180</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pager">
+                                <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                </el-pagination>
+                            </div>
+                        </div>
+                        <!--缩略图对话框-->
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </template>
 

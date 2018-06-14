@@ -7,25 +7,24 @@
 </template>
 
 <script>
-import headerbar from '../public/headerbar.vue';
-import footerbar from '../public/footer.vue';
+import headerbar from "../public/headerbar.vue";
+import footerbar from "../public/footer.vue";
 // import utils from '../../utils.js';
-import data from '../public/pageHeadData.js';
+import data from "../public/pageHeadData.js";
 export default {
-	name: 'home',
-	components:{
-		headerbar,
-		footerbar
-	},
-	data() {
-		return {
-			name: data.media.name,
-			pageData: data.media.pageData
-		}
-	},
-}
+    name: "home",
+    components: {
+        headerbar,
+        footerbar
+    },
+    data() {
+        return {
+            name: data.media.name,
+            pageData: data.media.pageData
+        };
+    }
+};
 </script>
 
 <style>
-
 </style>

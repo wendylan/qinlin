@@ -2,25 +2,25 @@
 
 var comma = {};
 // 价格逗号(返回两位小数)
-comma.init = function(price) {
+comma.init = function (price) {
 	var newStr = "";
 	var count = 0;
 	let str = price.toString();
-	if(str.indexOf(".")==-1){
-		for(let i=str.length-1; i>=0; i--){
-			if(count % 3 == 0 && count != 0){
+	if (str.indexOf(".") == -1) {
+		for (let i = str.length - 1; i >= 0; i--) {
+			if (count % 3 == 0 && count != 0) {
 				newStr = str.charAt(i) + "," + newStr;
-			}else{
+			} else {
 				newStr = str.charAt(i) + newStr;
 			}
 			count++;
 		}
 		str = newStr + ".00"; //自动补小数点后两位
-	}else{
-		for(let i = str.indexOf(".")-1; i>=0; i--){
-			if(count % 3 == 0 && count != 0){
+	} else {
+		for (let i = str.indexOf(".") - 1; i >= 0; i--) {
+			if (count % 3 == 0 && count != 0) {
 				newStr = str.charAt(i) + "," + newStr;
-			}else{
+			} else {
 				newStr = str.charAt(i) + newStr; //逐个字符相接起来
 			}
 			count++;
@@ -31,14 +31,14 @@ comma.init = function(price) {
 }
 
 // 价格逗号(整数)
-comma.format = function(price) {
+comma.format = function (price) {
 	var newStr = "";
 	var count = 0;
 	let str = price.toString();
-	for(let i=str.length-1; i>=0; i--){
-		if(count % 3 == 0 && count != 0){
+	for (let i = str.length - 1; i >= 0; i--) {
+		if (count % 3 == 0 && count != 0) {
 			newStr = str.charAt(i) + "," + newStr;
-		}else{
+		} else {
 			newStr = str.charAt(i) + newStr;
 		}
 		count++;
@@ -48,13 +48,13 @@ comma.format = function(price) {
 }
 
 // 保留两位小数(没有逗号)
-comma.noComma = function(price) {
+comma.noComma = function (price) {
 	var newStr = "";
 	var count = 0;
 	let str = price.toString();
-	if(str.indexOf(".")==-1){
+	if (str.indexOf(".") == -1) {
 		str = str + ".00"; //自动补小数点后两位
-	}else{
+	} else {
 		let index = str.indexOf('.');
 		str = str.substring(0, index) + str.substr(index, 3);
 	}

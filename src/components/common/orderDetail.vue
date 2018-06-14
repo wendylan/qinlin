@@ -1174,15 +1174,16 @@ export default {
             	{pAlt:"广州市-越秀区-帝景山庄-帝景3门3-A",pID:283,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pType:"XK",pURL:"https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",pUTime:"2018-06-09 18:55:26.0",ptID:5,ptP:"7",puID:3},
             ];
 
-            // this.getMaterialInfo(testInfo);
-            // 城市筛选过滤
-            this.filterCityData = filterFormat(testInfo, 'city');
-            this.filtersArea = filterFormat(testInfo, 'rName');
-            this.filtersData = filterFormat(testInfo, 'timeRange');
-            this.allResource = filterFormat(testInfo, 'resName');
             // 物料信息
             this.materialInfo = this.getMaterialInfo(testInfo);
             console.log('materialInfo', this.materialInfo);
+            // 城市筛选过滤
+            // this.filterCityData = filterFormat(testInfo, 'city');
+            this.filterCityData = filterFormat(testInfo, 'city', 'rID');
+            console.log('filtercitydata', this.filterCityData);
+            this.filtersArea = filterFormat(testInfo, 'rName');
+            this.filtersData = filterFormat(testInfo, 'timeRange');
+            this.allResource = filterFormat(testInfo, 'resName');
             // 选点排期
             this.setpointArr = testInfo;
             this.currentSetpoint = this.setpointArr;

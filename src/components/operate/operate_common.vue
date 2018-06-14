@@ -7,26 +7,23 @@
 </template>
 
 <script>
-import headerbar from '../public/headerbar.vue';
-import footerbar from '../public/footer.vue';
-import data from '../public/pageHeadData.js';
+import headerbar from "../public/headerbar.vue";
+import footerbar from "../public/footer.vue";
+import data from "../public/pageHeadData.js";
 export default {
-	name: 'home',
-    data(){
-		return {
-			name: data.operate.name,
-			pageData: data.operate.pageData
-		}
+    name: "home",
+    data() {
+        return {
+            name: data.operate.name,
+            pageData: data.operate.pageData
+        };
     },
-	components:{
-		headerbar,
-		footerbar
-	},
-}
-
-
+    components: {
+        headerbar,
+        footerbar
+    }
+};
 </script>
 
 <style>
-
 </style>

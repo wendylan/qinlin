@@ -1,74 +1,74 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav clearfix">
-			<p>
-				<a href="#">客户管理</a>
-				<em> / </em>
-				<a href="#">客户详情</a>
-			</p>
-		</div>
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav clearfix">
+            <p>
+                <a href="#">客户管理</a>
+                <em> / </em>
+                <a href="#">客户详情</a>
+            </p>
+        </div>
 
-		<!--媒体信息-->
-		<div class="ad_mediaInfo">
-			<div class="ad_mediaInfo_head">
-				<h2>客户详情</h2>
-			</div>
-			<div class="ad_mediaInfoPanel">
-				<div class="clientInfo">
-					<h4>客户信息</h4>
-					<ul>
-						<li>
-							<em>联系人：</em>{{userInfo.realName}}</li>
-						<li>
-							<em>邮箱：</em>{{userInfo.email}}</li>
-						<li>
-							<em>手机号码：</em>{{userInfo.phone }}</li>
-						<li>
-							<em>账户名：</em>{{userInfo.sName}}</li>
-						<li>
-							<em>职位：</em>{{userInfo.position }}</li>
-						<li>
-							<em>固定电话：</em>{{userInfo.telephone }}</li>
-						<li>
-							<em>所在地：</em>{{userInfo.rName }}</li>
-						<li>
-							<em>事业部：</em>{{userInfo.division}}</li>
-						<li>
-							<em>所有人：</em>{{userInfo.puName}}</li>
-					</ul>
-				</div>
-				<div class="companyInfo">
-					<h4>公司信息</h4>
-					<!-- <div class="infobox"> -->
-					<ul>
-						<li>
-							<em>公司名称：</em>{{companyInfo.cName}}</li>
-						<li>
-							<em>公司地址：</em>{{companyInfo.cAddress}}</li>
-						<li>
-							<em>行业：</em>{{companyInfo.iName}}</li>
-						<li>
-							<em>公司品牌：</em>{{companyInfo.cBrand}}</li>
-						<li>
-							<em>所在城市：</em>{{companyInfo.rName}}</li>
-						<li>
-							<em>备注：</em>{{companyInfo.cRemark}}</li>
-					</ul>
-					<!-- <div class="remarkBox">
+        <!--媒体信息-->
+        <div class="ad_mediaInfo">
+            <div class="ad_mediaInfo_head">
+                <h2>客户详情</h2>
+            </div>
+            <div class="ad_mediaInfoPanel">
+                <div class="clientInfo">
+                    <h4>客户信息</h4>
+                    <ul>
+                        <li>
+                            <em>联系人：</em>{{userInfo.realName}}</li>
+                        <li>
+                            <em>邮箱：</em>{{userInfo.email}}</li>
+                        <li>
+                            <em>手机号码：</em>{{userInfo.phone }}</li>
+                        <li>
+                            <em>账户名：</em>{{userInfo.sName}}</li>
+                        <li>
+                            <em>职位：</em>{{userInfo.position }}</li>
+                        <li>
+                            <em>固定电话：</em>{{userInfo.telephone }}</li>
+                        <li>
+                            <em>所在地：</em>{{userInfo.rName }}</li>
+                        <li>
+                            <em>事业部：</em>{{userInfo.division}}</li>
+                        <li>
+                            <em>所有人：</em>{{userInfo.puName}}</li>
+                    </ul>
+                </div>
+                <div class="companyInfo">
+                    <h4>公司信息</h4>
+                    <!-- <div class="infobox"> -->
+                    <ul>
+                        <li>
+                            <em>公司名称：</em>{{companyInfo.cName}}</li>
+                        <li>
+                            <em>公司地址：</em>{{companyInfo.cAddress}}</li>
+                        <li>
+                            <em>行业：</em>{{companyInfo.iName}}</li>
+                        <li>
+                            <em>公司品牌：</em>{{companyInfo.cBrand}}</li>
+                        <li>
+                            <em>所在城市：</em>{{companyInfo.rName}}</li>
+                        <li>
+                            <em>备注：</em>{{companyInfo.cRemark}}</li>
+                    </ul>
+                    <!-- <div class="remarkBox">
 							<p>
 								<em>备注：</em>{{companyInfo.cRemark}}
 							</p>
 						</div> -->
-					<!-- </div> -->
-				</div>
-			</div> 
-		</div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
 
-		<div class="content_bottom_btn">
-			<el-button type="primary" @click="editClient" v-if="role=='BD'">编辑</el-button>
-			<el-button @click="goBack">返回</el-button>
-		</div>
-	</div>
+        <div class="content_bottom_btn">
+            <el-button type="primary" @click="editClient" v-if="role=='BD'">编辑</el-button>
+            <el-button @click="goBack">返回</el-button>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -127,11 +127,11 @@ export default {
         getInitData() {
             // 获取缓存信息
             let companyInfo = JSON.parse(sessionStorage.getItem("companyInfo"));
-            console.log('companyinfo', companyInfo);
+            console.log("companyinfo", companyInfo);
             let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
             if (companyInfo) {
-                this.$set(companyInfo, 'iID', companyInfo.iID);
-                let arr = JSON.parse(sessionStorage.getItem('industry'));
+                this.$set(companyInfo, "iID", companyInfo.iID);
+                let arr = JSON.parse(sessionStorage.getItem("industry"));
                 // 行业中文
                 let text = industryToText.getText(companyInfo.iID, arr);
                 // 公司信息所在行业
