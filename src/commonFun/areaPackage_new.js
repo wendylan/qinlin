@@ -4,7 +4,7 @@ var region = {};
 
 // 使用方法：返回三级联动框
 // 返回数据：省市区
-region.province = function (str) {
+region.province = function () {
 	var result = [];
 	let arr = [];
 	// 省

@@ -49,8 +49,6 @@ comma.format = function (price) {
 
 // 保留两位小数(没有逗号)
 comma.noComma = function (price) {
-	var newStr = "";
-	var count = 0;
 	let str = price.toString();
 	if (str.indexOf(".") == -1) {
 		str = str + ".00"; //自动补小数点后两位
