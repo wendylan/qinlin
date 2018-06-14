@@ -258,9 +258,9 @@ export default {
 
 		let nowPath = this.$route.path; // /media/mediaList
 
-		if (nowPath.indexOf('/operate/') !== -1) {
-			this.haveDetail = false
-		}
+    // if (nowPath.indexOf('/operate/') !== -1) {
+    // 	this.haveDetail = false
+    // }
 		$(function () {
 			$('body').on('.el-tooltip__popper.is-light').css({
 			'color': '#666666'
@@ -281,13 +281,13 @@ export default {
       heightSign: 413,
       bind: function(el, binding) {
         const selectWrap = el.querySelector('.el-table__body-wrapper')
-        console.log(binding.def.heightSign)
+        // console.log(binding.def.heightSign)
         // let hSign = binding.def.heightSign
         selectWrap.addEventListener('scroll', function() {
-          console.log('hSign',binding.def.heightSign)
+          // console.log('hSign',binding.def.heightSign)
           let sign = binding.def.heightSign
           const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
-          console.log('滚动的距离',scrollDistance)
+          // console.log('滚动的距离',scrollDistance)
           if (scrollDistance <= 100) {
             binding.value()
             binding.def.heightSign = binding.def.heightSign + 358
@@ -847,7 +847,7 @@ export default {
   }
 
   /deep/ .el-table td {
-    padding: 6px 0;
+    padding: 8px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
@@ -903,6 +903,9 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /deep/ .el-table__row td:nth-child(9){
+    text-align: right;
   }
   /deep/ .el-table__row td:nth-child(1) .cell span{
     width: 135px;

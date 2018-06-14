@@ -627,7 +627,7 @@
   }
 
   /deep/ .el-table td {
-    padding: 8px 0;
+    padding: 10px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }

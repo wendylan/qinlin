@@ -47,7 +47,7 @@
         <div class="ad_adHeader">
           <ul class="ad_tab">
             <li class="curr_ad">社区广告门</li>
-            <li style="margin-left: 36px">电梯广告</li>
+            <!--<li style="margin-left: 36px">电梯广告</li>-->
           </ul>
         </div>
         <div class="ad_adPanel">
@@ -121,7 +121,7 @@
       </div>
 
       <div class="content_bottom_btn">
-        <el-button type="primary" @click="edit">编辑</el-button>
+        <el-button type="primary" @click="edit" v-if="haveEdit">编辑</el-button>
         <el-button type="default" @click="goBack">
          <!-- <router-link :to="{path:'/superOperate/mediaList'}" >返回</router-link>-->
           返回
@@ -147,6 +147,7 @@
     },
     data(){
       return{
+        haveEdit:true,
         obj:{
           /*resName: '尚东峰景',
           cType: '社区',
@@ -214,6 +215,11 @@
     },
     mounted(){
       this.getDataFun()
+      let nowPath = this.$route.path; // /media/mediaList
+
+      if (nowPath.indexOf('/operate/') !== -1) {
+      	this.haveEdit = false
+      }
     },
     methods:{
       // 返回

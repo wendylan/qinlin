@@ -1,127 +1,127 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix">
-				<a href="#" style="color: #999">方案管理</a>
-			</p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>方案列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<span>
-							<div style="display:inline-block">
-								<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-									<el-select v-model="select" slot="prepend" placeholder="请选择">
-										<el-option label="方案名称" value="1"></el-option>
-										<el-option label="客户名称" value="2"></el-option>
-										<el-option label="品牌名称" value="3"></el-option>
-									</el-select>
-								</el-input>
-							</div>
-						</span>
-						<span>
-							<div class="block">
-								<el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期">
-								</el-date-picker>
-							</div>
-						</span>
-						<span>
-							<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-						</span>
-						<span>
-							<el-button plain v-if="showNewBtn" @click="addOne">新建</el-button>
-						</span>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table border :data="currentPlan" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-						<el-table-column label="方案名称" min-width="14.9%">
-							<template slot-scope="scope">
-								<a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
-							</template>
-						</el-table-column>
-						<el-table-column prop="cName" label="客户名称" min-width="12.6%">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
-									<span title="">{{scope.row.cName}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column prop="bTitle" label="品牌名称" min-width="6.6%">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
-									<span>{{scope.row.bTitle}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column label="方案价格" sortable :sort-method="sortPrice" class="tar" min-width="8.3%">
-							<template slot-scope="scope">
-								<span>{{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="realName" label="所有人" min-width="6.1%">
-						</el-table-column>
-						<el-table-column label="投放城市(点位面数,排期)" min-width="23.6%">
-							<template slot-scope="scope">
-								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
-									<!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
-								</p>
-							</template>
-						</el-table-column>
-						<el-table-column label="创建日期" min-width="7.3%" sortable :sort-method="sortData">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="formatTime(scope.row.apcTime)" placement="bottom">
-									<span>{{formatTime(scope.row.apcTime)}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column class="tac" prop="apState" label="状态" min-width="6.1%" :filters="[
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav ">
+            <p class="clearfix">
+                <a href="#" style="color: #999">方案管理</a>
+            </p>
+        </div>
+        <div class="mediaList_wrap">
+            <div class="mediaList_head">
+                <h2>方案列表</h2>
+            </div>
+            <div class="mediaList_container">
+                <el-row>
+                    <div class="mediaList_handel">
+                        <span>
+                            <div style="display:inline-block">
+                                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+                                    <el-select v-model="select" slot="prepend" placeholder="请选择">
+                                        <el-option label="方案名称" value="1"></el-option>
+                                        <el-option label="客户名称" value="2"></el-option>
+                                        <el-option label="品牌名称" value="3"></el-option>
+                                    </el-select>
+                                </el-input>
+                            </div>
+                        </span>
+                        <span>
+                            <div class="block">
+                                <el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期">
+                                </el-date-picker>
+                            </div>
+                        </span>
+                        <span>
+                            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                        </span>
+                        <span>
+                            <el-button plain v-if="showNewBtn" @click="addOne">新建</el-button>
+                        </span>
+                    </div>
+                </el-row>
+                <div class="table_wrap">
+                    <el-table border :data="currentPlan" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                        <el-table-column label="方案名称" min-width="14.9%">
+                            <template slot-scope="scope">
+                                <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="cName" label="客户名称" min-width="12.6%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+                                    <span title="">{{scope.row.cName}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="bTitle" label="品牌名称" min-width="6.6%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
+                                    <span>{{scope.row.bTitle}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="方案价格" sortable :sort-method="sortPrice" class="tar" min-width="8.3%">
+                            <template slot-scope="scope">
+                                <span>&yen; {{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="realName" label="所有人" min-width="6.1%">
+                        </el-table-column>
+                        <el-table-column label="投放城市(点位面数,排期)" min-width="23.6%">
+                            <template slot-scope="scope">
+                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
+                                    <!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
+                                </p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="创建日期" min-width="7.3%" sortable :sort-method="sortData">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="formatTime(scope.row.apcTime)" placement="bottom">
+                                    <span>{{formatTime(scope.row.apcTime)}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column class="tac" prop="apState" label="状态" min-width="6.1%" :filters="[
 							{ text: '已完成', value: 0 },
 							{ text: '进行中', value: 1 },
 							{ text: '未投放', value: 2 },
 							{ text: '投放中', value: 3 },
 							{ text: '强制结束', value: 5 }
 						]" :filter-method="filterStatus" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span>{{ stateToText(scope.row.apState) }}</span>
-							</template>
-						</el-table-column>
-						<el-table-column label="操作" min-width="8.4%">
-							<template slot-scope="scope">
-								<el-dropdown size="small" split-button trigger="click">操作
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable">预锁
-										</el-dropdown-item>
-										<el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable">发布
-										</el-dropdown-item>
-										<el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable">解除预锁</el-dropdown-item>
-										<el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState==2">删除
-										</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
+                            <template slot-scope="scope">
+                                <span>{{ stateToText(scope.row.apState) }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" min-width="8.4%" v-if="!(role=='OP')">
+                            <template slot-scope="scope">
+                                <el-dropdown size="small" split-button trigger="click">操作
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable">预锁
+                                        </el-dropdown-item>
+                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable">发布
+                                        </el-dropdown-item>
+                                        <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable">解除预锁</el-dropdown-item>
+                                        <el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState==2">删除
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
 
-				<el-dialog :title="isLock?'请选择预锁城市':'请选择解锁城市'" :visible.sync="dialogVisible" width="30%" center>
-					<el-checkbox-group v-model="cityChoose">
-						<el-checkbox :label="item.rName" v-for="item of cityList" :key="item.value" border></el-checkbox>
-						<!-- <el-checkbox label="广州市" checked border></el-checkbox> -->
-						<!-- <el-checkbox label="深圳市" border></el-checkbox> -->
-					</el-checkbox-group>
-					<span slot="footer" class="dialog-footer">
-						<el-button @click="cancelLock">取 消</el-button>
-						<el-button type="primary" @click="confirmLock">确 定</el-button>
-					</span>
-				</el-dialog>
-			</div>
-		</div>
-	</div>
+                <el-dialog :title="isLock?'请选择预锁城市':'请选择解锁城市'" :visible.sync="dialogVisible" width="30%" center>
+                    <el-checkbox-group v-model="cityChoose">
+                        <el-checkbox :label="item.rName" v-for="item of cityList" :key="item.value" border></el-checkbox>
+                        <!-- <el-checkbox label="广州市" checked border></el-checkbox> -->
+                        <!-- <el-checkbox label="深圳市" border></el-checkbox> -->
+                    </el-checkbox-group>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="cancelLock">取 消</el-button>
+                        <el-button type="primary" @click="confirmLock">确 定</el-button>
+                    </span>
+                </el-dialog>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -176,14 +176,16 @@ export default {
 
     data() {
         return {
+            // 登录者角色
+            role: "",
             //   判断是否有发布，预锁解锁等功能
             isDisable: true,
             //加载中
-            // loading: true,
-            loading: false,
-			Info: {},
-			// 解锁还是预锁
-			isLock: false,
+            loading: true,
+            // loading: false,
+            Info: {},
+            // 解锁还是预锁
+            isLock: false,
             // 预锁弹出框
             dialogVisible: false,
             // 选择要预锁的城市
@@ -201,7 +203,7 @@ export default {
                     apName: "第一个投放方案",
                     cName: "新光百货",
                     bTitle: "新光百货",
-                    apTotal: 465200,
+                    apTotal: 65400,
                     realName: "黄启炜",
                     rIDs:
                         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
@@ -256,20 +258,20 @@ export default {
     created() {
         this.getUID();
         this.getPlanListData();
-		this.getRole();
-		// 测试数据
-		// let pdidArr = [
-		// 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-		// 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-		// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-		// 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-		// ];
-		// let cityCode = filterFormat(pdidArr, "rID", 'pdID');
-		// console.log('cityfdsalfjkajl', cityCode);
-		// for (let item of cityCode) {
-		// 	item.rName = areaToText.toTextCity(item.value);
-		// }
-		// console.log('citycoDe----------------',cityCode);
+        this.getRole();
+        // 测试数据
+        // let pdidArr = [
+        // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
+        // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+        // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
+        // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
+        // ];
+        // let cityCode = filterFormat(pdidArr, "rID", 'pdID');
+        // console.log('cityfdsalfjkajl', cityCode);
+        // for (let item of cityCode) {
+        // 	item.rName = areaToText.toTextCity(item.value);
+        // }
+        // console.log('citycoDe----------------',cityCode);
     },
     methods: {
         getUID() {
@@ -282,6 +284,7 @@ export default {
         // 判断角色是否有新建按钮(媒介和销售有)
         getRole() {
             let role = JSON.parse(sessionStorage.getItem("session_data")).uType;
+            this.role = role;
             console.log(role);
             if (role == "MD") {
                 this.isDisable = false;
@@ -307,7 +310,7 @@ export default {
                 .getApi("./GetFangan", { uid: uid })
                 .then(res => {
                     console.log(res.data);
-                    let info = res.data;
+                    let info = res.data.reverse();
                     if (!info.SysCode) {
                         this.planList = info;
                         this.loading = false;
@@ -351,11 +354,11 @@ export default {
         },
         // 价格排序
         sortPrice(a, b) {
-            return a.apTotal > b.apTotal;
+            return a.apTotal - b.apTotal;
         },
         //日期排序
         sortData(a, b) {
-            return a.apcTime > b.apcTime;
+            return a.apcTime < b.apcTime;
         },
         // 新建方案
         addOne() {
@@ -596,8 +599,8 @@ export default {
                             inputValue: QCinfo
                         })
                             .then(() => {
-								// 保存合同编号
-								this.saveContractNo(QCinfo);
+                                // 保存合同编号
+                                this.saveContractNo(QCinfo);
                                 // 组合数据并发布
                                 this.getDataOfSetPrice(info, "R");
                             })
@@ -614,20 +617,23 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
-		},
-		// 保存合同编号
-		saveContractNo(contractNo){
-			// uid         int【必填】     当前账户UserID
-			// apid        int【必填】     方案apID
-			// qc          String【必填】  方案合同编号
-			let info = this.Info;
-			info.qc = contractNo;
-			api.postApi('/SetAdPlan', info).then(res =>{
-				console.log(res);
-			}).catch(res => {
-				console.log(res);
-			});
-		},
+        },
+        // 保存合同编号
+        saveContractNo(contractNo) {
+            // uid         int【必填】     当前账户UserID
+            // apid        int【必填】     方案apID
+            // qc          String【必填】  方案合同编号
+            let info = this.Info;
+            info.qc = contractNo;
+            api
+                .postApi("/SetAdPlan", info)
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
         // 发布需要请求的数据组合
         getDataOfSetPrice(info, act, citySelect = []) {
             // 获取pdid
@@ -793,10 +799,10 @@ export default {
             console.log(apid);
             sessionStorage.setItem("plan_apid", apid);
             this.$router.push("./planDetail");
-		},
-		// 获取城市
-		getSelLockCity(){
-			let info = this.Info;
+        },
+        // 获取城市
+        getSelLockCity() {
+            let info = this.Info;
             // 获取城市
             api
                 .getApi("/GetAPD", info)
@@ -809,7 +815,7 @@ export default {
                     // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
                     // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
                     // ];
-                    let cityCode = filterFormat(pdidArr, "rID", 'pdID');
+                    let cityCode = filterFormat(pdidArr, "rID", "pdID");
                     for (let item of cityCode) {
                         item.rName = areaToText.toTextCity(item.value);
                     }
@@ -819,80 +825,80 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
-		},
+        },
         //预锁
         preload(row) {
-			this.isLock = true;
-			this.dialogVisible = true;
+            this.isLock = true;
+            this.dialogVisible = true;
             // let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
             // let apid = row.apID;
             // let info = {
             // 	uid: uid,
             // 	apid: apid
             // };
-			this.Info.apid = row.apID;
-			this.getSelLockCity();
-		},
-		// 解除预锁
-		clearLock(row){
-			this.isLock = false;
-			this.dialogVisible = true;
-			this.Info.apid = row.apID;
-			this.getSelLockCity();
-		},
-		// 解锁接口
-		delLock(pdidArr){
-			// uid         int【必填】     当前账户UserID
-			// pdid        int【必填】     方案具体投放pdID
-			// api.postApi('/ClFangan', info).then(res =>{
-			// 	console.log(res.data);
-			// }).catch(res =>{
-			// 	console.log(res);
-			// });
-			let uid = this.Info.uid;
-			// 解锁接口
+            this.Info.apid = row.apID;
+            this.getSelLockCity();
+        },
+        // 解除预锁
+        clearLock(row) {
+            this.isLock = false;
+            this.dialogVisible = true;
+            this.Info.apid = row.apID;
+            this.getSelLockCity();
+        },
+        // 解锁接口
+        delLock(pdidArr) {
+            // uid         int【必填】     当前账户UserID
+            // pdid        int【必填】     方案具体投放pdID
+            // api.postApi('/ClFangan', info).then(res =>{
+            // 	console.log(res.data);
+            // }).catch(res =>{
+            // 	console.log(res);
+            // });
+            let uid = this.Info.uid;
+            // 解锁接口
             for (let pdiditem of pdidArr) {
                 api
-                    .postApi("/ClFangan", {uid: uid, pdid: pdiditem })
+                    .postApi("/ClFangan", { uid: uid, pdid: pdiditem })
                     .then(res => {
                         console.log(res.data);
-						Message.success(res.data.MSG);
+                        Message.success(res.data.MSG);
                     })
                     .catch(res => {
                         console.log(res);
                     });
             }
-		},
+        },
         cancelLock() {
             this.dialogVisible = false;
             Message.info("已取消操作");
         },
         // 确定预锁
         confirmLock() {
-			console.log(this.cityChoose);
-			if(this.isLock){
-				let arr = [];
-				for (let select of this.cityChoose) {
-					for (let data of this.cityList) {
-						if (data.rName == select) {
-							arr.push(data);
-							break;
-						}
-					}
-				}
-				this.getDataOfSetPrice(this.Info, "L", arr);
-				console.log("test", arr);
-			}else{
-				let pdidArr = [];
-				for (let city of this.cityChoose) {
-					for(let data of this.cityList){
-						if(data.rName == city){
-							pdidArr.push(data.pdID);
-						}
-					}
-				}
-				this.delLock(pdidArr);
-			}
+            console.log(this.cityChoose);
+            if (this.isLock) {
+                let arr = [];
+                for (let select of this.cityChoose) {
+                    for (let data of this.cityList) {
+                        if (data.rName == select) {
+                            arr.push(data);
+                            break;
+                        }
+                    }
+                }
+                this.getDataOfSetPrice(this.Info, "L", arr);
+                console.log("test", arr);
+            } else {
+                let pdidArr = [];
+                for (let city of this.cityChoose) {
+                    for (let data of this.cityList) {
+                        if (data.rName == city) {
+                            pdidArr.push(data.pdID);
+                        }
+                    }
+                }
+                this.delLock(pdidArr);
+            }
             this.dialogVisible = false;
         }
     }
@@ -1163,6 +1169,9 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/deep/ .el-table__row td:nth-child(4){
+  text-align: right;
+}
 
 /deep/ .el-table__row td:nth-child(7) .cell span {
     width: 76px;
@@ -1173,7 +1182,7 @@ a {
 }
 
 /deep/ .el-table__row td:nth-child(2) .cell span {
-    width: 149px;
+    width: 148px;
 }
 
 /*筛选*/

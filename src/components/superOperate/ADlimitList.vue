@@ -138,7 +138,7 @@ export default {
 				typeUpdate:'',
 				detailUpdate:'',
 			}
-			this.ADlist.push(ADcontent)
+			this.ADlist.unshift(ADcontent)
 		},
 		//删除
 		deleteRow(row, index){

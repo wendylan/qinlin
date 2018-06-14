@@ -20,7 +20,7 @@
                         </h4>
                         <!--修改合同号对话框-->
                         <el-dialog title="修改合同编号" :visible.sync="changeCID" width="30%">
-                            <el-input v-model="orderDetail.apQC"></el-input>
+                            <el-input v-model="apQC" @change="setApQC()"></el-input>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="cancelChangeID">取 消</el-button>
                                 <el-button type="primary" @click="confirmChangeID">确 定</el-button>
@@ -785,6 +785,8 @@ export default {
             allPic: "2",
             // 下刊图片
             downImg: [],
+            // 默认合同编号(如果订单详情没有合同编号)
+            apQC:'',
 
             isShow1: false,
             //添加点位
@@ -1106,7 +1108,7 @@ export default {
         },
         // 获取选点排期列表数据
         getInitData() {
-            // 测试数据
+            // // 测试数据
             // let order = {
             // 	realName: "黄启炜",
             // 	apState: 1,
@@ -1119,12 +1121,14 @@ export default {
             // 	apTotal: 465200,
             // 	apName: "第一个投放方案",
             // 	apQC: "QC201803284401001",
+            //     rID: 110100,
             // 	pdTotal: 0,
             // 	pdSendFee: 0,
             // 	pdOtherFee: 0
             // };
             // order.apTotal = this.priceFormat(order.apTotal);
             // this.orderDetail = order;
+            // this.apQC = this.getContractNo(this.orderDetail.rID);
 
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -1145,6 +1149,7 @@ export default {
                             info.apTotal = this.priceFormat(info.apTotal / 100);
                         }
                         this.orderDetail = info;
+                        this.apQC = this.getContractNo(this.orderDetail.rID);
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -1578,6 +1583,20 @@ export default {
         priceFormat(price) {
             // console.log('price', price);
             return commaFormat.init(price);
+        },
+        // 随机生成合同编号
+        getContractNo(rid) {
+            let date = new Date();
+            let result = "QC";
+            result = result + dateFormat.toDate(date, "");
+            result = result + rid.toString().substring(0, 4);
+            result = result + "00" + Math.round(Math.random() * 10);
+            // console.log(result);
+            return result;
+        },
+        // 根据输入转变合同编号
+        setApQC(){
+            this.orderDetail.apQC = apQC;
         },
         // 当搜索框为空的时候进行重置显示
         init() {

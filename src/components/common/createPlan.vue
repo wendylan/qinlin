@@ -257,7 +257,7 @@
                 border
                 :data="planList"
                 :select-on-indeterminate="selectOnAll"
-                :default-sort="{prop: 'recName', order: 'descending'}"
+                :default-sort = "{prop: 'mID', order: 'descending'}"
                 @select="handleSelect"
                 @select-all="handleSelectAll"
                 @cell-mouse-enter="mouseEnter"
@@ -296,6 +296,13 @@
                   label="资源名称"
                   min-width="16.1%"
                   prop="recName"
+                >
+                </el-table-column>
+                <el-table-column
+                  v-if="false"
+                  min-width="0"
+                  label="媒体mID"
+                  prop="mID"
                 >
                 </el-table-column>
                 <el-table-column
@@ -917,6 +924,7 @@
         shopMedia_ADNum:{mediaNum:0,ADNum:0},
         ADloading:'',
         areaCity:[],
+        listIndex:0,    // 记录滚动加载到的下标
       };
     },
     created: function () {
@@ -1559,34 +1567,6 @@
             this.copyPlanList = this.planList
             console.log('this.planList', this.planList)
           }*/
-         /* if (this.totalPlanList[i][0].city === item.rName) {
-            //    console.log('this.totalPlanList[i]',this.totalPlanList[i])
-            this.planList = this.totalPlanList[i]
-            this.copyPlanList = this.planList
-            console.log('this.planList', this.planList)
-            if(this.planList.length !== 0){
-              let that = this
-              setTimeout(function () {
-                for (let j = 0; j < that.planList.length; j++) {
-                  if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
-                    console.log('时间排期', that.dateInput)
-                    that.planList[j].schedules = that.dateInput[0] + '-' + that.dateInput[1],
-                      that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
-                  }
-                }
-              }, 0)
-              break
-            }else{
-              this.$message({
-                    message: item.rName + '城市暂无可选的投放点',
-                    type: 'warning'
-              })
-            }
-          }else{
-            this.planList = this.totalPlanList[i]
-            this.copyPlanList = this.planList
-            console.log('this.planList', this.planList)
-          }*/
         }
       },
       //  stpe2, 切换区域
@@ -1742,15 +1722,19 @@
                       if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
                         // let obj = {rid: throwCity[t].rid, obj: adObj}
                         planArr.list.push(adObj)
-                        // planArr.push(obj)
+                        console.log('去除AB两面都被占的planArr',planArr)
+                      }else{
+                        console.log('空数据',i)
                       }
-                      if (i >= 19 && ADList.length >= 19) {
+                      if (i >= 19 && ADList.length >= 19 && planArr.list.length >= 19) {
+                        this.listIndex = i
                         console.log('方案选点列表1', planArr)
                         totalList.push(planArr)
                         break
                       }else {
                         if (i >= ADList.length - 1) {
-                          console.log('方案选点列表长度小于11', planArr)
+                          this.listIndex = i
+                          console.log('方案选点列表长度小于19', planArr)
                           // this.planList = planArr
                           totalList.push(planArr)
                         }
@@ -1759,18 +1743,10 @@
                   }else{
                     totalList.push(planArr)
                   }
-             /*     if(t >= throwCity.length-1){
-                    // alert('完成选点列表')
-                    console.log('11111全部城市的选点列表', totalList)
-                    this.totalPlanList = totalList
-                    this.planList = this.totalPlanList[0].list
-                    this.loading = false;
-                    this.copyPlanList = this.planList
-                  }*/
-                  break
+                  // break
                 }
               }
-              break
+              // break
             }
           }
         }
@@ -1780,7 +1756,7 @@
         this.loading = false
         this.copyPlanList = this.planList
       },
-      // 监听滚动，每次曾加10条数据
+      // 监听滚动，每次曾加20条数据
       addADList(){
         console.log('监听到滚动，并调用了addADList')
         let begin = this.dateInput[0]
@@ -1791,7 +1767,7 @@
         let totalList = []        // 全部城市的选点列表
         let beforAD = this.beforADTotalList   // 选点列表
         let AdLaunch = this.AdLaunchList       // 被占点位
-        let index = this.planList.length
+        let index = this.listIndex //this.planList.length
         console.log('下标为',index)
         console.log('投放城市333333333', throwCity)
         console.log('this.beforADTotalList',this.beforADTotalList)
@@ -1805,7 +1781,7 @@
                   if (rid === AdLaunch[m].rid) {
                     console.log('被占广告点位列表',rid,AdLaunch[m])
                     let adLaunch = AdLaunch[m].list
-                    let planArr = []
+                    let planArr = {rid:throwCity[t].rid,list:[]}
                     for (let i = index; i < ADList.length; i++) {
                       console.log('遍历选点列表')
                       let adObj = {
@@ -1849,15 +1825,18 @@
                         }
                       }
                       if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                        planArr.push(adObj)
+                        // planArr.push(adObj)
+                        planArr.list.push(adObj)
                       }
                       if (i >= index + 19 && ADList.length >= index + 19) {
-                        console.log('方案选点列表', planArr)
+                        this.listIndex = i
+                        console.log('滚动加载方案选点列表', planArr)
                         totalList.push(planArr)
                         break
                       } else {
                         if (i >= ADList.length - 1) {
-                          console.log('方案选点列表', planArr)
+                          this.listIndex = i
+                          console.log('滚动加载方案选点列表小于19', planArr)
                           totalList.push(planArr)
                         }
                       }
@@ -1878,7 +1857,7 @@
         // this.planList = this.totalPlanList[0]
         for(let i=0;i<this.totalPlanList.length;i++){
           if(this.activeIndex == i){
-            let tempArr = this.totalPlanList[i]
+            let tempArr = this.totalPlanList[i].list
             for(let j=0;j<tempArr.length;j++){
               this.planList.push(tempArr[j])
             }
@@ -1887,7 +1866,7 @@
         this.copyPlanList = this.planList
       },
       // 根据时间段获取被占点位，并重组选点列表
-      resetADList(){
+     /* resetADList(){
         // alert('2')
         this.loading = true
         let uid = this.sessionData.uID
@@ -2002,18 +1981,18 @@
               }else{
                 totalList.push(planArr)
               }
-            /*  if(t >= throwCity.length-1){
+            /!*  if(t >= throwCity.length-1){
                 // alert('完成选点列表')
                 console.log('全部城市的选点列表', totalList)
                 this.totalPlanList = totalList
                 this.planList = this.totalPlanList[0].list
                 this.loading = false;
                 this.copyPlanList = this.planList
-              }*/
+              }*!/
             }
           }
         }
-      },
+      },*/
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
         let e = event || window.event;
@@ -2942,8 +2921,27 @@
       ResOriginSearch() {
         console.log('selectValue', this.selectValue)
         console.log('searchInput', this.searchInput)
-        console.log('this.copyPlanList',this.copyPlanList)
-        let planList = []
+        console.log('beforPlanList',this.beforPlanList)
+        // console.log('this.copyPlanList',this.copyPlanList)
+        let arr = []
+        let index = this.activeIndex
+        let BPL = this.beforPlanList[index]
+        for(let i=0;i<BPL.length;i++){
+          if(this.selectValue === '资源名称'){
+            if(this.searchInput === ''){
+              arr = this.copyPlanList
+            }else if (this.searchInput === BPL[i].recName) {
+              arr.push(BPL[i])
+            }
+          }else if(this.selectValue === '商圈'){
+            if(this.searchInput === ''){
+              arr = this.copyPlanList
+            }else if(this.searchInput === BPL[i].businessOrigin) {
+              arr.push(BPL[i])
+            }
+          }
+        }
+    /*    let planList = []
         let arr = []
         if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== '' && this.buildNum[1] !== '')
           || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
@@ -2967,8 +2965,7 @@
             }
           }
         }
-        this.planList = arr
-        // this.backupsList = arr
+        this.planList = arr*/
       },
       tableHSearch(letter){       // 表头搜索this.copyPlanList
           console.log(' this.copyPlanList', this.copyPlanList)
@@ -3172,13 +3169,13 @@
             }else{
               if(val === planList[i].buildType){
                 arr.push(planList[i])
-              }else{
+              }/*else{
                 this.$message({
                   message:'查询数据为空',
                   type:'warning',
                   duration:2000
                 })
-              }
+              }*/
             }
         }
         this.planList = arr
