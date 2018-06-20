@@ -530,11 +530,13 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
-/deep/ .thead th:nth-child(3) {
+/deep/ .has-gutter tr th:nth-child(3)  {
     text-align: right;
+  padding-right: 12px;
 }
 /deep/ .el-table__row td:nth-child(3) {
     text-align: right;
+  padding-right: 12px;
 }
 
 /deep/ .el-table--border {

@@ -8,7 +8,7 @@
             </div>
             <div class="mediaList_wrap">
                 <div class="mediaList_container">
-                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tabs v-model="activeName" @tab-click="handleClick()">
                         <!--搜索框-->
                         <div class="search-wrap" v-if="!ludan">
                             <span>
@@ -274,79 +274,79 @@
                             </div>
                         </el-tab-pane>
                         <!-- <el-tab-pane label="录单" name="fifth">
-							<div class="mediaList_container">
-								<div style="display:inline-block" v-if="ludan">
-								<span>
-									<el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
-									<el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
-									<el-option label="任务名称" value="1"></el-option>
-									<el-option label="创建人" value="2"></el-option>
-									</el-select>
-								</el-input>
-								</span>
-								<span>
-									<el-button type="primary" icon="el-icon-search">搜索</el-button>
-								</span>
-								</div>
-								<div class="table_wrap">
-								<el-table
-									border
-									width="98%"
-									:data="caseList"
-									style="width: 100%"
-									:default-sort="{prop: 'date', order: 'descending'}"
-								>
-									<el-table-column
-									label="任务名称"
-									min-width="18.3%"
-									>
-									<template slot-scope="scope">
-										<span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
-									</template>
-									</el-table-column>
-									<el-table-column
-									prop="caseType"
-									label="任务类型"
-									min-width="11%"
-									:filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
-									:filter-method="filterCaseType"
-									:filter-multiple="false"
-									>
-									</el-table-column>
-									<el-table-column
-									prop="dwNum"
-									label="点位数量"
-									min-width="11%"
-									>
-									</el-table-column>
-									<el-table-column
-									prop="uploadImg"
-									label="已上传图片"
-									min-width="11%"
-									>
-									</el-table-column>
-									<el-table-column
-									prop="creater"
-									label="创建人"
-									min-width="11%"
-									>
-									</el-table-column>
-									<el-table-column
-									prop="account"
-									label="创建账号"
-									min-width="13.8%"
-									>
-									</el-table-column>
-									<el-table-column
-									prop="createDate"
-									label="创建时间"
-									min-width="11.3%"
-									>
-									</el-table-column>
-								</el-table>
-								</div>
-							</div>
-						</el-tab-pane> -->
+                <div class="mediaList_container">
+                    <div style="display:inline-block" v-if="ludan">
+                    <span>
+                        <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+                        <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+                        <el-option label="任务名称" value="1"></el-option>
+                        <el-option label="创建人" value="2"></el-option>
+                        </el-select>
+                    </el-input>
+                    </span>
+                    <span>
+                        <el-button type="primary" icon="el-icon-search">搜索</el-button>
+                    </span>
+                    </div>
+                    <div class="table_wrap">
+                    <el-table
+                        border
+                        width="98%"
+                        :data="caseList"
+                        style="width: 100%"
+                        :default-sort="{prop: 'date', order: 'descending'}"
+                    >
+                        <el-table-column
+                        label="任务名称"
+                        min-width="18.3%"
+                        >
+                        <template slot-scope="scope">
+                            <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="caseType"
+                        label="任务类型"
+                        min-width="11%"
+                        :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
+                        :filter-method="filterCaseType"
+                        :filter-multiple="false"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                        prop="dwNum"
+                        label="点位数量"
+                        min-width="11%"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                        prop="uploadImg"
+                        label="已上传图片"
+                        min-width="11%"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                        prop="creater"
+                        label="创建人"
+                        min-width="11%"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                        prop="account"
+                        label="创建账号"
+                        min-width="13.8%"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                        prop="createDate"
+                        label="创建时间"
+                        min-width="11.3%"
+                        >
+                        </el-table-column>
+                    </el-table>
+                    </div>
+                </div>
+            </el-tab-pane> -->
                     </el-tabs>
                     <!--缩略图对话框-->
                     <el-dialog :visible.sync="dialogVisible">
@@ -382,6 +382,7 @@ import {
     Pagination,
     Message
 } from "element-ui";
+
 export default {
     name: "PhotoGallery",
     components: {
@@ -433,7 +434,8 @@ export default {
             ludanSelect: "任务名称",
 
             //是否搜索到图片
-            showPic: 2,
+            // showPic: 1,
+            showPic: 3,
             //  录单
             input: "",
             value6: "",
@@ -563,9 +565,28 @@ export default {
         // 获取上刊图片
         this.getUpReport();
         // 获取下刊图片
-        this.getDownReport();
+        // this.getDownReport();
     },
     methods: {
+        handleClick() {
+            if (this.activeName == "first") {
+                this.getUpReport();
+                this.ludan = false;
+            }
+            if (this.activeName == "second") {
+                this.getDownReport();
+                this.ludan = false;
+            }
+            if (this.activeName == "third") {
+                this.ludan = false;
+            }
+            if (this.activeName == "fourth") {
+                this.ludan = false;
+            }
+            if (this.activeName == "fifth") {
+                this.ludan = true;
+            }
+        },
         // 获取上刊图片
         getUpReport() {
             // let result = [
@@ -577,6 +598,9 @@ export default {
             // this.citys = this.getCitys(result);
             // this.upImgArr = result;
 
+            if (this.upImgArr.length) {
+                return;
+            }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let upinfo = {
                 uid: uid,
@@ -629,6 +653,9 @@ export default {
         },
         // 获取下刊图片
         getDownReport() {
+            if (this.downImgArr.length) {
+                return;
+            }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let upinfo = {
                 uid: uid,
@@ -676,13 +703,6 @@ export default {
         handlePictureCardPreview(item) {
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
-        },
-        handleClick(tab, event) {
-            if (this.activeName === "fifth") {
-                this.ludan = true;
-            } else {
-                this.ludan = false;
-            }
         },
         //筛选
         filterCaseType(value, row) {
@@ -748,8 +768,44 @@ export default {
                                     arr.push(data);
                                 }
                             }
+                        } else if (range) {
+                            if (
+                                dateFormat.toDate(alt.lstart) >= range[0] &&
+                                dateFormat.toDate(alt.lend)
+                            ) {
+                                if (keyword) {
+                                    if (
+                                        select == "1" &&
+                                        alt.plan.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.media.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.res.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
+                                        // if(){
+                                        // }else if(){
+                                        // }else if (){
+                                        // }else{
+                                        //     arr.push(data);
+                                        // }
+                                    }
+                                } else if (city.length) {
+                                } else {
+                                }
+                            }
                         }
-                        // else if(){}
                     }
 
                     //  this.currentOrder = arr;
@@ -758,78 +814,6 @@ export default {
                     }
                     console.log(arr);
                 }
-
-                // if (range || this.keyword) {
-                //     for (let data of this.planList) {
-                //         if (range && keyword) {
-                //             if (
-                //                 dateFormat.toDate(data.joinTime) >= range[0] &&
-                //                 dateFormat.toDate(data.joinTime) <= range[1]
-                //             ) {
-                //                 if (data.cBrand) {
-                //                     if (
-                //                         select == "1" &&
-                //                         data.cBrand.includes(keyword)
-                //                     ) {
-                //                         arr.push(data);
-                //                     }
-                //                 }
-                //                 if (data.cName) {
-                //                     if (
-                //                         select == "2" &&
-                //                         data.cName.includes(keyword)
-                //                     ) {
-                //                         arr.push(data);
-                //                     }
-                //                 }
-                //                 if (data.realName) {
-                //                     if (
-                //                         select == "3" &&
-                //                         data.realName.includes(keyword)
-                //                     ) {
-                //                         arr.push(data);
-                //                     }
-                //                 }
-                //             }
-                //         } else if (range) {
-                //             if (
-                //                 dateFormat.toDate(data.joinTime) >= range[0] &&
-                //                 dateFormat.toDate(data.joinTime) <= range[1]
-                //             ) {
-                //                 arr.push(data);
-                //             }
-                //         } else if (keyword) {
-                //             if (data.cBrand) {
-                //                 if (
-                //                     select == "1" &&
-                //                     data.cBrand.includes(keyword)
-                //                 ) {
-                //                     arr.push(data);
-                //                 }
-                //             }
-                //             if (data.cName) {
-                //                 if (select == "2" && data.cName.includes(keyword)) {
-                //                     arr.push(data);
-                //                 }
-                //             }
-                //             if (data.realName) {
-                //                 if (
-                //                     select == "3" &&
-                //                     data.realName.includes(keyword)
-                //                 ) {
-                //                     arr.push(data);
-                //                 }
-                //             }
-                //         }
-                //     }
-                //     this.currentPlan = arr;
-                //     if (!arr.length) {
-                //         Message.warning("查询数据为空");
-                //     }
-                //     console.log(arr);
-                //     return;
-                // }
-                // this.currentPlan = JSON.parse(JSON.stringify(this.planList));
             }
         },
         newPath() {
@@ -867,6 +851,7 @@ export default {
 /deep/ .el-cascader__label {
     line-height: 34px;
 }
+
 /*面包屑导航*/
 .ad_mediaMana_wrap {
     position: relative;
@@ -973,10 +958,10 @@ export default {
 }
 
 /* /deep/ .el-button.map span {
-     position: relative;
-     !*left: -10px;*!
-     top: -2px;
-   }*/
+       position: relative;
+       !*left: -10px;*!
+       top: -2px;
+     }*/
 
 .search-wrap {
     position: relative;
@@ -986,6 +971,7 @@ export default {
 /deep/ .el-input-group .el-input__suffix {
     right: 5px;
 }
+
 /deep/ .el-input__icon {
     line-height: 34px;
 }
@@ -1027,6 +1013,7 @@ export default {
     /*line-height: 14px;*/
     vertical-align: middle;
 }
+
 /deep/ .plan-select .el-input__inner {
     font-size: 14px;
     /*padding: 10px 10px;*/
@@ -1142,6 +1129,7 @@ export default {
 .icon span {
     float: left;
 }
+
 .icons img {
     width: 14px;
     height: 14px;
@@ -1342,8 +1330,8 @@ export default {
 }
 
 /*/deep/ .el-table_1_column_3, /deep/ .el-table_1_column_4 {
-    text-align: right;
-  }*/
+      text-align: right;
+    }*/
 
 /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: #ecf5ff;
@@ -1375,6 +1363,7 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 /deep/ .el-table .el-table_1_column_3 .cell {
     width: 95px;
 }
@@ -1451,21 +1440,25 @@ export default {
     top: -3px;
     margin-right: 2px;
 }
+
 /deep/ .el-range-separator {
     position: relative;
     top: -2px;
 }
+
 /deep/ .el-input__inner {
     width: 260px;
     height: 34px;
     line-height: 34px;
 }
+
 /deep/ .el-date-editor i,
 /deep/ .el-date-editor input,
 /deep/ .el-date-editor span {
     float: left;
     position: relative;
 }
+
 /deep/ .el-range-editor .el-range-input {
     line-height: 20px;
 }
@@ -1506,6 +1499,7 @@ export default {
     float: left;
     margin-left: 4px;
 }
+
 .mediaList_container .search-wrap span {
     float: left;
     margin-left: 4px;

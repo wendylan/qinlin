@@ -21,7 +21,7 @@
 									<el-input v-model.trim="clientForm.realname" placeholder="请输入联系人姓名"></el-input>
 								</el-form-item>
 								<el-form-item label="账户名:" prop="sname">
-									<el-input v-model.trim="clientForm.sname" placeholder="请输入账户名"></el-input>
+									<el-input v-model.trim="clientForm.sname" placeholder="请输入账户名" @blur="check()"></el-input>
 								</el-form-item>
 								<el-form-item label="职位:" prop="position">
 									<el-input v-model.trim="clientForm.position" placeholder="请输入联系人职位"></el-input>
@@ -182,11 +182,15 @@ export default {
             let szReg = /^[^\u4e00-\u9fa5]{0,}$/;
             if (!szReg.test(value)) {
                 callback(new Error("只能输入字母,数字,符号"));
-            } else {
+            }else if(this.otherName){
+                callback('该账号已经被占用');
+            }
+            else {
                 callback();
             }
         };
         return {
+            otherName: '',
             // 所有区域
             allProvince: [],
             // 是否有公司
@@ -357,9 +361,29 @@ export default {
         this.getAreaData();
     },
     methods: {
+        // 检查是否被占用
+        check(){
+            let sname = this.clientForm.sname;
+            let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+            let info = {
+                uid: uid,
+                sname: sname
+            };
+            api
+                .postApi("/CheckUserName", info)
+                .then(res => {
+                    if (res.data==null) {
+                        this.otherName ='';
+                    }else{
+                        this.otherName =1;
+                    }
+                });
+        },
+        // 选择行业
         handleChange(val) {
             this.companyForm.industryIdArr = val;
         },
+        // 选择公司所在城市
         seleProCom(val) {
             this.companyForm.cityArr = val;
         },
@@ -424,7 +448,8 @@ export default {
             });
 
             // 公司信息所在行业
-            let text = industryToText.getText(item.iID);
+            let arr = JSON.parse(sessionStorage.getItem("industry"));
+            let text = industryToText.getText(item.iID, arr);
             this.$set(this.companyForm, "iName", text);
 
             // 保存cID以便在创建客户的时候进行使用
@@ -605,7 +630,10 @@ export default {
                     }
                 })
                 .catch(res => {
-                    console.log(res);
+                  Message({
+                    type: 'warning',
+                    message: res.data.MSG
+                  });
                 });
         },
         //重置表单

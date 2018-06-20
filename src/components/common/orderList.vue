@@ -1,111 +1,114 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p>
-				<a href="#" style="color: #999">订单管理</a>
-			</p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>订单列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<span>
-							<div style="display:inline-block">
-								<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-									<el-select v-model="select" slot="prepend" placeholder="请选择">
-										<el-option label="订单名" value="1"></el-option>
-										<el-option label="客户名" value="2"></el-option>
-										<el-option label="合同编号" value="3"></el-option>
-									</el-select>
-								</el-input>
-							</div>
-						</span>
-						<span>
-							<div class="block">
-								<el-date-picker v-model="rangeDate" type="daterange" range-separator="-" start-placeholder="发布日期" end-placeholder="发布日期">
-								</el-date-picker>
-							</div>
-						</span>
-						<span>
-							<el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-						</span>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table border :data="currentOrder" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-						<el-table-column label="订单名称" min-width="14.6%">
-							<template slot-scope="scope">
-								<a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
-							</template>
-						</el-table-column>
-						<el-table-column label="客户名称" min-width="10.4%">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
-									<span title="">{{scope.row.cName}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column prop="bTitle" label="品牌名称" min-width="6.0%">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
-									<span title="">{{scope.row.bTitle}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column label="合同编号" class="tar" min-width="7.9%">
-							<template slot-scope="scope">
-								<el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom">
-									<span title="">{{scope.row.apQC}}</span>
-								</el-tooltip>
-							</template>
-						</el-table-column>
-						<el-table-column sortable :sort-method="sortPrice" label="订单总价" min-width="7.5%">
-							<template slot-scope="scope">
-								<span>&yen; {{(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column label="投放城市(点位面数，排期)" min-width="19.2%">
-							<template slot-scope="scope">
-								<p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
-									<!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
-								</p>
-							</template>
-						</el-table-column>
-						<el-table-column label="发布日期" min-width="7.3%" sortable :sort-method="sortData">
-							<template slot-scope="scope">
-								<span>{{formatTime(scope.row.apcTime)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column class="Status" prop="apState" label="状态" min-width="6%" :filters="[
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav ">
+            <p>
+                <a href="#" style="color: #999">订单管理</a>
+            </p>
+        </div>
+        <div class="mediaList_wrap">
+            <div class="mediaList_head">
+                <h2>订单列表</h2>
+            </div>
+            <div class="mediaList_container">
+                <el-row>
+                    <div class="mediaList_handel">
+                        <span>
+                            <div style="display:inline-block">
+                                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+                                    <el-select v-model="select" slot="prepend" placeholder="请选择">
+                                        <el-option label="订单名" value="1"></el-option>
+                                        <el-option label="客户名" value="2"></el-option>
+                                        <el-option label="合同编号" value="3"></el-option>
+                                    </el-select>
+                                </el-input>
+                            </div>
+                        </span>
+                        <span>
+                            <div class="block">
+                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" start-placeholder="发布日期" end-placeholder="发布日期">
+                                </el-date-picker>
+                            </div>
+                        </span>
+                        <span>
+                            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                        </span>
+                    </div>
+                </el-row>
+                <div class="table_wrap">
+                    <el-table border :data="currentOrder" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" :default-sort="{prop: 'apcTime', order: 'descending'}">
+                        <el-table-column label="订单名称" min-width="14.6%">
+                            <template slot-scope="scope">
+                                <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="客户名称" min-width="10.4%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+                                    <span title="">{{scope.row.cName}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="bTitle" label="品牌名称" min-width="6.0%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
+                                    <span title="">{{scope.row.bTitle}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="合同编号" class="tar" min-width="7.9%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom">
+                                    <span title="">{{scope.row.apQC}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column sortable :sort-method="sortPrice" label="订单总价" min-width="7.5%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0" placement="bottom">
+                                    <span>&yen; {{(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0}}</span>
+                                </el-tooltip>
+
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="投放城市(点位面数，排期)" min-width="20.2%">
+                            <template slot-scope="scope">
+                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}
+                                    <!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
+                                </p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="发布日期" min-width="7.3%" sortable :sort-method="sortData">
+                            <template slot-scope="scope">
+                                <span>{{formatTime(scope.row.apcTime)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column class="Status" prop="apState" label="状态" min-width="5%" :filters="[
 								{ text: '投放中', value: 0 },
 								{ text: '已完成', value: 1 },
 								{ text: '未投放', value: 2 },
 								{ text: '强制结束', value: 3 }
 							]" :filter-method="filterStatus" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span>{{ stateToText(scope.row.apState) }}</span>
-							</template>
-						</el-table-column>
-						<el-table-column label="操作" min-width="7.4%" v-if="!(role=='OP')">
-							<template slot-scope="scope">
-								<el-dropdown size="small" split-button trigger="click">操作
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
-										<el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位</el-dropdown-item>
-										<el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item>
-										<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
-			</div>
-		</div>
-	</div>
+                            <template slot-scope="scope">
+                                <span>{{ stateToText(scope.row.apState) }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" min-width="7.4%" v-if="!(role=='OP')">
+                            <template slot-scope="scope">
+                                <el-dropdown size="small" split-button trigger="click">操作
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
+                                        <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位</el-dropdown-item>
+                                        <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->
+                                        <el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -165,32 +168,32 @@ export default {
             select: "1",
             //表格
             orderList: [
-                {
-                    apID: 1,
-                    apName: "第一个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 465200,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 1
-                }
+                // {
+                //     apID: 1,
+                //     apName: "第一个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 1
+                // }
             ],
             currentOrder: [
-                {
-                    apID: 1,
-                    apName: "第一个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 465200,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 1
-                }
+                // {
+                //     apID: 1,
+                //     apName: "第一个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 1
+                // }
             ]
         };
     },
@@ -201,6 +204,15 @@ export default {
         this.getRole();
     },
     methods: {
+        // 面后面添加逗号
+        setComma(value) {
+            if (value) {
+                let index = value.indexOf("面");
+                let arr = value.split("");
+                arr.splice(index + 1, 0, "，");
+                return arr.join("");
+            }
+        },
         // 获取角色
         getRole() {
             let role = JSON.parse(sessionStorage.getItem("session_data")).uType;
@@ -239,9 +251,9 @@ export default {
         },
         // 更换点位
         changePoint(apid) {
-            console.log(apid);
-            sessionStorage.setItem("order_apid", apid);
-            this.$router.push("./orderDetail");
+            Message.warning("该功能尚未完善");
+            // sessionStorage.setItem("order_apid", apid);
+            // this.$router.push("./orderDetail");
         },
         // 状态转换成文本
         stateToText(val) {
@@ -267,7 +279,7 @@ export default {
         },
         //日期排序
         sortData(a, b) {
-            return a.apcTime > b.apcTime;
+            return a.apcTime < b.apcTime;
         },
         // 价格加上逗号
         priceFormat(price) {
@@ -308,10 +320,10 @@ export default {
                                     arr.push(data);
                                 }
                             }
-                            if (data.bTitle) {
+                            if (data.apQC) {
                                 if (
                                     select == "3" &&
-                                    data.bTitle.includes(keyword)
+                                    data.apQC.includes(keyword)
                                 ) {
                                     arr.push(data);
                                 }
@@ -338,11 +350,8 @@ export default {
                                 arr.push(data);
                             }
                         }
-                        if (data.bTitle) {
-                            if (
-                                select == "3" &&
-                                data.bTitle.includes(keyword)
-                            ) {
+                        if (data.apQC) {
+                            if (select == "3" && data.apQC.includes(keyword)) {
                                 arr.push(data);
                             }
                         }
@@ -363,39 +372,41 @@ export default {
 
         //提示框
         inputBox1() {
-            MessageBox.prompt("请输入监控备注", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                inputType: "textarea",
-                inputPattern: /^.{1,100}$/,
-                inputErrorMessage: "监控备注超过100字,请缩减"
-            })
-                .then(() => {
-                    Message.success("监控备注输入成功");
-                })
-                .catch(() => {
-                    Message.info("取消输入");
-                });
+            Message.warning("该功能尚未完善");
+            // MessageBox.prompt("请输入监控备注", "提示", {
+            //     confirmButtonText: "确定",
+            //     cancelButtonText: "取消",
+            //     inputType: "textarea",
+            //     inputPattern: /^.{1,100}$/,
+            //     inputErrorMessage: "监控备注超过100字,请缩减"
+            // })
+            //     .then(() => {
+            //         Message.success("监控备注输入成功");
+            //     })
+            //     .catch(() => {
+            //         Message.info("取消输入");
+            //     });
         },
 
         confirmBox1() {
-            MessageBox.confirm(
-                "是否结束<b>" + this.orderList[0].orderName + "</b>订单投放？",
-                "提示",
-                {
-                    confirmButtonText: "是",
-                    cancelButtonText: "否",
-                    dangerouslyUseHTMLString: true,
-                    type: "warning"
-                }
-            )
-                .then(() => {
-                    //确定
-                    Message.success("操作成功");
-                })
-                .catch(() => {
-                    Message.info("已取消操作");
-                });
+            Message.warning("该功能尚未完善");
+            // MessageBox.confirm(
+            //     "是否结束<b>" + this.orderList[0].orderName + "</b>订单投放？",
+            //     "提示",
+            //     {
+            //         confirmButtonText: "是",
+            //         cancelButtonText: "否",
+            //         dangerouslyUseHTMLString: true,
+            //         type: "warning"
+            //     }
+            // )
+            //     .then(() => {
+            //         //确定
+            //         Message.success("操作成功");
+            //     })
+            //     .catch(() => {
+            //         Message.info("已取消操作");
+            //     });
         },
         //筛选
         filterStatus(value, row) {
@@ -742,6 +753,9 @@ a {
 }
 /deep/ .el-table__row td:nth-child(5) .cell {
     text-align: right;
+}
+/deep/ .el-table__row td:nth-child(5) .cell span {
+    width: 87px;
 }
 /deep/ .el-table__row td:nth-child(7) .cell span {
     width: 87px;

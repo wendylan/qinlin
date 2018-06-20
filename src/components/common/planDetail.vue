@@ -15,7 +15,6 @@
                     <div class="plan-title">
                         <h4>
                             <img src="../../assets/images/orderlogo.png" alt="">{{planDetail.apName}}
-                            <!--<p>{{cid}}<img src="../../assets/images/bi.png" alt="" @click="changeCID = true"></p>-->
                         </h4>
                         <div class="handleBtn">
                             <el-button plain>导出</el-button>
@@ -44,7 +43,7 @@
                                     </li>
                                     <li>
                                         <span>投放城市：</span>
-                                        <em>{{planDetail.rIDs}}</em>
+                                        <em>{{filter(planDetail.rIDs)}}</em>
                                     </li>
                                     <li>
                                         <span>资源置换：</span>
@@ -81,7 +80,8 @@
                                     <div class="first-wrap box-wrap">
                                         <h4>选点排期</h4>
                                         <div class="table_wrap">
-                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" :row-class-name="tableRowClassName">
+                                            <!-- <el-table border :data="setpointArr" :row-class-name="tableRowClassName" :highlight-current-row="true" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"> -->
+                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
                                                 <el-table-column type="expand">
                                                     <template slot-scope="props">
                                                         <el-form label-position="left" inline class="demo-table-expand">
@@ -249,6 +249,7 @@ import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
 import { Table, TableColumn, Tabs, TabPane, Button, Message } from "element-ui";
+
 export default {
     name: "planDetail",
     components: {
@@ -263,20 +264,20 @@ export default {
             role: "",
             // 方案详情
             planDetail: {
-                realName: "",
-                apState: 1,
-                rIDs: "",
-                cName: "",
-                apID: 1,
-                apcTime: "",
-                cuName: "",
-                bTitle: "",
-                apTotal: 0,
-                apName: "",
-                apQC: "",
-                pdTotal: 0,
-                pdSendFee: 0,
-                pdOtherFee: 0
+                // realName: "",
+                // apState: 1,
+                // rIDs: "",
+                // cName: "",
+                // apID: 1,
+                // apcTime: "",
+                // cuName: "",
+                // bTitle: "",
+                // apTotal: 0,
+                // apName: "",
+                // apQC: "",
+                // pdTotal: 0,
+                // pdSendFee: 0,
+                // pdOtherFee: 0
             },
             // 选点排期
             setpointArr: [],
@@ -288,14 +289,6 @@ export default {
             filtersData: [],
             // 地区过滤结果
             filtersArea: [],
-            //监播备注
-            remark: "",
-            changeRemark: false,
-            //合同号
-            cid: "QC201803284401001",
-            CIDinput: "QC201803284401001",
-            //修改合同号
-            changeCID: false,
             planPanel: "first"
         };
     },
@@ -310,6 +303,55 @@ export default {
         this.getPriceData();
     },
     methods: {
+        // // 当前行是否高亮
+        // tableRowClassName({ row }) {
+        //     if (row.lState) {
+        //         return "warning-row";
+        //     } else {
+        //         return "";
+        //     }
+        // },
+        // 添加是否被占的状态
+        // checkLock(tableData) {
+        //     // CheckADS
+        //     // uid         int【必填】         当前账户UserID
+        //     // asid        int【必填】         投放广告点位状态查询
+        //     let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+        //     for (let i = 0; i < tableData.length; i++) {
+        //         tableData[i].lState = 0;
+        //         this.$set(tableData[i], "lState", 0);
+        //         api
+        //             .getApi("/CheckADS", { uid: uid, asid: tableData[i].asID })
+        //             .then(res => {
+        //                 console.log(res);
+        //                 if (res.data.length) {
+        //                     // tableData[i].lState = 1;
+        //                     this.$set(tableData[i], "lState", 1);
+        //                 }
+        //                 if (i >= tableData.length - 1) {
+        //                     console.log("tableData------------", tableData);
+        //                     this.setpointArr = tableData;
+        //                 }
+        //                 // console.log(data);
+        //             })
+        //             .catch(res => {
+        //                 console.log(res);
+        //             });
+        //     }
+        // },
+        // 去重城市
+        filter(val) {
+            let res = "";
+            if (val) {
+                for (let data of val.split(",")) {
+                    if (!res.includes(data)) {
+                        res = data + "," + res;
+                    }
+                }
+                console.log(res);
+            }
+            return res;
+        },
         // 获取选点排期列表数据
         getInitData() {
             // 测试数据
@@ -332,10 +374,10 @@ export default {
             // plan.apTotal = this.priceFormat(plan.apTotal);
             // plan.apcTime = dateFormat.toDateTime(plan.apcTime);
             // this.planDetail = plan;
-            console.log(
-                "time",
-                dateFormat.toDateTime("Jun 6, 2018 6:31:59 PM")
-            );
+            // console.log(
+            //     "time",
+            //     dateFormat.toDateTime("Jun 6, 2018 6:31:59 PM")
+            // );
 
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -352,9 +394,9 @@ export default {
                     console.log(res.data);
                     if (!res.data.SysCode) {
                         let info = res.data;
-                        if (info.apTotal) {
-                            info.apTotal = this.priceFormat(info.apTotal / 100);
-                        }
+                        // if (info.apTotal) {
+                        //     info.apTotal = this.priceFormat(info.apTotal / 100);
+                        // }
                         info.apcTime = dateFormat.toDateTime(info.apcTime);
                         this.planDetail = info;
                     } else {
@@ -367,7 +409,7 @@ export default {
         },
         // 获取选点排期
         getSetPoint() {
-            // 测试数据情况
+            // // 测试数据情况
             // this.setpointArr = [
             // 	{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
             // 	{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
@@ -382,6 +424,8 @@ export default {
             // this.filterCityData = filterFormat(this.setpointArr, 'city');
             // this.filtersArea = filterFormat(this.setpointArr, 'rName');
             // this.filtersData = filterFormat(this.setpointArr, 'timeRange');
+            // // 选点排期
+            // this.checkLock(this.setpointArr);
             // this.currentSetpoint = this.setpointArr;
 
             // 真实数据
@@ -416,6 +460,8 @@ export default {
                         this.filterCityData = filterFormat(resInfo, "city");
                         this.filtersArea = filterFormat(resInfo, "rName");
                         this.filtersData = filterFormat(resInfo, "timeRange");
+                        // 选点排期
+                        // this.checkLock(resInfo);
                         this.setpointArr = resInfo;
                         this.currentSetpoint = this.setpointArr;
                     } else {
@@ -508,6 +554,12 @@ export default {
                                     obj.city = areaToText.toTextCity(obj.rID);
                                     arr.push(obj);
                                 }
+                                let total = pdTotal + pdSendFee + pdOtherFee;
+                                this.$set(
+                                    this.planDetail,
+                                    "apTotal",
+                                    this.priceFormat(total / 100)
+                                );
                                 this.$set(
                                     this.planDetail,
                                     "pdTotal",
@@ -610,14 +662,6 @@ export default {
         filterTimeRange(value, row) {
             return row.timeRange === value;
         }
-        // tableRowClassName({row, rowIndex}) {
-        // 	//状态行 根据状态判断
-        // 	if (rowIndex === 0) {
-        // 		//添加类名
-        // 		return 'warning-row'
-        // 	}
-        // 	return '';
-        // },
     }
 };
 </script>
@@ -1060,6 +1104,7 @@ export default {
     display: inline-block;
     font-size: 20px;
     color: rgba(0, 0, 0, 0.85);
+    font-weight: bold;
 }
 
 /*面包屑导航*/
@@ -1107,6 +1152,7 @@ export default {
 .ad_mediaMana_nav p a:nth-of-type(1) {
     color: #999;
 }
+
 /*资源信息*/
 .mediaMana_content_top {
     padding: 42px 60px 0 60px;
@@ -1145,9 +1191,11 @@ export default {
     .tab-info .price h4 {
         width: 92%;
     }
+
     .up-loader-Imgpanel + .up-loader-Imgpanel {
         margin-left: 39px;
     }
+
     .up-loader-Imgpanel:nth-child(4) {
         margin-left: 0;
     }
@@ -1166,9 +1214,11 @@ export default {
     .plan-detail-left ul li:nth-child(3n-1) {
         /*width: 400px;*/
     }
+
     .up-loader-Imgpanel + .up-loader-Imgpanel {
         margin-left: 54px;
     }
+
     .up-loader-Imgpanel:nth-child(5) {
         margin-left: 0;
     }

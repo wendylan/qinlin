@@ -396,7 +396,9 @@ export default {
 				uwho        String【选填】      所属公司ID，新增客户这里必填
 				puid        int                 所属所属销售uID，当utype是AD时必填
 		accountForm: {account: '',realName: '',role: '',PermissionCity: '',boss: '',position:'',phone: '',division: '',email:'',},*/
+            let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
             let account = {
+                uid: uid,
                 realname: "",
                 sname: "",
                 utype: "",
@@ -405,7 +407,6 @@ export default {
                 position: "",
                 phone: "",
                 email: "",
-                rID: 440100,
                 puid: ""
             };
             account.realname = actFrom.realName; // 姓名

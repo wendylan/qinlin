@@ -140,7 +140,7 @@
         <div class="content_bottom_wrap" v-for="(item,key) in arrMedia" :key="key">
           <div class="content_bottom_head">
             <h2>{{item.text}}</h2>
-            <el-button type="danger" size="small" class="media_deleBtn" @click="mediaDelBtnFun(key)">删除</el-button>
+            <el-button type="danger" size="small" class="media_deleBtn" @click="mediaDelBtnFun(key)" :disabled="(key + 1) <= editMediaLength">删除</el-button>
           </div>
           <div class="content_bottom_form_wrap">
             <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
@@ -158,14 +158,14 @@
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mstate">
                 <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态" @change="selectMstate">
-                  <el-option label="禁止" value="0"></el-option>
-                  <el-option label="正常" value="1"></el-option>
-                  <el-option label="待安装" value="2"></el-option>
-                  <el-option label="待维修" value="3"></el-option>
+                  <el-option label="禁止" :value="'0' + key"></el-option>
+                  <el-option label="正常" :value="'1' + key"></el-option>
+                  <el-option label="待安装" :value="'2' + key"></el-option>
+                  <el-option label="待维修" :value="'3' + key"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="资产编号:" prop="assetId" :rules="assetIdBolean ? assetIdRules: mediaRules.assetId">
-                <el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21"></el-input>
+              <el-form-item label="资产编号:" prop="assetId" :rules="item.mediaForm.assetIdBolean ? assetIdRules: mediaRules.assetId">
+                <el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21" :disabled="item.mediaForm.assetIdBolean"></el-input>
               </el-form-item>
               <el-form-item label=" 媒体类型:" prop="doorType">
                 <el-input v-model="item.mediaForm.doorType" placeholder="例:消防门"></el-input>
@@ -203,15 +203,21 @@
                 </div>
               </el-form-item>
               <el-form-item label="广告限制:" prop="adLimit">
-                <el-select v-model="item.mediaForm.adLimit" placeholder="请选择广告限制">
-                  <el-option label="地产" value="地产"></el-option>
+                <el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制">
+                  <el-option
+                    v-for="limit in adLimit"
+                    :key="limit.value"
+                    :label="limit.label"
+                    :value="limit.value">
+                  </el-option>
+                <!--  <el-option label="地产" value="地产"></el-option>
                   <el-option label="医学" value="医学"></el-option>
                   <el-option label="汽车" value="汽车"></el-option>
                   <el-option label="美容" value="美容"></el-option>
                   <el-option label="餐饮" value="餐饮"></el-option>
                   <el-option label="食品" value="食品"></el-option>
                   <el-option label="金融" value="金融"></el-option>
-                  <el-option label="汽车" value="汽车"></el-option>
+                  <el-option label="汽车" value="汽车"></el-option>-->
                 </el-select>
               </el-form-item>
               <el-form-item label="备注:" prop="mediaRemark">
@@ -238,8 +244,9 @@
           <div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
         </div>
         <div class="content_bottom_btn">
-          <button class="create" @click="submitForm('recForm','mediaForm')">{{PathHaveEdit?'保存':'创建'}}</button>
-          <button class="cancel">取消</button>
+          <el-button type="primary" class="create" @click="submitForm('recForm','mediaForm')">{{PathHaveEdit?'保存':'创建'}}</el-button>
+          <!--<button v-if='PathHaveEdit' @click="editReturn">返回</button>-->
+          <button class="cancel" @click="clearData">取消</button>
         </div>
       </div>
     </div>
@@ -323,6 +330,12 @@
 
       return {
         assetIdBolean: false,
+        mstateOption:[
+          {label:'禁止',value:'0'},
+          {label:'正常',value:'1'},
+          {label:'待安装',value:'2'},
+          {label:'待维修',value:'3'}
+        ],
         dialogImageUrl: '',//缩略图
         dialogVisible: false,
         titleArr: ['媒体一', '媒体二', '媒体三', '媒体四', '媒体五', '媒体六', '媒体七', '媒体八', '媒体九', '媒体十'],
@@ -347,7 +360,7 @@
             mediaForm: {
               mediaType: '',   //媒体类型mVehicle
               mediaName: '',  //媒体名称mtitle
-              usableNum: '1',   //广告位面数pnum
+              usableNum: '2',   //广告位面数pnum
               mstate: '',       //媒体状态mstate
               assetId: '',      //资产编号assettag
               doorType: '',     // 门类型mType
@@ -357,12 +370,19 @@
               visualH: '',      //可视画面
               mediaRemark: '',  //备注 mrk
               adLimit: '',     //请选择广告限制 notpush
-              mImg: {
-                uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
-                pid: '', palt: '', ptype: '', ptid: '', ptp: ''
-              },
+              assetIdBolean: false,
+              mImg: '',
             },
           },
+        ],
+        adLimit:[
+          {value:'地产',label:'地产'},
+          {value:'汽车',label:'汽车'},
+          {value:'美容',label:'美容'},
+          {value:'餐饮',label:'餐饮'},
+          {value:'食品',label:'食品'},
+          {value:'金融',label:'金融'},
+          {value:'医学',label:'医学'},
         ],
         //资源表单
         /*"chDay": "2013-01-03",
@@ -518,9 +538,9 @@
             {required: true,type: 'number', message: '不能为空且只能输入数字', trigger: 'change'},
             {type: 'number',min: 1,max: 9999999, message: '最大值9999999', trigger: 'blur'}
           ],
-          adLimit: [
-            {message: '请选择媒体状态', trigger: 'change'},
-          ],
+        /*  adLimit: [
+            {message: '请选择广告限制', trigger: 'change'},
+          ],*/
           mediaRemark: [
             {max: 200, message: '最多只能输入200个字符', trigger: 'blur'}
           ],
@@ -575,16 +595,38 @@
           /* {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
            {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}*/],        // 上传图片的数据
         updataMedia:[],
+        editMediaLength: 0,
+        sessionData:'',
       };
     },
     beforeCreate: function () {
       //  this.ShowRegion()
     },
     mounted: function () {
+      this.getADLimit()   // 获取广告限制列表
       this.editFun() // 编辑方法
       this.ShowRegion()
     },
     methods: {
+      // 获取广告限制列表
+      getADLimit(){
+        this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+        let uid = this.sessionData.uID
+        api.getApi('/GetNotPush',{uid:uid}).then(res=>{
+          console.log('广告限制列表',res)
+          let limit = res.data
+          /*[
+{nID: 85,nTitle: "低俗",ndescript: "低俗相关的广告"},
+{nID: 88,nTitle: "游戏",ndescript: "游戏行业相关的广告"},]*/
+          //this.adLimit
+          let limitArr = []
+          for(let i=0;i<limit.length;i++){
+            let limitObj = { value:limit[i].nTitle,label:limit[i].nTitle}
+            limitArr.push(limitObj)
+          }
+          this.adLimit = limitArr
+        })
+      },
       //新增媒体面板
       mediaAddFun() {
         //  console.log('点击成功')
@@ -593,7 +635,7 @@
             text: '媒体二', mediaForm: {
               mediaType: '',
               mediaName: '',
-              usableNum: '1',
+              usableNum: '2',
               mstate: '',
               assetId: '',
               doorType: '',
@@ -603,10 +645,14 @@
               visualH: '',
               mediaRemark: '',
               adLimit: '',
+              assetIdBolean: false
             }
           },
         ]
         //  console.log(mediaArr[this.titleIndex])
+        if(this.PathHaveEdit){
+          mediaArr[0].mediaForm.mediaType = '广告门'
+        }
         mediaArr[0].text = this.titleArr[++this.titleIndex]
         if (this.titleIndex < 10) {
           this.arrMedia.push(mediaArr[0])
@@ -704,11 +750,6 @@
           this.buildingType = this.village
         }else if(val === '2'){    // 写字楼
           this.rt_village = false
-          /* let officeBuilding = [
-             {lable:'单纯性写字楼',value:'单纯性写字楼'},
-             {lable:'商住型写字楼',value:'商住型写字楼'},
-             {lable:'综合型写字楼',value:'综合型写字楼'},
-           ];*/
           this.buildingType = this.officeBuilding
         }
       },
@@ -721,12 +762,25 @@
       },
       // 选择媒体状态为待安装时修改资源编号的验为非必填
       selectMstate(val){
-        // alert(val)
-        if(val === '2'){
+        console.log('选择了',val)
+        let valArr = val.split('');
+        console.log('valArr',valArr)
+        let i = Number(valArr[1])
+        if(valArr[0] === '2'){
+          this.arrMedia[i].mediaForm.assetIdBolean = true
+          this.arrMedia[i].mediaForm.assetId = ''
+        }else{
+          this.arrMedia[i].mediaForm.assetIdBolean = false
+        }
+       /* if(val === '2'){
           this.assetIdBolean = true
+          let arrM = this.arrMedia
+          for(let i=0;i<this.arrMedia.length;i++){
+            this.arrMedia[i].mediaForm.assetId = ''
+          }
         }else{
           this.assetIdBolean = false
-        }
+        }*/
       },
       //添加资源媒体
       createRec() {
@@ -820,17 +874,17 @@
                   pnum: arr_media.usableNum,
                   adsize: adsize,
                   adviewsize: adviewsize,
-                  notpush: arr_media.adLimit,
+                  notpush: arr_media.adLimit.join('、'),
                   assettag: arr_media.assetId,
                   mtype: arr_media.doorType,
                   mimg: '',
                   mvc: arr_media.mediaType,
                   mrk: arr_media.mediaRemark,
-                  mstate: arr_media.mstate
+                  mstate: (arr_media.mstate).split('')[0]
                 }
-                let mediaImg = arr_media.mImg
-                mediaImg.palt = arr_media.mediaName + '门禁'
-                console.log('mediaObj', mediaObj, mediaImg)
+        /*        let mediaImg = arr_media.mImg
+                mediaImg.palt = arr_media.mediaName + '门禁'*/
+                console.log('mediaObj', mediaObj)
                 /*arrMedia: [
                { text: '媒体一' ,
                  mediaForm:{
@@ -849,18 +903,7 @@
                  },
                },
              ],*/
-                // 'https://beta.qinlinad.com/QADN/CreateMedia'
                 this.createMedia(mediaObj,j)
-                /*api.postApi('/CreateMedia', mediaObj).then(res => {
-                  console.log(res)
-                  if (j >= arr_media.length-1) {
-                    this.resetForm()  // 请求成功后重置表单
-                    Message({
-                      message: '资源媒体创建成功！',
-                      type: 'success'
-                    })
-                  }
-                })*/
               }
             } else {
               Message({
@@ -894,15 +937,25 @@
           console.log('创建媒体返回信息',res)
           let mData = res.data
           if(!res.SysCode){
-            mediaImg.ptid = mData.mid
-            mediaImg.ptp = ''
-            this.setImg(mediaImg)
+            // mediaImg.ptid = mData.mid
+            // mediaImg.ptp = ''
+            // this.setImg(mediaImg)
             if (n >= this.arrMedia.length-1) {
-              this.resetForm()  // 请求成功后重置表单
+              // this.resetForm()  // 请求成功后重置表单
               Message({
                 message: '资源媒体创建成功！',
                 type: 'success'
               })
+              this.$confirm('资源媒体创建成功!', '提示', {
+                confirmButtonText: '继续创建',
+                cancelButtonText: '前往列表',
+                showClose: false,
+                type: 'success '
+              }).then(() => {
+                this.resetForm()  // 请求成功后重置表单
+              }).catch(() => {
+                this.$router.push('./mediaList');
+              });
             }
           }
         })
@@ -927,11 +980,12 @@
       handleDownSuccess(res){
         console.log('上传资源图片',res)
         this.upLoadData.pid = res.pID
-        this.upLoadData.ptype = 'resImg'
+        this.upLoadData.ptype = 'resType'
       },
       // 上传图片与资源关联
       setImg(mediaImg){
         console.log('上传图片的信息',this.upLoadData)
+        console.log('mediaImg',mediaImg)
         let info = []
         if(mediaImg == undefined){
           console.log('上传资源图片的信息',this.upLoadData)
@@ -940,12 +994,16 @@
           console.log('上传媒体图片的信息',mediaImg)
           info = mediaImg
         }
-        api.postApi('/SetImg', info).then(res =>{
-          console.log(res.data);
-          Message.success(res.data.MSG);
-        }).catch(res =>{
-          console.log(res);
-        });
+        console.log('info',info)
+        if(info.pid !== '' && info.pid !== null && info.pid !== undefined){
+          console.log('info.pid',info.pid)
+          api.postApi('/SetImg', info).then(res =>{
+            console.log(res.data);
+            // Message.success(res.data.MSG);
+          }).catch(res =>{
+            console.log(res);
+          });
+        }
       },
       // 设置媒体图片信息
       saveImgInfo(m_title){
@@ -1102,6 +1160,7 @@
             console.log('recForm', this.recForm)
             //设置媒体信息
             console.log('mediaObj', mediaObj)
+            this.editMediaLength = mediaObj.length
             for (let i = 0; i < mediaObj.length; i++) {
               let media = {}
               if (i < mediaObj.length - 1) { // 创建媒体面板，默认已有一个
@@ -1118,11 +1177,21 @@
               media.adSizeH = Number(mediaObj[i].adSize.split('*')[1])
               media.visualW = Number(mediaObj[i].adViewSize.split('*')[0])
               media.visualH = Number(mediaObj[i].adViewSize.split('*')[1])
-              media.adLimit = mediaObj[i].notPush
+              if( mediaObj[i].notPush !== '' &&  mediaObj[i].notPush !== undefined &&  mediaObj[i].notPush !== null){
+                media.adLimit = mediaObj[i].notPush.split('、')
+              }else{
+                media.adLimit = mediaObj[i].notPush
+              }
               media.mediaRemark = ''
               console.log('media', media)
               if(media.mstate == '待安装'){
-                this.assetIdBolean = true
+                media.assetIdBolean = true
+                // this.assetIdBolean = true
+              }
+              for(let key in media){
+                if(media[key] == undefined || media[key] == null){
+                  media[key] = ''
+                }
               }
               this.arrMedia[i].mediaForm = media
               //    this.postEditMsg()
@@ -1199,52 +1268,96 @@
             let mediaArr = this.arrMedia // this.arrMedia[0].mediaForm
             // let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
             for (let i = 0; i < mediaArr.length; i++) {
+              console.log('下标',i,'this.editMediaLength',this.editMediaLength)
               let tempObj = mediaArr[i].mediaForm
-              if(tempObj.assetId === null || tempObj.assetId === undefined){
-                tempObj.assetId = ''
-              }
-              let temp_media = {
-                uid: uid,
-                mid: tempObj.mid,
-                mtitle: tempObj.mediaName,
-                adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
-                adviewsize: tempObj.visualW + '*' + tempObj.visualH,
-                notpush: tempObj.adLimit,
-                assettag: tempObj.assetId,
-                mtype: tempObj.doorType,
-                mrk: tempObj.mediaRemark,
-                mimg: '',
-              }
-              console.log('temp_media', temp_media)
-              if(tempObj.mstate === '正常'){
-                tempObj.mstate = '1'
-              }else if(tempObj.mstate === '禁止'){
-                tempObj.mstate = '0'
-              }else if(tempObj.mstate === '待安装'){
-                tempObj.mstate = '2'
-              }else if(tempObj.mstate === '待维修'){
-                tempObj.mstate = '3'
-              }
-              // let mstateName = mediaObj[i].mState
-              this.editMState(uid,tempObj.mid,tempObj.mstate)
-              api.postApi('/SetMediaInfo', temp_media).then(res => {
-                console.log('SetMediaInfo', res)
-                let mediaInfo = res.data
-                if (!mediaInfo.SysCode){
-                  if (i >= mediaArr.length-1) {
-                    Message({
-                      message: '保存成功',
-                      type: 'success'
-                    });
-                    this.$router.push('./mediaDetail');
-                  }
-                }else{
-                  Message({
-                    message: '媒体保存失败！',
-                    type: 'warning'
-                  });
+              if(i < this.editMediaLength){
+                if(tempObj.assetId === null || tempObj.assetId === undefined){
+                  tempObj.assetId = ''
                 }
-              })
+                let temp_media = {
+                  uid: uid,
+                  mid: tempObj.mid,
+                  mtitle: tempObj.mediaName,
+                  adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
+                  adviewsize: tempObj.visualW + '*' + tempObj.visualH,
+                  notpush: tempObj.adLimit.join('、'),
+                  assettag: tempObj.assetId,
+                  mtype: tempObj.doorType,
+                  mrk: tempObj.mediaRemark,
+                  mimg: '',
+                }
+                console.log('更新媒体temp_media', temp_media)
+                if(tempObj.mstate === '正常'){
+                  tempObj.mstate = '1'
+                }else if(tempObj.mstate === '禁止'){
+                  tempObj.mstate = '0'
+                }else if(tempObj.mstate === '待安装'){
+                  tempObj.mstate = '2'
+                }else if(tempObj.mstate === '待维修'){
+                  tempObj.mstate = '3'
+                }
+                // let mstateName = mediaObj[i].mState
+                tempObj.mstate = tempObj.mstate.split('')[0]
+                this.editMState(uid,tempObj.mid,tempObj.mstate)
+                api.postApi('/SetMediaInfo', temp_media).then(res => {
+                  console.log('SetMediaInfo', res)
+                  let mediaInfo = res.data
+                  if (!mediaInfo.SysCode){
+                    if (i >= mediaArr.length-1) {
+                      Message({
+                        message: '保存成功',
+                        type: 'success'
+                      });
+                      this.$router.push('./mediaDetail');
+                    }
+                  }else{
+                    Message({
+                      message: '媒体保存失败！',
+                      type: 'warning'
+                    });
+                  }
+                })
+              }else{
+                  let mediaObj = {
+                    rid: SetResCTObj.rid ,
+                    resid: rID,
+                    uid: this.recForm.uid,
+                    mtitle: tempObj.mediaName,
+                    pnum: tempObj.usableNum,
+                    adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
+                    adviewsize:  tempObj.visualW + '*' + tempObj.visualH,
+                    notpush: tempObj.adLimit.join('、'),
+                    assettag: tempObj.assetId,
+                    mtype: tempObj.doorType,
+                    mimg: '',
+                    mvc: tempObj.mediaType,
+                    mrk: tempObj.mediaRemark,
+                    mstate: (tempObj.mstate).split('')[0]
+                  }
+                console.log('更新媒体时新增的', mediaObj)
+                api.postApi('/CreateMedia', mediaObj).then(res => {
+                  console.log('更新时创建新媒体返回data',res)
+                  let mData = res.data
+                  if(!res.SysCode){
+                    // mediaImg.ptid = mData.mid
+                    // mediaImg.ptp = ''
+                    // this.setImg(mediaImg)
+                    if (i >= mediaArr.length-1) {
+                      this.resetForm()  // 请求成功后重置表单
+                      Message({
+                        message: '保存成功！',
+                        type: 'success'
+                      })
+                      this.$router.push('./mediaDetail');
+                    }
+                  }else{
+                    Message({
+                      message: tempObj.mediaName + '媒体保存失败！',
+                      type: 'warning'
+                    })
+                  }
+                })
+              }
             }
           })
         }
@@ -1282,6 +1395,14 @@
           }
         })
         // }
+      },
+      editReturn(){
+
+      },
+      clearData(){
+
+        this.resetForm()
+        window.history.go(-1);
       },
     },
   }
@@ -1532,11 +1653,11 @@
   }
 
   .mediaMana_content_bottom .content_bottom_btn button.create {
-    background: #108EE9;
-    border-radius: 2px;
-    font-size: 14px;
-    border: none;
-    color: #ffffff;
+    /*background: #108EE9;*/
+    /*border-radius: 2px;*/
+    /*font-size: 14px;*/
+    /*border: none;*/
+    /*color: #ffffff;*/
 
   }
 

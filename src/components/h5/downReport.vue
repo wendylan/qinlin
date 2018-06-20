@@ -4,16 +4,16 @@
             <div class="mediaMana_content_top">
                 <div class="content_top_wrap">
                     <div class="title">
-                        <h1>亲邻科技下刊报告</h1>
+                        <h1>{{downReport.apName}}下刊报告</h1>
                         <!-- <h3>广州探鱼 &nbsp;&nbsp;2017/11/11-2017/12/12</h3> -->
-                        <h3>{{downReport.apName}} &nbsp;&nbsp;{{formatTime(downReport.apcTime)}}</h3>
+                        <h3>{{downReport.bTitle}} &nbsp;&nbsp;{{formatTime(downReport.apcTime)}}</h3>
                     </div>
                     <div class="detail">
                         <p>
                             <em>公司名称：</em>
                             <i>{{downReport.cName}}</i>
                             <em>投放城市：</em>
-                            <i>{{downReport.rIDs}}</i>
+                            <i>{{filter(downReport.rIDs)}}</i>
                             <em>投放面数：</em>
                             <i>{{downReport.totalNum}}</i>
                         </p>
@@ -47,7 +47,7 @@
                                                 <el-form-item label="楼栋数量：">
                                                     <span>{{ props.row.fNum }}</span>
                                                 </el-form-item>
-                                                <el-form-item label="资产编号：">
+                                                <!-- <el-form-item label="资产编号：">
                                                     <span>{{ props.row.assetTag }}</span>
                                                 </el-form-item>
                                                 <el-form-item label="入住年份：">
@@ -55,7 +55,7 @@
                                                 </el-form-item>
                                                 <el-form-item label="广告限制：">
                                                     <span>{{ props.row.notPush }}</span>
-                                                </el-form-item>
+                                                </el-form-item> -->
                                             </el-form>
                                         </template>
                                     </el-table-column>
@@ -78,7 +78,7 @@
                                     </el-table-column>
                                     <el-table-column prop="hNum" label="户数" min-width="5.6%">
                                     </el-table-column>
-                                    <el-table-column prop="mediaNum" label="媒体数量" min-width="6.1%">
+                                    <el-table-column label="媒体数量" prop="mediaNum" min-width="6.1%">
                                     </el-table-column>
                                     <el-table-column label="操作" min-width="6.1%">
                                         <template slot-scope="scope">
@@ -89,14 +89,14 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="地图展示" name="second">
+                    <!-- <el-tab-pane label="地图展示" name="second">
                         <div class="sec-wrap box-wrap">
                             <h4>地图展示</h4>
                             <div class="map">
 
                             </div>
                         </div>
-                    </el-tab-pane>
+                    </el-tab-pane> -->
                     <el-tab-pane label="监播图片" name="third">
                         <div class="sec-wrap box-wrap">
                             <h4>监播图片</h4>
@@ -246,6 +246,7 @@ export default {
         return {
             downReport: {
                 apName: "第一个投放方案",
+                bTitle: "新光百货",
                 cName: "新光百货",
                 rIDs: "广州市,北京市,重庆市",
                 apcTime: "May 9, 2018 6:29:47 PM",
@@ -287,178 +288,365 @@ export default {
     created() {
         // 投放城市
         this.getInitData();
-        //发布情况
-        this.getPostDetail();
+        // 获取公司信息
+        this.getCompanyInfo();
     },
     methods: {
+        // 去重城市
+        filter(val) {
+            let res = "";
+            if (val) {
+                for (let data of val.split(",")) {
+                    if (!res.includes(data)) {
+                        res = data + "," + res;
+                    }
+                }
+                console.log(res);
+            }
+            return res;
+        },
+        // 获取公司信息
+        getCompanyInfo() {
+            // 真实数据
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let apid = sessionStorage.getItem("order_apid");
+            let info = {
+                uid: uid,
+                apid: apid
+            };
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi("/GetFanganInfo", info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let result = res.data;
+                        this.downReport = result;
+                        api
+                            .getApi("/GetAPD", info)
+                            .then(res => {
+                                console.log(res.data);
+                                if (!res.data.SysCode) {
+                                    let arr = res.data;
+                                    let sum = 0;
+                                    for (let data of arr) {
+                                        sum += data.pdNum;
+                                        // 发布情况
+                                        data.city = areaToText.toTextCity(
+                                            data.rID
+                                        );
+                                        // {
+                                        //     city: "深圳",
+                                        //     planNum: 200,
+                                        //     realNum: 200,
+                                        //     wrongNum: 0,
+                                        //     resolveNum: 0
+                                        // }
+                                        data.planNum = data.pdNum;
+                                        data.realNum = data.pdNum;
+                                        data.wrongNum = 0;
+                                        data.resolveNum = 0;
+                                    }
+                                    this.$set(this.downReport, "totalNum", sum);
+                                    // this.downReport.totalNum = sum;
+                                    this.postDetail = arr;
+                                }
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
         // 投放详情
         getInitData() {
-            // 测试数据
-            let tempADList = [
-                {
-                    asID: 5,
-                    lID: 6,
-                    cType: "高端住宅",
-                    address: "广东省广州市越秀区越秀公园",
-                    mediaNum: 12,
-                    lStar: "May 26, 2018",
-                    tradingArea: "山泉1",
-                    adSize: "1181*841",
-                    assetTag: "201707GZ-13161",
-                    rID: 440104,
-                    notPush: "美容",
-                    hNum: 170,
-                    fNum: 12,
-                    resName: "帝景山庄1",
-                    chDay: "2013",
-                    hPrice: 6100000,
-                    rName: "天河区",
-                    asLab: "A",
-                    adViewSize: "118*84",
-                    mTitle: "帝景1门",
-                    lEnd: "Jun 1, 2018"
-                },
-                {
-                    asID: 2,
-                    lID: 7,
-                    cType: "高端住宅",
-                    address: "广东省广州市越秀区越秀公园",
-                    mediaNum: 12,
-                    lStar: "Jun 6, 2018",
-                    tradingArea: "山泉1",
-                    adSize: "1181*841",
-                    assetTag: "201707GZ-13161",
-                    rID: 440104,
-                    notPush: "美容",
-                    hNum: 170,
-                    fNum: 12,
-                    resName: "帝景山庄2",
-                    chDay: "2013",
-                    hPrice: 6100000,
-                    rName: "越秀区",
-                    asLab: "B",
-                    adViewSize: "118*84",
-                    mTitle: "帝景1门",
-                    lEnd: "Jun 13, 2018"
-                }
-            ];
-            let downImginfo = [
-                {
-                    pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-                    pID: 283,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-                    pType: "XK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-                    pUTime: "2018-06-09 18:55:26.0",
-                    ptID: 5,
-                    ptP: "7",
-                    puID: 3
-                },
-                {
-                    pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-                    pID: 274,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-                    pType: "XK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-                    pUTime: "2018-06-09 18:31:14.0",
-                    ptID: 5,
-                    ptP: "7",
-                    puID: 3
-                },
-                {
-                    pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-                    pID: 245,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-                    pType: "XK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-                    pUTime: "2018-06-09 18:31:14.0",
-                    ptID: 2,
-                    ptP: "7",
-                    puID: 3
-                },
-                {
-                    pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-                    pID: 234,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-                    pType: "XK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-                    pUTime: "2018-06-09 18:31:14.0",
-                    ptID: 2,
-                    ptP: "7",
-                    puID: 3
-                }
-            ];
+            // // 测试数据
+            // let tempADList = [
+            //     {
+            //         asID: 3644,
+            //         lID: 428,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00236",
+            //         rID: 110105,
+            //         resID: 11194,
+            //         hNum: 2100,
+            //         fNum: 26,
+            //         resName: "润泽悦溪",
+            //         chDay: "2011年",
+            //         hPrice: 8000000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西南门7",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
+            //     },
+            //     {
+            //         asID: 3642,
+            //         lID: 429,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00235",
+            //         rID: 110105,
+            //         resID: 11194,
+            //         hNum: 2100,
+            //         fNum: 26,
+            //         resName: "润泽悦溪",
+            //         chDay: "2011年",
+            //         hPrice: 8000000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西北门6",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
+            //     },
+            //     {
+            //         asID: 3634,
+            //         lID: 430,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00231",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西门4",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     },
+            //     {
+            //         asID: 3632,
+            //         lID: 431,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00230",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "东门3",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     },
+            //     {
+            //         asID: 3630,
+            //         lID: 432,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00229",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "东南门2",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     }
+            // ];
+            // let upImginfo = [
+            //     {
+            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            //         pID: 283,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            //         pType: "XK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            //         pUTime: "2018-06-09 18:55:26.0",
+            //         ptID: 5,
+            //         ptP: "7",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            //         pID: 274,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //         pType: "XK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //         pUTime: "2018-06-09 18:31:14.0",
+            //         ptID: 5,
+            //         ptP: "7",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            //         pID: 245,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //         pType: "XK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //         pUTime: "2018-06-09 18:31:14.0",
+            //         ptID: 2,
+            //         ptP: "7",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            //         pID: 234,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //         pType: "XK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            //         pUTime: "2018-06-09 18:31:14.0",
+            //         ptID: 2,
+            //         ptP: "7",
+            //         puID: 3
+            //     }
+            // ];
 
-            for (let temp of tempADList) {
-                temp.city = areaToText.toTextCity(temp.rID);
+            // for (let temp of tempADList) {
+            //     this.$set(temp, 'city', areaToText.toTextCity(temp.rID));
+            // }
+
+            // this.filterCityData = filterFormat(tempADList, "city");
+            // this.filtersArea = filterFormat(tempADList, "rName");
+
+            // tempADList = this.constructData(tempADList);
+            // // console.log('arr', arr);
+            // // this.putDetail = tempADList;
+            // this.putDetail = tempADList;
+            // this.currPutDetail = this.putDetail;
+
+            // // 上刊数据(组合图片按资源分)
+            // tempADList = this.constructImg(tempADList, upImginfo);
+            // this.downReportArr = tempADList;
+            // // console.log("downimginfo", this.downReportArr);
+            // // 上刊数据(组合图片按图片分)
+            // this.imgInfo = this.initImg(tempADList, upImginfo);
+
+            // 真实数据
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let info = {
+                uid: uid,
+                apid: sessionStorage.getItem("order_apid")
+            };
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi("/GetAdLaunch", info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let resArr = res.data;
+                        resArr = this.constructData(resArr);
+                        for (let result of resArr) {
+                            result.city = areaToText.toTextCity(result.rID);
+                        }
+                        this.filterCityData = filterFormat(resArr, "city");
+                        this.filtersArea = filterFormat(resArr, "rName");
+                        this.putDetail = resArr;
+                        this.currPutDetail = this.putDetail;
+
+                        // uid         int【必填】         当前账户UserID
+                        // ptype       String【必填】      关联类型
+                        // ptid        int                 关联类型对应唯一ID
+                        // ptp         String              关联类型区分属性
+                        let imginfo = {
+                            uid: JSON.parse(
+                                sessionStorage.getItem("session_data")
+                            ).uID,
+                            ptype: "XK",
+                            ptp: sessionStorage.getItem("order_apid")
+                        };
+                        api
+                            .postApi("/GetImg", imginfo)
+                            .then(res => {
+                                console.log(res.data);
+                                let downImginfo = res.data;
+                                // 下刊数据(组合图片)
+                                resArr = this.constructImg(resArr, downImginfo);
+                                this.downReportArr = resArr;
+                                console.log("downimginfo", this.downReportArr);
+                                // 下刊数据(组合图片按图片分)
+                                this.imgInfo = this.initImg(
+                                    resArr,
+                                    downImginfo
+                                );
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 组装数据
+        constructData(initData) {
+            let result = [];
+            for (let data of initData) {
+                let door = 1;
+                for (let res of result) {
+                    if (res.resID == data.resID) {
+                        door = 0;
+                    }
+                }
+                if (door) {
+                    result.push(data);
+                }
             }
-            this.filterCityData = filterFormat(tempADList, "city");
-            this.filtersArea = filterFormat(tempADList, "rName");
-            this.putDetail = tempADList;
-            this.currPutDetail = this.putDetail;
-
-            // 下刊数据(组合图片)
-            tempADList = this.constructImg(tempADList, downImginfo);
-            this.downReportArr = tempADList;
-            console.log("downimginfo", this.downReportArr);
-            // 下刊数据(组合图片按图片分)
-            this.imgInfo = this.initImg(tempADList, downImginfo);
-
-            // // 真实数据
-            // let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-            // let info = {
-            // 	uid: uid,
-            // 	apid: sessionStorage.getItem('order_apid')
-            // };
-            // // uid         int【必填】     当前账户UserID
-            // // apid        int             公司对应方案apID
-            // api.postApi('/GetADB', info).then(res => {
-            // 	console.log(res.data);
-            // 	if(!res.data.SysCode){
-            // 		let resArr = res.data;
-            // 		for(let result of resArr){
-            // 			result.city = areaToText.toTextCity(result.rID);
-            // 		}
-            // 		this.filterCityData = filterFormat(resArr, 'city');
-            // 		this.filtersArea = filterFormat(resArr, 'rName');
-            // 		this.putDetail = resArr;
-            // 		this.currPutDetail = this.putDetail;
-
-            // 		// uid         int【必填】         当前账户UserID
-            // 		// ptype       String【必填】      关联类型
-            // 		// ptid        int                 关联类型对应唯一ID
-            // 		// ptp         String              关联类型区分属性
-            // 		let imginfo = {
-            // 			uid: JSON.parse(sessionStorage.getItem('session_data')).uID,
-            // 			ptype: 'XK',
-            // 			ptp: sessionStorage.getItem('order_apid')
-            // 		};
-            // 		api.postApi('/GetImg', imginfo).then(res =>{
-            // 			console.log(res.data);
-            // 			let downImginfo = res.data;
-            // 			// 下刊数据(组合图片)
-            // 			resArr = this.constructImg(resArr, downImginfo);
-            // 			this.downReportArr = resArr;
-            // 			console.log('downimginfo', this.downReportArr);
-            // 			// 下刊数据(组合图片按图片分)
-            // 			this.imgInfo = this.initImg(resArr, downImginfo);
-            // 		}).catch(res =>{
-            // 			console.log(res);
-            // 		});
-            // 	}else{
-            // 		Message.warning(res.data.MSG);
-            // 	}
-            // }).catch(res =>{
-            // 	console.log(res);
-            // });
+            console.log("reuslt-------", result);
+            for (let res of result) {
+                let asIDs = "";
+                let mediaNum = 0;
+                for (let init of initData) {
+                    if (res.resID == init.resID) {
+                        if (asIDs === "") {
+                            asIDs = init.asID.toString();
+                            mediaNum = 1;
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
+                            mediaNum++;
+                        }
+                    }
+                }
+                res.mediaNum = mediaNum;
+                console.log("asidS", asIDs);
+            }
+            return result;
         },
         // 按照图片分类
         initImg(arr, imgArr) {
@@ -499,44 +687,6 @@ export default {
                 data.downImgArr = img;
             }
             return arr;
-        },
-        //发布情况
-        getPostDetail() {
-            // 测试数据
-            let tmp = [
-                {
-                    city: "广州",
-                    planNum: 200,
-                    realNum: 200,
-                    wrongNum: 0,
-                    resolveNum: 0
-                },
-                {
-                    city: "深圳",
-                    planNum: 200,
-                    realNum: 200,
-                    wrongNum: 0,
-                    resolveNum: 0
-                }
-            ];
-            this.postDetail = tmp;
-
-            // 真实数据
-            // let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
-            // let info = {
-            // 	uid: uid,
-            // 	apid: 2
-            // };
-            // api.getApi('/GetADB', info).then(res=>{
-            // 	console.log(res);
-            // 	if(!res.data.SysCode){
-            // 		this.postDetail = res.data;
-            // 	}else{
-            // 		Message.warning(res.data.MSG);
-            // 	}
-            // }).catch(res =>{
-            // 	console.log(res);
-            // });
         },
         // 查看监播
         showImg(row) {

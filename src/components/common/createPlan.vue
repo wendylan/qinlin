@@ -95,13 +95,6 @@
                   </el-cascader>
                   <el-button v-else class="button-new-tag" size="small" @mouseover.native="showInput">+</el-button>
                 </div>
-                <!-- <el-cascader
-                   v-if="cityOther"
-                   :options="cityOptions"
-                   separator="-"
-                   v-model="selectedOptions"
-                   @change="handleChange">
-                 </el-cascader>-->
                 <el-select v-else v-model="planForm.throwCity" multiple placeholder="请选择">
                   <el-option
                     v-for="item in throwCity"
@@ -132,8 +125,9 @@
                 </span>
                 <span>
                   <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select input-with-select">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
+                    <el-option label="努力开发中,敬请期待" value="beijing"></el-option>
+                    <!--<el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>-->
                   </el-select>
                 </span>
                 <span>
@@ -289,9 +283,7 @@
                   width="41px"
                   scope="scope"
                 >
-
                 </el-table-column>
-
                 <el-table-column
                   label="资源名称"
                   min-width="16.1%"
@@ -400,8 +392,12 @@
                     <el-table-column
                       label="资源名称"
                       width="120"
-                      prop="recName"
                     >
+                      <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" :content="scope.row.recName" placement="bottom">
+                          <span title="">{{scope.row.recName}}</span>
+                        </el-tooltip>
+                      </template>
                     </el-table-column>
                     <el-table-column
                       prop="mediaName"
@@ -440,10 +436,15 @@
                     >
                     </el-table-column>
                     <el-table-column
-                      prop="schedules"
+
                       label="排期"
                       width="160"
                     >
+                      <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" :content="scope.row.schedules" placement="bottom">
+                          <span title="">{{scope.row.schedules}}</span>
+                        </el-tooltip>
+                      </template>
                     </el-table-column>
                     <el-table-column width="52px">
                       <template slot-scope="scope">
@@ -471,14 +472,14 @@
               <div class="bill-title-left">
                 <h4>{{planForm.planName}}</h4>
                 <p>{{cName}}</p>
-                <p>珠江帝景</p>
+                <p>{{cBand}}</p>
               </div>
               <div class="bill-title-right">
                 <ul>
-                  <li><p><em>现金结算：</em><span>￥{{cash}}</span></p></li>
-                  <li><p><em>资源置换：</em><span>￥{{zyzh}}</span></p></li>
-                  <li><p><em>其他费用：</em><span>￥{{other}}</span></p></li>
-                  <li><p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{totalPrice}}</span></p></li>
+                  <li><p><em>现金结算：</em><span>￥{{priceFormat(cash)}}</span></p></li>
+                  <li><p><em>资源置换：</em><span>￥{{priceFormat(zyzh)}}</span></p></li>
+                  <li><p><em>其他费用：</em><span>￥{{priceFormat(other)}}</span></p></li>
+                  <li><p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{priceFormat(totalPrice)}}</span></p></li>
                 </ul>
               </div>
             </div>
@@ -497,11 +498,11 @@
                           <el-button type="text" @click="changePrice('AD',item)">修改</el-button><!--changeAD = true-->
                         </h4>
                         <ul>
-                          <li>刊例价(面/周) <span>￥{{item.ADPrice}}</span></li>
+                          <li>刊例价(面/周) <span>￥{{priceFormat(item.ADPrice)}}</span></li>
                           <li>投放量(面·天) <span>{{item.tfl}}</span></li>
                           <li>赠送(面·天) <span>{{item.GMDate}}</span></li>
                           <li>广告费折扣 <span>{{item.discount}}</span></li>
-                          <li>￥{{item.advertyPrice}}</li>
+                          <li>￥{{priceFormat(item.advertyPrice)}}</li>
                         </ul>
                       </div>
                       <div class="price-right">
@@ -513,7 +514,7 @@
                           <li>广告画数量(张)<span>{{item.ADNumber}}</span></li>
                           <li></li>
                           <li>制作费折扣<span>{{item.makeDiscount}}</span></li>
-                          <li>￥{{item.makePrice}}</li>
+                          <li>￥{{priceFormat(item.makePrice)}}</li>
                         </ul>
                       </div>
                     </div>
@@ -524,15 +525,15 @@
                         </div>
                         <div class="bill-title-right">
                           <ul>
-                            <li><p><em>现金结算：</em><span>￥{{item.cash}}</span></p></li>
-                            <li><p><em>资源置换：</em><span>￥{{item.zyzh}}</span></p></li>
-                            <li><p><em>其他费用：</em><span>￥{{item.other}}</span></p></li>
+                            <li><p><em>现金结算：</em><span>￥{{priceFormat(item.cash)}}</span></p></li>
+                            <li><p><em>资源置换：</em><span>￥{{priceFormat(item.zyzh)}}</span></p></li>
+                            <li><p><em>其他费用：</em><span>￥{{priceFormat(item.other)}}</span></p></li>
                           </ul>
                         </div>
                       </div>
                       <div class="bottom-fin">
                         <el-button type="text" @click="changePrice('TP',item)">修改</el-button><!--changeBill = true-->
-                        <p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{item.total}}</span></p>
+                        <p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{priceFormat(item.total)}}</span></p>
                       </div>
                     </div>
                   </div>
@@ -655,14 +656,14 @@
               <img src="../../assets/images/createSuccess.png" alt="">
               <!--<i class="fa fa-check-circle fa-4x" style="color:#67C23A;"></i>-->
               <h2>创建成功</h2>
-              <p>创建时间：2018年3月18日</p>
+              <p>创建时间：{{dateTime}}</p>
             </div>
             <div class="planPanel">
               <ul>
-                <li><em>方案名称：</em>珠江帝景地产三月份投放</li>
-                <li><em>所属客户：</em>广州市视传文化传播有限公司</li>
-                <li><em>所属品牌：</em>保利地产</li>
-                <li class="money"><em>订单金额：</em>￥3,500,000.00</li>
+                <li><em>方案名称：</em>{{planForm.planName}}</li>
+                <li><em>所属客户：</em>{{cName}}</li>
+                <li><em>所属品牌：</em>{{cBand}}</li>
+                <li class="money"><em>订单金额：</em>￥{{priceFormat(totalPrice)}}</li>
               </ul>
             </div>
           </div>
@@ -670,14 +671,13 @@
       </div>
     </div>
     <div class="content_bottom_btn">
-
-      <el-button @click="prev" v-if="active!=3&&active!=0" type="default">上一步</el-button>
-      <el-button @click="prev" v-if="active===0" type="default">取消</el-button>
-      <el-button style="margin-top: 12px;" @click="next" v-if="active!=3" type="primary">下一步</el-button>
-      <div class="finishBtn" v-if="active==3">
+      <el-button @click="prev" v-if="active == 1 || active == 2" type="default">上一步</el-button>
+      <el-button @click="clearData" v-if="active === 0" type="default" >取消</el-button>
+      <el-button style="margin-top: 12px;" @click="next" v-if="active == 0 || active == 1 || active == 2 " type="primary">下一步</el-button>
+      <div class="finishBtn" v-if="active == 3">
         <el-button type="primary" @click="continueCreate">继续创建</el-button>
         <el-button type="default">
-          <router-link to="{path='/orderPlan'}"></router-link>
+          <router-link to="{path='/orderList'}"></router-link>
           查看订单
         </el-button>
       </div>
@@ -701,6 +701,7 @@
   import areaToText from '../../commonFun/areaToText.js';
   import areaArr from '../../commonFun/areaPackage_new'
   import areaArrToText from '../../commonFun/areaToText_new'
+  import commaFormat from '../../commonFun/commaFormat'
 
   export default {
     name: "createPlan",
@@ -775,6 +776,7 @@
         city: [],                     // step2 城市
         area: [],                    // step2城市下属区域
         activeIndex: 0,             //step2当前选中的城市下标
+        activeRName: '',            //step2当前选中的城市名称
         areaName: '全市',           // step2当前选中的区域
         quotation: [],              // step3 报价单汇总
         ADchanger: {rid: '', GMDate: 0, reaPrice: 0,}, // 广告费修改
@@ -807,6 +809,7 @@
         companyName: [], //step1公司名称
         cName: '',         // 选中公司名称
         companyBrand: [], //step1公司品牌
+        cBand:'空',           // 选中的品牌
         ownerBU: [],  //step1联系人
         //step1投放城市
         throwCity: [],
@@ -850,7 +853,8 @@
         searchInput: '',
         planSelect: '',
         active: 0, //步骤
-        dateInput: [],
+        dateInput: [],            // 时间输入框
+        beforeDate: [],           // 时间输入框的前一次时间
         //setp1创建方案表单
         planForm: {
           planName: '',
@@ -865,9 +869,9 @@
           planName: [
             {validator: validateName, trigger: 'blur'},
             {required: true, type:'string', message: '方案名称不能为空', trigger: 'blur'},
-            {max: 40,message: '最多只能输入40个字节', trigger: 'blur'},
+            {max: 30,message: '最多只能输入30个字节', trigger: 'blur'},
           ],
-          concat: [
+          ownerBU: [
             {required: true, message: '请选择联系人', trigger: 'change'},
           ],
           ownerSales: [
@@ -924,7 +928,11 @@
         shopMedia_ADNum:{mediaNum:0,ADNum:0},
         ADloading:'',
         areaCity:[],
-        listIndex:0,    // 记录滚动加载到的下标
+    //    listIndex: 0,    // 记录滚动加载到的下标
+        CityPlanIndex:[],       // 记录每个城市遍历到的下标
+        activeCityData:{},     // 城市切换的数据，默认为this.city[0]
+        loadScroll: true,      // 搜索后不执行滚动加载
+        dateTime:''             // 获取今天日期
       };
     },
     created: function () {
@@ -933,11 +941,6 @@
     mounted() {
       this.getsessionData()   // 获取session中的数据
       this.areaCity = areaArr.cityArea()
-      //  this.getAdList()     // 获取选点列表
-      // this.Get_cName()     // 获取公司名称列表
-      //  this.getAreaFun()    // 获取城市区域
-      //  this.GetBrand()
-      //  this.ShowRegion()// 获取城市接口
       // 注：window.onresize只能在项目内触发1次
       let that = this;
       window.onresize = function windowResize() {    // 实时监控body的宽带。注：修改该方法后要重启项目并重新打开页面
@@ -955,22 +958,6 @@
       shopAnimate.style.right = this.shopXY.x + 'px'
       $(function () {
         //事件委托
-        /*  $('.content_top_wrap').on('click', 'dd', function () {
-            if ($(this).hasClass('active')) {
-              $(this).removeClass('active')
-            } else {
-              $(this).addClass('active');
-            }
-          });*/
-       /* //筛选输入框
-        $('.content_top_wrap').on('focus', '.input', function () {
-          $(this).parents('.input-wrap').addClass('focus');
-          $(this).siblings('button').show();
-        }).on('blur', '.input', function () {
-          $(this).parents('.input-wrap').removeClass('focus');
-          $(this).siblings('button').hide();
-        });*/
-
         $('.content_top_wrap').on('click', '.close-tags', function () {
           $(this).parents('.tags').hide();
         });
@@ -999,27 +986,20 @@
     methods: {
       //监听table滚动
       loadMore () {
-        if (this.loadSign) {
-          this.loadSign = false
-          this.addADList()
-          // console.log('滚动了')
-          setTimeout(() => {
-            this.loadSign = true
-          }, 500)
-          // console.log('到底了')
+        if(this.loadScroll){
+          if (this.loadSign) {
+            this.loadSign = false
+            this.addADList()
+            // console.log('滚动了')
+            setTimeout(() => {
+              this.loadSign = true
+            }, 500)
+            // console.log('到底了')
+          }
+        }else{
+          console.log('此时为搜索出来的数据')
         }
       },
-  /*    openFullScreen2() {
-        const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
-        setTimeout(() => {
-          loading.close();
-        }, 2000);
-      },*/
       // step1投放城市权限是全国时handleClose1、showInput、handleInputConfirm
       spliceCity(tag) { // step1方案创建,删除选择城市
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
@@ -1265,6 +1245,10 @@
             pbs         String【必填】      广告开始投放日期
             pbe         String【必填】      广告投放结束日期
             asids       String【必填】      选择的广告点位asID组合，以","逗号组合*/
+        let csmArr = this.CSMList
+        let shopingArr = this.shopingList
+        console.log('shopingArr', shopingArr)
+        console.log('csmArr', csmArr)
         let uid = this.sessionData.uID
         api.getApi('/GetAPD', {uid: uid, apid: apID}).then(res=>{
           console.log('获取pdid', res)
@@ -1276,7 +1260,45 @@
                 let child = this.cityOptions[t].children
                 for(let g=0;g<child.length;g++){
                   if(child[g].value == APDData[j].rID){
-                    console.log('城市名',child[g].label,'城市rid',child[g].value,'pdid',APDData[j].pdID)
+                    let city = child[g].label
+                    for (let n = 0; n < csmArr.length; n++){
+                      let asIDs = ''
+                      for (let i = 0; i < shopingArr.length; i++) {
+                        if (csmArr[n].city === shopingArr[i].city && csmArr[n].schedules === shopingArr[i].schedules) {
+                          // alert('2')
+                          if (asIDs === '') {
+                            // alert('2aa',shopingArr[i].asIDs)
+                            asIDs = shopingArr[i].asIDs
+                          } else {
+                            // alert('3aa',shopingArr[i].asIDs)
+                            asIDs = asIDs + ',' + shopingArr[i].asIDs
+                          }
+                        }
+                      }
+                      console.log('+++++++++++++', asIDs)
+                      if (csmArr[n].city == city){
+                        let pointParams = {
+                          uid: uid,
+                          pdid: APDData[j].pdID,
+                          pbs: csmArr[n].schedules.split('-')[0],
+                          pbe: csmArr[n].schedules.split('-')[1],
+                          asids: asIDs,
+                        }
+                        console.log('提交选点的信息', csmArr[n].city, pointParams)
+                        api.postApi('/SendAdBase', pointParams).then(res => {
+                          console.log('提交选点后返回的data', res)
+                          let AdBase = res.data
+                          // this.CreateAPDFun()
+                          if(n >= csmArr.length -1){
+                            if (j >= APDData.length - 1) {
+                              this.CreateAPDFun()
+                            }
+                          }
+                        })
+                      }
+                    }
+
+                 /*   console.log('城市名',child[g].label,'城市rid',child[g].value,'pdid',APDData[j].pdID)
                     let pointParams = {
                       uid: uid,
                       pdid: APDData[j].pdID,
@@ -1290,108 +1312,69 @@
                     if(j >= APDData.length-1){
                       this.SendAdBaseFun(pointArr)
                       console.log('pointArr',pointArr)
-                    }
+                    }*/
                   }
                 }
               }
             }
           }
         })
-        /*let csmArr = this.CSMList
-        let shopingArr = this.shopingList
-        console.log('shopingArr',shopingArr)
-        console.log('csmArr',csmArr)
-        for (let n = 0; n < csmArr.length; n++) {
-          let asIDs = ''
-          // alert('1')
-          for (let i = 0; i < shopingArr.length; i++) {
-            if (csmArr[n].city === shopingArr[i].city && csmArr[n].schedules === shopingArr[i].schedules){
-              // alert('2')
-              if (asIDs === '') {
-                // alert('2aa',shopingArr[i].asIDs)
-                asIDs = shopingArr[i].asIDs
-              } else {
-                // alert('3aa',shopingArr[i].asIDs)
-                asIDs = asIDs + ',' + shopingArr[i].asIDs
-              }
-            }
-          }
-          console.log('+++++++++++++', asIDs)
-          let uid = this.sessionData.uID*/
-         /* api.getApi('/GetAPD', {uid: uid, apid: apID}).then(res=>{
-            console.log('获取pdid', res)
-            let APDData = res.data
-            if (APDData.length !== 0) {
-              let pointParams = {
-                uid: uid,
-                pdid: 0,//APDData[0].pdID, // 1
-                pbs: csmArr[n].schedules.split('-')[0],
-                pbe: csmArr[n].schedules.split('-')[1],
-                asids: asIDs,
-              }
-              console.log('this.cityOptions',this.cityOptions)
-              for(let j=0;j<APDData.length;j++){
-                for(let t=0;t<this.cityOptions.length;t++){
-                  for(let g=0;g<this.cityOptions[t].children.length;g++){
-                    if(this.cityOptions[t].children[g].label === csmArr[n].city){
-                      pointParams.pdid = APDData[j].pdID
-                      console.log('提交选点的信息', pointParams)
-                      api.postApi('/SendAdBase', pointParams).then(res => {
-                        console.log('提交选点后返回的data', res)
-                        let AdBase = res.data
-                        // this.CreateAPDFun()
-                        if (n >= csmArr.length - 1) {
-                          this.CreateAPDFun()
-                        }
-                      })
-                    }
-                  }
-                }
-              }
-            }
-          })*/
         },
+
       SendAdBaseFun(pointArr) {
         let csmArr = this.CSMList
         let shopingArr = this.shopingList
         console.log('shopingArr', shopingArr)
         console.log('csmArr', csmArr)
-        for (let n = 0; n < csmArr.length; n++) {
-          let asIDs = ''
-          // alert('1')
-          for (let i = 0; i < shopingArr.length; i++) {
-            if (csmArr[n].city === shopingArr[i].city && csmArr[n].schedules === shopingArr[i].schedules) {
-              // alert('2')
-              if (asIDs === '') {
-                // alert('2aa',shopingArr[i].asIDs)
-                asIDs = shopingArr[i].asIDs
-              } else {
-                // alert('3aa',shopingArr[i].asIDs)
-                asIDs = asIDs + ',' + shopingArr[i].asIDs
+        console.log('pointArr',pointArr)
+        for(let j=0;j<pointArr.length;j++) {
+          for (let n = 0; n < csmArr.length; n++){
+            let asIDs = ''
+            for (let i = 0; i < shopingArr.length; i++) {
+              if (csmArr[n].city === shopingArr[i].city && csmArr[n].schedules === shopingArr[i].schedules) {
+                // alert('2')
+                if (asIDs === '') {
+                  // alert('2aa',shopingArr[i].asIDs)
+                  asIDs = shopingArr[i].asIDs
+                } else {
+                  // alert('3aa',shopingArr[i].asIDs)
+                  asIDs = asIDs + ',' + shopingArr[i].asIDs
+                }
               }
             }
-          }
-          console.log('+++++++++++++', asIDs)
-          let uid = this.sessionData.uID
-          for(let j=0;j<pointArr.length;j++){
-            if(csmArr[n].city == pointArr[j].city){
+            console.log('+++++++++++++', asIDs)
+            if (csmArr[n].city == pointArr[j].city) {
               //asids: asIDs,
               pointArr[j].obj.pbs = csmArr[n].schedules.split('-')[0]
               pointArr[j].obj.pbe = csmArr[n].schedules.split('-')[1]
               pointArr[j].obj.asids = asIDs
-              let pointParams =  pointArr[j].obj
-              console.log('提交选点的信息',csmArr[n].city, pointParams)
+              let pointParams = pointArr[j].obj
+              console.log('提交选点的信息', csmArr[n].city, pointParams)
               api.postApi('/SendAdBase', pointParams).then(res => {
                 console.log('提交选点后返回的data', res)
                 let AdBase = res.data
                 // this.CreateAPDFun()
-                if (n >= csmArr.length - 1) {
-                  this.CreateAPDFun()
+                if(n >= csmArr.length -1){
+                  if (j >= pointArr.length - 1) {
+                    this.CreateAPDFun()
+                  }
                 }
               })
             }
           }
         }
+      },
+      setAdBase(params,n){
+        let pointParams = params
+        // console.log('setAdBase提交选点的信息', pointParams)
+        api.postApi('/SendAdBase', pointParams).then(res => {
+          console.log('提交选点后返回的data', res)
+          let AdBase = res.data
+          // this.CreateAPDFun()
+          if (n >= this.CSMList.length - 1) {
+            this.CreateAPDFun()
+          }
+        })
       },
       // 创建方案投放城市详情(报价单数据提交)CreateAPD
       CreateAPDFun() {
@@ -1422,12 +1405,13 @@
             fdays: this.quotation[i].GMDate,  // 赠送数量：面/天
             ps: '',       // 方案投放开始时间
             pe: '',       // 投放结束日期
-            pdfee: this.quotation[i].advertyPrice * 100,         //  实计广告费用
-            pdn: this.badgeNumber,                      // 投放点位数
+            //commaFormat.noComma(this.quotation[i].advertyPrice) * 100,
+            pdfee: parseInt(this.quotation[i].advertyPrice * 100),    //  实际广告费用
+            pdn: this.quotation[i].ADNumber,                      // 投放点位数
             pdm: this.quotation[i].makePrice * 100,   // 实计制作费用
-            pdt: this.quotation[i].cash * 100,        // 现金金额
-            pdsf: this.quotation[i].zyzh * 100,       // 置换金额
-            pdof: this.quotation[i].other * 100,      // 其他金额
+            pdt: commaFormat.noComma(this.quotation[i].cash) * 100,        // 现金金额
+            pdsf: commaFormat.noComma(this.quotation[i].zyzh) * 100,       // 置换金额
+            pdof: commaFormat.noComma(this.quotation[i].other) * 100,      // 其他金额
           }
           if(this.sessionData.uType === 'BD'){
             delete CAPDParams.muid;
@@ -1435,18 +1419,20 @@
           let schedulesArr = this.quotation[i].schedules.split('-')
           CAPDParams.ps = schedulesArr[0]
           CAPDParams.pe = schedulesArr[schedulesArr.length - 1]
-          console.log('报价单数据提交:', CAPDParams)
+          console.log('广告画数：',this.quotation[i].ADNumber,',报价单数据提交:', CAPDParams)
           api.postApi('/CreateAPD', CAPDParams).then(res => {
             console.log('提交报价单后台返回数据：', res)
             let APD_data = res.data
+            this.ADloading.close()
             if (!res.data.SysCode) {
               if (res.data !== '') {
-                this.ADloading.close()
                 Message({
                   message: '投放城市的报价信息提交成功！',
                   type: 'success'
                 })
-                this.active++
+                //获取品牌
+                this.getBand()
+                this.active = 3
               } else {
                 Message({
                   message: '投放城市的报价信息提交失败！',
@@ -1490,6 +1476,7 @@
             this.city = cityArr
             this.city.sort(this.compareFun)
             console.log('this.city ', this.city)
+            this.activeCityData = this.city[0]    // 设置初始选中城市信息
             for (let n = 0; n < this.city.length; n++) {
               let rid = this.city[n].rid
               console.log('投放城市rid', rid)
@@ -1535,9 +1522,16 @@
       },
       // stpe2, tab切换城市
       activeCity(item, index) {
+        // 切换城市置空搜索框，可执行滚动加载
+        this.loadScroll = true
+        this.searchInput = ''
+
         //  console.log('stpe2,tab切换城市',item)
         this.activeIndex = index
+        this.activeRName = item.rName
+        this.activeCityData = item
         this.areaName = '全市'
+        console.log('item.rid',item.rid,',this.totalPlanList',this.totalPlanList)
         for (let i = 0; i < this.totalPlanList.length; i++) {
           if (this.totalPlanList[i].rid === item.rid) {
             //    console.log('this.totalPlanList[i]',this.totalPlanList[i])
@@ -1571,8 +1565,116 @@
       },
       //  stpe2, 切换区域
       activeArea(rName) {
+        this.loadScroll = false
         this.areaName = rName
-
+        // let AName = rName
+        // let planArr = this.copyPlanList
+        // console.log('切换区域',AName,',planArr',planArr)
+        // let tempArr = []
+        // if(rName != '全市'){
+        //   for(let i=0;i<planArr.length;i++){
+        //     if(planArr[i].origin === AName){
+        //       console.log('找到了',AName)
+        //       tempArr.push(planArr[i])
+        //     }else{
+        //       console.log('没有匹配到',AName)
+        //     }
+        //   }
+        //   console.log('tempArr',tempArr)
+        //   this.planList = tempArr
+        //   console.log('搜索后的this.planList',this.planList)
+        // }else{
+        //   this.planList = this.copyPlanList
+        // }
+        this.filterByArea(rName)
+      },
+      // 城市区域过滤
+      filterByArea(name){
+        let AName = name
+        let copyPlan = this.copyPlanList
+        console.log('切换区域',AName,',copyPlan',copyPlan)
+        if(AName !== '全市'){
+          this.loading = true
+          let filterAreaArr = []
+          let FBAIndex = this.activeIndex
+          console.log(FBAIndex,',城市区域过滤的beforPlanList',this.beforADTotalList)
+          let FBA = this.beforADTotalList[FBAIndex].list
+          for (let i = 0; i < FBA.length; i++) {
+            if (AName === FBA[i].rName) {
+              filterAreaArr.push(FBA[i])
+            } else {
+              console.log('不匹配', AName)
+            }
+          }
+          console.log('城市区域过滤到的数据:',filterAreaArr)
+          if(filterAreaArr.length !== 0){
+            this.filterByADLaunch(filterAreaArr)
+          }else{
+            this.planList = []
+            this.loading = false
+          }
+        }else{
+          this.planList = copyPlan
+          this.loadScroll = true
+        }
+      },
+      // 根据过滤条件得到的数据再根据被占列表AdLaunchList进行帅选
+      filterByADLaunch(fdata){
+        let filterData = fdata
+        let filterPlanArr = []
+        let cityName = this.activeCityData.rName //this.activeRName
+        let FBAIndex = this.activeIndex
+        let filterADLaunch = this.AdLaunchList[FBAIndex].list
+        for(let n=0;n<filterData.length;n++){
+          let filterAD = {
+            rid: FBAIndex + n.toString(),
+            mID: filterData[n].mID,
+            asIDs: filterData[n].asIDs,
+            asLabs: filterData[n].asLabs,
+            recName: filterData[n].resName,
+            city: cityName, //'广州',
+            origin: filterData[n].rName,
+            buildType: filterData[n].cType,
+            houseNum: filterData[n].hNum,
+            buildPrice: (filterData[n].hPrice / 100),
+            mediaName: filterData[n].mTitle,
+            buildNum: filterData[n].fNum,
+            schedules: this.dateInput[0] + '-' + this.dateInput[1],
+            businessOrigin: filterData[n].tradingArea,
+            assetID: filterData[n].assetTag,
+            liveYear: filterData[n].chDay,
+            adLimit: filterData[n].notPush,
+            checkBox: {A: false, B: false},
+            box: {A: false, B: false},
+          }
+          if (filterData[n].asLabs.indexOf('A') === -1) {
+            filterAD.box.A = true
+          }
+          if (filterData[n].asLabs.indexOf('B') === -1) {
+            filterAD.box.B = true
+          }
+          let asIDArr = filterData[n].asIDs.split(',')
+          let asLabArr = filterData[n].asLabs.split(',')
+          for (let j = 0; j < filterADLaunch.length; j++) {
+            for (let t = 0; t < 2; t++) {
+              if (filterADLaunch[j].asID == asIDArr[t]) {
+                if (asLabArr[t] === 'B') {
+                  filterAD.box.B = true
+                } else if (asLabArr[t] === 'A') {
+                  filterAD.box.A = true
+                }
+              }
+            }
+          }
+          if (filterAD.box.A !== true || filterAD.box.B !== true) {   // 去除AB两面都被占的
+            filterPlanArr.push(filterAD)
+          }
+          if(n >= filterData.length-1){
+            console.log('搜索中的filterPlanArr',filterPlanArr)
+            this.planList = filterPlanArr
+          }
+        }
+        this.loading = false
       },
       // 获取广告点位列表
       getAdList() {
@@ -1625,40 +1727,53 @@
         }
       },
       // 获取被占列表
-      GetAdLaunchFun(letter){
+      GetAdLaunchFun(letter) {
         this.loading = true
-        let starTime,endTime
-        if(letter === 'search'){
+        let starTime, endTime
+        if (letter === 'search') {
           starTime = this.dateInput[0]
-          endTime =  this.dateInput[1]
-        }else{
+          endTime = this.dateInput[1]
+        } else {
+          this.dateTime = this.GetDateStr(0)
           starTime = this.GetDateStr(1)
-          endTime = this.GetDateStr(15)
+          endTime = this.GetDateStr(14)
           this.dateInput = [starTime, endTime] // 设置默认时间
         }
-        console.log('开始日期', starTime, '结束日期', endTime)
-        let uid = this.sessionData.uID
-        let throwCity = this.city
-        console.log('投放城市333333333', throwCity)
-        for (let t = 0; t < throwCity.length; t++) {
-          let rid = throwCity[t].rid
-          let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
-          api.getApi('/GetAdLaunch', LaunchParams).then(res=>{
-            console.log('被占选点列表', res) //AdLaunchList
-            let adLaunch = res.data
-            let ADLaunchObj = {rid: rid, list: []}
-            ADLaunchObj.list = adLaunch
-            this.AdLaunchList.push(ADLaunchObj)
-            this.AdLaunchList.sort(this.compareFun)
-            if(t >= throwCity.length -1){
-              console.log('this.AdLaunchList',this.AdLaunchList)
-              this.setAdLaunchFun()
-            }
-          })
+        if (this.dateInput != this.beforeDate) {
+          this.AdLaunchList = []
+          console.log('开始日期', starTime, '结束日期', endTime)
+          let uid = this.sessionData.uID
+          let throwCity = this.city
+          console.log('投放城市333333333', throwCity)
+          for (let t = 0; t < throwCity.length; t++) {
+            let rid = throwCity[t].rid
+            let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
+            api.getApi('/GetAdLaunch', LaunchParams).then(res => {
+              console.log('被占选点列表', res) //AdLaunchList
+              let adLaunch = res.data
+              let ADLaunchObj = {rid: rid, list: []}
+              ADLaunchObj.list = adLaunch
+              this.AdLaunchList.push(ADLaunchObj)
+              this.AdLaunchList.sort(this.compareFun)
+              if (this.AdLaunchList.length >= throwCity.length) {
+                console.log('this.AdLaunchList', this.AdLaunchList)
+                if (letter === 'search') {
+                  this.setAdLaunchFun('search')
+                } else {
+                  this.setAdLaunchFun()
+                }
+                this.beforeDate = this.dateInput
+              }
+            })
+          }
+        }else if(this.searchInput !== ''){
+          this.ResOriginSearch()
+        }else{
+          this.loading = false
         }
       },
       // 重排列表，显示planList
-      setAdLaunchFun(){
+      setAdLaunchFun(letter){
         console.log('重排列表')
         let ADArr = this.beforADTotalList
         let ADLaunchArr = this.AdLaunchList
@@ -1666,11 +1781,17 @@
         let totalList = []        // 全部城市的选点列表
         console.log('重排列表this.beforADTotalList',this.beforADTotalList)
         console.log('重排列表this.AdLaunchList',this.AdLaunchList)
+        console.log('重排列表throwCity',throwCity)
         for (let t = 0; t < throwCity.length; t++){
-          for(let n=0;n<ADArr.length;n++){
+          console.log('城市的rid',throwCity[t].rid)
+          for(let n = 0; n < ADArr.length; n++){
+            console.log('beforADTotalList的rid',ADArr[n].rid)
             if(throwCity[t].rid == ADArr[n].rid){
-              for(let g=0;g<ADLaunchArr.length;g++){
-                if(ADArr[n].rid == throwCity[t].rid){
+              console.log('城市与全部点位相同的rid',ADArr[n].rid)
+              for(let g = 0; g < ADLaunchArr.length; g++){
+                console.log('被占列表AdLaunchList的rid',ADLaunchArr[g].rid)
+                if(ADLaunchArr[g].rid == ADArr[n].rid){
+                  console.log('全部点位与被占列表相同的rid',ADLaunchArr[g].rid)
                   let ADList = ADArr[n].list
                   let adLaunch = ADLaunchArr[g].list
                   console.log(throwCity[t].rid,'各城市的总选点',ADArr[n])
@@ -1720,20 +1841,24 @@
                         }
                       }
                       if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                        // let obj = {rid: throwCity[t].rid, obj: adObj}
                         planArr.list.push(adObj)
-                        console.log('去除AB两面都被占的planArr',planArr)
+                        // console.log('去除AB两面都被占的planArr',planArr)
                       }else{
-                        console.log('空数据',i)
+                        // console.log('空数据',i)
                       }
                       if (i >= 19 && ADList.length >= 19 && planArr.list.length >= 19) {
-                        this.listIndex = i
+                        let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
+                        this.CityPlanIndex.push(indexObj)
+                        console.log('城市rid:',indexObj.rid,'遍历到的下标:',indexObj.LIndex)
+                        this.listIndex = i + 1
                         console.log('方案选点列表1', planArr)
                         totalList.push(planArr)
                         break
                       }else {
                         if (i >= ADList.length - 1) {
-                          this.listIndex = i
+                          let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
+                          this.CityPlanIndex.push(indexObj)
+                          this.listIndex = i + 1
                           console.log('方案选点列表长度小于19', planArr)
                           // this.planList = planArr
                           totalList.push(planArr)
@@ -1743,18 +1868,21 @@
                   }else{
                     totalList.push(planArr)
                   }
-                  // break
                 }
               }
-              // break
             }
           }
         }
         console.log('11111全部城市的选点列表', totalList)
+        console.log('各城市显示到的下标this.CityPlanIndex',this.CityPlanIndex)
         this.totalPlanList = totalList
-        this.planList = this.totalPlanList[0].list
+        let ATIndex = this.activeIndex
+        this.planList = this.totalPlanList[ATIndex].list
         this.loading = false
         this.copyPlanList = this.planList
+        if(letter === 'search' && this.searchInput !== ''){
+          this.ResOriginSearch()      // 资源名称或商圈搜索
+        }
       },
       // 监听滚动，每次曾加20条数据
       addADList(){
@@ -1762,35 +1890,35 @@
         let begin = this.dateInput[0]
         let end = this.dateInput[1]
         console.log('开始日期', begin, '结束日期', end)
-        let uid = this.sessionData.uID
         let throwCity = this.city
-        let totalList = []        // 全部城市的选点列表
         let beforAD = this.beforADTotalList   // 选点列表
         let AdLaunch = this.AdLaunchList       // 被占点位
-        let index = this.listIndex //this.planList.length
-        console.log('下标为',index)
+        let cityListIndex = this.CityPlanIndex
+        console.log('cityListIndex',cityListIndex)
         console.log('投放城市333333333', throwCity)
         console.log('this.beforADTotalList',this.beforADTotalList)
-        for (let t = 0; t < throwCity.length; t++) {
-          let rid = throwCity[t].rid
           for (let n = 0; n < beforAD.length; n++) {
-              if(rid === beforAD[n].rid){
+            for(let g=0;g<cityListIndex.length;g++){
+              if(cityListIndex[g].rid === beforAD[n].rid && this.activeCityData.rid === beforAD[n].rid){
+                let rid = cityListIndex[g].rid
+                console.log(cityListIndex[g].rid,'该城市从下标为',cityListIndex[g].LIndex)
+                let myIndex = cityListIndex[g].LIndex
                 let ADList = beforAD[n].list
                 // 被占广告点位列表【选点】GetAdLaunch
                 for(let m=0;m<AdLaunch.length;m++){
-                  if (rid === AdLaunch[m].rid) {
+                  if (rid === AdLaunch[m].rid && beforAD[n].rid === AdLaunch[m].rid) {
                     console.log('被占广告点位列表',rid,AdLaunch[m])
                     let adLaunch = AdLaunch[m].list
-                    let planArr = {rid:throwCity[t].rid,list:[]}
-                    for (let i = index; i < ADList.length; i++) {
+                    let planArr = {rid: rid,list:[]}
+                    for (let i = myIndex; i < ADList.length; i++) {
                       console.log('遍历选点列表')
                       let adObj = {
-                        rid: t.toString() + i.toString(),
+                        rid: n.toString() + i.toString(),
                         mID: ADList[i].mID,
                         asIDs: ADList[i].asIDs,
                         asLabs: ADList[i].asLabs,
                         recName: ADList[i].resName,
-                        city: throwCity[t].rName, //'广州',
+                        city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
                         origin: ADList[i].rName,
                         buildType: ADList[i].cType,
                         houseNum: ADList[i].hNum,
@@ -1825,38 +1953,54 @@
                         }
                       }
                       if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                        // planArr.push(adObj)
                         planArr.list.push(adObj)
                       }
-                      if (i >= index + 19 && ADList.length >= index + 19) {
-                        this.listIndex = i
+                      if (i >= myIndex + 19 && ADList.length >= myIndex + 19 && planArr.list.length >= 19) {
+                        this.CityPlanIndex[g].LIndex = i + 1
+                        this.listIndex = i + 1
                         console.log('滚动加载方案选点列表', planArr)
-                        totalList.push(planArr)
+                        this.addListPush(planArr)
                         break
                       } else {
                         if (i >= ADList.length - 1) {
-                          this.listIndex = i
+                          this.CityPlanIndex[g].LIndex = i + 1
+                          this.listIndex = i + 1
                           console.log('滚动加载方案选点列表小于19', planArr)
-                          totalList.push(planArr)
+                          this.addListPush(planArr)
                         }
                       }
-                    }
-                    if (t >= throwCity.length - 1) {
-                      console.log('全部城市的选点列表', totalList)
-                      this.addListPush(totalList)
                     }
                   }
                 }
               }
+            }
           }
-        }
       },
       // addADList完成push动作
-      addListPush(totalList){
-        this.totalPlanList = totalList
-        // this.planList = this.totalPlanList[0]
+      addListPush(addData){
+        let addList = addData
+        console.log('addListPush滚动增加的数据',addList)
+        let rid = this.city[this.activeIndex].rid
+        console.log('addListPush',rid)
+        // for(let i=0;i<addList.length;i++){
+          if(rid === addList.rid){
+            let tempArr = addList.list
+            for(let j=0;j<tempArr.length;j++){
+              this.planList.push(tempArr[j])
+            }
+          }
+        // }
+        this.copyPlanList = this.planList
+        // this.activeArea(this.areaName)      // 新增后过滤区域
+       /* this.totalPlanList = totalList
+        console.log('addListPush this.city',this.city)
+        let rid = this.city[this.activeIndex].rid
+        console.log('addListPush',rid)
         for(let i=0;i<this.totalPlanList.length;i++){
-          if(this.activeIndex == i){
+          if(rid == this.totalPlanList[i].rid){
+          // if(this.activeIndex === i){
+            console.log('this.activeIndex',this.activeIndex)
+            console.log(i,',this.totalPlanList[i].list',this.totalPlanList[i].list)
             let tempArr = this.totalPlanList[i].list
             for(let j=0;j<tempArr.length;j++){
               this.planList.push(tempArr[j])
@@ -1864,135 +2008,8 @@
           }
         }
         this.copyPlanList = this.planList
+        this.activeArea(this.areaName) // 新增后过滤区域*/
       },
-      // 根据时间段获取被占点位，并重组选点列表
-     /* resetADList(){
-        // alert('2')
-        this.loading = true
-        let uid = this.sessionData.uID
-        let throwCity = this.city
-        let beforADTotal = this.beforADTotalList
-        let totalList = []        // 全部城市的选点列表
-        console.log('投放城市4444444', throwCity)
-        for (let t = 0; t < throwCity.length; t++) {
-          let rid = throwCity[t].rid
-          let ADList = []
-          // let ADList = this.ADTotalList[]
-          for(let j=0; j<beforADTotal.length;j++){
-            if(beforADTotal[j].rid == rid){
-              ADList = beforADTotal[j].list
-              // let tempADList = ADList
-              let planArr = []
-              if(ADList.length !== 0){
-                // 被占广告点位列表【选点】GetAdLaunch
-                let LaunchParams = {uid: uid, rid: rid, ls: this.dateInput[0], le: this.dateInput[1]}
-                console.log('搜索被占点位列表的params',LaunchParams)
-                api.getApi('/GetAdLaunch', LaunchParams).then(res => {
-                  console.log('被占选点列表', res)
-                  let adLaunch = res.data
-                  // let adLaunch = [
-                  //   {
-                  //     lID: 7,
-                  //     asID: 2,
-                  //     pdID: 4,
-                  //     lStar: "2018-06-06",
-                  //     lEnd: "2018-06-13",
-                  //     uID: 0,
-                  //     lSetTime: "2018-06-08 19:00:23.0",
-                  //     lState: 0
-                  //   },
-                  //   {
-                  //     lID: 5,
-                  //     asID: 5,
-                  //     pdID: 10,
-                  //     lStar: "2018-06-07",
-                  //     lEnd: "2018-06-21",
-                  //     uID: 0,
-                  //     lSetTime: "2018-06-08 10:44:07.0",
-                  //     lState: 1
-                  //   }
-                  // ]
-                  for (let i = 0; i < ADList.length; i++) {
-                    console.log('遍历选点列表')
-                    let adObj = {
-                      rid: t.toString() + i.toString(),
-                      mID: ADList[i].mID,
-                      asIDs: tempADList[i].asIDs,
-                      asLabs: tempADList[i].asLabs,
-                      recName: tempADList[i].resName,
-                      city: rName, //'广州',
-                      origin: tempADList[i].rName,
-                      buildType: tempADList[i].cType,
-                      houseNum: tempADList[i].hNum,
-                      buildPrice: (tempADList[i].hPrice / 100),
-                      mediaName: tempADList[i].mTitle,
-                      buildNum: tempADList[i].fNum,
-                      schedules: this.dateInput[0] + '-' + this.dateInput[1],
-                      businessOrigin: tempADList[i].tradingArea,
-                      assetID: tempADList[i].assetTag,
-                      liveYear: tempADList[i].chDay,
-                      adLimit: tempADList[i].notPush,
-                      checkBox: {A: false, B: false},
-                      box: {A: false, B: false},
-                    }
-                    if (ADList[i].asLabs.indexOf('A') === -1) {
-                      adObj.box.A = true
-                    }
-                    if (ADList[i].asLabs.indexOf('B') === -1) {
-                      adObj.box.B = true
-                    }
-                    let asIDArr = ADList[i].asIDs.split(',')
-                    let asLabArr = ADList[i].asLabs.split(',')
-                    for (let j = 0; j < adLaunch.length; j++) {
-                      for (let t = 0; t < 2; t++) {
-                        if (adLaunch[j].asID == asIDArr[t]) {
-                          if (asLabArr[t] === 'B') {
-                            adObj.box.B = true
-                          } else if (asLabArr[t] === 'A') {
-                            adObj.box.A = true
-                          }
-                        }
-                      }
-                    }
-                    if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                      planArr.push(adObj)
-                    }
-                    if(i >= 19 && ADList.length >=19){
-                      console.log('搜索后重组方案选点列表', planArr)
-                      totalList.push(planArr)
-                      break
-                    }else{
-                      if (i >= ADList.length - 1) {
-                        console.log('搜索后重组方案选点列表', planArr)
-                        // this.planList = planArr
-                        totalList.push(planArr)
-                      }
-                    }
-                  }
-                  if (t >= throwCity.length - 1) {
-                    console.log('全部城市的选点列表', totalList)
-                    this.totalPlanList = totalList
-                    this.planList = this.totalPlanList[0].list
-                    this.loading = false;
-                    this.copyPlanList = this.planList
-                    this.ResOriginSearch()
-                  }
-                })
-              }else{
-                totalList.push(planArr)
-              }
-            /!*  if(t >= throwCity.length-1){
-                // alert('完成选点列表')
-                console.log('全部城市的选点列表', totalList)
-                this.totalPlanList = totalList
-                this.planList = this.totalPlanList[0].list
-                this.loading = false;
-                this.copyPlanList = this.planList
-              }*!/
-            }
-          }
-        }
-      },*/
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
         let e = event || window.event;
@@ -2135,11 +2152,18 @@
           this.shopingList = []
           this.badgeNumber = 0
         } else if (this.active === 1) {
-          this.active++
-          this.creatTab()       // 报价单tab
-          this.getShopingCityName()   // 获取购物车列表的城市名称
-          this.quotationFun()   // 报价单计算
-          // this.creatAdPlan()    // 创建方案
+          if(this.badgeNumber !== 0){
+            this.active++
+            this.creatTab()       // 报价单tab
+            this.getShopingCityName()   // 获取购物车列表的城市名称
+            this.quotationFun()   // 报价单计算
+            // this.creatAdPlan()    // 创建方案
+          }else{
+            this.$message({
+              message: '请选择点位',
+              type: 'warning'
+            });
+          }
         } else if (this.active === 2) {
           this.ADloading = this.$loading({
             lock: true,
@@ -2147,30 +2171,16 @@
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           });
-          setTimeout(() => {
+          // setTimeout(() => {
             this.creatAdPlan()    // 创建方案
-          }, 1000);
+          // }, 1000);
         }
-        if (this.active > 2) {
-          // this.active = 0;
+        if (this.active > 3) {
+          this.active = 0;
         }
       },
       // 上一步
       prev() {
-        /* let topWrap = $('.content_top_wrap dd')
-         for(let i=0;i<topWrap.length;i++){
-           if(topWrap.eq(i).hasClass('active')){
-             console.log('值',topWrap.eq(i).text())
-           }
-         }*/
-        /*  let topWrap = document.getElementsByClassName('content_top_wrap')[0]
-          let dd = topWrap.getElementsByTagName('dd')
-        //  console.log(dd.length)
-          for(let i=0;i<dd.length;i++){
-            if(dd[i].getAttribute('class') == 'active'){
-              console.log('值',dd[i].innerHTML)
-            }
-          }*/
         if (this.active === 2) {
           this.active--;
           let that = this
@@ -2204,10 +2214,11 @@
           }
         });
       },
+      // 继续创建
       continueCreate() {
         this.active = 0;
-        //表单重置
-        /*this.planForm.resetFields();*/
+        Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
+      //  this.$refs['planForm'].resetFields() //表单重置
       },
       changePrice(letter, info) {
         if (letter === 'AD') {
@@ -2246,7 +2257,7 @@
               //   //  this.quotation[i].advertyPrice = this.ADchanger.reaPrice
               //     this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice/QArr[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
               //   }
-              this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)).toFixed(2)
+              this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)) //((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)).toFixed(2)
               this.quotation[i].GMDate = this.ADchanger.GMDate
               if (this.ADchanger.GMDate != 0) {
                 // alert('1')
@@ -2338,9 +2349,9 @@
                 });
               } else {
                 this.totalChange.other = this.totalChange.total - (Number(this.totalChange.zyzh) + Number(this.totalChange.cash))
-                this.quotation[i].cash = Number(this.totalChange.cash).toFixed(2)
-                this.quotation[i].zyzh = Number(this.totalChange.zyzh).toFixed(2)
-                this.quotation[i].other = Number(this.totalChange.other).toFixed(2)
+                this.quotation[i].cash = Number(this.totalChange.cash)  // Number(this.totalChange.cash).toFixed(2)
+                this.quotation[i].zyzh = Number(this.totalChange.zyzh)  // Number(this.totalChange.zyzh).toFixed(2)
+                this.quotation[i].other = Number(this.totalChange.other) // Number(this.totalChange.other).toFixed(2)
                 this.quotation[i].remark = this.totalChange.remark
                 this.computeTotal()
                 this.hideBox()
@@ -2506,10 +2517,12 @@
                   console.log('天数mDate',mDate,',面数mNUm',mNUm)
                   console.log(ADPriceList[i].rName, '广告门价格为', ADPriceList[i].adPrice)
                   // 广告费计算
-                  quotationObj.ADPrice = (ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
+                  quotationObj.ADPrice = (ADPriceList[i].adPrice / (100 * 2)) //(ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
                   console.log('刊例价(面/周)', quotationObj.ADPrice)
                   quotationObj.tfl =  mDate   //this.badgeNumber * 14                                         // 投放量(面·天)
-                  quotationObj.reaPrice = (quotationObj.tfl * (quotationObj.ADPrice / 7)).toFixed(2)        // 广告费总价
+                  console.log('(quotationObj.tfl * (quotationObj.ADPrice / 7))',(quotationObj.tfl * (quotationObj.ADPrice / 7)))
+                  quotationObj.reaPrice = (quotationObj.tfl * (quotationObj.ADPrice / 7))//(quotationObj.tfl * (quotationObj.ADPrice / 7)).toFixed(2)        // 广告费总价
+                  console.log(quotationObj,'quotationObj.reaPrice',quotationObj.reaPrice)
                   quotationObj.oldPrice = quotationObj.reaPrice               // 保存最初计算的价格
 
                   quotationObj.advertyPrice = quotationObj.reaPrice
@@ -2518,11 +2531,11 @@
 
                   // 制作费计算
                   quotationObj.ADNumber = mNUm //this.badgeNumber                                           // 广告画数量
-                  quotationObj.makePrice = (quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
+                  quotationObj.makePrice = (quotationObj.ADNumber * quotationObj.MPrice)//(quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
                   quotationObj.MReaPrice = quotationObj.makePrice
                   quotationObj.makeDiscount = Math.round(quotationObj.makePrice / quotationObj.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
 
-                  quotationObj.total = (Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice)).toFixed(2)
+                  quotationObj.total = (Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice))//(Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice)).toFixed(2)
                   quotationObj.cash = quotationObj.total
                   // 计算总价格
                   // this.totalPrice += quotationObj.total
@@ -2531,36 +2544,6 @@
                   // this.zyzh += quotationObj.zyzh
                   this.computeTotal()
                 }
-                /*if (ADPriceList[i].rID == quotationObj.rid && this.shopListCity[g] === quotationObj.city) {
-                  // alert(ADPriceList[i].adPrice)
-                  console.log('该城市的排期',quotationObj.schedules)
-                  console.log(ADPriceList[i].rName, '广告门价格为', ADPriceList[i].adPrice)
-                  // 广告费计算
-                  quotationObj.ADPrice = ADPriceList[i].adPrice / (100 * 2)       // 刊例价(面/周)
-                  console.log('刊例价(面/周)', quotationObj.ADPrice)
-                  quotationObj.tfl = this.badgeNumber * 14                    // 投放量(面·天)
-                  quotationObj.reaPrice = quotationObj.tfl * (quotationObj.ADPrice / 7)        // 广告费总价
-                  quotationObj.oldPrice = quotationObj.reaPrice               // 保存最初计算的价格
-
-                  quotationObj.advertyPrice = quotationObj.reaPrice
-                  console.log('广告费总价', quotationObj.advertyPrice)
-                  quotationObj.discount = Math.round(quotationObj.advertyPrice / quotationObj.reaPrice * 10000) / 100.00 + "%" // 广告费折扣百分比
-
-                  // 制作费计算
-                  quotationObj.ADNumber = this.badgeNumber                    // 广告画数量
-                  quotationObj.makePrice = quotationObj.ADNumber * quotationObj.MPrice       // 制作费 = 广告画数量 * 制作费单价
-                  quotationObj.MReaPrice = quotationObj.makePrice
-                  quotationObj.makeDiscount = Math.round(quotationObj.makePrice / quotationObj.MReaPrice * 10000) / 100.00 + "%" // 制作费折扣百分比
-
-                  quotationObj.total = quotationObj.advertyPrice + quotationObj.makePrice
-                  quotationObj.cash = quotationObj.total
-
-                  // 计算总价格
-                  this.totalPrice += quotationObj.total
-                  this.cash += quotationObj.cash
-                  this.other += quotationObj.other
-                  this.zyzh += quotationObj.zyzh
-                }*/
               }
             }
           }
@@ -2579,9 +2562,9 @@
         this.zyzh = 0
         for (let i = 0; i < this.quotation.length; i++) {
           this.totalPrice += this.quotation[i].total
-          this.cash= (Number(this.cash) + Number(this.quotation[i].cash)).toFixed(2) //cash
-          this.other = (Number(this.other) + Number(this.quotation[i].other)).toFixed(2)
-          this.zyzh =  (Number(this.zyzh) +  Number(this.quotation[i].zyzh)).toFixed(2)
+          this.cash= (Number(this.cash) + Number(this.quotation[i].cash))//(Number(this.cash) + Number(this.quotation[i].cash)).toFixed(2) //cash
+          this.other = (Number(this.other) + Number(this.quotation[i].other))//(Number(this.other) + Number(this.quotation[i].other)).toFixed(2)
+          this.zyzh =  (Number(this.zyzh) +  Number(this.quotation[i].zyzh))//(Number(this.zyzh) +  Number(this.quotation[i].zyzh)).toFixed(2)
         }
         if(this.other == 0 && this.zyzh == 0){
           this.totalPrice = this.cash
@@ -2704,15 +2687,16 @@
           // alert('不相同')
           this.delereRowByTotal(rows)
         }
+        this.computeMedia_AD() // 统计购物车媒体数、面数
       },
       // 当在购物车删除项不在当前选点列表（城市不同）时，去totalPlanList查找
       delereRowByTotal(rows) {
         let totalList = this.totalPlanList
         console.log('totalPlanList查找', totalList)
         for (let i = 0; i < totalList.length; i++) {
-          if (totalList[i][0].city === rows.city) {
+          if (totalList[i].list[0].city === rows.city) {
             console.log('找到城市:', rows.city)
-            let childrenList = totalList[i]
+            let childrenList = totalList[i].list
             for (let j = 0; j < childrenList.length; j++) {
               if (rows.rid === childrenList[j].rid) {
                 console.log('找到rid', rows.rid)
@@ -2879,7 +2863,10 @@
       //step2搜索按钮
       searchFun() {
         console.log('搜索排期时间', this.dateInput)
-        // this.resetADList()
+        // if(this.searchInput === ''){
+        //   this.activeIndex = 0
+        //   this.activeCityData = this.city[0]
+        // }
         this.GetAdLaunchFun('search') // 根据时间段获取被占点位，并重组选点列表
         // this.ResOriginSearch()
       },
@@ -2887,10 +2874,14 @@
      DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2002.12.18格式
        let aDate, oDate1, oDate2, iDays
        aDate = sDate1.split(".")
-       oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0])    //转换为12-18-2002格式
+       oDate1 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0])    //转换为12-18-2002格式
        aDate = sDate2.split(".")
-       oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0])
-       iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24)    //把相差的毫秒数转换为天数
+       oDate2 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0])
+       // console.log('oDate1',oDate1,',oDate2',oDate2)
+       iDays = Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24
+       // console.log('idays',iDays)
+       // let iDays_ = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24)    //把相差的毫秒数转换为天数
+       // console.log('iDays_',iDays_)
        return iDays
      },
       // 数组排序，城市rid从小到大排
@@ -2919,53 +2910,98 @@
       },
       // 资源名称\商圈搜索typeSelect
       ResOriginSearch() {
+        this.loadScroll = false
         console.log('selectValue', this.selectValue)
         console.log('searchInput', this.searchInput)
-        console.log('beforPlanList',this.beforPlanList)
+        console.log('beforPlanList',this.beforADTotalList)
         // console.log('this.copyPlanList',this.copyPlanList)
+        let empty = false
         let arr = []
         let index = this.activeIndex
-        let BPL = this.beforPlanList[index]
+        console.log(index,',beforPlanList',this.beforADTotalList)
+        let BPL = this.beforADTotalList[index].list
         for(let i=0;i<BPL.length;i++){
           if(this.selectValue === '资源名称'){
             if(this.searchInput === ''){
               arr = this.copyPlanList
-            }else if (this.searchInput === BPL[i].recName) {
+              empty = true
+            }else if (this.searchInput === BPL[i].resName) {
+              console.log('资源名称不为空')
               arr.push(BPL[i])
             }
           }else if(this.selectValue === '商圈'){
             if(this.searchInput === ''){
               arr = this.copyPlanList
-            }else if(this.searchInput === BPL[i].businessOrigin) {
+              empty = true
+            }else if(this.searchInput === BPL[i].tradingArea) {
+              console.log('商圈不为空')
               arr.push(BPL[i])
             }
           }
         }
-    /*    let planList = []
-        let arr = []
-        if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== '' && this.buildNum[1] !== '')
-          || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-          planList = this.backupsList
-        } else {
-          planList = this.copyPlanList
-        }
-        console.log('planList',planList)
-        for (let i = 0; i < planList.length; i++) { //buildType
-          if(this.selectValue === '资源名称'){
-            if(this.searchInput === ''){
-              arr = planList
-            }else if (this.searchInput === planList[i].recName) {
-              arr.push(planList[i])
-            }
-          }else if(this.selectValue === '商圈'){
-            if(this.searchInput === ''){
-              arr = planList
-            }else if(this.searchInput === planList[i].businessOrigin) {
-              arr.push(planList[i])
-            }
+        console.log('搜索到的数据:',arr)
+        console.log('empty',empty)
+        if(!empty){
+          let planArr = []
+          let rName = this.activeRName
+          let ADLaunch = this.AdLaunchList[index].list
+          for(let n = 0; n < arr.length; n++){
+            // for(let j = 0; j < ADLaunch.length; j++){
+              let adObj = {
+                rid: 0 + n.toString(),
+                mID: arr[n].mID,
+                asIDs: arr[n].asIDs,
+                asLabs: arr[n].asLabs,
+                recName: arr[n].resName,
+                city: rName, //'广州',
+                origin: arr[n].rName,
+                buildType: arr[n].cType,
+                houseNum: arr[n].hNum,
+                buildPrice: (arr[n].hPrice / 100),
+                mediaName: arr[n].mTitle,
+                buildNum: arr[n].fNum,
+                schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                businessOrigin: arr[n].tradingArea,
+                assetID: arr[n].assetTag,
+                liveYear: arr[n].chDay,
+                adLimit: arr[n].notPush,
+                checkBox: {A: false, B: false},
+                box: {A: false, B: false},
+              }
+              if (arr[n].asLabs.indexOf('A') === -1) {
+                adObj.box.A = true
+              }
+              if (arr[n].asLabs.indexOf('B') === -1) {
+                adObj.box.B = true
+              }
+              let asIDArr = arr[n].asIDs.split(',')
+              let asLabArr = arr[n].asLabs.split(',')
+              for (let j = 0; j < ADLaunch.length; j++) {   // 根据被占过滤禁用勾选
+                for (let t = 0; t < 2; t++) {
+                  if (ADLaunch[j].asID == asIDArr[t]) {
+                    if (asLabArr[t] === 'B') {
+                      adObj.box.B = true
+                    } else if (asLabArr[t] === 'A') {
+                      adObj.box.A = true
+                    }
+                  }
+                }
+              }
+              if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
+                planArr.push(adObj)
+              }
+              // }
+              if(n >= arr.length-1){
+                console.log('搜索中的planArr',planArr)
+                this.planList = planArr
+              }
+            // }
           }
+        }else{
+          this.planList = arr
         }
-        this.planList = arr*/
+        this.loading = false
+        // console.log('常量selectWrap',selectWrap)
       },
       tableHSearch(letter){       // 表头搜索this.copyPlanList
           console.log(' this.copyPlanList', this.copyPlanList)
@@ -3091,7 +3127,7 @@
           this.planList = arr
           this.backupsList = arr
           this.HSearch = ''
-          this.ResOriginSearch()
+      //    this.ResOriginSearch()
       },
       tableHSearch_2(data,letter){
         let arr = [];
@@ -3157,12 +3193,12 @@
       searchBT(val){
         let planList = []
         let arr = []
-        if((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''&& this.buildNum[1] !== '')
-          || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')||(this.liveYear[0] !== ''&&this.liveYear[1] !== '')){
-          planList = this.backupsList
-        }else{
+        // if((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''&& this.buildNum[1] !== '')
+        //   || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')||(this.liveYear[0] !== ''&&this.liveYear[1] !== '')){
+        //   planList = this.backupsList
+        // }else{
           planList = this.copyPlanList
-        }
+        // }
         for(let i=0;i<planList.length;i++){ //buildType
             if(val === '全部'){
               arr = planList
@@ -3226,6 +3262,22 @@
         this.shopMedia_ADNum.mediaNum = mediaArr.length
         this.shopMedia_ADNum.ADNum = mediaAD.length
       },
+      // 价格加上逗号
+      priceFormat(price) {
+        // console.log('price', price);
+        return commaFormat.init(price);
+      },
+      // 获取品牌
+      getBand(){
+        for (let n = 0; n < this.companyBrand.length; n++) {
+          if (this.companyBrand[n].value === this.planForm.companyBrand) {
+            this.cBand = this.companyBrand[n].label
+          }
+        }
+      },
+      clearData(){
+        Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
+      }
     }
   }
 </script>
@@ -4345,7 +4397,7 @@
   }
 
   .planPanel ul li {
-    padding-left: 153px;
+    padding-left: 194px;
     text-align: left;
     font-size: 14px;
     color: #666666;

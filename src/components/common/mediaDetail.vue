@@ -84,19 +84,19 @@
               <el-table-column
                 prop="adSize"
                 label="广告尺寸"
-                min-width="8%"
+                min-width="7%"
               >
               </el-table-column>
               <el-table-column
                 prop="adViewSize"
                 label="可视画面"
-                min-width="8%"
+                min-width="7%"
               >
               </el-table-column>
               <el-table-column
                 prop="notPush"
                 label="广告限制"
-                min-width="8%"
+                min-width="10%"
                 class="tar"
               >
               </el-table-column>
@@ -104,7 +104,6 @@
                 prop="mrk"
                 label="备注"
                 min-width="12%"
-
               >
               </el-table-column>
               <el-table-column
@@ -292,6 +291,7 @@
             }else if(MediaList[i].mState === 3){
               MediaList[i].mState ='待维修'
             }
+            MediaList[i].mrk = '--'
             //  this.mediaList[i] = MediaList[i]
             this.mediaList.push(MediaList[i])
           }

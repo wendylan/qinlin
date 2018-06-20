@@ -109,10 +109,15 @@
 						>
 						</el-table-column>
 						<el-table-column
-							prop="mTitle"
 							label="媒体名称"
 							min-width="8.2%"
 						>
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.mTitle" placement="bottom">
+                  <span>{{scope.row.mTitle}}</span>
+                </el-tooltip>
+
+              </template>
 						</el-table-column>
 						<el-table-column
 							prop="assetTag"
@@ -527,7 +532,7 @@ export default {
 				console.log('资源媒体列表：', res.data)
         //正在加载
         this.loading = false;
-				let RMList = res.data
+				let RMList = res.data.reverse();
 				if (!RMList.SysCode) {
 					// let RMList = reclist
           this.beforPlanList = RMList
@@ -569,6 +574,12 @@ export default {
                   //   }
                   // }
                   break
+                }else {
+                  if (i >= RMList.length - 1) {
+                    this.planList = dataArr
+                    console.log('媒体列表长度小于20', this.planList)
+                    // totalList.push(planArr)
+                  }
                 }
 						}
 						this.currentPlan = this.planList;
@@ -910,15 +921,15 @@ export default {
   /deep/ .el-table__row td:nth-child(1) .cell span{
     width: 135px;
   }
-  /deep/ .el-table__row td:nth-child(5) .cell{
+  /deep/ .el-table__row td:nth-child(5) .cell span{
     width: 126px;
   }
 
-  /deep/ .el-table__row td:nth-child(7) .cell{
+  /deep/ .el-table__row td:nth-child(7) .cell span{
     width: 96px;
   }
 
-  /deep/ .el-table__row td:nth-child(8) .cell{
+  /deep/ .el-table__row td:nth-child(8) .cell span{
     width: 156px;
   }
 
@@ -1040,15 +1051,15 @@ export default {
     /deep/ .el-table__row td:nth-child(1) .cell span{
       width: 135px;
     }
-    /deep/ .el-table__row td:nth-child(5) .cell{
+    /deep/ .el-table__row td:nth-child(5) .cell span{
       width: 126px;
     }
 
-    /deep/ .el-table__row td:nth-child(7) .cell{
+    /deep/ .el-table__row td:nth-child(7) .cell span{
       width: 96px;
     }
 
-    /deep/ .el-table__row td:nth-child(8) .cell{
+    /deep/ .el-table__row td:nth-child(8) .cell span{
       width: 156px;
     }
   }
@@ -1068,15 +1079,15 @@ export default {
       width: 200px;
     }
 
-    /deep/ .el-table__row td:nth-child(5) .cell{
+    /deep/ .el-table__row td:nth-child(5) .cell span{
       width: 195px;
     }
 
-    /deep/ .el-table__row td:nth-child(7) .cell{
-      width: 105px;
+    /deep/ .el-table__row td:nth-child(7) .cell span{
+      width: 155px;
     }
 
-    /deep/ .el-table__row td:nth-child(8) .cell{
+    /deep/ .el-table__row td:nth-child(8) .cell span{
       width: 235px;
     }
 

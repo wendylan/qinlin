@@ -8930,10 +8930,6 @@
                 "region": "广州市",
                 "regionEntitys": [
                     {
-                        "code": "440101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "440103",
                         "region": "荔湾区"
                     },
@@ -9034,10 +9030,6 @@
                 "region": "深圳市",
                 "regionEntitys": [
                     {
-                        "code": "440301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "440303",
                         "region": "罗湖区"
                     },
@@ -9068,10 +9060,6 @@
                 "region": "珠海市",
                 "regionEntitys": [
                     {
-                        "code": "440401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "440402",
                         "region": "香洲区"
                     },
@@ -9089,10 +9077,6 @@
                 "code": "440500",
                 "region": "汕头市",
                 "regionEntitys": [
-                    {
-                        "code": "440501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "440507",
                         "region": "龙湖区"
@@ -9128,10 +9112,6 @@
                 "region": "佛山市",
                 "regionEntitys": [
                     {
-                        "code": "440601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "440604",
                         "region": "禅城区"
                     },
@@ -9157,10 +9137,6 @@
                 "code": "440700",
                 "region": "江门市",
                 "regionEntitys": [
-                    {
-                        "code": "440701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "440703",
                         "region": "蓬江区"
@@ -9195,10 +9171,6 @@
                 "code": "440800",
                 "region": "湛江市",
                 "regionEntitys": [
-                    {
-                        "code": "440801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "440802",
                         "region": "赤坎区"

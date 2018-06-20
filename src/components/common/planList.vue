@@ -60,23 +60,23 @@
                         </el-table-column>
                         <el-table-column label="方案价格" sortable :sort-method="sortPrice" class="tar" min-width="8.3%">
                             <template slot-scope="scope">
-                                <span>&yen; {{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apTotal?priceFormat(scope.row.apTotal/100):0" placement="bottom">
+                                    <span>&yen; {{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column prop="realName" label="所有人" min-width="6.1%">
                         </el-table-column>
-                        <el-table-column label="投放城市(点位面数,排期)" min-width="23.6%">
+                        <el-table-column label="投放城市(点位面数,排期)" min-width="22.6%">
                             <template slot-scope="scope">
-                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{item}}
+                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}
                                     <!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
                                 </p>
                             </template>
                         </el-table-column>
-                        <el-table-column label="创建日期" min-width="7.3%" sortable :sort-method="sortData">
+                        <el-table-column label="创建日期" min-width="8.3%" sortable :sort-method="sortData">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="formatTime(scope.row.apcTime)" placement="bottom">
-                                    <span>{{formatTime(scope.row.apcTime)}}</span>
-                                </el-tooltip>
+                                <span>{{formatTime(scope.row.apcTime)}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column class="tac" prop="apState" label="状态" min-width="6.1%" :filters="[
@@ -94,12 +94,13 @@
                             <template slot-scope="scope">
                                 <el-dropdown size="small" split-button trigger="click">操作
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable">预锁
+                                        <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">预锁
                                         </el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable">发布
+                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">发布
                                         </el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable">解除预锁</el-dropdown-item>
-                                        <el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState==2">删除
+                                        <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">解除预锁
+                                        </el-dropdown-item>
+                                        <el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState!=1">删除
                                         </el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
@@ -198,60 +199,86 @@ export default {
             select: "1",
             // 表格数据
             currentPlan: [
-                {
-                    apID: 1,
-                    apName: "第一个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 65400,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    // apcTime: "2018-05-09 18:29:47.0",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 1
-                },
-                {
-                    apID: 1,
-                    apName: "第二个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 465200,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    // apcTime: "2018-05-09 18:29:47.0",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 2
-                }
+                // {
+                //     apID: 1,
+                //     apName: "第一个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 65400,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     // apcTime: "2018-05-09 18:29:47.0",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 1
+                // },
+                // {
+                //     apID: 1,
+                //     apName: "第二个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     // apcTime: "2018-05-09 18:29:47.0",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 2
+                // },
+                // {
+                //     apID: 1,
+                //     apName: "第二个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     // apcTime: "2018-05-09 18:29:47.0",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 3
+                // }
             ],
             //所有数据
             planList: [
-                {
-                    apID: 1,
-                    apName: "第一个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 465200,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 1
-                },
-                {
-                    apID: 1,
-                    apName: "第二个投放方案",
-                    cName: "新光百货",
-                    bTitle: "新光百货",
-                    apTotal: 465200,
-                    realName: "黄启炜",
-                    rIDs:
-                        "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                    // apcTime: "2018-05-09 18:29:47.0",
-                    apcTime: "2018-05-09 18:29:47.0",
-                    apState: 2
-                }
+                // {
+                //     apID: 1,
+                //     apName: "第一个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 1
+                // },
+                // {
+                //     apID: 1,
+                //     apName: "第二个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     // apcTime: "2018-05-09 18:29:47.0",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 2
+                // },
+                // {
+                //     apID: 1,
+                //     apName: "第二个投放方案",
+                //     cName: "新光百货",
+                //     bTitle: "新光百货",
+                //     apTotal: 465200,
+                //     realName: "黄启炜",
+                //     rIDs:
+                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
+                //     // apcTime: "2018-05-09 18:29:47.0",
+                //     apcTime: "2018-05-09 18:29:47.0",
+                //     apState: 3
+                // }
             ]
         };
     },
@@ -274,6 +301,15 @@ export default {
         // console.log('citycoDe----------------',cityCode);
     },
     methods: {
+        // 面后面添加逗号
+        setComma(value) {
+            if (value) {
+                let index = value.indexOf("面");
+                let arr = value.split("");
+                arr.splice(index + 1, 0, "，");
+                return arr.join("");
+            }
+        },
         getUID() {
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             this.Info = {
@@ -318,7 +354,6 @@ export default {
                             if (item.rIDs) {
                                 item.cityArea = item.rIDs.split(",");
                             }
-                            console.log(item.cityArea);
                         }
                         this.currentPlan = this.planList;
                     } else {
@@ -586,7 +621,7 @@ export default {
             // uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
             api
-                .postApi("/GetFanganInfo", info)
+                .getApi("/GetFanganInfo", info)
                 .then(res => {
                     console.log(res.data);
                     if (!res.data.SysCode) {
@@ -687,72 +722,72 @@ export default {
         // 组装数据不同点位不同排期
         initContruct(asidArr, pdidArr, uid, act) {
             // 组装数据
-            let arr = [];
+            let result = [];
             // 组合asid
-            for (let asid of asidArr) {
-                let start = dateFormat.toDate(asid.pbStar);
-                let end = dateFormat.toDate(asid.pbEnd);
-                if (!arr.length) {
-                    arr.push({
+            for (let data of asidArr) {
+                let start = dateFormat.toDate(data.pbStar);
+                let end = dateFormat.toDate(data.pbEnd);
+                let door = 1;
+                for (let res of result) {
+                    let dataRID = data.rID.toString().substring(0, 4);
+                    let resRID = res.rID.toString().substring(0, 4);
+                    if (dataRID == resRID && start == res.ds && end == res.de) {
+                        door = 0;
+                    }
+                }
+                if (door) {
+                    let obj = {
                         uid: uid,
                         act: act,
                         pdid: "",
-                        rID: asid.rID,
+                        rID: data.rID,
                         ds: start,
                         de: end,
-                        asidlist: asid.asID.toString()
-                    });
-                } else {
-                    for (let arrData of arr) {
-                        let asIdRID = asid.rID.toString().substring(0, 4);
-                        let arrRID = arrData.rID.toString().substring(0, 4);
-                        console.log(
-                            "bool",
-                            arrRID != asIdRID,
-                            start != arrData.ds,
-                            end != arrData.de
-                        );
-                        if (
-                            arrRID != asIdRID ||
-                            start != arrData.ds ||
-                            end != arrData.de
-                        ) {
-                            arr.push({
-                                uid: uid,
-                                act: act,
-                                pdid: "",
-                                rID: asid.rID,
-                                ds: start,
-                                de: end,
-                                asidlist: asid.asID.toString()
-                            });
-                        } else {
-                            arrData.asidlist =
-                                asid.asID + "," + arrData.asidlist;
-                        }
-                        break;
-                    }
+                        asidlist: ""
+                    };
+                    result.push(obj);
                 }
             }
+            console.log("reuslt-------", result);
+            for (let res of result) {
+                let asIDs = "";
+                for (let init of asidArr) {
+                    let start = dateFormat.toDate(init.pbStar);
+                    let end = dateFormat.toDate(init.pbEnd);
+                    if (
+                        res.rID == init.rID &&
+                        res.ds == start &&
+                        res.de == end
+                    ) {
+                        if (asIDs === "") {
+                            asIDs = init.asID.toString();
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
+                        }
+                    }
+                }
+                res.asidlist = asIDs;
+                console.log("asidS", asIDs);
+            }
+            console.log("result-------------", result);
 
-            console.log("arr", arr);
             // 组合pdid
-            for (let arrData of arr) {
+            for (let resData of result) {
                 for (let pdData of pdidArr) {
                     let pdDataRID = pdData.rID.toString().substring(0, 4);
-                    let arrRID = arrData.rID.toString().substring(0, 4);
+                    let arrRID = resData.rID.toString().substring(0, 4);
                     if (
                         pdDataRID == arrRID &&
-                        arrData.ds >= pdData.pdStar &&
-                        arrData.de <= pdData.pdEnd
+                        resData.ds >= pdData.pdStar &&
+                        resData.de <= pdData.pdEnd
                     ) {
-                        arrData.pdid = pdData.pdID;
+                        resData.pdid = pdData.pdID;
                         break;
                     }
                 }
             }
-            console.log("resultArr", arr);
-            return arr;
+            console.log("resultArr", result);
+            return result;
         },
         // 循环发布、预锁
         ctrlFangan(arr) {
@@ -787,6 +822,7 @@ export default {
                                 });
                         } else {
                             Message.success(res.data.MSG);
+                            location.reload();
                         }
                     })
                     .catch(res => {
@@ -1118,7 +1154,7 @@ a {
     width: 22px;
 }
 
-/deep/ .el-table_1_column_4 {
+/deep/ thead th:nth-child(4) .cell {
     text-align: right !important;
 }
 
@@ -1169,12 +1205,17 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 /deep/ .el-table__row td:nth-child(4) {
     text-align: right;
 }
 
+/deep/ .el-table__row td:nth-child(4) .cell span {
+    width: 90px;
+}
+
 /deep/ .el-table__row td:nth-child(7) .cell span {
-    width: 76px;
+    width: 85px;
 }
 
 /deep/ .el-table__row td:nth-child(3) .cell span {
@@ -1319,6 +1360,10 @@ a {
 
     /deep/ .el-table__row td:nth-child(2) .cell span {
         width: 212px;
+    }
+
+    /deep/ .el-table__row td:nth-child(4) .cell span {
+        width: 135px;
     }
 }
 

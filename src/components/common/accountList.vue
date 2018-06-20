@@ -1,47 +1,47 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix">
-				<a href="#" style="color: #999">账号管理</a>
-			</p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>账号列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<el-row>
-					<div class="mediaList_handel">
-						<span>
-							<div style="display:inline-block">
-								<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
-									<el-select v-model="select" slot="prepend" placeholder="请选择">
-										<el-option label="姓名" value="1"></el-option>
-										<el-option label="账号" value="2"></el-option>
-									</el-select>
-								</el-input>
-							</div>
-						</span>
-						<span>
-							<div class="block">
-								<el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-								<el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
-							</div>
-						</span>
-					</div>
-				</el-row>
-				<div class="table_wrap">
-					<el-table border :data="currAccount" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" :default-sort="{prop: 'joinTime', order: 'descending'}">
-						<el-table-column label="账号" min-width="11.8%">
-							<template slot-scope="scope">
-								<a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
-							</template>
-						</el-table-column>
-						<el-table-column prop="realName" label="姓名" min-width="7.8%">
-						</el-table-column>
-						<el-table-column prop="uWhoArr" label="权限城市" class="tar" min-width="14.2%" :filters="filterUWhoData" :filter-method="filterUWho" :filter-multiple="true">
-						</el-table-column>
-						<el-table-column prop="uType" label="账号角色" min-width="8.1%" :filters="[
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav ">
+            <p class="clearfix">
+                <a href="#" style="color: #999">账号管理</a>
+            </p>
+        </div>
+        <div class="mediaList_wrap">
+            <div class="mediaList_head">
+                <h2>账号列表</h2>
+            </div>
+            <div class="mediaList_container">
+                <el-row>
+                    <div class="mediaList_handel">
+                        <span>
+                            <div style="display:inline-block">
+                                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+                                    <el-select v-model="select" slot="prepend" placeholder="请选择">
+                                        <el-option label="姓名" value="1"></el-option>
+                                        <el-option label="账号" value="2"></el-option>
+                                    </el-select>
+                                </el-input>
+                            </div>
+                        </span>
+                        <span>
+                            <div class="block">
+                                <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+                                <el-button plain @click="newAccount" v-if="showNewBtn">新建</el-button>
+                            </div>
+                        </span>
+                    </div>
+                </el-row>
+                <div class="table_wrap">
+                    <el-table border :data="currAccount" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" :default-sort="{prop: 'joinTime', order: 'descending'}">
+                        <el-table-column label="账号" min-width="11.8%">
+                            <template slot-scope="scope">
+                                <a href="javascript:void(0);" @click="ToEdit(scope.row)">{{scope.row.sName}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="realName" label="姓名" min-width="7.8%">
+                        </el-table-column>
+                        <el-table-column prop="uWhoArr" label="权限城市" class="tar" min-width="14.2%" :filters="filterUWhoData" :filter-method="filterUWho" :filter-multiple="true">
+                        </el-table-column>
+                        <el-table-column prop="uType" label="账号角色" min-width="8.1%" :filters="[
 							{text: '系统管理员', value: 'SA'},
 							{text: '超级管理员', value: 'SM'},
 							{text: '运营', value: 'OP'},
@@ -50,38 +50,38 @@
 							{text: '广告主', value: 'AD'},
 							{text: '工程人员', value: 'EP'}
 						]" :filter-method="filterUType" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span>{{roleToText(scope.row.uType)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="puName" label="上级" min-width="7.8%">
-						</el-table-column>
-						<el-table-column label="创建日期" min-width="9.8%" sortable :sort-method="sortData">
-							<template slot-scope="scope">
-								<span>{{formatTime(scope.row.joinTime)}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="uState" label="状态" min-width="8.9%" :filters="[
+                            <template slot-scope="scope">
+                                <span>{{roleToText(scope.row.uType)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="puName" label="上级" min-width="7.8%">
+                        </el-table-column>
+                        <el-table-column label="创建日期" min-width="9.8%" sortable :sort-method="sortData">
+                            <template slot-scope="scope">
+                                <span>{{formatTime(scope.row.joinTime)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="uState" label="状态" min-width="8.9%" :filters="[
 							{ text: '正常', value: 1 },
 							{ text: '禁用', value: 0 },
 							]" :filter-method="filterState" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span>{{stateToText(scope.row.uState)}}</span>
-							</template>
-						</el-table-column>
+                            <template slot-scope="scope">
+                                <span>{{stateToText(scope.row.uState)}}</span>
+                            </template>
+                        </el-table-column>
 
-						<el-table-column label="操作" min-width="7.1%">
-							<template slot-scope="scope">
-								<!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
-								<span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
-								<span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <el-table-column label="操作" min-width="7.1%">
+                            <template slot-scope="scope">
+                                <!-- <span style="color: #108EE9;cursor: pointer;" @click="authority">权限</span> -->
+                                <span v-if="scope.row.uState ==1" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">禁用</span>
+                                <span v-if="scope.row.uState ==0" style="color: #108EE9;cursor: pointer;" @click="isForbidden(scope.row)">开通</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -119,83 +119,84 @@ export default {
     data() {
         return {
             //加载中
-            loading: true,
+            // loading: true,
+            loading: false,
             keyword: "",
             select: "1",
             showNewBtn: true,
             filterUWhoData: [],
             //表格
             accountList: [
-                {
-                    division: "产品研发部",
-                    email: "kacent@qq.com",
-                    joinTime: "2018-04-09 15:46:00.0",
-                    phone: "13924447488",
-                    position: "开发经理",
-                    puID: 1,
-                    puName: "梁晓君",
-                    rID: 440100,
-                    rName: "广州市",
-                    realName: "林郑伟",
-                    sName: "Kacent",
-                    uID: 2,
-                    uState: 1,
-                    uType: "SA",
-                    uWho: "440100"
-                },
-                {
-                    division: "产品研发部",
-                    email: "kacent@qq.com",
-                    joinTime: "2018-04-09 15:46:00.0",
-                    phone: "13924447488",
-                    position: "开发经理",
-                    puID: 1,
-                    puName: "梁晓君",
-                    rID: 440100,
-                    rName: "广州市",
-                    realName: "林郑伟",
-                    sName: "Kacent2",
-                    uID: 3,
-                    uState: 1,
-                    uType: "SA",
-                    uWho: "440000,440200"
-                }
+                // {
+                //     division: "产品研发部",
+                //     email: "kacent@qq.com",
+                //     joinTime: "2018-04-09 15:46:00.0",
+                //     phone: "13924447488",
+                //     position: "开发经理",
+                //     puID: 1,
+                //     puName: "梁晓君",
+                //     rID: 440100,
+                //     rName: "广州市",
+                //     realName: "林郑伟",
+                //     sName: "Kacent",
+                //     uID: 2,
+                //     uState: 1,
+                //     uType: "SA",
+                //     uWho: "440100"
+                // },
+                // {
+                //     division: "产品研发部",
+                //     email: "kacent@qq.com",
+                //     joinTime: "2018-04-09 15:46:00.0",
+                //     phone: "13924447488",
+                //     position: "开发经理",
+                //     puID: 1,
+                //     puName: "梁晓君",
+                //     rID: 440100,
+                //     rName: "广州市",
+                //     realName: "林郑伟",
+                //     sName: "Kacent2",
+                //     uID: 3,
+                //     uState: 1,
+                //     uType: "SA",
+                //     uWho: "440000,440200"
+                // }
             ],
             currAccount: [
-                {
-                    division: "产品研发部",
-                    email: "kacent@qq.com",
-                    joinTime: "2018-04-09 15:46:00.0",
-                    phone: "13924447488",
-                    position: "开发经理",
-                    puID: 1,
-                    puName: "梁晓君",
-                    rID: 440100,
-                    rName: "广州市",
-                    realName: "林郑伟",
-                    sName: "Kacent",
-                    uID: 2,
-                    uState: 1,
-                    uType: "SA",
-                    uWho: "440100"
-                },
-                {
-                    division: "产品研发部",
-                    email: "kacent@qq.com",
-                    joinTime: "2018-04-09 15:46:00.0",
-                    phone: "13924447488",
-                    position: "开发经理",
-                    puID: 1,
-                    puName: "梁晓君",
-                    rID: 440100,
-                    rName: "广州市",
-                    realName: "林郑伟",
-                    sName: "Kacent2",
-                    uID: 3,
-                    uState: 1,
-                    uType: "SA",
-                    uWho: "440000,440200"
-                }
+                // {
+                //     division: "产品研发部",
+                //     email: "kacent@qq.com",
+                //     joinTime: "2018-04-09 15:46:00.0",
+                //     phone: "13924447488",
+                //     position: "开发经理",
+                //     puID: 1,
+                //     puName: "梁晓君",
+                //     rID: 440100,
+                //     rName: "广州市",
+                //     realName: "林郑伟",
+                //     sName: "Kacent",
+                //     uID: 2,
+                //     uState: 1,
+                //     uType: "SA",
+                //     uWho: "440100"
+                // },
+                // {
+                //     division: "产品研发部",
+                //     email: "kacent@qq.com",
+                //     joinTime: "2018-04-09 15:46:00.0",
+                //     phone: "13924447488",
+                //     position: "开发经理",
+                //     puID: 1,
+                //     puName: "梁晓君",
+                //     rID: 440100,
+                //     rName: "广州市",
+                //     realName: "林郑伟",
+                //     sName: "Kacent2",
+                //     uID: 3,
+                //     uState: 1,
+                //     uType: "SA",
+                //     uWho: "440000,440200"
+                // }
             ]
         };
     },
@@ -206,7 +207,7 @@ export default {
     methods: {
         //日期排序
         sortData(a, b) {
-            return a.apcTime > b.apcTime;
+            return a.joinTime < b.joinTime;
         },
         // 初始数据
         getAccountList() {
@@ -216,7 +217,7 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     if (!res.data.SysCode) {
-                        this.accountList = res.data;
+                        this.accountList = res.data.reverse();
                         this.loading = false;
                         let cityList = [
                             {
@@ -229,9 +230,6 @@ export default {
                         ).uID;
                         let account = this.accountList;
                         for (let index = 0; index < account.length; index++) {
-                            if (account[index].uID == userUid) {
-                                account.splice(index, 1);
-                            }
                             let result = "";
                             let uWhoArr = account[index].uWho.split(",");
                             if (account[index].uWho == 0) {
@@ -266,12 +264,17 @@ export default {
                                             "uWhoArr",
                                             result
                                         );
-                                        this.filterUWhoData = cityList;
-                                        console.log("cityList", cityList);
                                     }
                                 }
                             }
+                            // 去掉本账号
+                            if (account[index].uID == userUid) {
+                                account.splice(index, 1);
+                                index--;
+                            }
                         }
+                        this.filterUWhoData = cityList;
+                        console.log("cityList", cityList);
 
                         this.currAccount = this.accountList;
                     } else {

@@ -1,6 +1,6 @@
 // 获取行业中文信息，传入一个子类id: iID,返回出去的是父类/子类
 var industry = {};
-// let arr = JSON.parse(sessionStorage.getItem('industry'));
+let arr = JSON.parse(sessionStorage.getItem('industry'));
 // ps:需要由页面传入，不然第一次登陆之后加载会出现报错
 industry.getText = function (iID, arr) {
 	let str = '';
