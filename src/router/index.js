@@ -12,6 +12,7 @@ import accountList from '../components/common/accountList.vue';
 import orderList from '../components/common/orderList.vue';
 import clientDetail from '../components/common/clientDetail.vue';
 import createPlan from '../components/common/createPlan.vue';
+import editPlan from '../components/common/editPlan.vue';
 import planDetail from '../components/common/planDetail.vue';
 import orderDetail from '../components/common/orderDetail.vue';
 import photoGallery from '../components/common/photoGallery.vue';
@@ -23,6 +24,7 @@ import admin from '../components/admin/admin_common.vue'
 import adminIndex from '../components/superOperate/superOperate_index.vue';
 import ADlimitList from '../components/superOperate/ADlimitList.vue';
 import superOperateCommon from '../components/superOperate/superOperate_common.vue';
+import dataAnalysis from '../components/superOperate/dataAnalysis.vue'
 //普通运营
 import operateIndex from '../components/operate/operate_index.vue';
 import operateCommon from '../components/operate/operate_common.vue';
@@ -54,7 +56,7 @@ export default new Router({
 		{ path: '/upReport', name: 'upReport', component: upReport },
 		{ path: '/downReport', name: 'downReport', component: downReport },
 
-		//超级运营
+		//admin
 		{
 			path: '/',
 			component: admin,
@@ -86,6 +88,7 @@ export default new Router({
 				{ path: '/superOperate/photoGallery', component: photoGallery },
 				{ path: '/superOperate/changePwd', component: changePwd },
 				{ path: '/superOperate/ludanReport', component: ludanReport },
+				{ path: '/superOperate/dataAnalysis', component: dataAnalysis },
 			]
 		},
 		//普通运营
@@ -121,6 +124,7 @@ export default new Router({
 				{ path: '/media/publishPriceList', component: publishPriceList },
 				{ path: '/media/orderList', component: orderList },
 				{ path: '/media/createPlan', component: createPlan },
+				{ path: '/media/editPlan', component: editPlan },
 				{ path: '/media/planDetail', component: planDetail },
 				{ path: '/media/orderDetail', component: orderDetail },
 				{ path: '/media/photoGallery', component: photoGallery },
@@ -142,6 +146,7 @@ export default new Router({
 				{ path: '/sale/orderList', component: orderList },
 				{ path: '/sale/clientDetail', component: clientDetail },
 				{ path: '/sale/createPlan', component: createPlan },
+				{ path: '/sale/editPlan', component: editPlan },
 				{ path: '/sale/planDetail', component: planDetail },
 				{ path: '/sale/orderDetail', component: orderDetail },
 				{ path: '/sale/changePwd', component: changePwd },
