@@ -1,95 +1,95 @@
 <template>
-	<div>
-		<div>
-			<div class="ad_mediaMana_wrap">
-				<div class="ad_mediaMana_nav clearfix">
-					<p>
-						<a href="#">客户管理</a>
-						<em> / </em>
-						<a href="#">修改客户信息</a>
-					</p>
-				</div>
-				<!--客户信息-->
-				<div class="mediaMana_content_top">
-					<div class="content_top_wrap">
-						<div class="content_top_head">
-							<h2>客户信息</h2>
-						</div>
-						<div class="content_top_form_wrap">
-							<el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px" class="demo-ruleForm">
-								<el-form-item label="联系人:" prop="realName">
-									<el-input v-model.trim="clientForm.realName" placeholder="请输入联系人姓名" disabled="disabled"></el-input>
-								</el-form-item>
-								<el-form-item label="账户名:" prop="sName">
-									<el-input v-model.trim="clientForm.sName" placeholder="请输入账户名" disabled="disabled"></el-input>
-								</el-form-item>
-								<el-form-item label="职位:" prop="position">
-									<el-input v-model.trim="clientForm.position" placeholder="请输入联系人职位"></el-input>
-								</el-form-item>
-								<el-form-item label="手机号码:" prop="phone">
-									<el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
-								</el-form-item>
-								<el-form-item label="所在地:" prop="cityArr">
-									<el-cascader :options="allProvince" v-model="clientForm.cityArr" separator="-" :show-all-levels="false" @change="seleProClient" @active-item-change="handleItemChange"></el-cascader>
-								</el-form-item>
-								<el-form-item label="邮箱:" prop="email">
-									<el-input v-model.trim="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
-								</el-form-item>
-								<el-form-item label="固定电话:" prop="telephone">
-									<el-input v-model.trim="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
-								</el-form-item>
-								<el-form-item label="事业部:" prop="division">
-									<el-input v-model.trim="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
-								</el-form-item>
-							</el-form>
-						</div>
-					</div>
-				</div>
-				<!--公司信息-->
-				<div class="mediaMana_content_bottom clearfix">
-					<div class="content_bottom_wrap companyInfo">
-						<div class="content_bottom_head">
-							<h2>公司信息</h2>
-						</div>
-						<div class="content_bottom_form_wrap">
-							<el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px" class="demo-ruleForm">
-								<el-form-item label="公司名称:" prop="cName">
-									<el-input v-model.trim="companyForm.cName" placeholder="请输入公司具体地址"></el-input>
-								</el-form-item>
-								<el-form-item label="公司品牌:" prop="cBrand" class="tags">
-									<el-tag v-for="tag in oldBrandTags" :key="tag.bID">
-										{{tag.bTitle}}
-									</el-tag>
-									<el-tag v-for="(tag, index) in companyTags" :key="index" closable :disable-transitions="false" @close="handleClose(tag)">
-										{{tag}}
-									</el-tag>
-									<el-input style="width: 90px" class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
-									</el-input>
-									<el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
-								</el-form-item>
-								<el-form-item label="行业分类:" prop="industryIdArr">
-									<el-cascader placeholder="试试搜索：互联网" :options="bussiness" filterable change-on-select v-model="companyForm.industryIdArr" @change="handleChange"></el-cascader>
-								</el-form-item>
-								<el-form-item label="公司地址:" prop="cAddress">
-									<el-input v-model.trim="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
-								</el-form-item>
-								<el-form-item label="所在城市:" prop="cityArr">
-									<el-cascader :options="allProvince" v-model="companyForm.cityArr" separator="-" :show-all-levels="false" @change="seleProCom" @active-item-change="handleItemChange"></el-cascader>
-								</el-form-item>
-								<el-form-item label="备注:" prop="cRemark">
-									<el-input type="textarea" v-model.trim="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
-								</el-form-item>
-							</el-form>
-						</div>
-					</div>
-					<div class="content_bottom_btn">
-						<el-button type="primary" @click="submitData">修改</el-button>
-						<el-button @click="goBack">取消</el-button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div>
+        <div>
+            <div class="ad_mediaMana_wrap">
+                <div class="ad_mediaMana_nav clearfix">
+                    <p>
+                        <a href="#">客户管理</a>
+                        <em> / </em>
+                        <a href="#">修改客户信息</a>
+                    </p>
+                </div>
+                <!--客户信息-->
+                <div class="mediaMana_content_top">
+                    <div class="content_top_wrap">
+                        <div class="content_top_head">
+                            <h2>客户信息</h2>
+                        </div>
+                        <div class="content_top_form_wrap">
+                            <el-form :model="clientForm" status-icon :rules="clientRules" ref="clientForm" label-width="100px" class="demo-ruleForm">
+                                <el-form-item label="联系人:" prop="realName">
+                                    <el-input v-model.trim="clientForm.realName" placeholder="请输入联系人姓名" disabled="disabled"></el-input>
+                                </el-form-item>
+                                <el-form-item label="账户名:" prop="sName">
+                                    <el-input v-model.trim="clientForm.sName" placeholder="请输入账户名" disabled="disabled"></el-input>
+                                </el-form-item>
+                                <el-form-item label="职位:" prop="position">
+                                    <el-input v-model.trim="clientForm.position" placeholder="请输入联系人职位"></el-input>
+                                </el-form-item>
+                                <el-form-item label="手机号码:" prop="phone">
+                                    <el-input v-model.number="clientForm.phone" maxlength="11" minlength="11" placeholder="请输入联系人手机号码"></el-input>
+                                </el-form-item>
+                                <el-form-item label="所在地:" prop="cityArr">
+                                    <el-cascader :options="allProvince" v-model="clientForm.cityArr" separator="-" :show-all-levels="false" @change="seleProClient" @active-item-change="handleItemChange"></el-cascader>
+                                </el-form-item>
+                                <el-form-item label="邮箱:" prop="email">
+                                    <el-input v-model.trim="clientForm.email" placeholder="请输入联系人邮箱"></el-input>
+                                </el-form-item>
+                                <el-form-item label="固定电话:" prop="telephone">
+                                    <el-input v-model.trim="clientForm.telephone" placeholder="请输入联系人固定电话"></el-input>
+                                </el-form-item>
+                                <el-form-item label="事业部:" prop="division">
+                                    <el-input v-model.trim="clientForm.division" placeholder="请输入联系人所属事业部"></el-input>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                </div>
+                <!--公司信息-->
+                <div class="mediaMana_content_bottom clearfix">
+                    <div class="content_bottom_wrap companyInfo">
+                        <div class="content_bottom_head">
+                            <h2>公司信息</h2>
+                        </div>
+                        <div class="content_bottom_form_wrap">
+                            <el-form :model="companyForm" status-icon :rules="companyRules" ref="companyForm" label-width="100px" class="demo-ruleForm">
+                                <el-form-item label="公司名称:" prop="cName">
+                                    <el-input v-model.trim="companyForm.cName" placeholder="请输入公司具体地址"></el-input>
+                                </el-form-item>
+                                <el-form-item label="公司品牌:" prop="cBrand" class="tags">
+                                    <el-tag v-for="tag in oldBrandTags" :key="tag.bID">
+                                        {{tag.bTitle}}
+                                    </el-tag>
+                                    <el-tag v-for="(tag, index) in companyTags" :key="index" closable :disable-transitions="false" @close="handleClose(tag)">
+                                        {{tag}}
+                                    </el-tag>
+                                    <el-input style="width: 90px" class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                                    </el-input>
+                                    <el-button v-else class="button-new-tag" size="small" @click="showInput">新增品牌</el-button>
+                                </el-form-item>
+                                <el-form-item label="行业分类:" prop="industryIdArr">
+                                    <el-cascader placeholder="试试搜索：互联网" :options="bussiness" filterable change-on-select v-model="companyForm.industryIdArr" @change="handleChange"></el-cascader>
+                                </el-form-item>
+                                <el-form-item label="公司地址:" prop="cAddress">
+                                    <el-input v-model.trim="companyForm.cAddress" placeholder="请输入公司具体地址"></el-input>
+                                </el-form-item>
+                                <el-form-item label="所在城市:" prop="cityArr">
+                                    <el-cascader :options="allProvince" v-model="companyForm.cityArr" separator="-" :show-all-levels="false" @change="seleProCom" @active-item-change="handleItemChange"></el-cascader>
+                                </el-form-item>
+                                <el-form-item label="备注:" prop="cRemark">
+                                    <el-input type="textarea" v-model.trim="companyForm.cRemark" placeholder="请填写备注信息"></el-input>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                    <div class="content_bottom_btn">
+                        <el-button type="primary" @click="submitData">修改</el-button>
+                        <el-button @click="goBack">取消</el-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>

@@ -1,50 +1,50 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix">
-				<a href="#" style="color: #999">广告限制</a>
-			</p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>广告限制列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<div class="table_wrap">
-					<el-table border :data="ADlist" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-						<el-table-column label="限制类型" min-width="11.6%">
-							<template slot-scope="scope">
-								<span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
-								<el-input v-model.trim="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column label="描述" min-width="62.2%">
-							<template slot-scope="scope">
-								<span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
-								<el-input v-model.trim="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column v-if="role=='SM'" label="操作" min-width="7.1%">
-							<template slot-scope="scope">
-								<div v-if="!scope.row.changeBtn">
-									<el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
-									<el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)">删除</el-button>
-								</div>
-								<div v-if="scope.row.changeBtn">
-									<el-button type="text" size="small" class="saveAD" @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
-									<el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.row, scope.$index)">取消</el-button>
-								</div>
-							</template>
-						</el-table-column>
-					</el-table>
-					<div v-if="role=='SM'">
-						<div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
-					</div>
-				</div>
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav ">
+            <p class="clearfix">
+                <a href="#" style="color: #999">广告限制</a>
+            </p>
+        </div>
+        <div class="mediaList_wrap">
+            <div class="mediaList_head">
+                <h2>广告限制列表</h2>
+            </div>
+            <div class="mediaList_container">
+                <div class="table_wrap">
+                    <el-table border :data="ADlist" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                        <el-table-column label="限制类型" min-width="11.6%">
+                            <template slot-scope="scope">
+                                <span class="data" v-if="!scope.row.showInput">{{scope.row.nTitle}}</span>
+                                <el-input v-model.trim="scope.row.typeUpdate" placeholder="请输入广告类型" v-if="scope.row.showInput"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="描述" min-width="62.2%">
+                            <template slot-scope="scope">
+                                <span class="data" v-if="!scope.row.showInput">{{scope.row.ndescript}}</span>
+                                <el-input v-model.trim="scope.row.detailUpdate" placeholder="请输入描述" class=" longText" v-if="scope.row.showInput"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="role=='SM'" label="操作" min-width="7.1%">
+                            <template slot-scope="scope">
+                                <div v-if="!scope.row.changeBtn">
+                                    <el-button type="text" size="small" class="editAD" @click.native.prevent="editAD(scope.row, scope.$index)">编辑</el-button>
+                                    <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)">删除</el-button>
+                                </div>
+                                <div v-if="scope.row.changeBtn">
+                                    <el-button type="text" size="small" class="saveAD" @click.native.prevent="saveAD(scope.row, scope.$index)">保存</el-button>
+                                    <el-button type="text" size="small" class="cancelAD" @click.native.prevent="cancelAD(scope.row, scope.$index)">取消</el-button>
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div v-if="role=='SM'">
+                        <div class="addAdlimit" @click="adlimitAddFun()">+ 新增广告类型</div>
+                    </div>
+                </div>
 
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>

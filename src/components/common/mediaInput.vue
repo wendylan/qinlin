@@ -852,6 +852,11 @@
             message: '权限受制，您无法创建该城市的媒体资源'
           });
         }else{
+          for(let key in recObj){
+            if(recObj[key] === undefined || recObj[key] === null){
+              recObj[key] = ''
+            }
+          }
           api.postApi('/AddRes', recObj).then(res => {
             console.log('资源数据：', res.data)
             let recData = res.data
@@ -1263,6 +1268,11 @@
 
               }
             }*/
+          for(let key in SetResCTObj){
+            if(SetResCTObj[key] === undefined || SetResCTObj[key] === null){
+              SetResCTObj[key] = ''
+            }
+          }
           api.postApi('/SetResCT',SetResCTObj).then(res=>{
             console.log('修改资源信息',res)
             let mediaArr = this.arrMedia // this.arrMedia[0].mediaForm

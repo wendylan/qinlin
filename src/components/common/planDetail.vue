@@ -116,11 +116,11 @@
                                                 </el-table-column>
                                                 <el-table-column prop="cType" label="楼盘类型" min-width="8.8%">
                                                 </el-table-column>
-                                                <el-table-column prop="hNum" label="小区户数" min-width="7.3%" class="tar">
+                                                <el-table-column prop="hNum" label="小区户数" min-width="6.0%" class="tar">
                                                 </el-table-column>
-                                                <el-table-column label="楼盘价格" min-width="7.3%">
+                                                <el-table-column label="楼盘价格" min-width="9.0%">
                                                     <template slot-scope="scope">
-                                                        <span>{{scope.row.hPrice?priceFormat(scope.row.hPrice/100):0}}</span>
+                                                        <span>&yen;{{scope.row.hPrice?priceFormat(scope.row.hPrice/100):0}}</span>
                                                     </template>
                                                 </el-table-column>
                                                 <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
@@ -645,7 +645,7 @@ export default {
         },
         // 编辑
         edit() {
-            this.$router.push("./createPlan");
+            this.$router.push("./editPlan");
         },
         // 获取角色
         getRole() {
@@ -711,8 +711,8 @@ export default {
     font-weight: bold;
 }
 
-/deep/ .el-table_1_column_7,
-/deep/ .el-table_1_column_8 {
+/deep/ .el-table__row td:nth-child(7),
+/deep/ .el-table__row td:nth-child(8) {
     text-align: right;
 }
 
@@ -1058,8 +1058,13 @@ export default {
     padding-left: 41px;
 }
 
+.plan-detail-left {
+    float: left;
+    width: 82%;
+}
+
 .plan-detail-left ul {
-    width: 81%;
+    width: 100%;
     float: left;
     display: flex;
     flex-wrap: wrap;
@@ -1085,13 +1090,16 @@ export default {
     color: #666666;
 }
 
+.plan-detail-right {
+    display: flex;
+    justify-content: space-between;
+    width: 18%;
+    float: right;
+}
+
 .plan-detail-right dl {
     float: left;
     text-align: right;
-}
-
-.plan-detail-right dl:last-of-type {
-    margin-left: 34px;
 }
 
 .plan-detail-right dt {
@@ -1225,6 +1233,10 @@ export default {
 
     .plan-detail-left ul li {
         width: 400px;
+    }
+
+    .plan-detail-right {
+        width: 15%;
     }
 }
 </style>

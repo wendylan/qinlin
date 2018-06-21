@@ -1,73 +1,73 @@
 <template>
-	<div class="ad_mediaDetail_wrap clearfix">
-		<div class="ad_mediaDetail_nav ">
-			<p class="clearfix">
-				<a href="#" style="color: #999">刊例价</a>
-			</p>
-		</div>
-		<div class="mediaList_wrap">
-			<div class="mediaList_head">
-				<h2>刊例价列表</h2>
-			</div>
-			<div class="mediaList_container">
-				<div class="table_wrap">
-					<el-table border :data="publishPriceList" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-						<el-table-column prop="rName" label="城市" min-width="31.3%" :filters="filtCity" :filter-method="filterCity" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span class="data" v-if="!scope.row.showInput">{{scope.row.rName}}</span>
-								<!-- <el-select v-model="scope.row.cityUpdate" placeholder="请选择城市"  v-if="scope.row.showInput">
+    <div class="ad_mediaDetail_wrap clearfix">
+        <div class="ad_mediaDetail_nav ">
+            <p class="clearfix">
+                <a href="#" style="color: #999">刊例价</a>
+            </p>
+        </div>
+        <div class="mediaList_wrap">
+            <div class="mediaList_head">
+                <h2>刊例价列表</h2>
+            </div>
+            <div class="mediaList_container">
+                <div class="table_wrap">
+                    <el-table border :data="publishPriceList" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                        <el-table-column prop="rName" label="城市" min-width="31.3%" :filters="filtCity" :filter-method="filterCity" :filter-multiple="false">
+                            <template slot-scope="scope">
+                                <span class="data" v-if="!scope.row.showInput">{{scope.row.rName}}</span>
+                                <!-- <el-select v-model="scope.row.cityUpdate" placeholder="请选择城市"  v-if="scope.row.showInput">
                     <el-option label="北京" value="北京"></el-option>
                     <el-option label="上海" value="上海"></el-option>
                     <el-option label="深圳" value="深圳"></el-option>
                     <el-option label="广州" value="广州"></el-option>
                     <el-option label="成都" value="成都"></el-option>
                 </el-select> -->
-								<el-cascader v-if="scope.row.showInput" :options="allProvince" v-model="scope.row.cityArr" separator="-" :show-all-levels="false" @change="seleProClient(scope.row)" @active-item-change="handleItemChange"></el-cascader>
-							</template>
-						</el-table-column>
-						<el-table-column label="媒体" min-width="62.2%" :filters="[
+                                <el-cascader v-if="scope.row.showInput" :options="allProvince" v-model="scope.row.cityArr" separator="-" :show-all-levels="false" @change="seleProClient(scope.row)" @active-item-change="handleItemChange"></el-cascader>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="媒体" min-width="62.2%" :filters="[
 								{ text: '广告门', value: '广告门' }
 							]" :filter-method="filterMedia" :filter-multiple="false">
-							<template slot-scope="scope">
-								<span class="data" v-if="!scope.row.showInput">{{scope.row.mVehicle}}</span>
-								<el-select v-model="scope.row.mediaUpdate" placeholder="请选择媒体" v-if="scope.row.showInput">
-									<!-- <el-option label="社区门" value="社区门"></el-option> -->
-									<el-option label="广告门" value="广告门"></el-option>
-									<!-- <el-option label="什么门" value="什么门"></el-option> -->
-									<!-- <el-option label="电梯门" value="电梯门"></el-option> -->
-								</el-select>
-							</template>
-						</el-table-column>
-						<el-table-column class="tar" prop="publicPrice" label="刊例价" min-width="34.3%">
-							<template slot-scope="scope">
-								<span class="data" v-if="!scope.row.showInput">&yen; {{scope.row.adPrice/100}}</span>
-								<el-input type="number" v-model="scope.row.priceUpdate" placeholder="请输入刊例价" class=" tar" v-if="scope.row.showInput"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column v-if="role=='SM'" label="操作" min-width="22.6%">
-							<template slot-scope="scope">
-								<div v-if="!scope.row.changeBtn">
-									<el-button type="text" size="small" @click.native.prevent="editPP(scope.row, scope.$index)">编辑
-									</el-button>
-									<el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)">删除
-									</el-button>
-								</div>
-								<div v-if="scope.row.changeBtn">
-									<el-button type="text" size="small" class="savePP" @click.native.prevent="savePP(scope.row, scope.$index)">保存
-									</el-button>
-									<el-button type="text" size="small" class="cancelPP" @click.native.prevent="cancelPP(scope.row, scope.$index)">取消
-									</el-button>
-								</div>
-							</template>
-						</el-table-column>
-					</el-table>
-					<div v-if="role=='SM'">
-						<div class="addPublishPrice" @click="addPriceFun()">+ 新增刊例价</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                            <template slot-scope="scope">
+                                <span class="data" v-if="!scope.row.showInput">{{scope.row.mVehicle}}</span>
+                                <el-select v-model="scope.row.mediaUpdate" placeholder="请选择媒体" v-if="scope.row.showInput">
+                                    <!-- <el-option label="社区门" value="社区门"></el-option> -->
+                                    <el-option label="广告门" value="广告门"></el-option>
+                                    <!-- <el-option label="什么门" value="什么门"></el-option> -->
+                                    <!-- <el-option label="电梯门" value="电梯门"></el-option> -->
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column class="tar" prop="publicPrice" label="刊例价" min-width="34.3%">
+                            <template slot-scope="scope">
+                                <span class="data" v-if="!scope.row.showInput">&yen; {{scope.row.adPrice/100}}</span>
+                                <el-input type="number" v-model="scope.row.priceUpdate" placeholder="请输入刊例价" class=" tar" v-if="scope.row.showInput"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="role=='SM'" label="操作" min-width="22.6%">
+                            <template slot-scope="scope">
+                                <div v-if="!scope.row.changeBtn">
+                                    <el-button type="text" size="small" @click.native.prevent="editPP(scope.row, scope.$index)">编辑
+                                    </el-button>
+                                    <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row, scope.$index)">删除
+                                    </el-button>
+                                </div>
+                                <div v-if="scope.row.changeBtn">
+                                    <el-button type="text" size="small" class="savePP" @click.native.prevent="savePP(scope.row, scope.$index)">保存
+                                    </el-button>
+                                    <el-button type="text" size="small" class="cancelPP" @click.native.prevent="cancelPP(scope.row, scope.$index)">取消
+                                    </el-button>
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div v-if="role=='SM'">
+                        <div class="addPublishPrice" @click="addPriceFun()">+ 新增刊例价</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -530,13 +530,13 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
-/deep/ .has-gutter tr th:nth-child(3)  {
+/deep/ .has-gutter tr th:nth-child(3) {
     text-align: right;
-  padding-right: 12px;
+    padding-right: 12px;
 }
 /deep/ .el-table__row td:nth-child(3) {
     text-align: right;
-  padding-right: 12px;
+    padding-right: 12px;
 }
 
 /deep/ .el-table--border {

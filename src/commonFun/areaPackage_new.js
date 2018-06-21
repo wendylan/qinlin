@@ -2,8 +2,8 @@
 import cityData from '../commonFun/region.json';
 var region = {};
 
-// 使用方法：返回三级联动框
-// 返回数据：省市区
+// 使用方法：返回两级联动框
+// 返回数据：省市
 region.province = function () {
 	var result = [];
 	let arr = [];
@@ -28,8 +28,10 @@ region.province = function () {
 	return result;
 }
 
-// 使用方法：返回两级联动框
-// 返回数据：省市
+
+// 使用方法：返回三级联动框
+// 返回数据：省市区
+
 region.cityArea = function () {
 	var result = [];
 	let arr = [];

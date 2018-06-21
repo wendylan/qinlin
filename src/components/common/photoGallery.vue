@@ -1,364 +1,328 @@
 <template>
-    <div>
-        <div class="ad_mediaMana_wrap">
-            <div class="ad_mediaMana_nav clearfix">
-                <p>
-                    <a href="#">图片库</a>
-                </p>
-            </div>
-            <div class="mediaList_wrap">
-                <div class="mediaList_container">
-                    <el-tabs v-model="activeName" @tab-click="handleClick()">
-                        <!--搜索框-->
-                        <div class="search-wrap" v-if="!ludan">
-                            <span>
-                                <div style="display:inline-block">
-                                    <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
-                                        <el-select v-model="select" slot="prepend" placeholder="请选择">
-                                            <el-option label="方案名称" value="1"></el-option>
-                                            <el-option label="媒体名称" value="2"></el-option>
-                                            <el-option label="资源名称" value="3"></el-option>
-                                        </el-select>
-                                    </el-input>
-                                </div>
-                            </span>
-                            <el-cascader :options="citys" v-model="citySelect" class="plan-select" placeholder="选择地区" change-on-select>
-                            </el-cascader>
-                            <span>
-                                <el-select v-model="LabSelect" placeholder="选择投放面" class="plan-select">
-                                    <el-option label="A面" value="A"></el-option>
-                                    <el-option label="B面" value="B"></el-option>
-                                </el-select>
-                            </span>
-                            <span>
-                                <div class="block">
-                                    <el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期">
-                                    </el-date-picker>
-                                </div>
-                            </span>
-                            <span>
-                                <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
-                            </span>
-                            <span>
-                                <el-button plain class="map">一键导出</el-button>
-                            </span>
-                        </div>
-                        <el-tab-pane label="上刊" name="first">
-                            <div class="search-nav">
-                                <!--提示或图片显示区域-->
-                                <div class="tempPic">
-                                    <div class="noFind" v-if="showPic === 1">
-                                        <img src="../../assets/images/tempPic.png" alt="">
-                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                                    </div>
-                                    <div class="cantFind" v-if="showPic === 2">
-                                        <img src="../../assets/images/noPic.png" alt="">
-                                        <h4>无匹配结果</h4>
-                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
-                                    </div>
-                                    <!--图片列表-->
-                                    <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="upimg of upImgArr" :key="upimg.pID">
-                                            <div class="imgBox">
-                                                <img :src="upimg.pURL" alt="" class="smallImg">
-                                                <!--查看缩略图和下载-->
-                                                <div class="mask-btn" style="display: none">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
-                                                    <a href="#" :download="upimg.pSrc">下载图片</a>
-                                                </div>
-                                            </div>
-                                            <div class="detailBox">
-                                                <p>{{upimg.pAlt.plan}}</p>
-                                                <!-- <span>华南碧桂园二期-东门</span> -->
-                                                <span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
-                                                <div class="icons">
-                                                    <span class="el-icon-location">{{upimg.pAlt.city}}</span>
-                                                    <!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
-                                                    <span>
-                                                        <i class="fa fa-file-text"></i>
-                                                        {{upimg.pAlt.asLab}}面
-                                                    </span>
-                                                    <el-tooltip placement="bottom" effect="light">
-                                                        <span class="el-icon-info"></span>
-                                                        <div slot="content" class="content">
-                                                            <p>{{upimg.pAlt.username}}上传</p>
-                                                            <p>{{upimg.pAlt.assettag}}</p>
-                                                            <p>{{upimg.pAlt.address}}</p>
-                                                        </div>
-                                                    </el-tooltip>
-                                                </div>
-                                            </div>
-                                            <div class="infoBox">
-                                                <i>超</i>
-                                                <span>{{upimg.pAlt.brand}}</span>
-                                                <em>{{formatTime(upimg.pUTime)}}</em>
-                                            </div>
-                                        </div>
-                                        <!--页码-->
-                                        <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-                                            </el-pagination>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="下刊" name="second">
-                            <div class="search-nav">
-                                <!--未搜索占位图-->
-                                <div class="tempPic">
-                                    <div class="noFind" v-if="showPic === 1">
-                                        <img src="../../assets/images/tempPic.png" alt="">
-                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                                    </div>
-                                    <div class="cantFind" v-if="showPic === 2">
-                                        <img src="../../assets/images/noPic.png" alt="">
-                                        <h4>无匹配结果</h4>
-                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
-                                    </div>
-                                    <!--图片列表-->
-                                    <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="downimg of downImgArr" :key="downimg.pID">
-                                            <div class="imgBox">
-                                                <img :src="downimg.pURL" alt="" class="smallImg">
-                                                <!--查看缩略图和下载-->
-                                                <div class="mask-btn" style="display: none">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
-                                                    <a href="#" :download="downimg.pSrc">下载图片</a>
-                                                </div>
-                                            </div>
-                                            <div class="detailBox">
-                                                <p>{{downimg.pAlt.plan}}</p>
-                                                <!-- <span>华南碧桂园二期-东门</span> -->
-                                                <span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
-                                                <div class="icons">
-                                                    <span class="el-icon-location">{{downimg.pAlt.city}}</span>
-                                                    <!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
-                                                    <span>
-                                                        <i class="fa fa-file-text"></i>
-                                                        {{downimg.pAlt.asLab}}面
-                                                    </span>
-                                                    <el-tooltip placement="bottom" effect="light">
-                                                        <span class="el-icon-info"></span>
-                                                        <div slot="content" class="content">
-                                                            <p>{{downimg.pAlt.username}}上传</p>
-                                                            <p>{{downimg.pAlt.assettag}}</p>
-                                                            <p>{{downimg.pAlt.address}}</p>
-                                                        </div>
-                                                    </el-tooltip>
-                                                </div>
-                                            </div>
-                                            <div class="infoBox">
-                                                <i>超</i>
-                                                <span>{{downimg.pAlt.brand}}</span>
-                                                <em>{{formatTime(downimg.pUTime)}}</em>
-                                            </div>
-                                        </div>
-                                        <!--页码-->
-                                        <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-                                            </el-pagination>
-                                        </div>
-                                    </div>
-                                </div>
+	<div>
+		<div class="ad_mediaMana_wrap">
+			<div class="ad_mediaMana_nav clearfix">
+				<p>
+					<a href="#">图片库</a>
+				</p>
+			</div>
+			<div class="mediaList_wrap">
+				<div class="mediaList_container">
+					<el-tabs v-model="activeName" @tab-click="handleClick()">
+						<!--搜索框-->
+						<div class="search-wrap" v-if="!ludan">
+							<span>
+								<div style="display:inline-block">
+									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+										<el-select v-model="select" slot="prepend" placeholder="请选择">
+											<el-option label="方案名称" value="1"></el-option>
+											<el-option label="媒体名称" value="2"></el-option>
+											<el-option label="资源名称" value="3"></el-option>
+										</el-select>
+									</el-input>
+								</div>
+							</span>
+							<el-cascader :options="citys" v-model="citySelect" class="plan-select" placeholder="选择地区" change-on-select>
+							</el-cascader>
+							<span>
+								<el-select v-model="LabSelect" placeholder="选择投放面" class="plan-select">
+									<el-option label="A面" value="A"></el-option>
+									<el-option label="B面" value="B"></el-option>
+								</el-select>
+							</span>
+							<span>
+								<div class="block">
+									<el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期">
+									</el-date-picker>
+								</div>
+							</span>
+							<span>
+								<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
+							</span>
+							<span>
+								<el-button plain class="map">一键导出</el-button>
+							</span>
+						</div>
+						<el-tab-pane label="上刊" name="first">
+							<div class="search-nav">
+								<!--提示或图片显示区域-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(upimg,index) of upImgArr" :key="upimg.pID">
+											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+												<img :src="upimg.pURL" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" v-if="showPreImg == index ">
+													<i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
+													<a href="#" :download="upimg.pSrc">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>{{upimg.pAlt.plan}}</p>
+												<!-- <span>华南碧桂园二期-东门</span> -->
+												<span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
+												<div class="icons">
+													<span class="el-icon-location">{{upimg.pAlt.city}}</span>
+													<!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
+													<span>
+														<i class="fa fa-file-text"></i>
+														{{upimg.pAlt.asLab}}面
+													</span>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{upimg.pAlt.username}}上传</p>
+															<p>{{upimg.pAlt.assettag}}</p>
+															<p>{{upimg.pAlt.address}}</p>
+														</div>
+													</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>{{upimg.pAlt.brand}}</span>
+												<em>{{formatTime(upimg.pUTime)}}</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="下刊" name="second">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(downimg,index) of downImgArr" :key="downimg.pID">
+											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+												<img :src="downimg.pURL" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" v-if="showPreImg == index">
+													<i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
+													<a href="#" :download="downimg.pSrc">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>{{downimg.pAlt.plan}}</p>
+												<!-- <span>华南碧桂园二期-东门</span> -->
+												<span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
+												<div class="icons">
+													<span class="el-icon-location">{{downimg.pAlt.city}}</span>
+													<!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
+													<span>
+														<i class="fa fa-file-text"></i>
+														{{downimg.pAlt.asLab}}面
+													</span>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{downimg.pAlt.username}}上传</p>
+															<p>{{downimg.pAlt.assettag}}</p>
+															<p>{{downimg.pAlt.address}}</p>
+														</div>
+													</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>{{downimg.pAlt.brand}}</span>
+												<em>{{formatTime(downimg.pUTime)}}</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
 
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="安装" name="third">
-                            <div class="search-nav">
-                                <!--未搜索占位图-->
-                                <div class="tempPic">
-                                    <div class="noFind" v-if="showPic === 1">
-                                        <img src="../../assets/images/tempPic.png" alt="">
-                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                                    </div>
-                                    <div class="cantFind" v-if="showPic === 2">
-                                        <img src="../../assets/images/noPic.png" alt="">
-                                        <h4>无匹配结果</h4>
-                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
-                                    </div>
-                                    <!--图片列表-->
-                                    <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(item, index) of installArr" :key="index">
-                                            <div class="imgBox">
-                                                <img :src="dialogImageUrl" alt="" class="smallImg">
-                                                <!--查看缩略图和下载-->
-                                                <div class="mask-btn" style="display: none">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                                    <a href="#" download="name.jpg">下载图片</a>
-                                                </div>
-                                            </div>
-                                            <div class="detailBox">
-                                                <p>珠江帝景地产三月投放</p>
-                                                <span>华南碧桂园二期-东门</span>
-                                                <div class="icons">
-                                                    <span class="el-icon-location">广州市</span>
-                                                    <span class="el-icon-menu">钣金门</span>
-                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                                                    <el-tooltip placement="bottom" effect="light">
-                                                        <span class="el-icon-info"></span>
-                                                        <div slot="content" class="content">
-                                                            <p>{{address}}</p>
-                                                        </div>
-                                                    </el-tooltip>
-                                                </div>
-                                            </div>
-                                            <div class="infoBox">
-                                                <i>超</i>
-                                                <span>guangzhoumeijie</span>
-                                                <em>2018.08.30</em>
-                                            </div>
-                                        </div>
-                                        <!--页码-->
-                                        <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-                                            </el-pagination>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="巡点" name="fourth">
-                            <div class="search-nav">
-                                <!--未搜索占位图-->
-                                <div class="tempPic">
-                                    <div class="noFind" v-if="showPic === 1">
-                                        <img src="../../assets/images/tempPic.png" alt="">
-                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-                                    </div>
-                                    <div class="cantFind" v-if="showPic === 2">
-                                        <img src="../../assets/images/noPic.png" alt="">
-                                        <h4>无匹配结果</h4>
-                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
-                                    </div>
-                                    <!--图片列表-->
-                                    <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
-                                            <div class="imgBox">
-                                                <img :src="dialogImageUrl" alt="" class="smallImg">
-                                                <!--查看缩略图和下载-->
-                                                <div class="mask-btn" style="display: none">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                                    <a href="#" download="name.jpg">下载图片</a>
-                                                </div>
-                                            </div>
-                                            <div class="detailBox">
-                                                <p>珠江帝景地产三月投放</p>
-                                                <span>华南碧桂园二期-东门</span>
-                                                <div class="icons">
-                                                    <span class="el-icon-location">广州市</span>
-                                                    <span class="el-icon-menu">钣金门</span>
-                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-                                                    <el-tooltip placement="bottom" effect="light">
-                                                        <span class="el-icon-info"></span>
-                                                        <div slot="content" class="content">
-                                                            <p>{{assetID}}</p>
-                                                            <p>{{address}}</p>
-                                                        </div>
-                                                    </el-tooltip>
-                                                </div>
-                                            </div>
-                                            <div class="infoBox">
-                                                <i>超</i>
-                                                <span>guangzhoumeijie</span>
-                                                <em>2018.08.30</em>
-                                            </div>
-                                        </div>
-                                        <!--页码-->
-                                        <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-                                            </el-pagination>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-tab-pane>
-                        <!-- <el-tab-pane label="录单" name="fifth">
-                <div class="mediaList_container">
-                    <div style="display:inline-block" v-if="ludan">
-                    <span>
-                        <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
-                        <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
-                        <el-option label="任务名称" value="1"></el-option>
-                        <el-option label="创建人" value="2"></el-option>
-                        </el-select>
-                    </el-input>
-                    </span>
-                    <span>
-                        <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                    </span>
-                    </div>
-                    <div class="table_wrap">
-                    <el-table
-                        border
-                        width="98%"
-                        :data="caseList"
-                        style="width: 100%"
-                        :default-sort="{prop: 'date', order: 'descending'}"
-                    >
-                        <el-table-column
-                        label="任务名称"
-                        min-width="18.3%"
-                        >
-                        <template slot-scope="scope">
-                            <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        prop="caseType"
-                        label="任务类型"
-                        min-width="11%"
-                        :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]"
-                        :filter-method="filterCaseType"
-                        :filter-multiple="false"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        prop="dwNum"
-                        label="点位数量"
-                        min-width="11%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        prop="uploadImg"
-                        label="已上传图片"
-                        min-width="11%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        prop="creater"
-                        label="创建人"
-                        min-width="11%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        prop="account"
-                        label="创建账号"
-                        min-width="13.8%"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        prop="createDate"
-                        label="创建时间"
-                        min-width="11.3%"
-                        >
-                        </el-table-column>
-                    </el-table>
-                    </div>
-                </div>
-            </el-tab-pane> -->
-                    </el-tabs>
-                    <!--缩略图对话框-->
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-                    </el-dialog>
-                </div>
-            </div>
-            <div class="bottom-btn">
-                <el-button plain>返回</el-button>
-            </div>
-        </div>
-    </div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="安装" name="third">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(item, index) of installArr" :key="index">
+											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" v-if="showPreImg == index">
+													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+													<a href="#" download="name.jpg">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>珠江帝景地产三月投放</p>
+												<span>华南碧桂园二期-东门</span>
+												<div class="icons">
+													<span class="el-icon-location">广州市</span>
+													<span class="el-icon-menu">钣金门</span>
+													<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{address}}</p>
+														</div>
+													</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>guangzhoumeijie</span>
+												<em>2018.08.30</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="巡点" name="fourth">
+							<div class="search-nav">
+								<!--未搜索占位图-->
+								<div class="tempPic">
+									<div class="noFind" v-if="showPic === 1">
+										<img src="../../assets/images/tempPic.png" alt="">
+										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+									</div>
+									<div class="cantFind" v-if="showPic === 2">
+										<img src="../../assets/images/noPic.png" alt="">
+										<h4>无匹配结果</h4>
+										<p>可以尝试扩大搜索范围重新搜索哦</p>
+									</div>
+									<!--图片列表-->
+									<div class="find clearfix" v-if="showPic === 3">
+										<div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
+											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+												<img :src="dialogImageUrl" alt="" class="smallImg">
+												<!--查看缩略图和下载-->
+												<div class="mask-btn" v-if="showPreImg == index">
+													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
+													<a href="#" download="name.jpg">下载图片</a>
+												</div>
+											</div>
+											<div class="detailBox">
+												<p>珠江帝景地产三月投放</p>
+												<span>华南碧桂园二期-东门</span>
+												<div class="icons">
+													<span class="el-icon-location">广州市</span>
+													<span class="el-icon-menu">钣金门</span>
+													<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+													<el-tooltip placement="bottom" effect="light">
+														<span class="el-icon-info"></span>
+														<div slot="content" class="content">
+															<p>{{assetID}}</p>
+															<p>{{address}}</p>
+														</div>
+													</el-tooltip>
+												</div>
+											</div>
+											<div class="infoBox">
+												<i>超</i>
+												<span>guangzhoumeijie</span>
+												<em>2018.08.30</em>
+											</div>
+										</div>
+										<!--页码-->
+										<div class="pager">
+											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination>
+										</div>
+									</div>
+								</div>
+							</div>
+						</el-tab-pane>
+						<!-- <el-tab-pane label="录单" name="fifth">
+							<div class="mediaList_container">
+								<div style="display:inline-block" v-if="ludan">
+									<span>
+										<el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+											<el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+												<el-option label="任务名称" value="1"></el-option>
+												<el-option label="创建人" value="2"></el-option>
+											</el-select>
+										</el-input>
+									</span>
+									<span>
+										<el-button type="primary" icon="el-icon-search">搜索</el-button>
+									</span>
+								</div>
+								<div class="table_wrap">
+									<el-table border width="98%" :data="caseList" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
+										<el-table-column label="任务名称" min-width="18.3%">
+											<template slot-scope="scope">
+												<span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
+											</template>
+										</el-table-column>
+										<el-table-column prop="caseType" label="任务类型" min-width="11%" :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]" :filter-method="filterCaseType" :filter-multiple="false">
+										</el-table-column>
+										<el-table-column prop="dwNum" label="点位数量" min-width="11%">
+										</el-table-column>
+										<el-table-column prop="uploadImg" label="已上传图片" min-width="11%">
+										</el-table-column>
+										<el-table-column prop="creater" label="创建人" min-width="11%">
+										</el-table-column>
+										<el-table-column prop="account" label="创建账号" min-width="13.8%">
+										</el-table-column>
+										<el-table-column prop="createDate" label="创建时间" min-width="11.3%">
+										</el-table-column>
+									</el-table>
+								</div>
+							</div>
+						</el-tab-pane> -->
+					</el-tabs>
+					<!--缩略图对话框-->
+					<el-dialog :visible.sync="dialogVisible">
+						<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+					</el-dialog>
+				</div>
+			</div>
+			<div class="bottom-btn">
+				<el-button plain>返回</el-button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -403,6 +367,8 @@ export default {
     },
     data() {
         return {
+            //显示预览图蒙版
+            showPreImg: null,
             // 上刊
             upImgArr: [],
             // 下刊
@@ -589,68 +555,157 @@ export default {
         },
         // 获取上刊图片
         getUpReport() {
-            // let result = [
-            // 	{pAlt:'{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}', pID:321,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",pUTime:"2018-06-12 15:08:45.0",ptID:3758,ptP:"35",puID:3},
-            // 	{pAlt:'{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}', pID:320,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",pUTime:"2018-06-12 15:08:39.0",ptID:3758,ptP:"35",puID:3},
-            // 	{pAlt:'{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}', pID:319,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",pUTime:"2018-06-12 15:08:30.0",ptID:3758,ptP:"35",puID:3},
-            // 	{pAlt:'{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}', pID:318,pSrc:"/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",pType:"SK",pURL:"https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",pUTime:"2018-06-12 15:08:20.0",ptID:3758,ptP:"35",puID:3},
-            // ];
-            // this.citys = this.getCitys(result);
-            // this.upImgArr = result;
+            let result = [
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+                    pID: 321,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+                    pUTime: "2018-06-12 15:08:45.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+                    pID: 320,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+                    pUTime: "2018-06-12 15:08:39.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+                    pID: 319,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+                    pUTime: "2018-06-12 15:08:30.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+                    pID: 318,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+                    pUTime: "2018-06-12 15:08:20.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                }
+            ];
+            this.citys = this.getCitys(result);
+            this.upImgArr = result;
 
-            if (this.upImgArr.length) {
-                return;
-            }
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            let upinfo = {
-                uid: uid,
-                ptype: "SK"
-            };
-            api
-                .postApi("/GetImg", upinfo)
-                .then(res => {
-                    console.log(res.data);
-                    let result = res.data;
-                    this.citys = this.getCitys(result);
-                    this.upImgArr = result;
-                    console.log("upimginfo", this.upImgArr);
-                })
-                .catch(res => {
-                    console.log(res);
-                });
+            // if (this.upImgArr.length) {
+            //     return;
+            // }
+            // let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            // let upinfo = {
+            //     uid: uid,
+            //     ptype: "SK"
+            // };
+            // api
+            //     .postApi("/GetImg", upinfo)
+            //     .then(res => {
+            //         console.log(res.data);
+            //         let result = res.data;
+            //         this.citys = this.getCitys(result);
+            //         this.upImgArr = result;
+            //         console.log("upimginfo", this.upImgArr);
+            //     })
+            //     .catch(res => {
+            //         console.log(res);
+            //     });
         },
         // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
                 data.pAlt = JSON.parse(data.pAlt);
-                let Obj = {
-                    value: data.pAlt.area,
-                    label: data.pAlt.area
+                let obj = {
+                    value: data.pAlt.city,
+                    label: data.pAlt.city,
+                    children: []
                 };
-                if (!cityArr.length) {
-                    cityArr.push({
-                        value: data.pAlt.city,
-                        label: data.pAlt.city,
-                        children: []
-                    });
+                if (
+                    JSON.stringify(cityArr).indexOf(JSON.stringify(obj)) === -1
+                ) {
+                    cityArr.push(obj);
                 }
-                for (let item of cityArr) {
+            }
+            for (let item of cityArr) {
+                for (let data of arr) {
+                    let areaObj = {
+                        value: data.pAlt.area,
+                        label: data.pAlt.area
+                    };
                     if (data.pAlt.city == item.value) {
                         // 去重
                         if (
                             JSON.stringify(item.children).indexOf(
-                                JSON.stringify(Obj)
+                                JSON.stringify(areaObj)
                             ) === -1
                         ) {
-                            item.children.push(Obj);
-                            break;
+                            item.children.push(areaObj);
                         }
                     }
                 }
             }
+            console.log("cityArr---------------fda", cityArr);
             return cityArr;
         },
+        // 区域二级联动
+        // getCitys(arr) {
+        //     let cityArr = [];
+        //     for (let data of arr) {
+        //         data.pAlt = JSON.parse(data.pAlt);
+        //         let Obj = {
+        //             value: data.pAlt.area,
+        //             label: data.pAlt.area
+        //         };
+        //         if (!cityArr.length) {
+        //             cityArr.push({
+        //                 value: data.pAlt.city,
+        //                 label: data.pAlt.city,
+        //                 children: []
+        //             });
+        //         }
+        //         for (let item of cityArr) {
+        //             if (data.pAlt.city == item.value) {
+        //                 // 去重
+        //                 if (
+        //                     JSON.stringify(item.children).indexOf(
+        //                         JSON.stringify(Obj)
+        //                     ) === -1
+        //                 ) {
+        //                     item.children.push(Obj);
+        //                     break;
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     return cityArr;
+        // },
         // 获取下刊图片
         getDownReport() {
             if (this.downImgArr.length) {
@@ -822,27 +877,27 @@ export default {
     },
 
     mounted: function() {
-        $(function() {
-            $(".smallImg").mouseenter(function() {
-                $(this)
-                    .siblings(".mask-btn")
-                    .show();
-            });
-            $(".mask-btn").mouseleave(function() {
-                $(this).hide();
-            });
-            $(".photoCard").hover(
-                function() {
-                    $(this).css(
-                        "box-shadow",
-                        "0px 0px 20px rgba(0, 0, 0, 0.20)"
-                    );
-                },
-                function() {
-                    $(this).css("box-shadow", "none");
-                }
-            );
+        /* $(function () {
+        $(".smallImg").mouseenter(function () {
+          $(this)
+            .siblings(".mask-btn")
+            .show();
         });
+        $(".mask-btn").mouseleave(function () {
+          $(this).hide();
+        });
+        $(".photoCard").hover(
+          function () {
+            $(this).css(
+              "box-shadow",
+              "0px 0px 20px rgba(0, 0, 0, 0.20)"
+            );
+          },
+          function () {
+            $(this).css("box-shadow", "none");
+          }
+        );
+      });*/
     }
 };
 </script>
@@ -958,10 +1013,10 @@ export default {
 }
 
 /* /deep/ .el-button.map span {
-       position: relative;
-       !*left: -10px;*!
-       top: -2px;
-     }*/
+         position: relative;
+         !*left: -10px;*!
+         top: -2px;
+       }*/
 
 .search-wrap {
     position: relative;
@@ -1024,6 +1079,9 @@ export default {
 
 .find {
     /* position: relative; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .photoCard {
@@ -1040,11 +1098,11 @@ export default {
 }
 
 .photoCard + .photoCard {
-    margin-left: 7px;
+    /*margin-left: 7px;*/
 }
 
 .find .photoCard:nth-child(6) {
-    margin-left: 0;
+    /*margin-left: 0;*/
 }
 
 .photoCard .imgBox {
@@ -1330,8 +1388,8 @@ export default {
 }
 
 /*/deep/ .el-table_1_column_3, /deep/ .el-table_1_column_4 {
-      text-align: right;
-    }*/
+        text-align: right;
+      }*/
 
 /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: #ecf5ff;
@@ -1548,11 +1606,11 @@ export default {
     }
 
     .photoCard + .photoCard {
-        margin-left: 26px;
+        /*margin-left: 26px;*/
     }
 
     .find .photoCard:nth-child(6) {
-        margin-left: 0;
+        /*margin-left: 0;*/
     }
 }
 
@@ -1572,11 +1630,11 @@ export default {
     }
 
     .photoCard + .photoCard {
-        margin-left: 98px;
+        /*margin-left: 98px;*/
     }
 
     .find .photoCard:nth-child(6) {
-        margin-left: 98px;
+        /*margin-left: 98px;*/
     }
 }
 </style>

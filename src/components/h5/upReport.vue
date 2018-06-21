@@ -368,312 +368,309 @@ export default {
         },
         // 投放详情
         getInitData() {
-            // 测试数据
-            let tempADList = [
-                {
-                    asID: 3644,
-                    lID: 428,
-                    cType: "高端住宅",
-                    lStar: "Jun 15, 2018",
-                    tradingArea: "北苑片区",
-                    adSize: "1180*840",
-                    assetTag: "NBJ00236",
-                    rID: 110105,
-                    resID: 11194,
-                    hNum: 2100,
-                    fNum: 26,
-                    resName: "润泽悦溪",
-                    chDay: "2011年",
-                    hPrice: 8000000,
-                    rName: "朝阳区",
-                    asLab: "A",
-                    adViewSize: "1154*813",
-                    mTitle: "西南门7",
-                    lEnd: "Jun 29, 2018",
-                    resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
-                },
-                {
-                    asID: 3642,
-                    lID: 429,
-                    cType: "高端住宅",
-                    lStar: "Jun 15, 2018",
-                    tradingArea: "北苑片区",
-                    adSize: "1180*840",
-                    assetTag: "NBJ00235",
-                    rID: 110105,
-                    resID: 11194,
-                    hNum: 2100,
-                    fNum: 26,
-                    resName: "润泽悦溪",
-                    chDay: "2011年",
-                    hPrice: 8000000,
-                    rName: "朝阳区",
-                    asLab: "A",
-                    adViewSize: "1154*813",
-                    mTitle: "西北门6",
-                    lEnd: "Jun 29, 2018",
-                    resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
-                },
-                {
-                    asID: 3634,
-                    lID: 430,
-                    cType: "高端住宅",
-                    lStar: "Jun 15, 2018",
-                    tradingArea: "北苑片区",
-                    adSize: "1180*840",
-                    assetTag: "NBJ00231",
-                    rID: 110105,
-                    resID: 11192,
-                    hNum: 1700,
-                    fNum: 20,
-                    resName: "拂林园",
-                    chDay: "2000年",
-                    hPrice: 5600000,
-                    rName: "朝阳区",
-                    asLab: "A",
-                    adViewSize: "1154*813",
-                    mTitle: "西门4",
-                    lEnd: "Jun 29, 2018",
-                    resAddress: "北京市朝阳区北五环红军营南路"
-                },
-                {
-                    asID: 3632,
-                    lID: 431,
-                    cType: "高端住宅",
-                    lStar: "Jun 15, 2018",
-                    tradingArea: "北苑片区",
-                    adSize: "1180*840",
-                    assetTag: "NBJ00230",
-                    rID: 110105,
-                    resID: 11192,
-                    hNum: 1700,
-                    fNum: 20,
-                    resName: "拂林园",
-                    chDay: "2000年",
-                    hPrice: 5600000,
-                    rName: "朝阳区",
-                    asLab: "A",
-                    adViewSize: "1154*813",
-                    mTitle: "东门3",
-                    lEnd: "Jun 29, 2018",
-                    resAddress: "北京市朝阳区北五环红军营南路"
-                },
-                {
-                    asID: 3630,
-                    lID: 432,
-                    cType: "高端住宅",
-                    lStar: "Jun 15, 2018",
-                    tradingArea: "北苑片区",
-                    adSize: "1180*840",
-                    assetTag: "NBJ00229",
-                    rID: 110105,
-                    resID: 11192,
-                    hNum: 1700,
-                    fNum: 20,
-                    resName: "拂林园",
-                    chDay: "2000年",
-                    hPrice: 5600000,
-                    rName: "朝阳区",
-                    asLab: "A",
-                    adViewSize: "1154*813",
-                    mTitle: "东南门2",
-                    lEnd: "Jun 29, 2018",
-                    resAddress: "北京市朝阳区北五环红军营南路"
-                }
-            ];
+            // // 测试数据
+            // let tempADList = [
+            //     {
+            //         asID: 3644,
+            //         lID: 428,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00236",
+            //         rID: 110105,
+            //         resID: 11194,
+            //         hNum: 2100,
+            //         fNum: 26,
+            //         resName: "润泽悦溪",
+            //         chDay: "2011年",
+            //         hPrice: 8000000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西南门7",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
+            //     },
+            //     {
+            //         asID: 3642,
+            //         lID: 429,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00235",
+            //         rID: 110105,
+            //         resID: 11194,
+            //         hNum: 2100,
+            //         fNum: 26,
+            //         resName: "润泽悦溪",
+            //         chDay: "2011年",
+            //         hPrice: 8000000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西北门6",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区来广营乡水岸庄园（润泽悦溪）"
+            //     },
+            //     {
+            //         asID: 3634,
+            //         lID: 430,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00231",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "西门4",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     },
+            //     {
+            //         asID: 3632,
+            //         lID: 431,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00230",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "东门3",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     },
+            //     {
+            //         asID: 3630,
+            //         lID: 432,
+            //         cType: "高端住宅",
+            //         lStar: "Jun 15, 2018",
+            //         tradingArea: "北苑片区",
+            //         adSize: "1180*840",
+            //         assetTag: "NBJ00229",
+            //         rID: 110105,
+            //         resID: 11192,
+            //         hNum: 1700,
+            //         fNum: 20,
+            //         resName: "拂林园",
+            //         chDay: "2000年",
+            //         hPrice: 5600000,
+            //         rName: "朝阳区",
+            //         asLab: "A",
+            //         adViewSize: "1154*813",
+            //         mTitle: "东南门2",
+            //         lEnd: "Jun 29, 2018",
+            //         resAddress: "北京市朝阳区北五环红军营南路"
+            //     }
+            // ];
+            // // let upImginfo = [
+            // //     {
+            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            // //         pID: 283,
+            // //         pSrc:
+            // //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            // //         pType: "SK",
+            // //         pURL:
+            // //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            // //         pUTime: "2018-06-09 18:55:26.0",
+            // //         ptID: 5,
+            // //         ptP: "7",
+            // //         puID: 3
+            // //     },
+            // //     {
+            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            // //         pID: 274,
+            // //         pSrc:
+            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            // //         pType: "SK",
+            // //         pURL:
+            // //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            // //         pUTime: "2018-06-09 18:31:14.0",
+            // //         ptID: 5,
+            // //         ptP: "7",
+            // //         puID: 3
+            // //     },
+            // //     {
+            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            // //         pID: 245,
+            // //         pSrc:
+            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            // //         pType: "SK",
+            // //         pURL:
+            // //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            // //         pUTime: "2018-06-09 18:31:14.0",
+            // //         ptID: 2,
+            // //         ptP: "7",
+            // //         puID: 3
+            // //     },
+            // //     {
+            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
+            // //         pID: 234,
+            // //         pSrc:
+            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            // //         pType: "SK",
+            // //         pURL:
+            // //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            // //         pUTime: "2018-06-09 18:31:14.0",
+            // //         ptID: 2,
+            // //         ptP: "7",
+            // //         puID: 3
+            // //     }
+            // // ];
             // let upImginfo = [
             //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 283,
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+            //         pID: 321,
             //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
             //         pType: "SK",
             //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pUTime: "2018-06-09 18:55:26.0",
-            //         ptID: 5,
-            //         ptP: "7",
+            //             "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+            //         pUTime: "2018-06-12 15:08:45.0",
+            //         ptID: 3644,
+            //         ptP: "35",
             //         puID: 3
             //     },
             //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 274,
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+            //         pID: 320,
             //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
             //         pType: "SK",
             //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pUTime: "2018-06-09 18:31:14.0",
-            //         ptID: 5,
-            //         ptP: "7",
+            //             "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+            //         pUTime: "2018-06-12 15:08:39.0",
+            //         ptID: 3644,
+            //         ptP: "35",
             //         puID: 3
             //     },
             //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 245,
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+            //         pID: 319,
             //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
             //         pType: "SK",
             //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pUTime: "2018-06-09 18:31:14.0",
-            //         ptID: 2,
-            //         ptP: "7",
+            //             "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+            //         pUTime: "2018-06-12 15:08:30.0",
+            //         ptID: 3630,
+            //         ptP: "35",
             //         puID: 3
             //     },
             //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 234,
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+            //         pID: 318,
             //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
             //         pType: "SK",
             //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pUTime: "2018-06-09 18:31:14.0",
-            //         ptID: 2,
-            //         ptP: "7",
+            //             "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+            //         pUTime: "2018-06-12 15:08:20.0",
+            //         ptID: 3630,
+            //         ptP: "35",
             //         puID: 3
             //     }
             // ];
-            let upImginfo = [
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-                    pID: 321,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pUTime: "2018-06-12 15:08:45.0",
-                    ptID: 3644,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-                    pID: 320,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pUTime: "2018-06-12 15:08:39.0",
-                    ptID: 3642,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-                    pID: 319,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pUTime: "2018-06-12 15:08:30.0",
-                    ptID: 2,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-                    pID: 318,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pUTime: "2018-06-12 15:08:20.0",
-                    ptID: 2,
-                    ptP: "35",
-                    puID: 3
-                }
-            ];
 
-            for (let temp of tempADList) {
-                temp.city = areaToText.toTextCity(temp.rID);
-            }
+            // for (let temp of tempADList) {
+            //     temp.city = areaToText.toTextCity(temp.rID);
+            // }
 
-            tempADList = this.constructData(tempADList);
-            this.filterCityData = filterFormat(tempADList, "city");
-            this.filtersArea = filterFormat(tempADList, "rName");
+            // tempADList = this.constructData(tempADList);
+            // this.filterCityData = filterFormat(tempADList, "city");
+            // this.filtersArea = filterFormat(tempADList, "rName");
 
-            // console.log('arr', arr);
+            // // console.log('arr', arr);
+            // // this.putDetail = tempADList;
             // this.putDetail = tempADList;
-            this.putDetail = tempADList;
-            this.currPutDetail = this.putDetail;
+            // this.currPutDetail = this.putDetail;
 
-            // 上刊数据(组合图片按资源分)
-            tempADList = this.constructImg(tempADList, upImginfo);
-            this.upReportArr = tempADList;
-            console.log("upImginfo", this.upReportArr);
-            // 上刊数据(组合图片按图片分)
-            // this.imgInfo = this.initImg(tempADList, upImginfo);
-            this.imgInfo = upImginfo;
+            // // 上刊数据(组合图片按资源分)
+            // tempADList = this.constructImg(tempADList, upImginfo);
+            // this.upReportArr = tempADList;
+            // console.log("upImginfo", this.upReportArr);
+            // // 上刊数据(组合图片按图片分)
+            // // this.imgInfo = this.initImg(tempADList, upImginfo);
+            // this.imgInfo = upImginfo;
 
-            // // 真实数据
-            // let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            // let info = {
-            //     uid: uid,
-            //     apid: sessionStorage.getItem("order_apid")
-            // };
-            // // uid         int【必填】     当前账户UserID
-            // // apid        int             公司对应方案apID
-            // api
-            //     .getApi("/GetAdLaunch", info)
-            //     .then(res => {
-            //         console.log(res.data);
-            //         if (!res.data.SysCode) {
-            //             let resArr = res.data;
-            //             resArr = this.constructData(resArr);
-            //             for (let result of resArr) {
-            //                 result.city = areaToText.toTextCity(result.rID);
-            //             }
-            //             this.filterCityData = filterFormat(resArr, "city");
-            //             this.filtersArea = filterFormat(resArr, "rName");
-            //             this.putDetail = resArr;
-            //             this.currPutDetail = this.putDetail;
+            // 真实数据
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let info = {
+                uid: uid,
+                apid: sessionStorage.getItem("order_apid")
+            };
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi("/GetAdLaunch", info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let resArr = res.data;
+                        resArr = this.constructData(resArr);
+                        for (let result of resArr) {
+                            result.city = areaToText.toTextCity(result.rID);
+                        }
+                        this.filterCityData = filterFormat(resArr, "city");
+                        this.filtersArea = filterFormat(resArr, "rName");
+                        this.putDetail = resArr;
+                        this.currPutDetail = this.putDetail;
 
-            //             // uid         int【必填】         当前账户UserID
-            //             // ptype       String【必填】      关联类型
-            //             // ptid        int                 关联类型对应唯一ID
-            //             // ptp         String              关联类型区分属性
-            //             let imginfo = {
-            //                 uid: JSON.parse(
-            //                     sessionStorage.getItem("session_data")
-            //                 ).uID,
-            //                 ptype: "XK",
-            //                 ptp: sessionStorage.getItem("order_apid")
-            //             };
-            //             api
-            //                 .postApi("/GetImg", imginfo)
-            //                 .then(res => {
-            //                     console.log(res.data);
-            //                     let downImginfo = res.data;
-            //                     // 下刊数据(组合图片)
-            //                     resArr = this.constructImg(resArr, downImginfo);
-            //                     this.upReportArr = resArr;
-            //                     console.log("downimginfo", this.upReportArr);
-            //                     // 下刊数据(组合图片按图片分)
-            //                     this.imgInfo = this.initImg(
-            //                         resArr,
-            //                         downImginfo
-            //                     );
-            //                 })
-            //                 .catch(res => {
-            //                     console.log(res);
-            //                 });
-            //         } else {
-            //             Message.warning(res.data.MSG);
-            //         }
-            //     })
-            //     .catch(res => {
-            //         console.log(res);
-            //     });
+                        // uid         int【必填】         当前账户UserID
+                        // ptype       String【必填】      关联类型
+                        // ptid        int                 关联类型对应唯一ID
+                        // ptp         String              关联类型区分属性
+                        let imginfo = {
+                            uid: JSON.parse(
+                                sessionStorage.getItem("session_data")
+                            ).uID,
+                            ptype: "SK",
+                            ptp: sessionStorage.getItem("order_apid")
+                        };
+                        api
+                            .postApi("/GetImg", imginfo)
+                            .then(res => {
+                                console.log(res.data);
+                                let upImginfo = res.data;
+                                // 下刊数据(组合图片)
+                                resArr = this.constructImg(resArr, upImginfo);
+                                this.upReportArr = resArr;
+                                console.log("upimginfo", this.upReportArr);
+                                // 下刊数据(组合图片按图片分)
+                                this.imgInfo = this.initImg(resArr, upImginfo);
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
         },
         // 组装数据
         constructData(initData) {
@@ -726,8 +723,8 @@ export default {
             for (let data of arr) {
                 let img = [];
                 for (let item of imgArr) {
-                    // let alt = JSON.parse(item.pAlt);
-                    if (data.asID == item.ptID) {
+                    let alt = JSON.parse(item.pAlt);
+                    if (data.resID == alt.resid) {
                         // uid         int【必填】         当前账户UserID
                         // pid         int【必填】         图库pID
                         // palt        String              图片标题
@@ -748,6 +745,7 @@ export default {
                 }
                 data.upImgArr = img;
             }
+            console.log("arr-Img--------------", arr);
             return arr;
         },
         // 查看监播

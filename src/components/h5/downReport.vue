@@ -665,7 +665,8 @@ export default {
             for (let data of arr) {
                 let img = [];
                 for (let item of imgArr) {
-                    if (data.asID == item.ptID) {
+                    let alt = JSON.parse(item.pAlt);
+                    if (data.resID == alt.resid) {
                         // uid         int【必填】         当前账户UserID
                         // pid         int【必填】         图库pID
                         // palt        String              图片标题

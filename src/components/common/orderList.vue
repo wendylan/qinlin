@@ -72,9 +72,7 @@
                         </el-table-column>
                         <el-table-column label="投放城市(点位面数，排期)" min-width="20.2%">
                             <template slot-scope="scope">
-                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}
-                                    <!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
-                                </p>
+                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}</p>
                             </template>
                         </el-table-column>
                         <el-table-column label="发布日期" min-width="7.3%" sortable :sort-method="sortData">
@@ -209,7 +207,7 @@ export default {
             if (value) {
                 let index = value.indexOf("面");
                 let arr = value.split("");
-                arr.splice(index + 1, 0, "，");
+                arr.splice(index + 1, 0, ",");
                 return arr.join("");
             }
         },
@@ -230,7 +228,17 @@ export default {
                         this.loading = false;
                         for (let item of this.orderList) {
                             if (item.rIDs) {
-                                item.cityArea = item.rIDs.split(",");
+                                // item.cityArea = item.rIDs.split(",");
+                                let arr = item.rIDs.split(",");
+                                let resultArr = [];
+                                for (let data of arr) {
+                                    let text = data.substr(
+                                        0,
+                                        data.indexOf(")") + 1
+                                    );
+                                    resultArr.push(text);
+                                }
+                                item.cityArea = resultArr;
                             }
                             console.log(item.cityArea);
                         }
@@ -685,7 +693,7 @@ a {
 }
 
 /deep/ .el-table td {
-    padding: 6px 0;
+    padding: 8px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
@@ -706,10 +714,6 @@ a {
 
 /deep/ .el-table .caret-wrapper {
     width: 22px;
-}
-
-/deep/ .el-table_1_column_5 {
-    text-align: right !important;
 }
 
 /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
@@ -751,7 +755,8 @@ a {
     white-space: nowrap;
     line-height: 24px;
 }
-/deep/ .el-table__row td:nth-child(5) .cell {
+/deep/ .el-table__row td:nth-child(5) .cell,
+/deep/ .has-gutter tr th:nth-child(5) .cell {
     text-align: right;
 }
 /deep/ .el-table__row td:nth-child(5) .cell span {

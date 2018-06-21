@@ -69,8 +69,9 @@
                         </el-table-column>
                         <el-table-column label="投放城市(点位面数,排期)" min-width="22.6%">
                             <template slot-scope="scope">
-                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}
-                                    <!-- <i class="fa fa-lock fa-lg" style="color:#999;"></i> -->
+                                <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item.text)}}
+                                    <i v-if="item.IsLock" class="fa fa-lock fa-lg" style="color:#999;"></i>
+                                    <i v-else class="fa fa-unlock fa-lg" style="color:#999;"></i>
                                 </p>
                             </template>
                         </el-table-column>
@@ -111,9 +112,8 @@
 
                 <el-dialog :title="isLock?'请选择预锁城市':'请选择解锁城市'" :visible.sync="dialogVisible" width="30%" center>
                     <el-checkbox-group v-model="cityChoose">
-                        <el-checkbox :label="item.rName" v-for="item of cityList" :key="item.value" border></el-checkbox>
-                        <!-- <el-checkbox label="广州市" checked border></el-checkbox> -->
-                        <!-- <el-checkbox label="深圳市" border></el-checkbox> -->
+                        <el-checkbox v-if="isLock" :label="item.rName" v-for="item of cityList" :key="item.value" border :disabled="item.IsLock"></el-checkbox>
+                        <el-checkbox v-if="!isLock" :label="item.rName" v-for="item of cityList" :key="item.value" border :disabled="!item.IsLock"></el-checkbox>
                     </el-checkbox-group>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="cancelLock">取 消</el-button>
@@ -182,8 +182,8 @@ export default {
             //   判断是否有发布，预锁解锁等功能
             isDisable: true,
             //加载中
-            loading: true,
-            // loading: false,
+            // loading: true,
+            loading: false,
             Info: {},
             // 解锁还是预锁
             isLock: false,
@@ -306,7 +306,7 @@ export default {
             if (value) {
                 let index = value.indexOf("面");
                 let arr = value.split("");
-                arr.splice(index + 1, 0, "，");
+                arr.splice(index + 1, 0, ",");
                 return arr.join("");
             }
         },
@@ -352,7 +352,44 @@ export default {
                         this.loading = false;
                         for (let item of this.planList) {
                             if (item.rIDs) {
-                                item.cityArea = item.rIDs.split(",");
+                                // item.cityArea = item.rIDs.split(",");
+                                let arr = item.rIDs.split(",");
+                                let dataArr = [];
+                                for (let i = 0; i < arr.length; i++) {
+                                    let text = arr[i].substr(
+                                        0,
+                                        arr[i].indexOf(")") + 1
+                                    );
+                                    let pdid = arr[i].substr(
+                                        arr[i].indexOf(")") + 1
+                                    );
+                                    api
+                                        .postApi("/CheckLock", {
+                                            uid: this.Info.uid,
+                                            pdid: pdid
+                                        })
+                                        .then(res => {
+                                            console.log(res.data);
+                                            // lock.IsLock = res.data.IsLock;
+                                            let IsLock = res.data.IsLock;
+                                            dataArr.push({
+                                                text: text,
+                                                pdid: pdid,
+                                                IsLock: IsLock
+                                            });
+                                            if (i >= arr.length - 1) {
+                                                // item.cityArea = dataArr;
+                                                this.$set(
+                                                    item,
+                                                    "cityArea",
+                                                    dataArr
+                                                );
+                                            }
+                                        })
+                                        .catch(res => {
+                                            console.log(res);
+                                        });
+                                }
                             }
                         }
                         this.currentPlan = this.planList;
@@ -806,7 +843,7 @@ export default {
                         if (res.data.length && i >= arr.length - 1) {
                             // 存在点位被占，是否立即去方案详情修改？
                             MessageBox.confirm(
-                                `存在点位被占，是否立即去方案详情修改？`,
+                                `存在点位被占，是否修改方案？`,
                                 "提示",
                                 {
                                     confirmButtonText: "确定",
@@ -815,7 +852,7 @@ export default {
                                 }
                             )
                                 .then(() => {
-                                    this.ToDetail(this.Info.apid);
+                                    this.ToEdit(this.Info.apid);
                                 })
                                 .catch(() => {
                                     Message.info("已取消操作");
@@ -836,6 +873,12 @@ export default {
             sessionStorage.setItem("plan_apid", apid);
             this.$router.push("./planDetail");
         },
+        // 跳转到编辑页面
+        ToEdit(apid) {
+            console.log(apid);
+            sessionStorage.setItem("plan_apid", apid);
+            this.$router.push("./editPlan");
+        },
         // 获取城市
         getSelLockCity() {
             let info = this.Info;
@@ -851,12 +894,48 @@ export default {
                     // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
                     // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
                     // ];
-                    let cityCode = filterFormat(pdidArr, "rID", "pdID");
-                    for (let item of cityCode) {
-                        item.rName = areaToText.toTextCity(item.value);
+                    let uWhoArr = JSON.parse(
+                        sessionStorage.getItem("session_data")
+                    ).uWho;
+                    let resultArr = [];
+                    if (uWhoArr == 0) {
+                        resultArr = pdidArr;
+                    } else {
+                        for (let data of pdidArr) {
+                            if (uWhoArr.indexOf(data.rID) != -1) {
+                                resultArr.push(data);
+                            }
+                        }
                     }
-                    this.cityList = cityCode;
-                    console.log(cityCode);
+                    for (let i = 0; i < resultArr.length; i++) {
+                        api
+                            .postApi("/CheckLock", {
+                                uid: this.Info.uid,
+                                pdid: resultArr[i].pdID
+                            })
+                            .then(res => {
+                                console.log(res.data);
+                                resultArr[i].IsLock = res.data.IsLock;
+                                if (i >= resultArr.length - 1) {
+                                    let cityCode = filterFormat(
+                                        resultArr,
+                                        "rID",
+                                        "pdID",
+                                        "IsLock"
+                                    );
+                                    for (let item of cityCode) {
+                                        item.rName = areaToText.toTextCity(
+                                            item.value
+                                        );
+                                    }
+                                    this.cityList = cityCode;
+                                    console.log(cityCode);
+                                }
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -892,13 +971,29 @@ export default {
             // 	console.log(res);
             // });
             let uid = this.Info.uid;
+
             // 解锁接口
             for (let pdiditem of pdidArr) {
+                let pdinfo = {
+                    uid: uid,
+                    pdid: pdiditem
+                };
                 api
-                    .postApi("/ClFangan", { uid: uid, pdid: pdiditem })
+                    .getApi("/CheckLock", pdinfo)
                     .then(res => {
-                        console.log(res.data);
-                        Message.success(res.data.MSG);
+                        if (res.data.IsLock) {
+                            api
+                                .postApi("/ClFangan", pdinfo)
+                                .then(res => {
+                                    console.log(res.data);
+                                    Message.success(res.data.MSG);
+                                })
+                                .catch(res => {
+                                    console.log(res);
+                                });
+                        } else {
+                            Message.warning("该城市无锁住的点位,无需解锁");
+                        }
                     })
                     .catch(res => {
                         console.log(res);
@@ -1130,7 +1225,7 @@ a {
 }
 
 /deep/ .el-table td {
-    padding: 6px 0;
+    padding: 8px 0;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
@@ -1240,7 +1335,8 @@ a {
 }
 
 /*锁*/
-.fa.fa-lock.fa-lg {
+.fa.fa-lock.fa-lg,
+.fa.fa-unlock.fa-lg {
     font-size: 16px;
     color: #d8d8d8 !important;
     position: relative;
