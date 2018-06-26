@@ -96,16 +96,19 @@
 							]-->
             </el-table-column>
             <el-table-column
-              prop="tradingArea"
               label="商圈"
               min-width="10.2%"
             >
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="scope.row.tradingArea" placement="bottom">
+                  <span>{{scope.row.tradingArea}}</span>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column
               prop="mVehicle"
               label="媒体类型"
               min-width="7.4%"
-
             >
             </el-table-column>
             <el-table-column
@@ -116,7 +119,6 @@
                 <el-tooltip class="item" effect="dark" :content="scope.row.mTitle" placement="bottom">
                   <span>{{scope.row.mTitle}}</span>
                 </el-tooltip>
-
               </template>
             </el-table-column>
             <el-table-column
@@ -177,6 +179,8 @@
 
 <script>
   import api from '../../api/api'
+  import areaArr from '../../commonFun/areaPackage_new'
+  import cityData from '../../commonFun/region.json';
   // 区域换成中文
   import areaToText from '../../commonFun/areaToText_new.js';
   import {
@@ -261,12 +265,18 @@
                   usableNum: '2',
                   ptStatus: '正常'
               }]*/
-        beforPlanList: [],     //  后台返回的原始数据
+        beforMediaList: [],     //  后台返回的原始数据
         planList: [],         //  table的所有数据
         currentPlan: [],      // 显示在table中的数据
+        copyMediaList: [],    // 复制搜索前的表格数据
+        firstLevelList: [],   // 一级搜索存储的数据
+        firstLevelListIndex: 0, // 目前显示到的条数下标
         filtersCity: [],     // 城市头部筛选
         filtersRName: [],    // 区域头部筛选
-        // heightSign: 410      // 初始滚轮滚动距离可触发增加列表
+        loadScroll: true,
+        provinceCity: [],     //省份及其地级市
+        timeID:'',             // 计时器
+        // FValue: '东城区',
       }
     },
     mounted: function () {
@@ -289,29 +299,17 @@
       });
       this.getData();
     },
-    /*  // 注册一个全局自定义指令 `v-focus`
-      Vue.directive('focus', {
-        // 当被绑定的元素插入到 DOM 中时……
-        inserted: function (el) {
-          // 聚焦元素
-          el.focus()
-        }
-      })*/
     directives: {
       loadmore: {
         heightSign: 413,
         bind: function (el, binding) {
           const selectWrap = el.querySelector('.el-table__body-wrapper')
-          // console.log(binding.def.heightSign)
-          // let hSign = binding.def.heightSign
           selectWrap.addEventListener('scroll', function () {
-            // console.log('hSign',binding.def.heightSign)
-            let sign = binding.def.heightSign
+            let sign = 100
             const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
             // console.log('滚动的距离',scrollDistance)
             if (scrollDistance <= 100) {
               binding.value()
-              binding.def.heightSign = binding.def.heightSign + 358
             }
           })
         }
@@ -319,23 +317,23 @@
     },
     methods: {
       loadMore() {
-        if (this.loadSign) {
-          this.loadSign = false
-          let a = this.directives
-          // this.page++
-          // if (this.page > 10) {
-          //   return
-          // }
-          this.addMediaList()
-          setTimeout(() => {
-            this.loadSign = true
-          }, 1000)
-          console.log('到底了')
+        console.log('滚动触发了')
+        if(this.loadScroll){
+          if (this.loadSign) {
+            this.loadSign = false
+            if(this.keyword !== '' && this.selectInfo === '3'){
+              this.firstLevelAdd()
+            }else{
+              this.addMediaList()
+            }
+            setTimeout(() => {
+              this.loadSign = true
+            }, 1000)
+            console.log('到底了')
+          }
+        }else {
+          // console.log('此时为搜索出来的数据')
         }
-      },
-      //监听table滚动ListenerScroll
-      ListenerScroll() {
-        console.log('发生了滚动')
       },
       //新建跳转
       newMedia() {
@@ -355,6 +353,7 @@
         return row.city === value;
       },
       filterRegion(value, row) {
+        // console.log('value',value,'row',row)
         return row.rName === value;
       },
       // filterMediaType(value, row) {
@@ -546,12 +545,10 @@
         let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
         api.getApi('/GetRMList', {uid: uid}).then(res => {
           console.log('资源媒体列表：', res.data)
-          //正在加载
-          this.loading = false;
           let RMList = res.data.reverse();
           if (!RMList.SysCode) {
             // let RMList = reclist
-            this.beforPlanList = RMList
+            this.beforMediaList = RMList
             if (RMList) {
               console.log('资源媒体列表：', res.data)
               for (let i = 0; i < RMList.length; i++) {
@@ -567,39 +564,22 @@
                 let data = areaToText.toTextCity(RMList[i].rID);
                 this.$set(RMList[i], 'city', data);
                 dataArr.push(RMList[i])
-                if (i >= 19 && RMList.length > 19) {
-                  // alert('10')
-                  // this.planList = RMList
+                if (i >= 29 && RMList.length > 29) {
                   this.planList = dataArr
                   console.log('planList', this.planList)
-                  // for (let j = 0; j < this.planList.length; j++) {    // 表头区域和城市选项
-                  //   let rName = {
-                  //     text: this.planList[j].rName,
-                  //     value: this.planList[j].rName
-                  //   }
-                  //   let rCity = {
-                  //     text: this.planList[j].city,
-                  //     value: this.planList[j].city
-                  //   }
-                  //   //  this.filtersRName.push(rName)
-                  //   if (JSON.stringify(this.filtersRName).indexOf(rName.value) === -1) {
-                  //     this.filtersRName.push(rName)
-                  //   }
-                  //   if (JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1) {
-                  //     this.filtersCity.push(rCity)
-                  //   }
-                  // }
                   break
                 } else {
                   if (i >= RMList.length - 1) {
                     this.planList = dataArr
-                    console.log('媒体列表长度小于20', this.planList)
-                    // totalList.push(planArr)
+                    console.log('媒体列表长度小于29', this.planList)
                   }
                 }
               }
               this.currentPlan = this.planList;
-              this.tableHeadCity_area()
+              this.copyMediaList = this.planList
+              //正在加载
+              this.loading = false;
+              this.tableHeadCity_area()           // 表头过滤选项
             } else {
               Message.warning({
                 message: '数据为空',
@@ -617,9 +597,9 @@
       // 每次曾加20条数据
       addMediaList() {
         let dataArr = []
-        let RMList = this.beforPlanList
+        let RMList = this.beforMediaList
         let index = this.currentPlan.length
-        console.log('this.beforPlanList', this.beforPlanList)
+        console.log('this.beforMediaList', this.beforMediaList)
         console.log('下标', index)
         for (let i = index; i < RMList.length; i++) {
           if (RMList[i].mState == '1') {
@@ -634,7 +614,7 @@
           let data = areaToText.toTextCity(RMList[i].rID);
           this.$set(RMList[i], 'city', data);
           dataArr.push(RMList[i])
-          console.log('RMList[i]', i, RMList[i])
+          // console.log('RMList[i]', i, RMList[i])
           if (i >= index + 20 && RMList.length > 20 + index) {
             console.log('dataArr', dataArr)
             for (let j = 0; j < dataArr.length; j++) {
@@ -651,12 +631,16 @@
             }
           }
         }
-        this.heightSign = this.heightSign + (10 * 85)
         this.currentPlan = this.planList;
+        if(this.selectInfo === '' || this.selectInfo === null){
+          this.copyMediaList = this.planList;
+        }
         this.tableHeadCity_area()
       },
       // 表头区域和城市选项
       tableHeadCity_area() {
+        this.filtersCity = []
+        this.filtersRName = []
         for (let j = 0; j < this.planList.length; j++) {    // 表头区域和城市选项
           let rName = {
             text: this.planList[j].rName,
@@ -681,14 +665,149 @@
         sessionStorage.setItem("resID", data.resID);
       },
       // 当搜索框为空的时候进行重置显示
-      initData() {
+      initData(val) {
+        console.log('搜索框变化的值',val)
         if (!this.keyword) {
-          this.currentPlan = JSON.parse(JSON.stringify(this.planList));
+          console.log('搜索框为空copyMediaList', this.copyMediaList)
+          this.planList = this.copyMediaList //JSON.parse(JSON.stringify(this.planList));
+          this.currentPlan = this.planList
+          this.tableHeadCity_area()
+          // this.loading = false
+          this.loadScroll = true
         }
+      },
+      searchListFun(){
+        this.planList = []
+        console.log('selectInfo', this.selectInfo)
+        console.log('keyword', this.keyword)
+        let select = this.selectInfo;
+        let keyword = this.keyword;
+        let BML = this.beforMediaList
+        let searchArr = []
+        let cityRid = ''
+        if (this.keyword !== '' && this.keyword !== null) {
+          let arr = [];
+          if(select == '3'){
+            this.provinceCity = cityData
+            for(let n=0;n<this.provinceCity.length;n++){
+              let city = this.provinceCity[n].regionEntitys
+              for(let m=0;m<city.length;m++){
+                if(city[m].region.includes(keyword)){
+                  cityRid = (city[m].code).substring(0,4)
+                  console.log('城市为:',keyword,',该rid为:',cityRid)
+                  break
+                }
+              }
+            }
+          }
+          for(let i=0; i<BML.length;i++){
+            if (BML[i].resName) {
+              if ((select == '1') && BML[i].resName.includes(keyword)) {
+                arr.push(BML[i]);
+              }
+            }
+            if (BML[i].tradingArea) {
+              if ((select == '2') && BML[i].tradingArea.includes(keyword)) {
+                arr.push(BML[i]);
+              }
+            }
+            if(BML[i].rID){
+              let BMLrID = Math.floor(BML[i].rID/100)
+              console.log('BMLrID',BMLrID)
+              if((select == '3') && BMLrID == cityRid){
+                arr.push(BML[i]);
+              }
+            }
+          }
+          for(let j=0;j<arr.length;j++){
+            if (arr[j].mState == '1') {
+              arr[j].mState = '正常'
+            } else if (arr[j].mState == '0') {
+              arr[j].mState = '禁用'
+            } else if (arr[j].mState == '2') {
+              arr[j].mState = '待安装'
+            } else if (arr[j].mState == '3') {
+              arr[j].mState = '待维修'
+            }
+            let data = areaToText.toTextCity(arr[j].rID);
+            this.$set(arr[j], 'city', data);
+            searchArr.push(arr[j])
+          }
+          console.log('searchArr',searchArr)
+          if(select == '3'){    // 搜索城市
+            console.log('搜索城市select',select)
+            this.firstLevelList = searchArr
+            for(let t=0; t<searchArr.length;t++){
+              if (t < 50 && searchArr.length > 50) {
+                this.planList.push(searchArr[t])
+              } else if(searchArr.length < 50){
+                this.planList = searchArr
+                this.firstLevelListIndex = searchArr.length
+                break
+              }else{
+                this.firstLevelListIndex = t
+                this.currentPlan = this.planList
+                console.log('firstLevelListIndex',this.firstLevelListIndex)
+                break
+              }
+            }
+            this.loadScroll = true
+          }else{
+            console.log('select不为3')
+            this.planList = searchArr
+          }
+          this.currentPlan = this.planList
+          console.log('搜索完成',this.currentPlan)
+          this.tableHeadCity_area()
+          if (!searchArr.length) {
+            Message.warning({
+              message: '查询数据为空',
+              duration: 1000
+            });
+          }
+          // return;
+        }else{
+          this.loading = false
+          this.loadScroll = true
+        }
+        // this.currentPlan = JSON.parse(JSON.stringify(this.planList))
+        this.loading = false
+      },
+      // 一级搜索后的滚动加载
+      firstLevelAdd(){
+        let LevelArr = []
+        let LevelList = this.firstLevelList
+        let LevelIndex = this.firstLevelListIndex
+        console.log('this.firstLevelList', this.firstLevelList)
+        console.log('一级搜索', LevelIndex)
+        for (let i = LevelIndex; i < LevelList.length; i++){
+          LevelArr.push(LevelList[i])
+          if (i >= LevelIndex + 100 && LevelList.length > 100 + LevelIndex) {
+            console.log('LevelArr', LevelArr)
+            for (let j = 0; j < LevelArr.length; j++) {
+              this.planList.push(LevelArr[j])
+            }
+            console.log('planList', this.planList)
+            this.firstLevelList = i
+            break
+          }else{
+            if (i >= LevelList.length - 1) {
+              console.log('LevelArr', LevelArr)
+              let c = this.planList.concat(LevelArr)
+              this.planList = c
+              console.log('planList', this.planList)
+              this.firstLevelList = i
+            }
+          }
+        }
+        this.currentPlan = this.planList
       },
       // 搜索按钮
       searchFun() {
-        console.log('selectInfo', this.selectInfo)
+        this.loading = true
+        this.loadScroll = false
+        this.searchListFun()
+        /*console.log('selectInfo', this.selectInfo)
         console.log('keyword', this.keyword)
         let select = this.selectInfo;
         let keyword = this.keyword;
@@ -716,7 +835,7 @@
           }
           return;
         }
-        this.currentPlan = JSON.parse(JSON.stringify(this.planList));
+        this.currentPlan = JSON.parse(JSON.stringify(this.planList));*/
       },
     }
   }
@@ -724,6 +843,10 @@
 </script>
 
 <style scoped>
+  /deep/ .el-table-filter{
+    height: 400px !important;
+    overflow-y:auto !important;
+  }
   a {
     color: #108EE9;
   }
@@ -935,8 +1058,8 @@
     white-space: nowrap;
   }
 
-  /deep/ .el-table__row td:nth-child(9) .cell {
-    text-align: right;
+  /deep/ .el-table__row td:nth-child(9) .cell , /deep/ .has-gutter th:nth-child(9) .cell {
+    text-align: right !important;
   }
 
   /deep/ .el-table__row td:nth-child(1) .cell span {
@@ -994,9 +1117,7 @@
     padding-right: 10px;
   }
 
-  /deep/ .el-table_1_column_9 {
-    text-align: right;
-  }
+
 
   /*提示框*/
   /deep/ .el-message {

@@ -64,7 +64,7 @@
 												<!--查看缩略图和下载-->
 												<div class="mask-btn" v-if="showPreImg == index ">
 													<i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
-													<a href="#" :download="upimg.pSrc">下载图片</a>
+													<a :href="upimg.pURL" :download="upimg.pID+'.png'">下载图片</a>
 												</div>
 											</div>
 											<div class="detailBox">
@@ -124,7 +124,7 @@
 												<!--查看缩略图和下载-->
 												<div class="mask-btn" v-if="showPreImg == index">
 													<i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
-													<a href="#" :download="downimg.pSrc">下载图片</a>
+													<a :href="downimg.pURL" :download="downimg.pID+'.png'">下载图片</a>
 												</div>
 											</div>
 											<div class="detailBox">
@@ -274,43 +274,43 @@
 							</div>
 						</el-tab-pane>
 						<!-- <el-tab-pane label="录单" name="fifth">
-							<div class="mediaList_container">
-								<div style="display:inline-block" v-if="ludan">
-									<span>
-										<el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
-											<el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
-												<el-option label="任务名称" value="1"></el-option>
-												<el-option label="创建人" value="2"></el-option>
-											</el-select>
-										</el-input>
-									</span>
-									<span>
-										<el-button type="primary" icon="el-icon-search">搜索</el-button>
-									</span>
-								</div>
-								<div class="table_wrap">
-									<el-table border width="98%" :data="caseList" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
-										<el-table-column label="任务名称" min-width="18.3%">
-											<template slot-scope="scope">
-												<span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
-											</template>
-										</el-table-column>
-										<el-table-column prop="caseType" label="任务类型" min-width="11%" :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]" :filter-method="filterCaseType" :filter-multiple="false">
-										</el-table-column>
-										<el-table-column prop="dwNum" label="点位数量" min-width="11%">
-										</el-table-column>
-										<el-table-column prop="uploadImg" label="已上传图片" min-width="11%">
-										</el-table-column>
-										<el-table-column prop="creater" label="创建人" min-width="11%">
-										</el-table-column>
-										<el-table-column prop="account" label="创建账号" min-width="13.8%">
-										</el-table-column>
-										<el-table-column prop="createDate" label="创建时间" min-width="11.3%">
-										</el-table-column>
-									</el-table>
-								</div>
-							</div>
-						</el-tab-pane> -->
+                <div class="mediaList_container">
+                    <div style="display:inline-block" v-if="ludan">
+                        <span>
+                            <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+                                <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+                                    <el-option label="任务名称" value="1"></el-option>
+                                    <el-option label="创建人" value="2"></el-option>
+                                </el-select>
+                            </el-input>
+                        </span>
+                        <span>
+                            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+                        </span>
+                    </div>
+                    <div class="table_wrap">
+                        <el-table border width="98%" :data="caseList" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
+                            <el-table-column label="任务名称" min-width="18.3%">
+                                <template slot-scope="scope">
+                                    <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="caseType" label="任务类型" min-width="11%" :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]" :filter-method="filterCaseType" :filter-multiple="false">
+                            </el-table-column>
+                            <el-table-column prop="dwNum" label="点位数量" min-width="11%">
+                            </el-table-column>
+                            <el-table-column prop="uploadImg" label="已上传图片" min-width="11%">
+                            </el-table-column>
+                            <el-table-column prop="creater" label="创建人" min-width="11%">
+                            </el-table-column>
+                            <el-table-column prop="account" label="创建账号" min-width="13.8%">
+                            </el-table-column>
+                            <el-table-column prop="createDate" label="创建时间" min-width="11.3%">
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+            </el-tab-pane> -->
 					</el-tabs>
 					<!--缩略图对话框-->
 					<el-dialog :visible.sync="dialogVisible">
@@ -555,67 +555,68 @@ export default {
         },
         // 获取上刊图片
         getUpReport() {
-            let result = [
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-                    pID: 321,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pUTime: "2018-06-12 15:08:45.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-                    pID: 320,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pUTime: "2018-06-12 15:08:39.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-                    pID: 319,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pUTime: "2018-06-12 15:08:30.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-                    pID: 318,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pUTime: "2018-06-12 15:08:20.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                }
-            ];
-            this.citys = this.getCitys(result);
-            this.upImgArr = result;
-
+            // // 测试数据
+            // let result = [
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+            //         pID: 321,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+            //         pUTime: "2018-06-12 15:08:45.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
+            //         pID: 320,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+            //         pUTime: "2018-06-12 15:08:39.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+            //         pID: 319,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+            //         pUTime: "2018-06-12 15:08:30.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
+            //         pID: 318,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+            //         pUTime: "2018-06-12 15:08:20.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     }
+            // ];
+            // this.citys = this.getCitys(result);
+            // this.upImgArr = result;
+            // // 真实数据
             // if (this.upImgArr.length) {
             //     return;
             // }
@@ -641,32 +642,37 @@ export default {
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
-                data.pAlt = JSON.parse(data.pAlt);
-                let obj = {
-                    value: data.pAlt.city,
-                    label: data.pAlt.city,
-                    children: []
-                };
-                if (
-                    JSON.stringify(cityArr).indexOf(JSON.stringify(obj)) === -1
-                ) {
-                    cityArr.push(obj);
+                if (data.pAlt) {
+                    data.pAlt = JSON.parse(data.pAlt);
+                    let obj = {
+                        value: data.pAlt.city,
+                        label: data.pAlt.city,
+                        children: []
+                    };
+                    if (
+                        JSON.stringify(cityArr).indexOf(JSON.stringify(obj)) ===
+                        -1
+                    ) {
+                        cityArr.push(obj);
+                    }
                 }
             }
             for (let item of cityArr) {
                 for (let data of arr) {
-                    let areaObj = {
-                        value: data.pAlt.area,
-                        label: data.pAlt.area
-                    };
-                    if (data.pAlt.city == item.value) {
-                        // 去重
-                        if (
-                            JSON.stringify(item.children).indexOf(
-                                JSON.stringify(areaObj)
-                            ) === -1
-                        ) {
-                            item.children.push(areaObj);
+                    if (data.pAlt) {
+                        let areaObj = {
+                            value: data.pAlt.area,
+                            label: data.pAlt.area
+                        };
+                        if (data.pAlt.city == item.value) {
+                            // 去重
+                            if (
+                                JSON.stringify(item.children).indexOf(
+                                    JSON.stringify(areaObj)
+                                ) === -1
+                            ) {
+                                item.children.push(areaObj);
+                            }
                         }
                     }
                 }
@@ -674,38 +680,6 @@ export default {
             console.log("cityArr---------------fda", cityArr);
             return cityArr;
         },
-        // 区域二级联动
-        // getCitys(arr) {
-        //     let cityArr = [];
-        //     for (let data of arr) {
-        //         data.pAlt = JSON.parse(data.pAlt);
-        //         let Obj = {
-        //             value: data.pAlt.area,
-        //             label: data.pAlt.area
-        //         };
-        //         if (!cityArr.length) {
-        //             cityArr.push({
-        //                 value: data.pAlt.city,
-        //                 label: data.pAlt.city,
-        //                 children: []
-        //             });
-        //         }
-        //         for (let item of cityArr) {
-        //             if (data.pAlt.city == item.value) {
-        //                 // 去重
-        //                 if (
-        //                     JSON.stringify(item.children).indexOf(
-        //                         JSON.stringify(Obj)
-        //                     ) === -1
-        //                 ) {
-        //                     item.children.push(Obj);
-        //                     break;
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return cityArr;
-        // },
         // 获取下刊图片
         getDownReport() {
             if (this.downImgArr.length) {
@@ -721,10 +695,11 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     let result = res.data;
-                    for (let data of result) {
-                        // data.pAlt = JSON.parse(data.pAlt);
-                        this.$set(data, "pAlt", JSON.parse(data.pAlt));
-                    }
+                    // for (let data of result) {
+                    //     // data.pAlt = JSON.parse(data.pAlt);
+                    //     this.$set(data, "pAlt", JSON.parse(data.pAlt));
+                    // }
+                    this.citys = this.getCitys(result);
                     this.downImgArr = result;
                     console.log("upimginfo", this.downImgArr);
                 })
@@ -878,26 +853,26 @@ export default {
 
     mounted: function() {
         /* $(function () {
-        $(".smallImg").mouseenter(function () {
-          $(this)
-            .siblings(".mask-btn")
-            .show();
-        });
-        $(".mask-btn").mouseleave(function () {
-          $(this).hide();
-        });
-        $(".photoCard").hover(
-          function () {
-            $(this).css(
-              "box-shadow",
-              "0px 0px 20px rgba(0, 0, 0, 0.20)"
-            );
-          },
-          function () {
-            $(this).css("box-shadow", "none");
-          }
-        );
-      });*/
+      $(".smallImg").mouseenter(function () {
+        $(this)
+          .siblings(".mask-btn")
+          .show();
+      });
+      $(".mask-btn").mouseleave(function () {
+        $(this).hide();
+      });
+      $(".photoCard").hover(
+        function () {
+          $(this).css(
+            "box-shadow",
+            "0px 0px 20px rgba(0, 0, 0, 0.20)"
+          );
+        },
+        function () {
+          $(this).css("box-shadow", "none");
+        }
+      );
+    });*/
     }
 };
 </script>
@@ -1013,10 +988,10 @@ export default {
 }
 
 /* /deep/ .el-button.map span {
-         position: relative;
-         !*left: -10px;*!
-         top: -2px;
-       }*/
+           position: relative;
+           !*left: -10px;*!
+           top: -2px;
+         }*/
 
 .search-wrap {
     position: relative;
@@ -1388,8 +1363,8 @@ export default {
 }
 
 /*/deep/ .el-table_1_column_3, /deep/ .el-table_1_column_4 {
-        text-align: right;
-      }*/
+          text-align: right;
+        }*/
 
 /deep/ .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: #ecf5ff;

@@ -160,10 +160,6 @@
                 "region": "石家庄市",
                 "regionEntitys": [
                     {
-                        "code": "130101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130102",
                         "region": "长安区"
                     },
@@ -254,10 +250,6 @@
                 "region": "唐山市",
                 "regionEntitys": [
                     {
-                        "code": "130201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130202",
                         "region": "路南区"
                     },
@@ -320,10 +312,6 @@
                 "region": "秦皇岛市",
                 "regionEntitys": [
                     {
-                        "code": "130301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130302",
                         "region": "海港区"
                     },
@@ -357,10 +345,6 @@
                 "code": "130400",
                 "region": "邯郸市",
                 "regionEntitys": [
-                    {
-                        "code": "130401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "130402",
                         "region": "邯山区"
@@ -444,10 +428,6 @@
                 "region": "邢台市",
                 "regionEntitys": [
                     {
-                        "code": "130501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130502",
                         "region": "桥东区"
                     },
@@ -529,10 +509,6 @@
                 "code": "130600",
                 "region": "保定市",
                 "regionEntitys": [
-                    {
-                        "code": "130601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "130602",
                         "region": "竞秀区"
@@ -632,10 +608,6 @@
                 "region": "张家口市",
                 "regionEntitys": [
                     {
-                        "code": "130701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130702",
                         "region": "桥东区"
                     },
@@ -706,10 +678,6 @@
                 "region": "承德市",
                 "regionEntitys": [
                     {
-                        "code": "130801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "130802",
                         "region": "双桥区"
                     },
@@ -759,10 +727,6 @@
                 "code": "130900",
                 "region": "沧州市",
                 "regionEntitys": [
-                    {
-                        "code": "130901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "130902",
                         "region": "新华区"
@@ -834,10 +798,6 @@
                 "region": "廊坊市",
                 "regionEntitys": [
                     {
-                        "code": "131001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "131002",
                         "region": "安次区"
                     },
@@ -883,10 +843,6 @@
                 "code": "131100",
                 "region": "衡水市",
                 "regionEntitys": [
-                    {
-                        "code": "131101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "131102",
                         "region": "桃城区"
@@ -958,10 +914,6 @@
                 "region": "太原市",
                 "regionEntitys": [
                     {
-                        "code": "140101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "140105",
                         "region": "小店区"
                     },
@@ -1007,10 +959,6 @@
                 "code": "140200",
                 "region": "大同市",
                 "regionEntitys": [
-                    {
-                        "code": "140201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "140202",
                         "region": "城区"
@@ -1062,10 +1010,6 @@
                 "region": "阳泉市",
                 "regionEntitys": [
                     {
-                        "code": "140301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "140302",
                         "region": "城区"
                     },
@@ -1091,10 +1035,6 @@
                 "code": "140400",
                 "region": "长治市",
                 "regionEntitys": [
-                    {
-                        "code": "140401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "140402",
                         "region": "城区"
@@ -1154,10 +1094,6 @@
                 "region": "晋城市",
                 "regionEntitys": [
                     {
-                        "code": "140501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "140502",
                         "region": "城区"
                     },
@@ -1188,10 +1124,6 @@
                 "region": "朔州市",
                 "regionEntitys": [
                     {
-                        "code": "140601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "140602",
                         "region": "朔城区"
                     },
@@ -1221,10 +1153,6 @@
                 "code": "140700",
                 "region": "晋中市",
                 "regionEntitys": [
-                    {
-                        "code": "140701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "140702",
                         "region": "榆次区"
@@ -1275,10 +1203,6 @@
                 "code": "140800",
                 "region": "运城市",
                 "regionEntitys": [
-                    {
-                        "code": "140801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "140802",
                         "region": "盐湖区"
@@ -1337,10 +1261,6 @@
                 "code": "140900",
                 "region": "忻州市",
                 "regionEntitys": [
-                    {
-                        "code": "140901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "140902",
                         "region": "忻府区"
@@ -1403,10 +1323,6 @@
                 "code": "141000",
                 "region": "临汾市",
                 "regionEntitys": [
-                    {
-                        "code": "141001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "141002",
                         "region": "尧都区"
@@ -1482,10 +1398,6 @@
                 "region": "吕梁市",
                 "regionEntitys": [
                     {
-                        "code": "141101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "141102",
                         "region": "离石区"
                     },
@@ -1550,10 +1462,6 @@
                 "region": "呼和浩特市",
                 "regionEntitys": [
                     {
-                        "code": "150101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "150102",
                         "region": "新城区"
                     },
@@ -1595,10 +1503,6 @@
                 "code": "150200",
                 "region": "包头市",
                 "regionEntitys": [
-                    {
-                        "code": "150201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "150202",
                         "region": "东河区"
@@ -1642,10 +1546,6 @@
                 "region": "乌海市",
                 "regionEntitys": [
                     {
-                        "code": "150301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "150302",
                         "region": "海勃湾区"
                     },
@@ -1663,10 +1563,6 @@
                 "code": "150400",
                 "region": "赤峰市",
                 "regionEntitys": [
-                    {
-                        "code": "150401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "150402",
                         "region": "红山区"
@@ -1722,10 +1618,6 @@
                 "region": "通辽市",
                 "regionEntitys": [
                     {
-                        "code": "150501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "150502",
                         "region": "科尔沁区"
                     },
@@ -1763,10 +1655,6 @@
                 "code": "150600",
                 "region": "鄂尔多斯市",
                 "regionEntitys": [
-                    {
-                        "code": "150601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "150602",
                         "region": "东胜区"
@@ -1809,10 +1697,6 @@
                 "code": "150700",
                 "region": "呼伦贝尔市",
                 "regionEntitys": [
-                    {
-                        "code": "150701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "150702",
                         "region": "海拉尔区"
@@ -1876,10 +1760,6 @@
                 "region": "巴彦淖尔市",
                 "regionEntitys": [
                     {
-                        "code": "150801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "150802",
                         "region": "临河区"
                     },
@@ -1913,10 +1793,6 @@
                 "code": "150900",
                 "region": "乌兰察布市",
                 "regionEntitys": [
-                    {
-                        "code": "150901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "150902",
                         "region": "集宁区"
@@ -2076,10 +1952,6 @@
                 "region": "沈阳市",
                 "regionEntitys": [
                     {
-                        "code": "210101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210102",
                         "region": "和平区"
                     },
@@ -2138,10 +2010,6 @@
                 "region": "大连市",
                 "regionEntitys": [
                     {
-                        "code": "210201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210202",
                         "region": "中山区"
                     },
@@ -2188,10 +2056,6 @@
                 "region": "鞍山市",
                 "regionEntitys": [
                     {
-                        "code": "210301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210302",
                         "region": "铁东区"
                     },
@@ -2225,10 +2089,6 @@
                 "code": "210400",
                 "region": "抚顺市",
                 "regionEntitys": [
-                    {
-                        "code": "210401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "210402",
                         "region": "新抚区"
@@ -2264,10 +2124,6 @@
                 "region": "本溪市",
                 "regionEntitys": [
                     {
-                        "code": "210501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210502",
                         "region": "平山区"
                     },
@@ -2298,10 +2154,6 @@
                 "region": "丹东市",
                 "regionEntitys": [
                     {
-                        "code": "210601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210602",
                         "region": "元宝区"
                     },
@@ -2331,10 +2183,6 @@
                 "code": "210700",
                 "region": "锦州市",
                 "regionEntitys": [
-                    {
-                        "code": "210701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "210702",
                         "region": "古塔区"
@@ -2370,10 +2218,6 @@
                 "region": "营口市",
                 "regionEntitys": [
                     {
-                        "code": "210801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "210802",
                         "region": "站前区"
                     },
@@ -2403,10 +2247,6 @@
                 "code": "210900",
                 "region": "阜新市",
                 "regionEntitys": [
-                    {
-                        "code": "210901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "210902",
                         "region": "海州区"
@@ -2442,10 +2282,6 @@
                 "region": "辽阳市",
                 "regionEntitys": [
                     {
-                        "code": "211001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "211002",
                         "region": "白塔区"
                     },
@@ -2480,10 +2316,6 @@
                 "region": "盘锦市",
                 "regionEntitys": [
                     {
-                        "code": "211101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "211102",
                         "region": "双台子区"
                     },
@@ -2505,10 +2337,6 @@
                 "code": "211200",
                 "region": "铁岭市",
                 "regionEntitys": [
-                    {
-                        "code": "211201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "211202",
                         "region": "银州区"
@@ -2544,10 +2372,6 @@
                 "region": "朝阳市",
                 "regionEntitys": [
                     {
-                        "code": "211301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "211302",
                         "region": "双塔区"
                     },
@@ -2581,10 +2405,6 @@
                 "code": "211400",
                 "region": "葫芦岛市",
                 "regionEntitys": [
-                    {
-                        "code": "211401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "211402",
                         "region": "连山区"
@@ -2621,10 +2441,6 @@
                 "code": "220100",
                 "region": "长春市",
                 "regionEntitys": [
-                    {
-                        "code": "220101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "220102",
                         "region": "南关区"
@@ -2672,10 +2488,6 @@
                 "region": "吉林市",
                 "regionEntitys": [
                     {
-                        "code": "220201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "220202",
                         "region": "昌邑区"
                     },
@@ -2718,10 +2530,6 @@
                 "region": "四平市",
                 "regionEntitys": [
                     {
-                        "code": "220301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "220302",
                         "region": "铁西区"
                     },
@@ -2752,10 +2560,6 @@
                 "region": "辽源市",
                 "regionEntitys": [
                     {
-                        "code": "220401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "220402",
                         "region": "龙山区"
                     },
@@ -2777,10 +2581,6 @@
                 "code": "220500",
                 "region": "通化市",
                 "regionEntitys": [
-                    {
-                        "code": "220501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "220502",
                         "region": "东昌区"
@@ -2816,10 +2616,6 @@
                 "region": "白山市",
                 "regionEntitys": [
                     {
-                        "code": "220601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "220602",
                         "region": "浑江区"
                     },
@@ -2850,10 +2646,6 @@
                 "region": "松原市",
                 "regionEntitys": [
                     {
-                        "code": "220701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "220702",
                         "region": "宁江区"
                     },
@@ -2879,10 +2671,6 @@
                 "code": "220800",
                 "region": "白城市",
                 "regionEntitys": [
-                    {
-                        "code": "220801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "220802",
                         "region": "洮北区"
@@ -2953,10 +2741,6 @@
                 "code": "230100",
                 "region": "哈尔滨市",
                 "regionEntitys": [
-                    {
-                        "code": "230101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "230102",
                         "region": "道里区"
@@ -3036,10 +2820,6 @@
                 "region": "齐齐哈尔市",
                 "regionEntitys": [
                     {
-                        "code": "230201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230202",
                         "region": "龙沙区"
                     },
@@ -3110,10 +2890,6 @@
                 "region": "鸡西市",
                 "regionEntitys": [
                     {
-                        "code": "230301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230302",
                         "region": "鸡冠区"
                     },
@@ -3156,10 +2932,6 @@
                 "region": "鹤岗市",
                 "regionEntitys": [
                     {
-                        "code": "230401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230402",
                         "region": "向阳区"
                     },
@@ -3198,10 +2970,6 @@
                 "region": "双鸭山市",
                 "regionEntitys": [
                     {
-                        "code": "230501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230502",
                         "region": "尖山区"
                     },
@@ -3239,10 +3007,6 @@
                 "code": "230600",
                 "region": "大庆市",
                 "regionEntitys": [
-                    {
-                        "code": "230601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "230602",
                         "region": "萨尔图区"
@@ -3285,10 +3049,6 @@
                 "code": "230700",
                 "region": "伊春市",
                 "regionEntitys": [
-                    {
-                        "code": "230701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "230702",
                         "region": "伊春区"
@@ -3364,10 +3124,6 @@
                 "region": "佳木斯市",
                 "regionEntitys": [
                     {
-                        "code": "230801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230803",
                         "region": "向阳区"
                     },
@@ -3414,10 +3170,6 @@
                 "region": "七台河市",
                 "regionEntitys": [
                     {
-                        "code": "230901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "230902",
                         "region": "新兴区"
                     },
@@ -3439,10 +3191,6 @@
                 "code": "231000",
                 "region": "牡丹江市",
                 "regionEntitys": [
-                    {
-                        "code": "231001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "231002",
                         "region": "东安区"
@@ -3490,10 +3238,6 @@
                 "region": "黑河市",
                 "regionEntitys": [
                     {
-                        "code": "231101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "231102",
                         "region": "爱辉区"
                     },
@@ -3523,10 +3267,6 @@
                 "code": "231200",
                 "region": "绥化市",
                 "regionEntitys": [
-                    {
-                        "code": "231201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "231202",
                         "region": "北林区"
@@ -3674,10 +3414,6 @@
                 "region": "南京市",
                 "regionEntitys": [
                     {
-                        "code": "320101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "320102",
                         "region": "玄武区"
                     },
@@ -3728,10 +3464,6 @@
                 "region": "无锡市",
                 "regionEntitys": [
                     {
-                        "code": "320201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "320205",
                         "region": "锡山区"
                     },
@@ -3765,10 +3497,6 @@
                 "code": "320300",
                 "region": "徐州市",
                 "regionEntitys": [
-                    {
-                        "code": "320301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "320302",
                         "region": "鼓楼区"
@@ -3816,10 +3544,6 @@
                 "region": "常州市",
                 "regionEntitys": [
                     {
-                        "code": "320401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "320402",
                         "region": "天宁区"
                     },
@@ -3849,10 +3573,6 @@
                 "code": "320500",
                 "region": "苏州市",
                 "regionEntitys": [
-                    {
-                        "code": "320501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "320505",
                         "region": "虎丘区"
@@ -3896,10 +3616,6 @@
                 "region": "南通市",
                 "regionEntitys": [
                     {
-                        "code": "320601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "320602",
                         "region": "崇川区"
                     },
@@ -3938,10 +3654,6 @@
                 "region": "连云港市",
                 "regionEntitys": [
                     {
-                        "code": "320701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "320703",
                         "region": "连云区"
                     },
@@ -3971,10 +3683,6 @@
                 "code": "320800",
                 "region": "淮安市",
                 "regionEntitys": [
-                    {
-                        "code": "320801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "320803",
                         "region": "淮安区"
@@ -4009,10 +3717,6 @@
                 "code": "320900",
                 "region": "盐城市",
                 "regionEntitys": [
-                    {
-                        "code": "320901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "320902",
                         "region": "亭湖区"
@@ -4056,10 +3760,6 @@
                 "region": "扬州市",
                 "regionEntitys": [
                     {
-                        "code": "321001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "321002",
                         "region": "广陵区"
                     },
@@ -4089,10 +3789,6 @@
                 "code": "321100",
                 "region": "镇江市",
                 "regionEntitys": [
-                    {
-                        "code": "321101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "321102",
                         "region": "京口区"
@@ -4124,10 +3820,6 @@
                 "region": "泰州市",
                 "regionEntitys": [
                     {
-                        "code": "321201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "321202",
                         "region": "海陵区"
                     },
@@ -4157,10 +3849,6 @@
                 "code": "321300",
                 "region": "宿迁市",
                 "regionEntitys": [
-                    {
-                        "code": "321301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "321302",
                         "region": "宿城区"
@@ -4193,10 +3881,6 @@
                 "code": "330100",
                 "region": "杭州市",
                 "regionEntitys": [
-                    {
-                        "code": "330101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "330102",
                         "region": "上城区"
@@ -4256,10 +3940,6 @@
                 "region": "宁波市",
                 "regionEntitys": [
                     {
-                        "code": "330201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "330203",
                         "region": "海曙区"
                     },
@@ -4309,10 +3989,6 @@
                 "code": "330300",
                 "region": "温州市",
                 "regionEntitys": [
-                    {
-                        "code": "330301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "330302",
                         "region": "鹿城区"
@@ -4364,10 +4040,6 @@
                 "region": "嘉兴市",
                 "regionEntitys": [
                     {
-                        "code": "330401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "330402",
                         "region": "南湖区"
                     },
@@ -4402,10 +4074,6 @@
                 "region": "湖州市",
                 "regionEntitys": [
                     {
-                        "code": "330501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "330502",
                         "region": "吴兴区"
                     },
@@ -4431,10 +4099,6 @@
                 "code": "330600",
                 "region": "绍兴市",
                 "regionEntitys": [
-                    {
-                        "code": "330601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "330602",
                         "region": "越城区"
@@ -4465,10 +4129,6 @@
                 "code": "330700",
                 "region": "金华市",
                 "regionEntitys": [
-                    {
-                        "code": "330701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "330702",
                         "region": "婺城区"
@@ -4512,10 +4172,6 @@
                 "region": "衢州市",
                 "regionEntitys": [
                     {
-                        "code": "330801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "330802",
                         "region": "柯城区"
                     },
@@ -4546,10 +4202,6 @@
                 "region": "舟山市",
                 "regionEntitys": [
                     {
-                        "code": "330901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "330902",
                         "region": "定海区"
                     },
@@ -4571,10 +4223,6 @@
                 "code": "331000",
                 "region": "台州市",
                 "regionEntitys": [
-                    {
-                        "code": "331001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "331002",
                         "region": "椒江区"
@@ -4617,10 +4265,6 @@
                 "code": "331100",
                 "region": "丽水市",
                 "regionEntitys": [
-                    {
-                        "code": "331101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "331102",
                         "region": "莲都区"
@@ -4670,10 +4314,6 @@
                 "region": "合肥市",
                 "regionEntitys": [
                     {
-                        "code": "340101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340102",
                         "region": "瑶海区"
                     },
@@ -4716,10 +4356,6 @@
                 "region": "芜湖市",
                 "regionEntitys": [
                     {
-                        "code": "340201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340202",
                         "region": "镜湖区"
                     },
@@ -4758,10 +4394,6 @@
                 "region": "蚌埠市",
                 "regionEntitys": [
                     {
-                        "code": "340301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340302",
                         "region": "龙子湖区"
                     },
@@ -4795,10 +4427,6 @@
                 "code": "340400",
                 "region": "淮南市",
                 "regionEntitys": [
-                    {
-                        "code": "340401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "340402",
                         "region": "大通区"
@@ -4834,10 +4462,6 @@
                 "region": "马鞍山市",
                 "regionEntitys": [
                     {
-                        "code": "340501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340503",
                         "region": "花山区"
                     },
@@ -4868,10 +4492,6 @@
                 "region": "淮北市",
                 "regionEntitys": [
                     {
-                        "code": "340601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340602",
                         "region": "杜集区"
                     },
@@ -4894,10 +4514,6 @@
                 "region": "铜陵市",
                 "regionEntitys": [
                     {
-                        "code": "340701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "340705",
                         "region": "铜官区"
                     },
@@ -4919,10 +4535,6 @@
                 "code": "340800",
                 "region": "安庆市",
                 "regionEntitys": [
-                    {
-                        "code": "340801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "340802",
                         "region": "迎江区"
@@ -4970,10 +4582,6 @@
                 "region": "黄山市",
                 "regionEntitys": [
                     {
-                        "code": "341001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "341002",
                         "region": "屯溪区"
                     },
@@ -5007,10 +4615,6 @@
                 "code": "341100",
                 "region": "滁州市",
                 "regionEntitys": [
-                    {
-                        "code": "341101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "341102",
                         "region": "琅琊区"
@@ -5050,10 +4654,6 @@
                 "region": "阜阳市",
                 "regionEntitys": [
                     {
-                        "code": "341201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "341202",
                         "region": "颍州区"
                     },
@@ -5092,10 +4692,6 @@
                 "region": "宿州市",
                 "regionEntitys": [
                     {
-                        "code": "341301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "341302",
                         "region": "埇桥区"
                     },
@@ -5121,10 +4717,6 @@
                 "code": "341500",
                 "region": "六安市",
                 "regionEntitys": [
-                    {
-                        "code": "341501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "341502",
                         "region": "金安区"
@@ -5160,10 +4752,6 @@
                 "region": "亳州市",
                 "regionEntitys": [
                     {
-                        "code": "341601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "341602",
                         "region": "谯城区"
                     },
@@ -5186,10 +4774,6 @@
                 "region": "池州市",
                 "regionEntitys": [
                     {
-                        "code": "341701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "341702",
                         "region": "贵池区"
                     },
@@ -5211,10 +4795,6 @@
                 "code": "341800",
                 "region": "宣城市",
                 "regionEntitys": [
-                    {
-                        "code": "341801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "341802",
                         "region": "宣州区"
@@ -5255,10 +4835,6 @@
                 "code": "350100",
                 "region": "福州市",
                 "regionEntitys": [
-                    {
-                        "code": "350101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "350102",
                         "region": "鼓楼区"
@@ -5318,10 +4894,6 @@
                 "region": "厦门市",
                 "regionEntitys": [
                     {
-                        "code": "350201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350203",
                         "region": "思明区"
                     },
@@ -5352,10 +4924,6 @@
                 "region": "莆田市",
                 "regionEntitys": [
                     {
-                        "code": "350301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350302",
                         "region": "城厢区"
                     },
@@ -5381,10 +4949,6 @@
                 "code": "350400",
                 "region": "三明市",
                 "regionEntitys": [
-                    {
-                        "code": "350401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "350402",
                         "region": "梅列区"
@@ -5440,10 +5004,6 @@
                 "region": "泉州市",
                 "regionEntitys": [
                     {
-                        "code": "350501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350502",
                         "region": "鲤城区"
                     },
@@ -5498,10 +5058,6 @@
                 "region": "漳州市",
                 "regionEntitys": [
                     {
-                        "code": "350601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350602",
                         "region": "芗城区"
                     },
@@ -5552,10 +5108,6 @@
                 "region": "南平市",
                 "regionEntitys": [
                     {
-                        "code": "350701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350702",
                         "region": "延平区"
                     },
@@ -5602,10 +5154,6 @@
                 "region": "龙岩市",
                 "regionEntitys": [
                     {
-                        "code": "350801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "350802",
                         "region": "新罗区"
                     },
@@ -5639,10 +5187,6 @@
                 "code": "350900",
                 "region": "宁德市",
                 "regionEntitys": [
-                    {
-                        "code": "350901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "350902",
                         "region": "蕉城区"
@@ -5692,10 +5236,6 @@
                 "region": "南昌市",
                 "regionEntitys": [
                     {
-                        "code": "360101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "360102",
                         "region": "东湖区"
                     },
@@ -5738,10 +5278,6 @@
                 "region": "景德镇市",
                 "regionEntitys": [
                     {
-                        "code": "360201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "360202",
                         "region": "昌江区"
                     },
@@ -5763,10 +5299,6 @@
                 "code": "360300",
                 "region": "萍乡市",
                 "regionEntitys": [
-                    {
-                        "code": "360301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "360302",
                         "region": "安源区"
@@ -5793,10 +5325,6 @@
                 "code": "360400",
                 "region": "九江市",
                 "regionEntitys": [
-                    {
-                        "code": "360401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "360402",
                         "region": "濂溪区"
@@ -5856,10 +5384,6 @@
                 "region": "新余市",
                 "regionEntitys": [
                     {
-                        "code": "360501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "360502",
                         "region": "渝水区"
                     },
@@ -5873,10 +5397,6 @@
                 "code": "360600",
                 "region": "鹰潭市",
                 "regionEntitys": [
-                    {
-                        "code": "360601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "360602",
                         "region": "月湖区"
@@ -5895,10 +5415,6 @@
                 "code": "360700",
                 "region": "赣州市",
                 "regionEntitys": [
-                    {
-                        "code": "360701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "360702",
                         "region": "章贡区"
@@ -5978,10 +5494,6 @@
                 "region": "吉安市",
                 "regionEntitys": [
                     {
-                        "code": "360801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "360802",
                         "region": "吉州区"
                     },
@@ -6040,10 +5552,6 @@
                 "region": "宜春市",
                 "regionEntitys": [
                     {
-                        "code": "360901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "360902",
                         "region": "袁州区"
                     },
@@ -6089,10 +5597,6 @@
                 "code": "361000",
                 "region": "抚州市",
                 "regionEntitys": [
-                    {
-                        "code": "361001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "361002",
                         "region": "临川区"
@@ -6143,10 +5647,6 @@
                 "code": "361100",
                 "region": "上饶市",
                 "regionEntitys": [
-                    {
-                        "code": "361101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "361102",
                         "region": "信州区"
@@ -6208,10 +5708,6 @@
                 "region": "济南市",
                 "regionEntitys": [
                     {
-                        "code": "370101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370102",
                         "region": "历下区"
                     },
@@ -6257,10 +5753,6 @@
                 "code": "370200",
                 "region": "青岛市",
                 "regionEntitys": [
-                    {
-                        "code": "370201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "370202",
                         "region": "市南区"
@@ -6308,10 +5800,6 @@
                 "region": "淄博市",
                 "regionEntitys": [
                     {
-                        "code": "370301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370302",
                         "region": "淄川区"
                     },
@@ -6350,10 +5838,6 @@
                 "region": "枣庄市",
                 "regionEntitys": [
                     {
-                        "code": "370401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370402",
                         "region": "市中区"
                     },
@@ -6384,10 +5868,6 @@
                 "region": "东营市",
                 "regionEntitys": [
                     {
-                        "code": "370501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370502",
                         "region": "东营区"
                     },
@@ -6413,10 +5893,6 @@
                 "code": "370600",
                 "region": "烟台市",
                 "regionEntitys": [
-                    {
-                        "code": "370601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "370602",
                         "region": "芝罘区"
@@ -6472,10 +5948,6 @@
                 "region": "潍坊市",
                 "regionEntitys": [
                     {
-                        "code": "370701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370702",
                         "region": "潍城区"
                     },
@@ -6530,10 +6002,6 @@
                 "region": "济宁市",
                 "regionEntitys": [
                     {
-                        "code": "370801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370811",
                         "region": "任城区"
                     },
@@ -6584,10 +6052,6 @@
                 "region": "泰安市",
                 "regionEntitys": [
                     {
-                        "code": "370901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "370902",
                         "region": "泰山区"
                     },
@@ -6618,10 +6082,6 @@
                 "region": "威海市",
                 "regionEntitys": [
                     {
-                        "code": "371001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "371002",
                         "region": "环翠区"
                     },
@@ -6643,10 +6103,6 @@
                 "code": "371100",
                 "region": "日照市",
                 "regionEntitys": [
-                    {
-                        "code": "371101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "371102",
                         "region": "东港区"
@@ -6670,10 +6126,6 @@
                 "region": "莱芜市",
                 "regionEntitys": [
                     {
-                        "code": "371201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "371202",
                         "region": "莱城区"
                     },
@@ -6687,10 +6139,6 @@
                 "code": "371300",
                 "region": "临沂市",
                 "regionEntitys": [
-                    {
-                        "code": "371301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "371302",
                         "region": "兰山区"
@@ -6746,10 +6194,6 @@
                 "region": "德州市",
                 "regionEntitys": [
                     {
-                        "code": "371401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "371402",
                         "region": "德城区"
                     },
@@ -6800,10 +6244,6 @@
                 "region": "聊城市",
                 "regionEntitys": [
                     {
-                        "code": "371501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "371502",
                         "region": "东昌府区"
                     },
@@ -6842,10 +6282,6 @@
                 "region": "滨州市",
                 "regionEntitys": [
                     {
-                        "code": "371601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "371602",
                         "region": "滨城区"
                     },
@@ -6879,10 +6315,6 @@
                 "code": "371700",
                 "region": "菏泽市",
                 "regionEntitys": [
-                    {
-                        "code": "371701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "371702",
                         "region": "牡丹区"
@@ -6931,10 +6363,6 @@
                 "code": "410100",
                 "region": "郑州市",
                 "regionEntitys": [
-                    {
-                        "code": "410101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "410102",
                         "region": "中原区"
@@ -6990,10 +6418,6 @@
                 "region": "开封市",
                 "regionEntitys": [
                     {
-                        "code": "410201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410202",
                         "region": "龙亭区"
                     },
@@ -7039,10 +6463,6 @@
                 "code": "410300",
                 "region": "洛阳市",
                 "regionEntitys": [
-                    {
-                        "code": "410301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "410302",
                         "region": "老城区"
@@ -7110,10 +6530,6 @@
                 "region": "平顶山市",
                 "regionEntitys": [
                     {
-                        "code": "410401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410402",
                         "region": "新华区"
                     },
@@ -7160,10 +6576,6 @@
                 "region": "安阳市",
                 "regionEntitys": [
                     {
-                        "code": "410501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410502",
                         "region": "文峰区"
                     },
@@ -7206,10 +6618,6 @@
                 "region": "鹤壁市",
                 "regionEntitys": [
                     {
-                        "code": "410601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410602",
                         "region": "鹤山区"
                     },
@@ -7235,10 +6643,6 @@
                 "code": "410700",
                 "region": "新乡市",
                 "regionEntitys": [
-                    {
-                        "code": "410701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "410702",
                         "region": "红旗区"
@@ -7294,10 +6698,6 @@
                 "region": "焦作市",
                 "regionEntitys": [
                     {
-                        "code": "410801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410802",
                         "region": "解放区"
                     },
@@ -7344,10 +6744,6 @@
                 "region": "濮阳市",
                 "regionEntitys": [
                     {
-                        "code": "410901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "410902",
                         "region": "华龙区"
                     },
@@ -7377,10 +6773,6 @@
                 "code": "411000",
                 "region": "许昌市",
                 "regionEntitys": [
-                    {
-                        "code": "411001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "411002",
                         "region": "魏都区"
@@ -7412,10 +6804,6 @@
                 "region": "漯河市",
                 "regionEntitys": [
                     {
-                        "code": "411101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "411102",
                         "region": "源汇区"
                     },
@@ -7441,10 +6829,6 @@
                 "code": "411200",
                 "region": "三门峡市",
                 "regionEntitys": [
-                    {
-                        "code": "411201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "411202",
                         "region": "湖滨区"
@@ -7475,10 +6859,6 @@
                 "code": "411300",
                 "region": "南阳市",
                 "regionEntitys": [
-                    {
-                        "code": "411301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "411302",
                         "region": "宛城区"
@@ -7538,10 +6918,6 @@
                 "region": "商丘市",
                 "regionEntitys": [
                     {
-                        "code": "411401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "411402",
                         "region": "梁园区"
                     },
@@ -7583,10 +6959,6 @@
                 "code": "411500",
                 "region": "信阳市",
                 "regionEntitys": [
-                    {
-                        "code": "411501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "411502",
                         "region": "浉河区"
@@ -7634,10 +7006,6 @@
                 "region": "周口市",
                 "regionEntitys": [
                     {
-                        "code": "411601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "411602",
                         "region": "川汇区"
                     },
@@ -7683,10 +7051,6 @@
                 "code": "411700",
                 "region": "驻马店市",
                 "regionEntitys": [
-                    {
-                        "code": "411701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "411702",
                         "region": "驿城区"
@@ -7750,10 +7114,6 @@
                 "region": "武汉市",
                 "regionEntitys": [
                     {
-                        "code": "420101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "420102",
                         "region": "江岸区"
                     },
@@ -7812,10 +7172,6 @@
                 "region": "黄石市",
                 "regionEntitys": [
                     {
-                        "code": "420201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "420202",
                         "region": "黄石港区"
                     },
@@ -7845,10 +7201,6 @@
                 "code": "420300",
                 "region": "十堰市",
                 "regionEntitys": [
-                    {
-                        "code": "420301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "420302",
                         "region": "茅箭区"
@@ -7887,10 +7239,6 @@
                 "code": "420500",
                 "region": "宜昌市",
                 "regionEntitys": [
-                    {
-                        "code": "420501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "420502",
                         "region": "西陵区"
@@ -7950,10 +7298,6 @@
                 "region": "襄阳市",
                 "regionEntitys": [
                     {
-                        "code": "420601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "420602",
                         "region": "襄城区"
                     },
@@ -7996,10 +7340,6 @@
                 "region": "鄂州市",
                 "regionEntitys": [
                     {
-                        "code": "420701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "420702",
                         "region": "梁子湖区"
                     },
@@ -8017,10 +7357,6 @@
                 "code": "420800",
                 "region": "荆门市",
                 "regionEntitys": [
-                    {
-                        "code": "420801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "420802",
                         "region": "东宝区"
@@ -8047,10 +7383,6 @@
                 "code": "420900",
                 "region": "孝感市",
                 "regionEntitys": [
-                    {
-                        "code": "420901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "420902",
                         "region": "孝南区"
@@ -8085,10 +7417,6 @@
                 "code": "421000",
                 "region": "荆州市",
                 "regionEntitys": [
-                    {
-                        "code": "421001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "421002",
                         "region": "沙市区"
@@ -8127,10 +7455,6 @@
                 "code": "421100",
                 "region": "黄冈市",
                 "regionEntitys": [
-                    {
-                        "code": "421101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "421102",
                         "region": "黄州区"
@@ -8178,10 +7502,6 @@
                 "region": "咸宁市",
                 "regionEntitys": [
                     {
-                        "code": "421201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "421202",
                         "region": "咸安区"
                     },
@@ -8211,10 +7531,6 @@
                 "code": "421300",
                 "region": "随州市",
                 "regionEntitys": [
-                    {
-                        "code": "421301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "421303",
                         "region": "曾都区"
@@ -8300,10 +7616,6 @@
                 "region": "长沙市",
                 "regionEntitys": [
                     {
-                        "code": "430101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "430102",
                         "region": "芙蓉区"
                     },
@@ -8345,10 +7657,6 @@
                 "code": "430200",
                 "region": "株洲市",
                 "regionEntitys": [
-                    {
-                        "code": "430201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "430202",
                         "region": "荷塘区"
@@ -8392,10 +7700,6 @@
                 "region": "湘潭市",
                 "regionEntitys": [
                     {
-                        "code": "430301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "430302",
                         "region": "雨湖区"
                     },
@@ -8421,10 +7725,6 @@
                 "code": "430400",
                 "region": "衡阳市",
                 "regionEntitys": [
-                    {
-                        "code": "430401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "430405",
                         "region": "珠晖区"
@@ -8480,10 +7780,6 @@
                 "region": "邵阳市",
                 "regionEntitys": [
                     {
-                        "code": "430501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "430502",
                         "region": "双清区"
                     },
@@ -8538,10 +7834,6 @@
                 "region": "岳阳市",
                 "regionEntitys": [
                     {
-                        "code": "430601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "430602",
                         "region": "岳阳楼区"
                     },
@@ -8583,10 +7875,6 @@
                 "code": "430700",
                 "region": "常德市",
                 "regionEntitys": [
-                    {
-                        "code": "430701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "430702",
                         "region": "武陵区"
@@ -8630,10 +7918,6 @@
                 "region": "张家界市",
                 "regionEntitys": [
                     {
-                        "code": "430801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "430802",
                         "region": "永定区"
                     },
@@ -8655,10 +7939,6 @@
                 "code": "430900",
                 "region": "益阳市",
                 "regionEntitys": [
-                    {
-                        "code": "430901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "430902",
                         "region": "资阳区"
@@ -8689,10 +7969,6 @@
                 "code": "431000",
                 "region": "郴州市",
                 "regionEntitys": [
-                    {
-                        "code": "431001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "431002",
                         "region": "北湖区"
@@ -8744,10 +8020,6 @@
                 "region": "永州市",
                 "regionEntitys": [
                     {
-                        "code": "431101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "431102",
                         "region": "零陵区"
                     },
@@ -8797,10 +8069,6 @@
                 "code": "431200",
                 "region": "怀化市",
                 "regionEntitys": [
-                    {
-                        "code": "431201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "431202",
                         "region": "鹤城区"
@@ -8855,10 +8123,6 @@
                 "code": "431300",
                 "region": "娄底市",
                 "regionEntitys": [
-                    {
-                        "code": "431301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "431302",
                         "region": "娄星区"
@@ -8979,10 +8243,6 @@
                 "code": "440200",
                 "region": "韶关市",
                 "regionEntitys": [
-                    {
-                        "code": "440201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "440203",
                         "region": "武江区"
@@ -9214,10 +8474,6 @@
                 "region": "茂名市",
                 "regionEntitys": [
                     {
-                        "code": "440901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "440902",
                         "region": "茂南区"
                     },
@@ -9243,10 +8499,6 @@
                 "code": "441200",
                 "region": "肇庆市",
                 "regionEntitys": [
-                    {
-                        "code": "441201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "441202",
                         "region": "端州区"
@@ -9286,10 +8538,6 @@
                 "region": "惠州市",
                 "regionEntitys": [
                     {
-                        "code": "441301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "441302",
                         "region": "惠城区"
                     },
@@ -9315,10 +8563,6 @@
                 "code": "441400",
                 "region": "梅州市",
                 "regionEntitys": [
-                    {
-                        "code": "441401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "441402",
                         "region": "梅江区"
@@ -9358,10 +8602,6 @@
                 "region": "汕尾市",
                 "regionEntitys": [
                     {
-                        "code": "441501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "441502",
                         "region": "城区"
                     },
@@ -9383,10 +8623,6 @@
                 "code": "441600",
                 "region": "河源市",
                 "regionEntitys": [
-                    {
-                        "code": "441601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "441602",
                         "region": "源城区"
@@ -9418,10 +8654,6 @@
                 "region": "阳江市",
                 "regionEntitys": [
                     {
-                        "code": "441701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "441702",
                         "region": "江城区"
                     },
@@ -9443,10 +8675,6 @@
                 "code": "441800",
                 "region": "清远市",
                 "regionEntitys": [
-                    {
-                        "code": "441801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "441802",
                         "region": "清城区"
@@ -9620,10 +8848,6 @@
                 "region": "潮州市",
                 "regionEntitys": [
                     {
-                        "code": "445101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "445102",
                         "region": "湘桥区"
                     },
@@ -9641,10 +8865,6 @@
                 "code": "445200",
                 "region": "揭阳市",
                 "regionEntitys": [
-                    {
-                        "code": "445201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "445202",
                         "region": "榕城区"
@@ -9671,10 +8891,6 @@
                 "code": "445300",
                 "region": "云浮市",
                 "regionEntitys": [
-                    {
-                        "code": "445301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "445302",
                         "region": "云城区"
@@ -9707,10 +8923,6 @@
                 "code": "450100",
                 "region": "南宁市",
                 "regionEntitys": [
-                    {
-                        "code": "450101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "450102",
                         "region": "兴宁区"
@@ -9766,10 +8978,6 @@
                 "region": "柳州市",
                 "regionEntitys": [
                     {
-                        "code": "450201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "450202",
                         "region": "城中区"
                     },
@@ -9815,10 +9023,6 @@
                 "code": "450300",
                 "region": "桂林市",
                 "regionEntitys": [
-                    {
-                        "code": "450301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "450302",
                         "region": "秀峰区"
@@ -9894,10 +9098,6 @@
                 "region": "梧州市",
                 "regionEntitys": [
                     {
-                        "code": "450401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "450403",
                         "region": "万秀区"
                     },
@@ -9932,10 +9132,6 @@
                 "region": "北海市",
                 "regionEntitys": [
                     {
-                        "code": "450501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "450502",
                         "region": "海城区"
                     },
@@ -9957,10 +9153,6 @@
                 "code": "450600",
                 "region": "防城港市",
                 "regionEntitys": [
-                    {
-                        "code": "450601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "450602",
                         "region": "港口区"
@@ -9984,10 +9176,6 @@
                 "region": "钦州市",
                 "regionEntitys": [
                     {
-                        "code": "450701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "450702",
                         "region": "钦南区"
                     },
@@ -10009,10 +9197,6 @@
                 "code": "450800",
                 "region": "贵港市",
                 "regionEntitys": [
-                    {
-                        "code": "450801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "450802",
                         "region": "港北区"
@@ -10039,10 +9223,6 @@
                 "code": "450900",
                 "region": "玉林市",
                 "regionEntitys": [
-                    {
-                        "code": "450901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "450902",
                         "region": "玉州区"
@@ -10077,10 +9257,6 @@
                 "code": "451000",
                 "region": "百色市",
                 "regionEntitys": [
-                    {
-                        "code": "451001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "451002",
                         "region": "右江区"
@@ -10136,10 +9312,6 @@
                 "region": "贺州市",
                 "regionEntitys": [
                     {
-                        "code": "451101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "451102",
                         "region": "八步区"
                     },
@@ -10165,10 +9337,6 @@
                 "code": "451200",
                 "region": "河池市",
                 "regionEntitys": [
-                    {
-                        "code": "451201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "451202",
                         "region": "金城江区"
@@ -10220,10 +9388,6 @@
                 "region": "来宾市",
                 "regionEntitys": [
                     {
-                        "code": "451301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "451302",
                         "region": "兴宾区"
                     },
@@ -10253,10 +9417,6 @@
                 "code": "451400",
                 "region": "崇左市",
                 "regionEntitys": [
-                    {
-                        "code": "451401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "451402",
                         "region": "江州区"
@@ -10298,10 +9458,6 @@
                 "region": "海口市",
                 "regionEntitys": [
                     {
-                        "code": "460101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "460105",
                         "region": "秀英区"
                     },
@@ -10323,10 +9479,6 @@
                 "code": "460200",
                 "region": "三亚市",
                 "regionEntitys": [
-                    {
-                        "code": "460201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "460202",
                         "region": "海棠区"
@@ -10592,10 +9744,6 @@
                 "region": "成都市",
                 "regionEntitys": [
                     {
-                        "code": "510101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510104",
                         "region": "锦江区"
                     },
@@ -10682,10 +9830,6 @@
                 "region": "自贡市",
                 "regionEntitys": [
                     {
-                        "code": "510301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510302",
                         "region": "自流井区"
                     },
@@ -10716,10 +9860,6 @@
                 "region": "攀枝花市",
                 "regionEntitys": [
                     {
-                        "code": "510401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510402",
                         "region": "东区"
                     },
@@ -10745,10 +9885,6 @@
                 "code": "510500",
                 "region": "泸州市",
                 "regionEntitys": [
-                    {
-                        "code": "510501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "510502",
                         "region": "江阳区"
@@ -10784,10 +9920,6 @@
                 "region": "德阳市",
                 "regionEntitys": [
                     {
-                        "code": "510601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510603",
                         "region": "旌阳区"
                     },
@@ -10817,10 +9949,6 @@
                 "code": "510700",
                 "region": "绵阳市",
                 "regionEntitys": [
-                    {
-                        "code": "510701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "510703",
                         "region": "涪城区"
@@ -10864,10 +9992,6 @@
                 "region": "广元市",
                 "regionEntitys": [
                     {
-                        "code": "510801",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510802",
                         "region": "利州区"
                     },
@@ -10902,10 +10026,6 @@
                 "region": "遂宁市",
                 "regionEntitys": [
                     {
-                        "code": "510901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "510903",
                         "region": "船山区"
                     },
@@ -10932,10 +10052,6 @@
                 "region": "内江市",
                 "regionEntitys": [
                     {
-                        "code": "511001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "511002",
                         "region": "市中区"
                     },
@@ -10961,10 +10077,6 @@
                 "code": "511100",
                 "region": "乐山市",
                 "regionEntitys": [
-                    {
-                        "code": "511101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "511102",
                         "region": "市中区"
@@ -11016,10 +10128,6 @@
                 "region": "南充市",
                 "regionEntitys": [
                     {
-                        "code": "511301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "511302",
                         "region": "顺庆区"
                     },
@@ -11062,10 +10170,6 @@
                 "region": "眉山市",
                 "regionEntitys": [
                     {
-                        "code": "511401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "511402",
                         "region": "东坡区"
                     },
@@ -11095,10 +10199,6 @@
                 "code": "511500",
                 "region": "宜宾市",
                 "regionEntitys": [
-                    {
-                        "code": "511501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "511502",
                         "region": "翠屏区"
@@ -11146,10 +10246,6 @@
                 "region": "广安市",
                 "regionEntitys": [
                     {
-                        "code": "511601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "511602",
                         "region": "广安区"
                     },
@@ -11179,10 +10275,6 @@
                 "code": "511700",
                 "region": "达州市",
                 "regionEntitys": [
-                    {
-                        "code": "511701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "511702",
                         "region": "通川区"
@@ -11217,10 +10309,6 @@
                 "code": "511800",
                 "region": "雅安市",
                 "regionEntitys": [
-                    {
-                        "code": "511801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "511802",
                         "region": "雨城区"
@@ -11260,10 +10348,6 @@
                 "region": "巴中市",
                 "regionEntitys": [
                     {
-                        "code": "511901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "511902",
                         "region": "巴州区"
                     },
@@ -11289,10 +10373,6 @@
                 "code": "512000",
                 "region": "资阳市",
                 "regionEntitys": [
-                    {
-                        "code": "512001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "512002",
                         "region": "雁江区"
@@ -11528,10 +10608,6 @@
                 "region": "贵阳市",
                 "regionEntitys": [
                     {
-                        "code": "520101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "520102",
                         "region": "南明区"
                     },
@@ -11600,10 +10676,6 @@
                 "region": "遵义市",
                 "regionEntitys": [
                     {
-                        "code": "520301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "520302",
                         "region": "红花岗区"
                     },
@@ -11666,10 +10738,6 @@
                 "region": "安顺市",
                 "regionEntitys": [
                     {
-                        "code": "520401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "520402",
                         "region": "西秀区"
                     },
@@ -11699,10 +10767,6 @@
                 "code": "520500",
                 "region": "毕节市",
                 "regionEntitys": [
-                    {
-                        "code": "520501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "520502",
                         "region": "七星关区"
@@ -11741,10 +10805,6 @@
                 "code": "520600",
                 "region": "铜仁市",
                 "regionEntitys": [
-                    {
-                        "code": "520601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "520602",
                         "region": "碧江区"
@@ -11960,10 +11020,6 @@
                 "region": "昆明市",
                 "regionEntitys": [
                     {
-                        "code": "530101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "530102",
                         "region": "五华区"
                     },
@@ -12026,10 +11082,6 @@
                 "region": "曲靖市",
                 "regionEntitys": [
                     {
-                        "code": "530301",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "530302",
                         "region": "麒麟区"
                     },
@@ -12071,10 +11123,6 @@
                 "code": "530400",
                 "region": "玉溪市",
                 "regionEntitys": [
-                    {
-                        "code": "530401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "530402",
                         "region": "红塔区"
@@ -12118,10 +11166,6 @@
                 "region": "保山市",
                 "regionEntitys": [
                     {
-                        "code": "530501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "530502",
                         "region": "隆阳区"
                     },
@@ -12147,10 +11191,6 @@
                 "code": "530600",
                 "region": "昭通市",
                 "regionEntitys": [
-                    {
-                        "code": "530601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "530602",
                         "region": "昭阳区"
@@ -12202,10 +11242,6 @@
                 "region": "丽江市",
                 "regionEntitys": [
                     {
-                        "code": "530701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "530702",
                         "region": "古城区"
                     },
@@ -12231,10 +11267,6 @@
                 "code": "530800",
                 "region": "普洱市",
                 "regionEntitys": [
-                    {
-                        "code": "530801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "530802",
                         "region": "思茅区"
@@ -12281,10 +11313,6 @@
                 "code": "530900",
                 "region": "临沧市",
                 "regionEntitys": [
-                    {
-                        "code": "530901",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "530902",
                         "region": "临翔区"
@@ -12610,10 +11638,6 @@
                 "region": "拉萨市",
                 "regionEntitys": [
                     {
-                        "code": "540101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "540102",
                         "region": "城关区"
                     },
@@ -12814,10 +11838,6 @@
                 "region": "山南市",
                 "regionEntitys": [
                     {
-                        "code": "540501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "540502",
                         "region": "乃东区"
                     },
@@ -12962,10 +11982,6 @@
                 "region": "西安市",
                 "regionEntitys": [
                     {
-                        "code": "610101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "610102",
                         "region": "新城区"
                     },
@@ -13024,10 +12040,6 @@
                 "region": "铜川市",
                 "regionEntitys": [
                     {
-                        "code": "610201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "610202",
                         "region": "王益区"
                     },
@@ -13049,10 +12061,6 @@
                 "code": "610300",
                 "region": "宝鸡市",
                 "regionEntitys": [
-                    {
-                        "code": "610301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "610302",
                         "region": "渭滨区"
@@ -13107,10 +12115,6 @@
                 "code": "610400",
                 "region": "咸阳市",
                 "regionEntitys": [
-                    {
-                        "code": "610401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "610402",
                         "region": "秦都区"
@@ -13174,10 +12178,6 @@
                 "region": "渭南市",
                 "regionEntitys": [
                     {
-                        "code": "610501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "610502",
                         "region": "临渭区"
                     },
@@ -13227,10 +12227,6 @@
                 "code": "610600",
                 "region": "延安市",
                 "regionEntitys": [
-                    {
-                        "code": "610601",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "610602",
                         "region": "宝塔区"
@@ -13290,10 +12286,6 @@
                 "region": "汉中市",
                 "regionEntitys": [
                     {
-                        "code": "610701",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "610702",
                         "region": "汉台区"
                     },
@@ -13343,10 +12335,6 @@
                 "code": "610800",
                 "region": "榆林市",
                 "regionEntitys": [
-                    {
-                        "code": "610801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "610802",
                         "region": "榆阳区"
@@ -13402,10 +12390,6 @@
                 "region": "安康市",
                 "regionEntitys": [
                     {
-                        "code": "610901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "610902",
                         "region": "汉滨区"
                     },
@@ -13452,10 +12436,6 @@
                 "region": "商洛市",
                 "regionEntitys": [
                     {
-                        "code": "611001",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "611002",
                         "region": "商州区"
                     },
@@ -13496,10 +12476,6 @@
                 "region": "兰州市",
                 "regionEntitys": [
                     {
-                        "code": "620101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "620102",
                         "region": "城关区"
                     },
@@ -13536,21 +12512,12 @@
             {
                 "code": "620200",
                 "region": "嘉峪关市",
-                "regionEntitys": [
-                    {
-                        "code": "620201",
-                        "region": "市辖区"
-                    }
-                ]
+                "regionEntitys": []
             },
             {
                 "code": "620300",
                 "region": "金昌市",
                 "regionEntitys": [
-                    {
-                        "code": "620301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "620302",
                         "region": "金川区"
@@ -13565,10 +12532,6 @@
                 "code": "620400",
                 "region": "白银市",
                 "regionEntitys": [
-                    {
-                        "code": "620401",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "620402",
                         "region": "白银区"
@@ -13595,10 +12558,6 @@
                 "code": "620500",
                 "region": "天水市",
                 "regionEntitys": [
-                    {
-                        "code": "620501",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "620502",
                         "region": "秦州区"
@@ -13634,10 +12593,6 @@
                 "region": "武威市",
                 "regionEntitys": [
                     {
-                        "code": "620601",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "620602",
                         "region": "凉州区"
                     },
@@ -13659,10 +12614,6 @@
                 "code": "620700",
                 "region": "张掖市",
                 "regionEntitys": [
-                    {
-                        "code": "620701",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "620702",
                         "region": "甘州区"
@@ -13693,10 +12644,6 @@
                 "code": "620800",
                 "region": "平凉市",
                 "regionEntitys": [
-                    {
-                        "code": "620801",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "620802",
                         "region": "崆峒区"
@@ -13732,10 +12679,6 @@
                 "region": "酒泉市",
                 "regionEntitys": [
                     {
-                        "code": "620901",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "620902",
                         "region": "肃州区"
                     },
@@ -13769,10 +12712,6 @@
                 "code": "621000",
                 "region": "庆阳市",
                 "regionEntitys": [
-                    {
-                        "code": "621001",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "621002",
                         "region": "西峰区"
@@ -13812,10 +12751,6 @@
                 "region": "定西市",
                 "regionEntitys": [
                     {
-                        "code": "621101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "621102",
                         "region": "安定区"
                     },
@@ -13849,10 +12784,6 @@
                 "code": "621200",
                 "region": "陇南市",
                 "regionEntitys": [
-                    {
-                        "code": "621201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "621202",
                         "region": "武都区"
@@ -13977,10 +12908,6 @@
                 "code": "630100",
                 "region": "西宁市",
                 "regionEntitys": [
-                    {
-                        "code": "630101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "630102",
                         "region": "城东区"
@@ -14208,10 +13135,6 @@
                 "region": "银川市",
                 "regionEntitys": [
                     {
-                        "code": "640101",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "640104",
                         "region": "兴庆区"
                     },
@@ -14242,10 +13165,6 @@
                 "region": "石嘴山市",
                 "regionEntitys": [
                     {
-                        "code": "640201",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "640202",
                         "region": "大武口区"
                     },
@@ -14263,10 +13182,6 @@
                 "code": "640300",
                 "region": "吴忠市",
                 "regionEntitys": [
-                    {
-                        "code": "640301",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "640302",
                         "region": "利通区"
@@ -14294,10 +13209,6 @@
                 "region": "固原市",
                 "regionEntitys": [
                     {
-                        "code": "640401",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "640402",
                         "region": "原州区"
                     },
@@ -14324,10 +13235,6 @@
                 "region": "中卫市",
                 "regionEntitys": [
                     {
-                        "code": "640501",
-                        "region": "市辖区"
-                    },
-                    {
                         "code": "640502",
                         "region": "沙坡头区"
                     },
@@ -14351,10 +13258,6 @@
                 "code": "650100",
                 "region": "乌鲁木齐市",
                 "regionEntitys": [
-                    {
-                        "code": "650101",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "650102",
                         "region": "天山区"
@@ -14393,10 +13296,6 @@
                 "code": "650200",
                 "region": "克拉玛依市",
                 "regionEntitys": [
-                    {
-                        "code": "650201",
-                        "region": "市辖区"
-                    },
                     {
                         "code": "650202",
                         "region": "独山子区"

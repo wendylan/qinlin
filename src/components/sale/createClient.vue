@@ -456,6 +456,7 @@ export default {
         },
         selectAnother() {
             this.isFill = false;
+            this.oldBrandTags = [];
         },
         // 创建
         submitData() {

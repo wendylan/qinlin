@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" start-placeholder="发布日期" end-placeholder="发布日期">
+                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="发布日期" end-placeholder="发布日期">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -95,9 +95,10 @@
                                 <el-dropdown size="small" split-button trigger="click">操作
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位</el-dropdown-item>
+                                        <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
+                                        </el-dropdown-item>
                                         <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->
-                                        <el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>
+                                        <!--<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>-->
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </template>
@@ -302,6 +303,7 @@ export default {
         // 搜索方案
         search() {
             let range = this.rangeDate;
+            console.log(range);
             let arr = [];
             let select = this.select;
             let keyword = this.keyword;
@@ -372,7 +374,7 @@ export default {
                         duration: 1500
                     });
                 }
-                console.log(arr);
+                console.log("arr----------------", arr);
                 return;
             }
             this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
@@ -749,22 +751,27 @@ a {
     display: flex;
     flex-direction: column;
 }
+
 /deep/ .el-table__row .cell span {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 24px;
 }
+
 /deep/ .el-table__row td:nth-child(5) .cell,
 /deep/ .has-gutter tr th:nth-child(5) .cell {
     text-align: right;
 }
+
 /deep/ .el-table__row td:nth-child(5) .cell span {
     width: 87px;
 }
+
 /deep/ .el-table__row td:nth-child(7) .cell span {
     width: 87px;
 }
+
 /deep/ .el-table__row td:nth-child(4) .cell span {
     width: 87px;
 }
@@ -885,8 +892,12 @@ a {
     /deep/ .el-table__row td:nth-child(2) .cell span {
         width: 185px;
     }
+
     /deep/ .el-table__row td:nth-child(4) .cell span {
         width: 138px;
+    }
+    /deep/ .el-table__row td:nth-child(5) .cell span {
+        width: 123px;
     }
 
     /*   .table_wrap ul,.table_wrap .tr_wrap,.adPanel_table{

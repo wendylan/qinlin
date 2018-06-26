@@ -65,7 +65,7 @@
                                     </el-table-column>
                                     <el-table-column prop="resName" label="资源名称" min-width="11.9%" class="tar">
                                     </el-table-column>
-                                    <el-table-column prop="address" label="地址" min-width="19.5%">
+                                    <el-table-column prop="resAddress" label="地址" min-width="19.5%">
                                     </el-table-column>
                                     <el-table-column prop="cType" label="楼盘类型" min-width="6.1%">
                                     </el-table-column>
@@ -101,17 +101,17 @@
                         <div class="sec-wrap box-wrap">
                             <h4>监播图片</h4>
                             <div class="tabs">
-                                <button class="active" @click="box1Change">按资源分</button>
-                                <button @click="box1Change">按图片分</button>
+                                <button class="active" @click="changeImgType">按资源分</button>
+                                <button @click="changeImgType">按图片分</button>
                             </div>
-                            <div class="typeOfRec" v-if="isActive1">
+                            <div class="typeOfRec" v-if="isActive">
                                 <div>
-                                    <div class="picBox" v-for="down of downReportArr" :key="down.asID">
+                                    <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
                                         <el-carousel :autoplay="false" trigger="click">
-                                            <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index">
+                                            <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index" >
                                                 <img :src="item.url" alt="">
                                                 <!--缩略图-->
-                                                <div class="mask-btn">
+                                                <div class="mask-btn" v-if="showPreImg == downIndex ">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
                                                 </div>
                                             </el-carousel-item>
@@ -121,23 +121,27 @@
                                 </div>
                                 <!-- 分页功能 -->
                                 <div class="pager">
-                                    <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    </el-pagination> -->
+                                    <el-pagination small background :current-page="currUpPage" :page-sizes="[5, 10]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
                                     </el-pagination>
                                 </div>
                             </div>
-                            <div class="typeOfPic" v-if="!isActive1">
+                            <div class="typeOfPic" v-if="!isActive">
                                 <div>
-                                    <div class="picBox" v-for="(img, index) of imgInfo" :key="index">
+                                    <div class="picBox" v-for="(img, index) of currImgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
                                         <img :src="img.pURL" alt="">
                                         <!--缩略图-->
-                                        <div class="mask-btn">
+                                        <div class="mask-btn" v-if="showPreImg == index ">
                                             <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
                                         </div>
                                         <div class="pic-title">{{img.resName}}</div>
                                     </div>
                                 </div>
                                 <div class="pager">
-                                    <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    </el-pagination> -->
+                                    <el-pagination small background :current-page="currDownPage" :page-sizes="[5, 10]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="imgInfo.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
                                     </el-pagination>
                                 </div>
                             </div>
@@ -244,6 +248,13 @@ export default {
     },
     data() {
         return {
+            currUpPage: 1,
+            currDownPage: 1,
+            pageUpSize: 5,
+            pageDownSize: 5,
+            //显示预览图蒙版
+            showPreImg: null,
+            // 下刊报告头部公司信息
             downReport: {
                 apName: "第一个投放方案",
                 bTitle: "新光百货",
@@ -252,8 +263,9 @@ export default {
                 apcTime: "May 9, 2018 6:29:47 PM",
                 totalNum: "200"
             },
-            //投放详情
+            //总的投放详情
             putDetail: [],
+            // 表格绑定的投放详情
             currPutDetail: [],
             // 城市过滤
             filterCityData: [],
@@ -269,17 +281,20 @@ export default {
             select: 1,
             // tab选项
             planPanel: "first",
-            // 监播图片
-            downReportArr: [],
             //发布情况
             postDetail: [],
+            // 监播图片
+            downReportArr: [],
+            currDownReportArr: [],
+            imgInfo: [],
+            currImgInfo: [],
             // 查看监播
             isShowImgArr: false,
             // 监播图片组合
             ImgBoxArr: [],
+            //监播图片内容为true则是按照资源分，false按照图片分
+            isActive: true,
 
-            //监播图片内容
-            isActive1: true,
             //缩略图对话框
             dialogVisible: false,
             dialogImageUrl: ""
@@ -292,6 +307,45 @@ export default {
         this.getCompanyInfo();
     },
     methods: {
+        // 分页功能
+        handleUpSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageUpSize = pageVal;
+            this.changeUpPage(1);
+        },
+        handleDownSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageDownSize = pageVal;
+            this.changeDownPage(1);
+        },
+        // 分页功能
+        changeUpPage(page) {
+            let pageSize = this.pageUpSize;
+            let arr = this.downReportArr;
+            let total = arr.length;
+            let resultArr = [];
+            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+                resultArr.push(arr[i]);
+            }
+            this.currDownReportArr = [];
+            this.currDownReportArr = resultArr;
+            console.log("currDownReportArr", this.currDownReportArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 分页功能
+        changeDownPage(page) {
+            let pageSize = this.pageDownSize;
+            let arr = this.imgInfo;
+            let total = arr.length;
+            let resultArr = [];
+            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+                resultArr.push(arr[i]);
+            }
+            this.currImgInfo = [];
+            this.currImgInfo = resultArr;
+            console.log("currImgInfo", this.currImgInfo);
+            console.log("page", page, "pageSize", pageSize);
+        },
         // 去重城市
         filter(val) {
             let res = "";
@@ -596,12 +650,17 @@ export default {
                                 // 下刊数据(组合图片)
                                 resArr = this.constructImg(resArr, downImginfo);
                                 this.downReportArr = resArr;
+                                this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                                this.changeUpPage(1);
                                 console.log("downimginfo", this.downReportArr);
                                 // 下刊数据(组合图片按图片分)
                                 this.imgInfo = this.initImg(
                                     resArr,
                                     downImginfo
                                 );
+                                this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                this.changeDownPage(1);
+                                console.log('downImgInfo--------', this.imgInfo);
                             })
                             .catch(res => {
                                 console.log(res);
@@ -756,8 +815,8 @@ export default {
             return row.rName === value;
         },
 
-        box1Change() {
-            this.isActive1 = !this.isActive1;
+        changeImgType() {
+            this.isActive = !this.isActive;
         },
         //页码
         handleSizeChange(val) {
@@ -777,17 +836,17 @@ export default {
                         .siblings()
                         .removeClass("active");
                 });
-            $(".picBox")
-                .mouseenter(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .show();
-                })
-                .mouseleave(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .hide();
-                });
+            // $(".picBox")
+            //     .mouseenter(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .show();
+            //     })
+            //     .mouseleave(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .hide();
+            //     });
         });
     }
 };
@@ -1136,9 +1195,9 @@ export default {
     text-align: right;
 }
 
-.mask-btn {
+/* .mask-btn {
     display: none;
-}
+} */
 
 .mask-btn .el-icon-search {
     position: absolute;

@@ -15,7 +15,7 @@
                         <h4>
                             <img src="../../assets/images/planlogo.png" alt="">{{orderDetail.apName}}
                             <p>{{orderDetail.apQC}}
-                                <i class="el-icon-edit" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i>
+                                <i class="el-icon-edit" v-if="(role=='MD')" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i>
                             </p>
                         </h4>
                         <!--修改合同号对话框-->
@@ -316,7 +316,7 @@
                                                         <ol slot-scope="scope" style="text-align:center">
                                                             <li>{{updata.timeRange}}</li>
                                                             <!-- <li>2017.10.10-2018.10.10</li>
-<li>2017.10.10-2018.10.10</li> -->
+                              <li>2017.10.10-2018.10.10</li> -->
                                                         </ol>
                                                         <i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
                                                     </el-popover>
@@ -334,10 +334,10 @@
                                                     </el-upload>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
-                                                <div class="showimgbox openMoreImg" @click="isShow1=index" v-if="!(isShow1 == index)">
+                                                <div class="showimgbox" @click="isShow=index" v-if="!(isShow == index)">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div class="moreImgBox" v-if="isShow1 == index">
+                                                <div v-show="isShow == index">
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
@@ -351,7 +351,7 @@
                                                         </el-upload>
                                                     </div>
                                                     <!-- 是否显示更多的图片上传框关闭 -->
-                                                    <div class="showimgbox closeMoreImg" @click="isShow1=null ">
+                                                    <div class="showimgbox" @click="isShow=null">
                                                         <i class="fa fa-angle-double-up"></i>
                                                     </div>
                                                 </div>
@@ -359,19 +359,17 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[6, 12]" :page-size="6" layout=" sizes, prev, pager, next, jumper" :total="upReportArr.length">
+                                        <el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
                                         </el-pagination>
-                                        <!-- <el-pagination :current-page="currentPage" :page-size="6" layout="total, prev, pager, next, jumper" :total="currentOrderInfo.length"  @current-change='changePage'>
-                                        </el-pagination> -->
                                     </div>
                                     <div class="up-report-bottom">
                                         <div class="up-report-bottom-checkbox">
-                                            <el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
-                                                <el-button type="text">修改</el-button>
-                                            </el-checkbox>
+                                            <!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
+                                            <!--<el-button type="text">修改</el-button>-->
+                                            <!--</el-checkbox>-->
                                         </div>
                                         <div class="up-report-bottom-btns">
-                                            <el-button type="primary">生成报告</el-button>
+                                            <!--<el-button type="primary">生成报告</el-button>-->
                                             <el-button plain>下载PDF</el-button>
                                             <el-button plain @click="showH5Up">查看H5</el-button>
                                         </div>
@@ -426,7 +424,7 @@
                                                 <div class="showimgbox" @click="isShow2 = index" v-if="!(isShow2 == index)">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-if="isShow2 == index">
+                                                <div v-show="isShow2 == index">
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
@@ -448,19 +446,17 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[6, 12]" :page-size="6" layout=" sizes, prev, pager, next, jumper" :total="30">
-                                        </el-pagination> -->
-                                        <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[6, 12]" :page-size="6" layout=" sizes, prev, pager, next, jumper" :total="downReportArr.length">
+                                        <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
                                         </el-pagination>
                                     </div>
                                     <div class="up-report-bottom">
                                         <div class="up-report-bottom-checkbox">
-                                            <el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com
-                                                <el-button type="text">修改</el-button>
-                                            </el-checkbox>
+                                            <!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
+                                            <!--<el-button type="text">修改</el-button>-->
+                                            <!--</el-checkbox>-->
                                         </div>
                                         <div class="up-report-bottom-btns">
-                                            <el-button type="primary">生成报告</el-button>
+                                            <!--<el-button type="primary">生成报告</el-button>-->
                                             <el-button plain>下载PDF</el-button>
                                             <el-button plain @click="showH5Down">查看H5</el-button>
                                         </div>
@@ -483,7 +479,6 @@
                                             <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
                                         </el-select>
                                     </span>
-
                                     <span>
                                         <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select">
                                             <el-option label="区域一" value="shanghai"></el-option>
@@ -732,6 +727,13 @@ export default {
     },
     data() {
         return {
+            // 判断
+            role: "",
+            // 当前页
+            currUpPage: 1,
+            currDownPage: 1,
+            pageUpSize: 6,
+            pageDownSize: 6,
             // 订单详情头部
             orderDetail: {
                 // realName: "黄启炜",
@@ -771,10 +773,12 @@ export default {
             // 上刊报告Arr
             upReportArr: [],
             currUpReportArr: [],
+            pageUpReportArr: [],
             upImgPercent: 0,
             // 下刊报告Arr
             downReportArr: [],
             currDownReportArr: [],
+            pageDownReportArr: [],
             downImgPercent: 0,
             // 上传图片地址
             doUpload: "https://beta.qinlinad.com/QADN/UpLoad",
@@ -801,7 +805,7 @@ export default {
             // 默认合同编号(如果订单详情没有合同编号)
             apQC: "",
 
-            isShow1: null,
+            isShow: null,
             isShow2: null,
             //添加点位
             dialogAddPoint: false,
@@ -1091,6 +1095,8 @@ export default {
         };
     },
     created() {
+        // 根据角色判断是否有修改合同编号的权限
+        this.getRole();
         // 获取订单详情的上面公司的信息
         this.getInitData();
         // 选点排期
@@ -1101,18 +1107,91 @@ export default {
     computed: {
         // 上刊报告进度条
         currUpNum() {
-            let num = this.currUpReportArr.length;
-            this.upImgPercent = num / this.upReportArr.length * 100;
-            return num;
+            // let num = this.currUpReportArr.length;
+            if (this.upReportArr.length) {
+                let num = 0;
+                for (let data of this.upReportArr) {
+                    if (data.upImgArr.length) {
+                        num++;
+                    }
+                }
+                this.upImgPercent = Math.ceil(
+                    num / this.upReportArr.length * 100
+                );
+                return num;
+            }
         },
         // 下刊报告进度条
         currDownNum() {
-            let num = this.currDownReportArr.length;
-            this.downImgPercent = num / this.downReportArr.length * 100;
-            return num;
+            // let num = this.currDownReportArr.length;
+            if (this.downReportArr.length) {
+                let num = 0;
+                for (let data of this.downReportArr) {
+                    if (data.downImgArr.length) {
+                        num++;
+                    }
+                }
+                this.downImgPercent = Math.ceil(
+                    num / this.downReportArr.length * 100
+                );
+                return num;
+            }
         }
     },
     methods: {
+        // 获取角色
+        getRole() {
+            this.role = JSON.parse(
+                sessionStorage.getItem("session_data")
+            ).uType;
+        },
+        handleUpSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageUpSize = pageVal;
+            this.changeUpPage(1);
+        },
+        handleDownSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageDownSize = pageVal;
+            this.changeDownPage(1);
+        },
+        // 分页功能
+        changeUpPage(page) {
+            let pageSize = this.pageUpSize;
+            let arr = this.upReportArr;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currUpReportArr = [];
+            this.currUpReportArr = resultArr;
+            console.log("currUpReportArr", this.currUpReportArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 分页功能
+        changeDownPage(page) {
+            let pageSize = this.pageDownSize;
+            let arr = this.downReportArr;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currDownReportArr = [];
+            this.currDownReportArr = resultArr;
+            console.log("currDownReportArr", this.currDownReportArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // tab点击
         handleClick() {
             if (this.planPanel == "first") {
                 this.getSetPoint();
@@ -1395,6 +1474,8 @@ export default {
             // testInfo = this.constructImg(testInfo, this.upLoadImg, "SK");
             // this.upReportArr = testInfo;
             // this.currUpReportArr = JSON.parse(JSON.stringify(this.upReportArr));
+
+            // this.changeUpPage(1);
             // console.log("upimginfo", this.upReportArr);
             // // 下刊数据(组合图片)
             // testInfo = this.constructImg(testInfo, this.downImg, "XK");
@@ -1402,6 +1483,7 @@ export default {
             // this.currDownReportArr = JSON.parse(
             //     JSON.stringify(this.downReportArr)
             // );
+            // this.changeDownPage(1);
             // console.log("downimginfo", this.downReportArr);
             // // 区域二级联动
             // this.citys = this.getCitys(testInfo);
@@ -1481,6 +1563,7 @@ export default {
                     this.currUpReportArr = JSON.parse(
                         JSON.stringify(this.upReportArr)
                     );
+                    this.changeUpPage(1);
                     console.log("upimginfo", this.upReportArr);
 
                     // 区域二级联动
@@ -1517,6 +1600,7 @@ export default {
                     this.currDownReportArr = JSON.parse(
                         JSON.stringify(this.downReportArr)
                     );
+                    this.changeDownPage(1);
                     console.log("downimginfo", this.downReportArr);
 
                     // 区域二级联动
@@ -1895,9 +1979,11 @@ export default {
                 if (type == "upImgArr") {
                     arr = JSON.parse(JSON.stringify(this.upReportArr));
                     this.currUpReportArr = arr;
+                    // this.changeUpPage(1);
                 } else {
                     arr = JSON.parse(JSON.stringify(this.downReportArr));
                     this.currDownReportArr = arr;
+                    // this.changeDownPage(1);
                 }
                 return;
             }
@@ -2015,8 +2101,10 @@ export default {
             console.log("searchImg", arr);
             if (type == "upImgArr") {
                 this.currUpReportArr = arr;
+                // this.changeUpPage(1);
             } else {
                 this.currDownReportArr = arr;
+                // this.changeDownPage(1);
             }
             if (!arr.length) {
                 Message.warning("查询数据为空");
@@ -2061,7 +2149,7 @@ export default {
         // 限制只能上传png,jpeg格式的照片
         beforeAvatarUpload(file) {
             const isIMAGE =
-                file.raw.type === "image/jpeg" || file.raw.type === "image/png";
+                file.type === "image/jpeg" || file.type === "image/png";
             const isLt1M = file.size / 1024 / 1024 < 1;
 
             if (!isIMAGE) {
@@ -2074,7 +2162,9 @@ export default {
             }
         },
         // 上传上刊图片并关联
-        handleUpSuccess(res, file) {
+        handleUpSuccess(res, file, fileList) {
+            console.log("res ------------", res);
+            console.log("upfile-----------", file);
             // uid         int【必填】         当前账户UserID
             // pid         int【必填】         图库pID
             // palt        String              图片标题
@@ -2090,6 +2180,26 @@ export default {
                 .postApi("/SetImg", info)
                 .then(res => {
                     console.log(res.data);
+                    if (res.data.SysCode == 400200) {
+                        // 实时更新进度条
+                        for (let data of this.upReportArr) {
+                            if (data.asID == this.upLoadData.ptid) {
+                                let item = file.response;
+                                let obj = {
+                                    name: info.pid + ".png",
+                                    url: item.pURL,
+                                    uid: info.uid,
+                                    pid: info.pid,
+                                    palt: info.palt,
+                                    ptype: info.ptype,
+                                    ptid: info.ptid,
+                                    ptp: info.ptp
+                                };
+                                data.upImgArr.push(obj);
+                            }
+                        }
+                        this.upReportArr.push();
+                    }
                     Message.success(res.data.MSG);
                 })
                 .catch(res => {
@@ -2098,6 +2208,7 @@ export default {
         },
         // 上传下刊图片并关联
         handleDownSuccess(res, file) {
+            console.log("file--------------", file);
             // uid         int【必填】         当前账户UserID
             // pid         int【必填】         图库pID
             // palt        String              图片标题
@@ -2114,6 +2225,26 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     Message.success(res.data.MSG);
+                    if (res.data.SysCode == 400200) {
+                        // 实时更新进度条
+                        for (let data of this.downReportArr) {
+                            if (data.asID == this.upLoadData.ptid) {
+                                let item = file.response;
+                                let obj = {
+                                    name: info.pid + ".png",
+                                    url: item.pURL,
+                                    uid: info.uid,
+                                    pid: info.pid,
+                                    palt: info.palt,
+                                    ptype: info.ptype,
+                                    ptid: info.ptid,
+                                    ptp: info.ptp
+                                };
+                                data.downImgArr.push(obj);
+                            }
+                        }
+                        this.downReportArr.push();
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -2121,14 +2252,47 @@ export default {
         },
         //删除照片
         handleRemove(file, fileList) {
-            console.log(file);
+            let type = file.ptype;
             let info = file;
             file.ptype = "del";
+
+            console.log("type--file", type, file);
+
             api
                 .postApi("/SetImg", info)
                 .then(res => {
                     console.log(res.data);
-                    // Message.success(res.data.MSG);
+                     Message.success(res.data.MSG);
+                    // 实时更新进度条
+                    if(res.data.SysCode ==400200){
+                        if (type == "SK") {
+                            for (let i=0; i<this.upReportArr.length; i++) {
+                                if (this.upReportArr[i].asID == file.ptid) {
+                                    if (this.upReportArr[i].upImgArr.length == 1) {
+                                        this.upReportArr[i].upImgArr = [];
+                                        this.upReportArr.push();
+                                        break;
+                                    }else{
+                                        this.upReportArr[i].upImgArr.splice(i, 1);
+                                        this.upReportArr.push();
+                                    }
+                                }
+                            }
+                        } else {
+                            for (let i=0; i<this.downReportArr.length; i++) {
+                                if (this.downReportArr[i].asID == file.ptid) {
+                                    if (this.downReportArr[i].downImgArr.length == 1) {
+                                        this.downReportArr[i].downImgArr = [];
+                                        this.downReportArr.push();
+                                        break;
+                                    }else{
+                                        this.downReportArr[i].downImgArr.splice(i, 1);
+                                        this.downReportArr.push();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -2154,6 +2318,11 @@ export default {
         },
         // 修改合同编号
         confirmChangeID() {
+            let reg = /^[^\u4e00-\u9fa5]{0,}$/;
+            if (!reg.test(this.apQC)) {
+                Message.warning("只能输入字母、数字、符号");
+                return;
+            }
             let qc = this.apQC;
             let apid = this.orderDetail.apID;
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -2187,13 +2356,6 @@ export default {
         confirmChangeRemark() {
             this.changeRemark = false;
             Message.success("修改监播备注成功");
-        },
-        //页码
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
         },
         //点击换点
         changePoint() {
@@ -2266,20 +2428,20 @@ export default {
             }
         },
         /*  //取消中止
-  confirmCancelHandel(){
-  let recName = this.currentSetpoint[0].recName;
-  let schedules = this.currentSetpoint[0].schedules;
-  MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的投放？\n', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-  }).then(() => {
-      Message.success('操作成功');
-      this.cancelbtnShow = false;
-  }).catch(() => {
-      Message.info('已取消操作');
-  });
-  },*/
+confirmCancelHandel(){
+let recName = this.currentSetpoint[0].recName;
+let schedules = this.currentSetpoint[0].schedules;
+MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的投放？\n', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+}).then(() => {
+    Message.success('操作成功');
+    this.cancelbtnShow = false;
+}).catch(() => {
+    Message.info('已取消操作');
+});
+},*/
         //添加点位对话框确认按钮
         confirmAddPoint() {
             this.dialogAddPoint = false;
@@ -2293,25 +2455,6 @@ export default {
     },
     mounted: function() {
         $(function() {
-            /* //上下刊报告展开上传
-     $(".openMoreImg").on("click", function() {
-         console.log(111);
-         $(this)
-             .hide()
-             .siblings(".moreImgBox")
-             .show();
-     });
-     $(".closeMoreImg").on("click", function() {
-         console.log(2);
-         $(this)
-             .parents(".moreImgBox")
-             .hide();
-         $(this)
-             .parents(".moreImgBox")
-             .siblings(".openMoreImg")
-             .show();
-     });
-*/
             //事件委托
             $(".content_top_wrap").on("click", "dd", function() {
                 if ($(this).hasClass("active")) {
@@ -2339,16 +2482,16 @@ export default {
                         .hide();
                 });
 
-            $(".content_top_wrap").on("click", ".close-tags", function() {
-                $(this)
-                    .parents(".tags")
-                    .hide();
-            });
-            $(".content_top_wrap").on("click", ".clear-filter", function() {
-                $(this)
-                    .parents(".filter-tags")
-                    .hide();
-            });
+            // $(".content_top_wrap").on("click", ".close-tags", function() {
+            //     $(this)
+            //         .parents(".tags")
+            //         .hide();
+            // });
+            // $(".content_top_wrap").on("click", ".clear-filter", function() {
+            //     $(this)
+            //         .parents(".filter-tags")
+            //         .hide();
+            // });
         });
     }
 };
@@ -2386,9 +2529,9 @@ export default {
 
 .plan-panel {
     /* position: absolute;
-     top: 190px;
-     width: 100%;
-     left: 0;*/
+         top: 190px;
+         width: 100%;
+         left: 0;*/
     /*width: 100%;*/
     margin-top: -40px;
     padding-left: 60px;
@@ -2415,10 +2558,10 @@ export default {
     font-weight: bold;
 }
 
-/deep/ .el-table__row td:nth-child(7),
 /deep/ .el-table__row td:nth-child(8),
-/deep/ .has-gutter tr th:nth-child(7),
-/deep/ .has-gutter tr th:nth-child(8) {
+/deep/ .el-table__row td:nth-child(9),
+/deep/ .has-gutter th:nth-child(8),
+/deep/ .has-gutter th:nth-child(9) {
     text-align: right;
 }
 
@@ -2910,7 +3053,7 @@ export default {
 .imgs-box {
     display: flex;
     flex-wrap: wrap;
-    /*justify-content: space-between;*/
+    justify-content: space-between;
 }
 
 .up-loader-header {
@@ -2966,11 +3109,6 @@ export default {
     color: #666666;
 }
 
-.imgs-box {
-    display: flex;
-    justify-content: space-around;
-}
-
 .up-loader-Imgpanel {
     width: 390px;
     /*height: 270px;*/
@@ -2983,13 +3121,16 @@ export default {
 }
 
 /*.up-loader-Imgpanel:nth-child(4) {
-              margin-left: 0;
-            }*/
+                  margin-left: 0;
+                }*/
 
 /*上传图片*/
 /deep/ .el-card__body {
     text-align: center;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .upload-img {
@@ -3000,11 +3141,12 @@ export default {
     overflow: hidden;
     height: 192px;
     padding-top: 20px;
+    /*margin-left: 20px;*/
 }
 
-.upload-img + .upload-img {
-    margin-left: 32px;
-}
+/*.upload-img + .upload-img {*/
+/*margin-left: 32px;*/
+/*}*/
 
 .upload-img span {
     position: absolute;
@@ -3363,7 +3505,7 @@ export default {
 
 .filter-input ul {
     /* display: flex;
-     align-items: center;*/
+         align-items: center;*/
 }
 
 .filter-input ul li {
@@ -3430,40 +3572,40 @@ export default {
 }
 
 /*筛选tags*/
-.filter-tags {
-    width: 100%;
-    height: 41px;
-    padding-bottom: 8px;
-}
+/* .filter-tags {
+        width: 100%;
+        height: 41px;
+        padding-bottom: 8px;
+    }
 
-.filter-tags .tags {
-    display: inline-block;
-    border: 1px solid #d8d8d8;
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-    color: #999999;
-    padding: 0 0 0 8px;
-    margin-right: 8px;
-    position: relative;
-}
+    .filter-tags .tags {
+        display: inline-block;
+        border: 1px solid #d8d8d8;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+        color: #999999;
+        padding: 0 0 0 8px;
+        margin-right: 8px;
+        position: relative;
+    }
 
-.filter-tags .tags i {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    text-align: center;
-    font-size: 16px;
-    border-left: 1px solid #d8d8d8;
-    cursor: pointer;
-    margin-left: 10px;
-    font-style: normal;
-}
+    .filter-tags .tags i {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        text-align: center;
+        font-size: 16px;
+        border-left: 1px solid #d8d8d8;
+        cursor: pointer;
+        margin-left: 10px;
+        font-style: normal;
+    }
 
-.filter-tags .clear-filter {
-    position: relative;
-    z-index: 2;
-}
+    .filter-tags .clear-filter {
+        position: relative;
+        z-index: 2;
+    } */
 
 /*表格*/
 /deep/ .el-table th,
@@ -3625,14 +3767,12 @@ export default {
         width: 92%;
     }
 
-    /*  .up-loader-Imgpanel + .up-loader-Imgpanel {
-        margin-left: 39px;
-      }*/
-    /*.up-loader-Imgpanel:nth-child(4) {
-      margin-left: 0;
-    }*/
-    .up-loader-Imgpanel {
-        /*margin-left: 21px;*/
+    .panel {
+        padding: 20px 30px;
+    }
+
+    .upload-img {
+        /*margin-left: 33px;*/
     }
 }
 
@@ -3651,11 +3791,11 @@ export default {
     }
 
     /*.up-loader-Imgpanel + .up-loader-Imgpanel {
-      margin-left: 54px;
-    }*/
+          margin-left: 54px;
+        }*/
     /*.up-loader-Imgpanel:nth-child(5) {
-      margin-left: 0;
-    }*/
+          margin-left: 0;
+        }*/
     .plan-title .handleBtn {
         position: absolute;
         /*right: 135px;*/

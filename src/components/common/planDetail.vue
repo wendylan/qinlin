@@ -17,8 +17,10 @@
                             <img src="../../assets/images/orderlogo.png" alt="">{{planDetail.apName}}
                         </h4>
                         <div class="handleBtn">
-                            <el-button plain>导出</el-button>
-                            <el-button type="primary" @click="edit()" v-if="(role=='BD')|| (role=='MD')">编辑</el-button>
+                            <!--<el-button plain>导出</el-button>-->
+                            <template v-if="planDetail.apState==1">
+                                <el-button type="primary" @click="edit()" v-if="(role=='BD')|| (role=='MD')">编辑</el-button>
+                            </template>
                         </div>
                     </div>
                     <div>
@@ -55,7 +57,7 @@
                                     </li>
                                     <li>
                                         <span>方案备注：</span>
-                                        <em>{{planDetail.apRemark||"无"}}</em>
+                                        <em>{{planDetail.apRemark}}</em>
                                     </li>
                                     <li>
                                         <span>其他费用：</span>
@@ -183,7 +185,7 @@
                                                         <div class="bottom">
                                                             <div class="bottom-detail">
                                                                 <div class="remark">
-                                                                    <p>备注：{{item.pdRemark||'无'}}</p>
+                                                                    <p>备注：{{item.pdRemark}}</p>
                                                                 </div>
                                                                 <div class="bill-title-right">
                                                                     <ul>
@@ -297,8 +299,8 @@ export default {
         this.getRole();
         // 获取选点排期数据
         this.getInitData();
-        // 选点排期
-        this.getSetPoint();
+        // // 选点排期
+        // this.getSetPoint();
         // 报价单
         this.getPriceData();
     },
@@ -399,6 +401,8 @@ export default {
                         // }
                         info.apcTime = dateFormat.toDateTime(info.apcTime);
                         this.planDetail = info;
+                        // 选点排期
+                        this.getSetPoint();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -435,42 +439,84 @@ export default {
                 uid: uid,
                 apid: apid
             };
-            // uid         int【必填】     当前账户UserID
-            // apid        int             公司对应方案apID
-            api
-                .getApi("/GetADB", info)
-                .then(res => {
-                    console.log(res.data);
-                    if (!res.data.SysCode) {
-                        let resInfo = res.data;
-                        // 城市中文名称
-                        for (let data of resInfo) {
-                            this.$set(
-                                data,
-                                "city",
-                                areaToText.toTextCity(data.rID)
+            console.log("apState------------", this.planDetail.apState);
+            if (this.planDetail.apState == 0 || this.planDetail.apState == 1) {
+                // uid         int【必填】     当前账户UserID
+                // apid        int             公司对应方案apID
+                api
+                    .getApi("/GetADB", info)
+                    .then(res => {
+                        console.log(res.data);
+                        if (!res.data.SysCode) {
+                            let resInfo = res.data;
+                            // 城市中文名称
+                            for (let data of resInfo) {
+                                // this.$set(
+                                //     data,
+                                //     "city",
+                                //     areaToText.toTextCity(data.rID)
+                                // );
+                                data.city = areaToText.toTextCity(data.rID);
+                                let time =
+                                    this.formatTime(data.pbStar) +
+                                    "-" +
+                                    this.formatTime(data.pbEnd);
+                                this.$set(data, "timeRange", time);
+                            }
+                            // 城市筛选过滤
+                            this.filterCityData = filterFormat(resInfo, "city");
+                            this.filtersArea = filterFormat(resInfo, "rName");
+                            this.filtersData = filterFormat(
+                                resInfo,
+                                "timeRange"
                             );
-                            let time =
-                                this.formatTime(data.pbStar) +
-                                "-" +
-                                this.formatTime(data.pbEnd);
-                            this.$set(data, "timeRange", time);
+                            // 选点排期
+                            // this.checkLock(resInfo);
+                            this.setpointArr = resInfo;
+                            this.currentSetpoint = this.setpointArr;
+                        } else {
+                            Message.warning(res.data.MSG);
                         }
-                        // 城市筛选过滤
-                        this.filterCityData = filterFormat(resInfo, "city");
-                        this.filtersArea = filterFormat(resInfo, "rName");
-                        this.filtersData = filterFormat(resInfo, "timeRange");
-                        // 选点排期
-                        // this.checkLock(resInfo);
-                        this.setpointArr = resInfo;
-                        this.currentSetpoint = this.setpointArr;
-                    } else {
-                        Message.warning(res.data.MSG);
-                    }
-                })
-                .catch(res => {
-                    console.log(res);
-                });
+                    })
+                    .catch(res => {
+                        console.log(res);
+                    });
+            } else {
+                // uid         int【必填】     当前账户UserID
+                // apid        int             公司对应方案apID
+                api
+                    .getApi("/GetAdLaunch", info)
+                    .then(res => {
+                        console.log(res.data);
+                        if (!res.data.SysCode) {
+                            let result = res.data;
+                            for (let data of result) {
+                                // 城市中文名称
+                                data.city = areaToText.toTextCity(data.rID);
+                                let time =
+                                    this.formatTime(data.lStar) +
+                                    "-" +
+                                    this.formatTime(data.lEnd);
+                                data.timeRange = time;
+                            }
+                            // 城市筛选过滤
+                            this.filterCityData = filterFormat(result, "city");
+                            this.filtersArea = filterFormat(result, "rName");
+                            this.filtersData = filterFormat(
+                                result,
+                                "timeRange"
+                            );
+                            // 选点排期
+                            this.setpointArr = result;
+                            this.currentSetpoint = this.setpointArr;
+                        } else {
+                            Message.warning(res.data.MSG);
+                        }
+                    })
+                    .catch(res => {
+                        console.log(res);
+                    });
+            }
         },
         // 获取三个费用价格(报价单)
         getPriceData() {
@@ -711,8 +757,10 @@ export default {
     font-weight: bold;
 }
 
-/deep/ .el-table__row td:nth-child(7),
-/deep/ .el-table__row td:nth-child(8) {
+/deep/ .el-table__row td:nth-child(8),
+/deep/ .el-table__row td:nth-child(9),
+/deep/ .has-gutter th:nth-child(8),
+/deep/ .has-gutter th:nth-child(9) {
     text-align: right;
 }
 

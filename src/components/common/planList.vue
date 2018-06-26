@@ -182,8 +182,8 @@ export default {
             //   判断是否有发布，预锁解锁等功能
             isDisable: true,
             //加载中
-            // loading: true,
-            loading: false,
+            loading: true,
+            // loading: false,
             Info: {},
             // 解锁还是预锁
             isLock: false,
@@ -193,9 +193,13 @@ export default {
             cityChoose: [],
             // 预锁的城市列表
             cityList: [],
+            // 时间范围
             rangeDate: "",
+            // 关键字
             keyword: "",
+            // 根据角色判断是否显示新建按钮
             showNewBtn: true,
+            // 搜索的select框
             select: "1",
             // 表格数据
             currentPlan: [
@@ -369,7 +373,7 @@ export default {
                                             pdid: pdid
                                         })
                                         .then(res => {
-                                            console.log(res.data);
+                                            // console.log(res.data);
                                             // lock.IsLock = res.data.IsLock;
                                             let IsLock = res.data.IsLock;
                                             dataArr.push({
@@ -548,7 +552,7 @@ export default {
         deleteOne(row) {
             console.log(row);
         },
-        // 随机生成合同编号
+        // 随机生成合同编号编码格式： 合同编码固定[QC],日期[20180328],省份[44],城市[01],等几份合同[001](随机数)
         getContractNo(rid) {
             let date = new Date();
             let result = "QC";
@@ -668,6 +672,8 @@ export default {
                         MessageBox.prompt("合同编号:", {
                             confirmButtonText: "是",
                             cancelButtonText: "否",
+                            inputPattern: /^[^\u4e00-\u9fa5]{0,}$/,
+                            inputErrorMessage: "只能输入数字,字母,字符",
                             inputValue: QCinfo
                         })
                             .then(() => {
@@ -726,7 +732,7 @@ export default {
                                 info.uid,
                                 act
                             );
-                            if ((act = "R")) {
+                            if (act == "R") {
                                 // 循环发布
                                 this.ctrlFangan(arr);
                             } else {
@@ -897,6 +903,7 @@ export default {
                     let uWhoArr = JSON.parse(
                         sessionStorage.getItem("session_data")
                     ).uWho;
+                    // 媒介权限大于销售的才能操作方案对应的城市,也就是说：当一个方案有账号权限外的城市不能进行操作，需要进行剔除
                     let resultArr = [];
                     if (uWhoArr == 0) {
                         resultArr = pdidArr;
@@ -907,34 +914,48 @@ export default {
                             }
                         }
                     }
-                    for (let i = 0; i < resultArr.length; i++) {
-                        api
-                            .postApi("/CheckLock", {
-                                uid: this.Info.uid,
-                                pdid: resultArr[i].pdID
-                            })
-                            .then(res => {
-                                console.log(res.data);
-                                resultArr[i].IsLock = res.data.IsLock;
-                                if (i >= resultArr.length - 1) {
-                                    let cityCode = filterFormat(
-                                        resultArr,
-                                        "rID",
-                                        "pdID",
-                                        "IsLock"
-                                    );
-                                    for (let item of cityCode) {
-                                        item.rName = areaToText.toTextCity(
-                                            item.value
-                                        );
-                                    }
-                                    this.cityList = cityCode;
-                                    console.log(cityCode);
-                                }
-                            })
-                            .catch(res => {
-                                console.log(res);
-                            });
+                    console.log("resultArr----uwho-----", resultArr);
+                    for (var i = 0; i < resultArr.length; i++) {
+                        delete resultArr[i].IsLock;
+                        this.getLockStatus(resultArr, i);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 获取是否锁住状态
+        getLockStatus(resultArr, i){
+            api
+                .postApi("/CheckLock", {
+                    uid: this.Info.uid,
+                    pdid: resultArr[i].pdID
+                })
+                .then(res => {
+                    console.log('i-lock', i , res.data);
+                    // resultArr[i].IsLock = res.data.IsLock;
+                    this.$set(resultArr[i], 'IsLock', res.data.IsLock);
+                    let sumLock = 0;
+                    for(let data of resultArr){
+                        if(data.hasOwnProperty('IsLock')){
+                            sumLock++;
+                        }
+                    }
+                    if (sumLock >= resultArr.length) {
+                        let cityCode = filterFormat(
+                            resultArr,
+                            "rID",
+                            "pdID",
+                            "IsLock"
+                        );
+                        for (let item of cityCode) {
+                            item.rName = areaToText.toTextCity(
+                                item.value
+                            );
+                        }
+                        this.cityList = cityCode;
+                        // this.cityList.push();
+                        console.log(cityCode);
                     }
                 })
                 .catch(res => {
@@ -973,10 +994,10 @@ export default {
             let uid = this.Info.uid;
 
             // 解锁接口
-            for (let pdiditem of pdidArr) {
+            for (let i = 0; i < pdidArr.length; i++) {
                 let pdinfo = {
                     uid: uid,
-                    pdid: pdiditem
+                    pdid: pdidArr[i]
                 };
                 api
                     .getApi("/CheckLock", pdinfo)
@@ -986,7 +1007,14 @@ export default {
                                 .postApi("/ClFangan", pdinfo)
                                 .then(res => {
                                     console.log(res.data);
+                                    // if(res.data.SysCode==300200){
+
+                                    // }
+
                                     Message.success(res.data.MSG);
+                                    if (i >= pdidArr.length - 1) {
+                                        location.reload();
+                                    }
                                 })
                                 .catch(res => {
                                     console.log(res);
@@ -1467,3 +1495,4 @@ a {
     float: none !important;
 }
 </style>
+

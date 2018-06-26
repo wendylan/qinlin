@@ -104,17 +104,17 @@
                         <div class="sec-wrap box-wrap">
                             <h4>监播图片</h4>
                             <div class="tabs">
-                                <button class="active" @click="box1Change">按资源分</button>
-                                <button @click="box1Change">按图片分</button>
+                                <button class="active" @click="changeImgType">按资源分</button>
+                                <button @click="changeImgType">按图片分</button>
                             </div>
-                            <div class="typeOfRec" v-if="isActive1">
+                            <div class="typeOfRec" v-if="isActive">
                                 <div>
-                                    <div class="picBox" v-for="up of upReportArr" :key="up.asID">
+                                    <div class="picBox" v-for="(up, upIndex) of currUpReportArr" :key="up.asID"  @mouseenter="showPreImg = upIndex" @mouseleave="showPreImg = null">
                                         <el-carousel :autoplay="false" trigger="click">
                                             <el-carousel-item v-for="(item, index) in up.upImgArr" :key="index">
                                                 <img :src="item.url" alt="">
                                                 <!--缩略图-->
-                                                <div class="mask-btn">
+                                                <div class="mask-btn" v-if="showPreImg == upIndex ">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
                                                 </div>
                                             </el-carousel-item>
@@ -123,23 +123,27 @@
                                     </div>
                                 </div>
                                 <div class="pager">
-                                    <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    </el-pagination> -->
+                                    <el-pagination small background :current-page="currUpPage" :page-sizes="[5, 10]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
                                     </el-pagination>
                                 </div>
                             </div>
-                            <div class="typeOfPic" v-if="!isActive1">
+                            <div class="typeOfPic" v-if="!isActive">
                                 <div>
-                                    <div class="picBox" v-for="(img, index) of imgInfo" :key="index">
+                                    <div class="picBox" v-for="(img, index) of currImgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
                                         <img :src="img.pURL" alt="">
                                         <!--缩略图-->
-                                        <div class="mask-btn">
+                                        <div class="mask-btn" v-if="showPreImg == index ">
                                             <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
                                         </div>
                                         <div class="pic-title">{{JSON.parse(img.pAlt).res}}</div>
                                     </div>
                                 </div>
                                 <div class="pager">
-                                    <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                    </el-pagination> -->
+                                    <el-pagination small background :current-page="currDownPage" :page-sizes="[5, 10]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="imgInfo.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
                                     </el-pagination>
                                 </div>
                             </div>
@@ -246,6 +250,12 @@ export default {
     },
     data() {
         return {
+            currUpPage: 1,
+            currDownPage: 1,
+            pageUpSize: 5,
+            pageDownSize: 5,
+            //显示预览图蒙版
+            showPreImg: null,
             upReport: {
                 apName: "第一个投放方案",
                 bTitle: "新光百货",
@@ -273,14 +283,18 @@ export default {
             planPanel: "first",
             //发布情况
             postDetail: [],
+            // 监播图片
+            upReportArr: [],
+            currUpReportArr: [],
+            imgInfo: [],
+            currImgInfo: [],
             // 查看监播
             isShowImgArr: false,
             // 监播图片组合
             ImgBoxArr: [],
-            upReportArr: [],
+            //监播图片内容为true则是按照资源分，false按照图片分
+            isActive: true,
 
-            //监播图片内容
-            isActive1: true,
             //缩略图对话框
             dialogVisible: false,
             dialogImageUrl: ""
@@ -293,6 +307,45 @@ export default {
         this.getInitData();
     },
     methods: {
+        // 分页功能
+        handleUpSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageUpSize = pageVal;
+            this.changeUpPage(1);
+        },
+        handleDownSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageDownSize = pageVal;
+            this.changeDownPage(1);
+        },
+        // 分页功能
+        changeUpPage(page) {
+            let pageSize = this.pageUpSize;
+            let arr = this.upReportArr;
+            let total = arr.length;
+            let resultArr = [];
+            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+                resultArr.push(arr[i]);
+            }
+            this.currUpReportArr = [];
+            this.currUpReportArr = resultArr;
+            console.log("currUpReportArr", this.currUpReportArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 分页功能
+        changeDownPage(page) {
+            let pageSize = this.pageDownSize;
+            let arr = this.imgInfo;
+            let total = arr.length;
+            let resultArr = [];
+            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+                resultArr.push(arr[i]);
+            }
+            this.currImgInfo = [];
+            this.currImgInfo = resultArr;
+            console.log("currImgInfo", this.currImgInfo);
+            console.log("page", page, "pageSize", pageSize);
+        },
         // 去重城市
         filter(val) {
             let res = "";
@@ -654,12 +707,17 @@ export default {
                             .then(res => {
                                 console.log(res.data);
                                 let upImginfo = res.data;
-                                // 下刊数据(组合图片)
+                                // 上刊数据(组合图片)
                                 resArr = this.constructImg(resArr, upImginfo);
                                 this.upReportArr = resArr;
+                                this.currUpReportArr = JSON.parse(JSON.stringify(this.upReportArr));
+                                this.changeUpPage(1);
                                 console.log("upimginfo", this.upReportArr);
-                                // 下刊数据(组合图片按图片分)
+                                // 上刊数据(组合图片按图片分)
                                 this.imgInfo = this.initImg(resArr, upImginfo);
+                                this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                this.changeDownPage(1);
+                                console.log('imgInfo----------------', this.imgInfo);
                             })
                             .catch(res => {
                                 console.log(res);
@@ -815,8 +873,8 @@ export default {
             return row.rName === value;
         },
 
-        box1Change() {
-            this.isActive1 = !this.isActive1;
+        changeImgType() {
+            this.isActive = !this.isActive;
         },
         //页码
         handleSizeChange(val) {
@@ -836,17 +894,17 @@ export default {
                         .siblings()
                         .removeClass("active");
                 });
-            $(".picBox")
-                .mouseenter(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .show();
-                })
-                .mouseleave(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .hide();
-                });
+            // $(".picBox")
+            //     .mouseenter(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .show();
+            //     })
+            //     .mouseleave(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .hide();
+            //     });
         });
     }
 };
@@ -1173,7 +1231,7 @@ export default {
     font-size: 14px;
     color: #666666;
     text-align: center;
-    line-height: 4px;
+    line-height: 22px;
 }
 
 /deep/ .el-carousel__button {
@@ -1200,9 +1258,9 @@ export default {
     text-align: right;
 }
 
-.mask-btn {
+/* .mask-btn {
     display: none;
-}
+} */
 
 .mask-btn .el-icon-search {
     position: absolute;
@@ -1260,6 +1318,11 @@ export default {
     margin-left: 13px;
     position: relative;
     top: -4px;
+}
+
+/deep/ .el-card__body{
+  display: flex;
+  flex-wrap: wrap;
 }
 
 /*1440*/
