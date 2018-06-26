@@ -1086,12 +1086,12 @@
       querySearchAsync(queryString, callback) {
         let uid = this.sessionData.uID
         if (queryString) {
-          api.postApi('/CheckUserName', {uid: uid, sname: queryString}).then(res => {
-            console.log('CheckUserName', res)
+          api.postApi('/GetUserName', {uid: uid, sname: queryString}).then(res => {
+            console.log('GetUserName', res)
             console.log('媒介销售信息', this.BDData)
-            if (res.data !== null) {
+            if (res.data.length) {
               this.BDData.uid = res.data.uID
-              console.log('CheckUserName数据包', res.data)
+              console.log('GetUserName数据包', res.data)
               res.data.value = res.data.realName; //queryString
               this.BDData.realName = res.data.realName
               this.planForm.ownerSales = res.data.realName

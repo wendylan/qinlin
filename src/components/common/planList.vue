@@ -41,7 +41,9 @@
                     <el-table border :data="currentPlan" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                         <el-table-column label="方案名称" min-width="14.9%">
                             <template slot-scope="scope">
-                                <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apName" placement="bottom">
+                                    <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column prop="cName" label="客户名称" min-width="12.6%">
@@ -766,51 +768,64 @@ export default {
         initContruct(asidArr, pdidArr, uid, act) {
             // 组装数据
             let result = [];
+            if(!result.length){
+                // result.push(asidArr[0]);
+                let obj = {
+                    uid: uid,
+                    act: act,
+                    pdid: "",
+                    rID: asidArr[0].rID,
+                    ds: dateFormat.toDate(asidArr[0].pbStar),
+                    de: dateFormat.toDate(asidArr[0].pbEnd),
+                    asidlist: ""
+                };
+                result.push(obj);
+            }
             // 组合asid
-            for (let data of asidArr) {
-                let start = dateFormat.toDate(data.pbStar);
-                let end = dateFormat.toDate(data.pbEnd);
-                let door = 1;
-                for (let res of result) {
-                    let dataRID = data.rID.toString().substring(0, 4);
+            for(let res of result){
+                let asIDs = "";
+                for(let init of asidArr){
                     let resRID = res.rID.toString().substring(0, 4);
-                    if (dataRID == resRID && start == res.ds && end == res.de) {
-                        door = 0;
-                    }
-                }
-                if (door) {
-                    let obj = {
+                    let dataRID = init.rID.toString().substring(0, 4);
+                    let start = dateFormat.toDate(init.pbStar);
+                    let end = dateFormat.toDate(init.pbEnd);
+                    let resObj = {
                         uid: uid,
                         act: act,
                         pdid: "",
-                        rID: data.rID,
+                        rID: init.rID,
                         ds: start,
                         de: end,
                         asidlist: ""
                     };
-                    result.push(obj);
-                }
-            }
-            console.log("reuslt-------", result);
-            for (let res of result) {
-                let asIDs = "";
-                for (let init of asidArr) {
-                    let start = dateFormat.toDate(init.pbStar);
-                    let end = dateFormat.toDate(init.pbEnd);
-                    if (
-                        res.rID == init.rID &&
+                    if(
+                        resRID == dataRID &&
                         res.ds == start &&
                         res.de == end
-                    ) {
-                        if (asIDs === "") {
+                    ){
+                        if(asIDs ===''){
                             asIDs = init.asID.toString();
-                        } else {
-                            asIDs = asIDs + "," + init.asID;
+                        }else{
+                            asIDs = asIDs+ ','+ init.asID;
+                        }
+                    }else{
+                        let door = 1;
+                        for(let data of result){
+                            if(
+                                data.rID == init.rID &&
+                                data.ds == start &&
+                                data.de == end
+                            ){
+                                door = 0;
+                            }
+                        }
+                        if(door){
+                            result.push(resObj);
                         }
                     }
                 }
                 res.asidlist = asIDs;
-                console.log("asidS", asIDs);
+                console.log("asidS", asIDs); 
             }
             console.log("result-------------", result);
 
@@ -831,6 +846,77 @@ export default {
             }
             console.log("resultArr", result);
             return result;
+
+
+
+
+            // // 组装数据
+            // let result = [];
+            // // 组合asid
+            // for (let data of asidArr) {
+            //     let start = dateFormat.toDate(data.pbStar);
+            //     let end = dateFormat.toDate(data.pbEnd);
+            //     let door = 1;
+            //     for (let res of result) {
+            //         let dataRID = data.rID.toString().substring(0, 4);
+            //         let resRID = res.rID.toString().substring(0, 4);
+            //         if (dataRID == resRID && start == res.ds && end == res.de) {
+            //             door = 0;
+            //         }
+            //     }
+            //     if (door) {
+            //         let obj = {
+            //             uid: uid,
+            //             act: act,
+            //             pdid: "",
+            //             rID: data.rID,
+            //             ds: start,
+            //             de: end,
+            //             asidlist: ""
+            //         };
+            //         result.push(obj);
+            //     }
+            // }
+            // console.log("reuslt-------", result);
+            // for (let res of result) {
+            //     let asIDs = "";
+            //     for (let init of asidArr) {
+            //         let start = dateFormat.toDate(init.pbStar);
+            //         let end = dateFormat.toDate(init.pbEnd);
+            //         if (
+            //             res.rID == init.rID &&
+            //             res.ds == start &&
+            //             res.de == end
+            //         ) {
+            //             if (asIDs === "") {
+            //                 asIDs = init.asID.toString();
+            //             } else {
+            //                 asIDs = asIDs + "," + init.asID;
+            //             }
+            //         }
+            //     }
+            //     res.asidlist = asIDs;
+            //     console.log("asidS", asIDs);
+            // }
+            // console.log("result-------------", result);
+
+            // // 组合pdid
+            // for (let resData of result) {
+            //     for (let pdData of pdidArr) {
+            //         let pdDataRID = pdData.rID.toString().substring(0, 4);
+            //         let arrRID = resData.rID.toString().substring(0, 4);
+            //         if (
+            //             pdDataRID == arrRID &&
+            //             resData.ds >= pdData.pdStar &&
+            //             resData.de <= pdData.pdEnd
+            //         ) {
+            //             resData.pdid = pdData.pdID;
+            //             break;
+            //         }
+            //     }
+            // }
+            // console.log("resultArr", result);
+            // return result;
         },
         // 循环发布、预锁
         ctrlFangan(arr) {
@@ -915,47 +1001,34 @@ export default {
                         }
                     }
                     console.log("resultArr----uwho-----", resultArr);
-                    for (var i = 0; i < resultArr.length; i++) {
-                        delete resultArr[i].IsLock;
-                        this.getLockStatus(resultArr, i);
+
+                    for (let data of resultArr) {
+                        data.IsLock = true;
                     }
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
-        // 获取是否锁住状态
-        getLockStatus(resultArr, i){
-            api
-                .postApi("/CheckLock", {
-                    uid: this.Info.uid,
-                    pdid: resultArr[i].pdID
-                })
-                .then(res => {
-                    console.log('i-lock', i , res.data);
-                    // resultArr[i].IsLock = res.data.IsLock;
-                    this.$set(resultArr[i], 'IsLock', res.data.IsLock);
-                    let sumLock = 0;
-                    for(let data of resultArr){
-                        if(data.hasOwnProperty('IsLock')){
-                            sumLock++;
-                        }
+                    let cityCode = filterFormat(
+                        resultArr,
+                        "rID",
+                        "pdID",
+                        "IsLock"
+                    );
+                    for (let item of cityCode) {
+                        item.rName = areaToText.toTextCity(item.value);
                     }
-                    if (sumLock >= resultArr.length) {
-                        let cityCode = filterFormat(
-                            resultArr,
-                            "rID",
-                            "pdID",
-                            "IsLock"
-                        );
-                        for (let item of cityCode) {
-                            item.rName = areaToText.toTextCity(
-                                item.value
-                            );
-                        }
-                        this.cityList = cityCode;
-                        // this.cityList.push();
-                        console.log(cityCode);
+                    this.cityList = cityCode;
+                    // 判断是否锁住状态,默认置灰状态
+                    for (let city of this.cityList) {
+                        api
+                            .postApi("/CheckLock", {
+                                uid: this.Info.uid,
+                                pdid: city.pdID
+                            })
+                            .then(res => {
+                                console.log("i-lock", city, res.data);
+                                this.$set(city, "IsLock", res.data.IsLock);
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
                     }
                 })
                 .catch(res => {
@@ -1329,6 +1402,12 @@ a {
     white-space: nowrap;
 }
 
+/deep/ .el-table .cell a {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /deep/ .el-table__row td:nth-child(4) {
     text-align: right;
 }
@@ -1347,6 +1426,9 @@ a {
 
 /deep/ .el-table__row td:nth-child(2) .cell span {
     width: 148px;
+}
+/deep/ .el-table__row td:nth-child(1) .cell a {
+    width: 185px;
 }
 
 /*筛选*/
@@ -1441,10 +1523,6 @@ a {
 .mediaList_container span {
     float: left !important;
     margin-left: 2px;
-}
-
-/deep/ .el-popper[x-placement^="bottom"] {
-    margin-top: 0 !important;
 }
 
 /*1440*/

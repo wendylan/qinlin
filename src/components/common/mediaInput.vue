@@ -1182,12 +1182,13 @@
               media.adSizeH = Number(mediaObj[i].adSize.split('*')[1])
               media.visualW = Number(mediaObj[i].adViewSize.split('*')[0])
               media.visualH = Number(mediaObj[i].adViewSize.split('*')[1])
+              media.mediaRemark = mediaObj[i].mrk
               if( mediaObj[i].notPush !== '' &&  mediaObj[i].notPush !== undefined &&  mediaObj[i].notPush !== null){
                 media.adLimit = mediaObj[i].notPush.split('、')
               }else{
                 media.adLimit = mediaObj[i].notPush
               }
-              media.mediaRemark = ''
+              // media.mediaRemark = ''
               console.log('media', media)
               if(media.mstate == '待安装'){
                 media.assetIdBolean = true
@@ -1410,7 +1411,6 @@
 
       },
       clearData(){
-
         this.resetForm()
         window.history.go(-1);
       },

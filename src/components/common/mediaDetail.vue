@@ -291,8 +291,10 @@
             }else if(MediaList[i].mState === 3){
               MediaList[i].mState ='待维修'
             }
-            MediaList[i].mrk = '--'
-            //  this.mediaList[i] = MediaList[i]
+            MediaList[i].mrk = MediaList[i].mRemark
+            if(MediaList[i].mrk === '' || MediaList[i].mrk === null){//mRemark
+              MediaList[i].mrk = '--'
+            }
             this.mediaList.push(MediaList[i])
           }
           //  console.log(this.mediaList)

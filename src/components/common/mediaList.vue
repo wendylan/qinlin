@@ -236,6 +236,9 @@
           }, {
             value: '2',
             label: '商圈'
+          }, {
+            value: '3',
+            label: '城市'
           }
         ],
         //表格
@@ -403,7 +406,7 @@
           if (Status === '正常') {
             Message({
               type: 'warning',
-              message: '请在工程工具小程序上完成装门任务'
+              message: '请完善资产编号'
             });
           } else {
             Message({

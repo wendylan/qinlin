@@ -781,7 +781,7 @@ export default {
             pageDownReportArr: [],
             downImgPercent: 0,
             // 上传图片地址
-            doUpload: "https://beta.qinlinad.com/QADN/UpLoad",
+            doUpload: "https://www.qinlinad.com/QADN/UpLoad",
             // 上传图片附带参数
             upLoadData: {
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
