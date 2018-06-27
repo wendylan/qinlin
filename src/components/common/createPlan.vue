@@ -740,8 +740,10 @@
     },
     data() {
       var validateSales = (rule, value, callback) => {
+        console.log('this.BDData',this.BDData)
+        console.log('this.BDData.uid',this.BDData.uid)
         if (value) {
-          if (this.BDData.uid === 0) {
+          if (this.BDData.uid === '0') {
             callback(new Error('请输入正确的账号'));
           } else {
             callback();
@@ -875,9 +877,6 @@
           companyName: [
             {required: true, message: '请选择公司名称', trigger: 'change'},
           ],
-          /* companyBrand: [
-             { message: '请选择公司品牌', trigger: 'change'},
-           ],*/
           throwCity: [
             {required: true, message: '请选择投放城市(可多选)', trigger: 'change'},
           ],
@@ -910,7 +909,7 @@
         selectOnAll: false,   // 默认selecton
         FAData: '',            // 创建方后台返回的数据
         timeout: null,
-        BDData: {uid: 0, realName: ''},
+        BDData: {uid: '0', realName: ''},
         copyPlanList: [],       // 备份planList
         backupsList: [],         //  表头搜索过后的备份
         HSearch: '',           // 获取传值显示‘清除’、‘确定’按钮
@@ -1072,6 +1071,7 @@
       // 获取浏览器session数据
       getsessionData() {
         this.sessionData = JSON.parse(sessionStorage.getItem('session_data'))
+        console.log('sessionData',this.sessionData)
         if (this.sessionData.uType === 'BD') {
           this.BDData.realName = sessionStorage.getItem('username')
           this.planForm.ownerSales = this.BDData.realName
@@ -1089,20 +1089,22 @@
           api.postApi('/GetUserName', {uid: uid, sname: queryString}).then(res => {
             console.log('GetUserName', res)
             console.log('媒介销售信息', this.BDData)
-            if (res.data.length) {
+            if (res.data.uID) {
               this.BDData.uid = res.data.uID
               console.log('GetUserName数据包', res.data)
               res.data.value = res.data.realName; //queryString
               this.BDData.realName = res.data.realName
               this.planForm.ownerSales = res.data.realName
+              this.BDuWho = res.data.uWho
               this.Get_cName()
               let results = [res.data];
-              clearTimeout(this.timeout);
+              // console.log('this.BDData.uid',this.BDData.uid)
+              clearTimeout(this.timeout)
               this.timeout = setTimeout(() => {
                 callback(results);
               }, 3000 * Math.random());
             } else {
-              this.BDData.uid = 0
+              this.BDData.uid = '0'
             }
           });
         }
@@ -1140,12 +1142,20 @@
           this.ownerBU = ownerList // 联系人列表
         })
         // 公司信息所在城市
-        let uWho = this.sessionData.uWho // '110100,310100,440100'
+        let uWho = ''//= this.sessionData.uWho // '110100,310100,440100'
+        console.log('this.BDuWho',this.BDuWho)
+        if(this.sessionData.uType === 'MD'){
+          console.log('媒介媒介')
+          uWho = this.BDuWho
+        }else{
+          uWho = this.sessionData.uWho // '110100,310100,440100'
+        }
         if (uWho == '0') {
           this.cityOther = true
           this.cityOptions = areaArr.province()
           // console.log('全国省市',this.cityOptions)
         } else {
+          this.cityOther = false
           let uWhoArr = uWho.split(',') // ['440100','110100','330100']
           let cityList = []
           for (let j = 0; j < uWhoArr.length; j++) {
@@ -1163,8 +1173,8 @@
                 this.throwCity = cityList
               }
             }, uWhoArr[j]);
-
           }
+          this.cityOptions = areaArr.province()
         }
       },
       // 获取公司品牌
@@ -1277,6 +1287,7 @@
         let shopingArr = this.shopingList
         console.log('shopingArr', shopingArr)
         console.log('csmArr', csmArr)
+        console.log('cityOptions',this.cityOptions)
         let uid = this.sessionData.uID
         api.getApi('/GetAPD', {uid: uid, apid: apID}).then(res => {
           console.log('获取pdid', res)
@@ -1690,8 +1701,9 @@
         setTimeout(function () {
           for (let i = 0; i < that.shopingList.length; i++) {
             for (let j = 0; j < that.planList.length; j++) {
-              if (that.planList[j].mID == that.shopingList[i].mID) {
-                console.log('相同mID', that.shopingList[i].mID)
+              if (that.planList[j].mID == that.shopingList[i].mID && that.planList[j].schedules === that.shopingList[i].schedules) {
+                console.log('相同的that.shopingList', that.shopingList[i])
+                console.log('相同的that.planList', that.planList[j])
                 if (that.shopingList[i].A_B === 'A面') {
                   that.planList[j].checkBox.A = true
                 } else if (that.shopingList[i].A_B === 'B面') {
@@ -1833,6 +1845,8 @@
       },
       // 获取广告点位列表
       getAdList() {
+        this.ADTotalList = []
+        this.beforADTotalList = []
         this.loading = true
         let uid = this.sessionData.uID
 //         let tempADList = [
@@ -2243,15 +2257,6 @@
         if (selection.length !== 0) {
           // console.log('number:', number)
           for (let i = 0; i < selection.length; i++) {
-            // 判断右边AB面是否被勾选
-            if (selection[i].checkBox.A) {
-              // console.log('a')
-              // number++
-            }
-            if (selection[i].checkBox.B) {
-              // console.log('b')
-              // number++
-            }
             // 根据是否被占用去打勾
             if (!selection[i].box.A) {
               // console.log('boxA')
@@ -2312,7 +2317,7 @@
         } else if (this.active === 2) {
           this.ADloading = this.$loading({
             lock: true,
-            text: 'committing',
+            text: '加急创建中...',
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           });
@@ -2345,8 +2350,6 @@
       },
       // 表单验证
       submitForm(formName) {
-        // this.active++;
-        // this.getAreaFun()
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log('submit!');
@@ -2361,10 +2364,15 @@
       },
       // 继续创建
       continueCreate() {
-        this.active = 0;
+       /* this.active = 0;
+        this.$refs['planForm'].resetFields();
         Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
+        // this.timeout = null
+        clearTimeout(this.timeout)
+        this.areaCity = areaArr.cityArea()
         this.getsessionData()
-        //  this.$refs['planForm'].resetFields() //表单重置
+        this.getADLimit()*/
+        location.reload(false)
       },
       changePrice(letter, info) {
         if (letter === 'AD') {
@@ -2392,17 +2400,6 @@
         if (letter === 'AD') {
           for (let i = 0; i < QArr.length; i++) {
             if (QArr[i].rid === this.ADchanger.rid) {
-              //  this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice/7)).toFixed(2)
-              //   this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice/7)).toFixed(2)
-              //   this.quotation[i].reaPrice = this.quotation[i].advertyPrice
-              //   if(this.ADchanger.reaPrice === this.quotation[i].reaPrice){         // 判断是否输入修改了广告费
-              //     this.ADchanger.reaPrice = this.quotation[i].advertyPrice
-              //     this.quotation[i].reaPrice = this.ADchanger.reaPrice
-              //     this.quotation[i].discount = Math.round(this.ADchanger.reaPrice/QArr[i].advertyPrice * 10000) / 100.00 + "%" // 折扣百分比
-              //   }else{
-              //   //  this.quotation[i].advertyPrice = this.ADchanger.reaPrice
-              //     this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice/QArr[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
-              //   }
               this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)) //((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)).toFixed(2)
               this.quotation[i].GMDate = this.ADchanger.GMDate
               if (this.ADchanger.GMDate != 0) {
@@ -2633,14 +2630,6 @@
       },
       // step3 报价单
       quotationFun() {
-        // let ADPriceList = [
-        //   {amID: 92, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 480000},
-        //   {amID: 91, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
-        //   {amID: 90, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
-        //   {amID: 89, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-        //   {amID: 88, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800},
-        //   {amID: 87, rID: 320100, rName: "南京市", mVehicle: "广告门", adPrice: 544400},
-        //   {amID: 86, rID: 330100, rName: "杭州市", mVehicle: "广告门", adPrice: 644400},]
         let uid = this.sessionData.uID
         api.getApi('/GetAdPrice', {uid: uid}).then(res => {
           console.log('刊例价信息', res)
@@ -2791,6 +2780,7 @@
       },
       // 购物车删除行
       deleteRow(rows) {
+        let deleteIf = false
         //  console.log('购物车列表：',list)
         console.log('购物车删除行', rows)
         console.log('删除行id', rows.mID)
@@ -2808,8 +2798,9 @@
                 console.log('相等的mID的checkBox.A', this.planList[i].checkBox.A)
                 // 删除
                 for (let j = 0; j < this.shopingList.length;) {
-                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'A面') {
+                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'A面' && this.shopingList[j].schedules === rows.schedules) {
                     this.shopingList.splice(j, 1)
+                    deleteIf = true
                     this.badgeNumber--
                     // break
                   } else {
@@ -2824,7 +2815,8 @@
                 }
                 // 删除
                 for (let j = 0; j < this.shopingList.length;) {
-                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'B面') {
+                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'B面' && this.shopingList[j].schedules === rows.schedules) {
+                    deleteIf = true
                     this.shopingList.splice(j, 1)
                     this.badgeNumber--
                     // break
@@ -2834,20 +2826,36 @@
                 }
               }
               break
+            }else{
+
             }
           }
         } else {
-          // alert('不相同')
+          console.log('不相同')
           this.delereRowByTotal(rows)
+        }
+        if(!deleteIf){
+          console.log('deleteIf',deleteIf)
+          for (let j = 0; j < this.shopingList.length;) {
+            if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == rows.A_B && this.shopingList[j].schedules === rows.schedules) {
+              this.shopingList.splice(j, 1)
+              this.badgeNumber--
+              // break
+            } else {
+              j++
+            }
+          }
         }
         this.computeMedia_AD() // 统计购物车媒体数、面数
       },
       // 当在购物车删除项不在当前选点列表（城市不同）时，去totalPlanList查找
       delereRowByTotal(rows) {
+        let deleteIf = false
         let totalList = this.totalPlanList
         console.log('totalPlanList查找', totalList)
         for (let i = 0; i < totalList.length; i++) {
           if (totalList[i].list[0].city === rows.city) {
+            deleteIf = true
             console.log('找到城市:', rows.city)
             let childrenList = totalList[i].list
             for (let j = 0; j < childrenList.length; j++) {
@@ -2859,7 +2867,7 @@
                   console.log('相等的mID的checkBox.A', childrenList[j].checkBox.A)
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面') {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面' && this.shopingList[j].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -2869,7 +2877,7 @@
                   childrenList[j].checkBox.B = false
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面') {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面' && this.shopingList[j].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -2882,14 +2890,22 @@
             break
           }
         }
+        if(!deleteIf){
+          console.log('deleteIf',deleteIf)
+          for (let j = 0; j < this.shopingList.length;) {
+            if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == rows.A_B && this.shopingList[j].schedules === rows.schedules) {
+              this.shopingList.splice(j, 1)
+              this.badgeNumber--
+              // break
+            } else {
+              j++
+            }
+          }
+        }
       },
       // 取消勾时,删除购物车里对应的数据行
       deleteShopRow(row, letter) {
         if (letter === 'all') {     // 判断是否全选
-          // if(this.shopingList.length !== 0){
-
-          // }else{
-          // this.shopingList = []
           for (let i = 0; i < this.planList.length; i++) {
             let info = this.planList[i]
             for (let j = 0; j < 2; j++) {
@@ -2948,25 +2964,27 @@
               console.log('相等的mID', row.mID)
               if (letter === 'B') {
                 for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'B面') {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'B面' && this.shopingList[j].schedules === row.schedules) {
                     this.shopingList.splice(j, 1)
                     break
                   }
                 }
               } else if (letter === 'A') {
                 for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'A面') {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'A面' && this.shopingList[j].schedules === row.schedules) {
                     this.shopingList.splice(j, 1)
                     break
                   }
                 }
               } else if (letter === 'AB') {
                 console.log('this.shopingList', this.shopingList)
-                for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID) {
+                for (let j = 0; j < this.shopingList.length;) {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].schedules === row.schedules) {
                     // alert('2')
                     this.shopingList.splice(j, 1)
                     //  break
+                  }else{
+                    j++
                   }
                 }
               }
@@ -3385,7 +3403,7 @@
       },
       // 清空购物车
       clearShop() {
-        let shopingArr = this.shopingList
+      /*  let shopingArr = this.shopingList
         // let planListCity = this.planList[0].city
         console.log('this.city', this.city)
         for (let j = 0; j < this.city.length; j++) {
@@ -3403,11 +3421,28 @@
               this.getBadeNumberByShopList()
             }
           }
-        }
-     /*   this.shopingList = []
+        }*/
+        this.shopingList = []
         this.getBadeNumberByShopList()
         this.computeMedia_AD()
-        this.judgeByselect()*/
+        let cityData = this.activeCityData
+        console.log('cityData.rid', cityData.rid, ',this.totalPlanList', this.totalPlanList)
+        let that = this
+        for (let i = 0; i < that.totalPlanList.length; i++) {
+          setTimeout(function () {
+            for (let j = 0; j < that.totalPlanList[i].list.length; j++) {
+              that.totalPlanList[i].list[j].checkBox.A = false
+              that.totalPlanList[i].list[j].checkBox.B = false
+            }
+            if (that.totalPlanList[i].rid === cityData.rid) {
+              that.planList = that.totalPlanList[i].list
+              for (let n = 0; n < that.planList.length; n++) {
+                that.$refs.multipleTable.toggleRowSelection(that.planList[n], false)
+              }
+              console.log('this.planList', that.planList)
+            }
+          }, 10)
+        }
       },
       // 统计购物车媒体数、面数
       computeMedia_AD() {

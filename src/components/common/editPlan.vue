@@ -1481,7 +1481,8 @@
           for (let i = 0; i < that.shopingList.length; i++) {
             for (let j = 0; j < that.planList.length; j++) {
               if (that.planList[j].mID == that.shopingList[i].mID && that.planList[j].schedules == that.shopingList[i].schedules) {
-                console.log('相同mID', that.shopingList[i].mID)
+                console.log('相同shopingList[i]', that.shopingList[i])
+                console.log('相同shopingList[i]', that.planList[j])
                 if (that.shopingList[i].A_B === 'A面') {
                   that.planList[j].checkBox.A = true
                 } else if (that.shopingList[i].A_B === 'B面') {
@@ -1990,7 +1991,6 @@
       // 继续创建
       continueCreate() {
         this.$router.push("./createPlan");
-      //  this.active = 0;
       //  Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
       },
       changePrice(letter, info) {
@@ -2548,25 +2548,27 @@
               // console.log('相等的mID', row.mID)
               if (letter === 'B') {
                 for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'B面') {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'B面' && this.shopingList[j].schedules === row.schedules) {
                     this.shopingList.splice(j, 1)
                     break
                   }
                 }
               } else if (letter === 'A') {
                 for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'A面') {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].A_B === 'A面' && this.shopingList[j].schedules === row.schedules) {
                     this.shopingList.splice(j, 1)
                     break
                   }
                 }
               } else if (letter === 'AB') {
                 // console.log('this.shopingList', this.shopingList)
-                for (let j = 0; j < this.shopingList.length; j++) {
-                  if (this.shopingList[j].mID === row.mID) {
+                for (let j = 0; j < this.shopingList.length;) {
+                  if (this.shopingList[j].mID === row.mID && this.shopingList[j].schedules === row.schedules) {
                     // alert('2')
                     this.shopingList.splice(j, 1)
                     //  break
+                  }else{
+                    j++
                   }
                 }
               }
@@ -2753,29 +2755,27 @@
       },
       // 清空购物车
       clearShop() {
-        let shopingArr = this.shopingList
-        // let planListCity = this.planList[0].city
-        // console.log('this.city', this.city)
-        for (let j = 0; j < this.city.length; j++) {
-          for (let i = 0; i < shopingArr.length;) {
-            if (this.city[j].rName === shopingArr[i].city) {
-              // console.log('删除城市为：', this.city[j].rName)
-              // shopingArr.splice(i, 1)
-              this.deleteRow(shopingArr[i])
-            } else {
-              i++
-            }
-            if (j >= shopingArr.length - 1) {
-              this.shopMedia_ADNum.mediaNum = 0
-              this.shopMedia_ADNum.ADNum = 0
-              this.getBadeNumberByShopList()
-            }
-          }
-        }
-     /*   this.shopingList = []
+        this.shopingList = []
         this.getBadeNumberByShopList()
         this.computeMedia_AD()
-        this.judgeByselect()*/
+        let cityData = this.activeCityData
+        console.log('cityData.rid', cityData.rid, ',this.totalPlanList', this.totalPlanList)
+        let that = this
+        for (let i = 0; i < that.totalPlanList.length; i++) {
+          setTimeout(function () {
+            for (let j = 0; j < that.totalPlanList[i].list.length; j++) {
+              that.totalPlanList[i].list[j].checkBox.A = false
+              that.totalPlanList[i].list[j].checkBox.B = false
+            }
+            if (that.totalPlanList[i].rid === cityData.rid) {
+              that.planList = that.totalPlanList[i].list
+              for (let n = 0; n < that.planList.length; n++) {
+                that.$refs.multipleTable.toggleRowSelection(that.planList[n], false)
+              }
+              console.log('this.planList', that.planList)
+            }
+          }, 10)
+        }
       },
       // 统计购物车媒体数、面数
       computeMedia_AD() {
@@ -2970,7 +2970,7 @@
       // 购物车删除被占点位
       shopDeleteRow(shopSow){
         for (let j = 0; j < this.shopingList.length;) {
-          if (this.shopingList[j].mID === shopSow.mID && this.shopingList[j].A_B === shopSow.A_B) {
+          if (this.shopingList[j].mID === shopSow.mID && this.shopingList[j].A_B === shopSow.A_B  && this.shopingList[j].schedules === shopSow.schedules) {
             this.shopingList.splice(j, 1)
             this.badgeNumber--
             // break

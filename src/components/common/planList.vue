@@ -72,9 +72,10 @@
                         <el-table-column label="投放城市(点位面数,排期)" min-width="22.6%">
                             <template slot-scope="scope">
                                 <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item.text)}}
-                                    <i v-if="item.IsLock" class="fa fa-lock fa-lg" style="color:#999;"></i>
-                                    <i v-else class="fa fa-unlock fa-lg" style="color:#999;"></i>
+                                    <!-- <i v-if="item.IsLock" class="fa fa-lock fa-lg" style="color:#999;"></i>
+                                    <i v-else class="fa fa-unlock fa-lg" style="color:#999;"></i> -->
                                 </p>
+                                <!-- <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}</p> -->
                             </template>
                         </el-table-column>
                         <el-table-column label="创建日期" min-width="8.3%" sortable :sort-method="sortData">
@@ -95,7 +96,7 @@
                         </el-table-column>
                         <el-table-column label="操作" min-width="8.4%" v-if="!(role=='OP')">
                             <template slot-scope="scope">
-                                <el-dropdown size="small" split-button trigger="click">操作
+                                <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">预锁
                                         </el-dropdown-item>
@@ -340,14 +341,7 @@ export default {
         },
         // 获取方案列表初始数据
         getPlanListData() {
-            // 本地测试
-            // for(let item of this.planList){
-            // 	item.cityArea = item.rIDs.split(',');
-            // 	console.log(item.cityArea);
-            // }
-
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            // console.log(uid);
             api
                 .getApi("./GetFangan", { uid: uid })
                 .then(res => {
@@ -355,10 +349,14 @@ export default {
                     let info = res.data.reverse();
                     if (!info.SysCode) {
                         this.planList = info;
-                        this.loading = false;
+                        // for(let item of this.planList){
+                        //     if(item.rIDs){
+                        //         item.cityArea = item.rIDs.split(',');
+                        //     }
+                        // }
+
                         for (let item of this.planList) {
                             if (item.rIDs) {
-                                // item.cityArea = item.rIDs.split(",");
                                 let arr = item.rIDs.split(",");
                                 let dataArr = [];
                                 for (let i = 0; i < arr.length; i++) {
@@ -369,35 +367,17 @@ export default {
                                     let pdid = arr[i].substr(
                                         arr[i].indexOf(")") + 1
                                     );
-                                    api
-                                        .postApi("/CheckLock", {
-                                            uid: this.Info.uid,
-                                            pdid: pdid
-                                        })
-                                        .then(res => {
-                                            // console.log(res.data);
-                                            // lock.IsLock = res.data.IsLock;
-                                            let IsLock = res.data.IsLock;
-                                            dataArr.push({
-                                                text: text,
-                                                pdid: pdid,
-                                                IsLock: IsLock
-                                            });
-                                            if (i >= arr.length - 1) {
-                                                // item.cityArea = dataArr;
-                                                this.$set(
-                                                    item,
-                                                    "cityArea",
-                                                    dataArr
-                                                );
-                                            }
-                                        })
-                                        .catch(res => {
-                                            console.log(res);
-                                        });
+                                    dataArr.push({
+                                        text: text,
+                                        pdID: pdid
+                                    });
                                 }
+
+                                item.cityArea = dataArr;
                             }
                         }
+
+                        this.loading = false;
                         this.currentPlan = this.planList;
                     } else {
                         Message.warning(info.MSG);
@@ -540,7 +520,6 @@ export default {
                     sum++;
                 }
             }
-            console.log(sum);
             //sum和所有数据的长度相同时说明都不匹配
             if (sum == this.planList.length) {
                 Message.warning({
@@ -679,10 +658,46 @@ export default {
                             inputValue: QCinfo
                         })
                             .then(() => {
-                                // 保存合同编号
-                                this.saveContractNo(QCinfo);
-                                // 组合数据并发布
-                                this.getDataOfSetPrice(info, "R");
+                                console.log("rowData-----------", row);
+                                console.log("row.cityarea", row.cityArea);
+                                let sumLock = 0;
+                                let cityContent = row.cityArea;
+                                for (let i = 0; i < cityContent.length; i++) {
+                                    api
+                                        .postApi("/CheckLock", {
+                                            uid: this.Info.uid,
+                                            pdid: cityContent[i].pdID
+                                        })
+                                        .then(res => {
+                                            if (res.data.IsLock) {
+                                                sumLock++;
+                                            }
+                                            if (i >= cityContent.length - 1) {
+                                                if (sumLock) {
+                                                    Message.warning(
+                                                        "该方案被预锁,请先解除预锁"
+                                                    );
+                                                } else {
+                                                    Message.warning(
+                                                        "------------------发布成功啦"
+                                                    );
+                                                    console.log(
+                                                        "------------------发布成功啦"
+                                                    );
+                                                    // 保存合同编号
+                                                    this.saveContractNo(QCinfo);
+                                                    // 组合数据并发布
+                                                    this.getDataOfSetPrice(
+                                                        info,
+                                                        "R"
+                                                    );
+                                                }
+                                            }
+                                        })
+                                        .catch(res => {
+                                            console.log(res);
+                                        });
+                                }
                             })
                             .catch(() => {
                                 Message({
@@ -768,8 +783,7 @@ export default {
         initContruct(asidArr, pdidArr, uid, act) {
             // 组装数据
             let result = [];
-            if(!result.length){
-                // result.push(asidArr[0]);
+            if (!result.length) {
                 let obj = {
                     uid: uid,
                     act: act,
@@ -782,9 +796,9 @@ export default {
                 result.push(obj);
             }
             // 组合asid
-            for(let res of result){
+            for (let res of result) {
                 let asIDs = "";
-                for(let init of asidArr){
+                for (let init of asidArr) {
                     let resRID = res.rID.toString().substring(0, 4);
                     let dataRID = init.rID.toString().substring(0, 4);
                     let start = dateFormat.toDate(init.pbStar);
@@ -798,34 +812,30 @@ export default {
                         de: end,
                         asidlist: ""
                     };
-                    if(
-                        resRID == dataRID &&
-                        res.ds == start &&
-                        res.de == end
-                    ){
-                        if(asIDs ===''){
+                    if (resRID == dataRID && res.ds == start && res.de == end) {
+                        if (asIDs === "") {
                             asIDs = init.asID.toString();
-                        }else{
-                            asIDs = asIDs+ ','+ init.asID;
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
                         }
-                    }else{
+                    } else {
                         let door = 1;
-                        for(let data of result){
-                            if(
+                        for (let data of result) {
+                            if (
                                 data.rID == init.rID &&
                                 data.ds == start &&
                                 data.de == end
-                            ){
+                            ) {
                                 door = 0;
                             }
                         }
-                        if(door){
+                        if (door) {
                             result.push(resObj);
                         }
                     }
                 }
                 res.asidlist = asIDs;
-                console.log("asidS", asIDs); 
+                console.log("asidS", asIDs);
             }
             console.log("result-------------", result);
 
@@ -846,77 +856,6 @@ export default {
             }
             console.log("resultArr", result);
             return result;
-
-
-
-
-            // // 组装数据
-            // let result = [];
-            // // 组合asid
-            // for (let data of asidArr) {
-            //     let start = dateFormat.toDate(data.pbStar);
-            //     let end = dateFormat.toDate(data.pbEnd);
-            //     let door = 1;
-            //     for (let res of result) {
-            //         let dataRID = data.rID.toString().substring(0, 4);
-            //         let resRID = res.rID.toString().substring(0, 4);
-            //         if (dataRID == resRID && start == res.ds && end == res.de) {
-            //             door = 0;
-            //         }
-            //     }
-            //     if (door) {
-            //         let obj = {
-            //             uid: uid,
-            //             act: act,
-            //             pdid: "",
-            //             rID: data.rID,
-            //             ds: start,
-            //             de: end,
-            //             asidlist: ""
-            //         };
-            //         result.push(obj);
-            //     }
-            // }
-            // console.log("reuslt-------", result);
-            // for (let res of result) {
-            //     let asIDs = "";
-            //     for (let init of asidArr) {
-            //         let start = dateFormat.toDate(init.pbStar);
-            //         let end = dateFormat.toDate(init.pbEnd);
-            //         if (
-            //             res.rID == init.rID &&
-            //             res.ds == start &&
-            //             res.de == end
-            //         ) {
-            //             if (asIDs === "") {
-            //                 asIDs = init.asID.toString();
-            //             } else {
-            //                 asIDs = asIDs + "," + init.asID;
-            //             }
-            //         }
-            //     }
-            //     res.asidlist = asIDs;
-            //     console.log("asidS", asIDs);
-            // }
-            // console.log("result-------------", result);
-
-            // // 组合pdid
-            // for (let resData of result) {
-            //     for (let pdData of pdidArr) {
-            //         let pdDataRID = pdData.rID.toString().substring(0, 4);
-            //         let arrRID = resData.rID.toString().substring(0, 4);
-            //         if (
-            //             pdDataRID == arrRID &&
-            //             resData.ds >= pdData.pdStar &&
-            //             resData.de <= pdData.pdEnd
-            //         ) {
-            //             resData.pdid = pdData.pdID;
-            //             break;
-            //         }
-            //     }
-            // }
-            // console.log("resultArr", result);
-            // return result;
         },
         // 循环发布、预锁
         ctrlFangan(arr) {
@@ -951,7 +890,7 @@ export default {
                                 });
                         } else {
                             Message.success(res.data.MSG);
-                            location.reload();
+                            // location.reload();
                         }
                     })
                     .catch(res => {
@@ -980,12 +919,6 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     let pdidArr = res.data;
-                    // let pdidArr = [
-                    // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-                    // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-                    // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-                    // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-                    // ];
                     let uWhoArr = JSON.parse(
                         sessionStorage.getItem("session_data")
                     ).uWho;
@@ -1015,25 +948,29 @@ export default {
                         item.rName = areaToText.toTextCity(item.value);
                     }
                     this.cityList = cityCode;
-                    // 判断是否锁住状态,默认置灰状态
-                    for (let city of this.cityList) {
-                        api
-                            .postApi("/CheckLock", {
-                                uid: this.Info.uid,
-                                pdid: city.pdID
-                            })
-                            .then(res => {
-                                console.log("i-lock", city, res.data);
-                                this.$set(city, "IsLock", res.data.IsLock);
-                            })
-                            .catch(res => {
-                                console.log(res);
-                            });
-                    }
+                    // 获取是否锁住
+                    this.getIsLock();
                 })
                 .catch(res => {
                     console.log(res);
                 });
+        },
+        // 获取是否锁住
+        getIsLock() {
+            // 判断是否锁住状态,默认置灰状态
+            for (let city of this.cityList) {
+                api
+                    .postApi("/CheckLock", {
+                        uid: this.Info.uid,
+                        pdid: city.pdID
+                    })
+                    .then(res => {
+                        this.$set(city, "IsLock", res.data.IsLock);
+                    })
+                    .catch(res => {
+                        console.log(res);
+                    });
+            }
         },
         //预锁
         preload(row) {
@@ -1073,32 +1010,38 @@ export default {
                     pdid: pdidArr[i]
                 };
                 api
-                    .getApi("/CheckLock", pdinfo)
+                    .postApi("/ClFangan", pdinfo)
                     .then(res => {
-                        if (res.data.IsLock) {
-                            api
-                                .postApi("/ClFangan", pdinfo)
-                                .then(res => {
-                                    console.log(res.data);
-                                    // if(res.data.SysCode==300200){
-
-                                    // }
-
-                                    Message.success(res.data.MSG);
-                                    if (i >= pdidArr.length - 1) {
-                                        location.reload();
-                                    }
-                                })
-                                .catch(res => {
-                                    console.log(res);
-                                });
-                        } else {
-                            Message.warning("该城市无锁住的点位,无需解锁");
-                        }
+                        console.log(res.data);
+                        Message.success(res.data.MSG);
                     })
                     .catch(res => {
                         console.log(res);
                     });
+                // api
+                //     .getApi("/CheckLock", pdinfo)
+                //     .then(res => {
+                //         if (res.data.IsLock) {
+                //             api
+                //                 .postApi("/ClFangan", pdinfo)
+                //                 .then(res => {
+                //                     console.log(res.data);
+
+                //                     Message.success(res.data.MSG);
+                //                     // if (i >= pdidArr.length - 1) {
+                //                     //     location.reload();
+                //                     // }
+                //                 })
+                //                 .catch(res => {
+                //                     console.log(res);
+                //                 });
+                //         } else {
+                //             Message.warning("该城市无锁住的点位,无需解锁");
+                //         }
+                //     })
+                //     .catch(res => {
+                //         console.log(res);
+                //     });
             }
         },
         cancelLock() {
@@ -1136,7 +1079,6 @@ export default {
     }
 };
 </script>
-
 <style scoped>
 a {
     color: #108ee9;
@@ -1427,8 +1369,9 @@ a {
 /deep/ .el-table__row td:nth-child(2) .cell span {
     width: 148px;
 }
+
 /deep/ .el-table__row td:nth-child(1) .cell a {
-    width: 185px;
+    width: 180px;
 }
 
 /*筛选*/

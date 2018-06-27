@@ -1055,7 +1055,7 @@
     white-space: nowrap;
   }
 
-  /deep/ .el-table .cell span {
+  /deep/ .el-table__row .cell span {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1065,8 +1065,8 @@
     text-align: right !important;
   }
 
-  /deep/ .el-table__row td:nth-child(1) .cell span {
-    width: 135px;
+  /deep/ .el-table__row td:nth-child(1) .cell {
+    width: 155px;
   }
 
   /deep/ .el-table__row td:nth-child(5) .cell span {
@@ -1097,7 +1097,9 @@
   }
 
   /*操作*/
-  /deep/ .el-button--mini, .el-button--small {
+
+  /deep/ .el-button--mini,
+  .el-button--small {
     font-size: 14px !important;
   }
 
@@ -1105,9 +1107,10 @@
     width: 51px;
   }
 
-  /deep/ .el-dropdown-menu--mini .el-dropdown-menu__item {
-    width: 65px;
+  /deep/  .el-dropdown-menu__item {
+    width: 45px !important;
   }
+
 
   /deep/ button.el-button.el-button--default.el-button--small:hover {
     color: #666;
@@ -1120,26 +1123,11 @@
     padding-right: 10px;
   }
 
-
-
-  /*提示框*/
-  /deep/ .el-message {
-    top: 65px;
-    padding: 7px 15px 7px 20px;
-  }
-
-  /*操作*/
   /deep/ .el-dropdown .el-button-group .el-button {
     height: 28px;
     width: 48px;
     font-size: 14px;
     padding: 0;
-  }
-
-  /deep/ .el-dropdown .el-button-group .el-button:last-child {
-    width: 30px;
-    /*position: relative;*/
-    /*top: -1px;*/
   }
 
   /*/deep/ .el-button-group .el-button:not(:last-child){*/
@@ -1150,9 +1138,23 @@
     float: left !important;
   }
 
+  /deep/ .el-dropdown .el-button-group .el-button:last-child {
+    width: 30px;
+    /*position: relative;*/
+    /*top: -1px;*/
+  }
+
   /deep/ .popper__arrow {
     display: none;
   }
+
+  /*提示框*/
+  /deep/ .el-message {
+    top: 65px;
+    padding: 7px 15px 7px 20px;
+  }
+
+
 
   /*按钮*/
   /deep/ .el-button--default:focus, .el-button--default:hover {
@@ -1195,21 +1197,6 @@
       width: 1284px;
     }
 
-    /deep/ .el-table__row td:nth-child(1) .cell span {
-      width: 135px;
-    }
-
-    /deep/ .el-table__row td:nth-child(5) .cell span {
-      width: 126px;
-    }
-
-    /deep/ .el-table__row td:nth-child(7) .cell span {
-      width: 96px;
-    }
-
-    /deep/ .el-table__row td:nth-child(8) .cell span {
-      width: 156px;
-    }
   }
 
   /*1920*/
@@ -1224,8 +1211,8 @@
       width: 1764px;
     }
 
-    /deep/ .el-table__row td:nth-child(1) .cell span {
-      width: 200px;
+    /deep/ .el-table__row td:nth-child(1) .cell {
+      width: 202px;
     }
 
     /deep/ .el-table__row td:nth-child(5) .cell span {

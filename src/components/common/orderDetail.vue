@@ -324,13 +324,13 @@
                                                 <div class="upload-img">
                                                     <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.one" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(updata)">点击上传照片</span>
+                                                        <span @click="saveId(updata, 'one')">点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.two" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(updata)">点击上传照片</span>
+                                                        <span @click="saveId(updata, 'two')">点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
@@ -341,13 +341,13 @@
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(updata)">点击上传照片</span>
+                                                            <span @click="saveId(updata, 'three')">点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.four" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(updata)">点击上传照片</span>
+                                                            <span @click="saveId(updata, 'four')">点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <!-- 是否显示更多的图片上传框关闭 -->
@@ -411,13 +411,13 @@
                                                 <div class="upload-img">
                                                     <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.one" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(downData)">点击上传照片</span>
+                                                        <span @click="saveId(downData, 'one')">点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <div class="upload-img">
                                                     <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.two" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(downData)">点击上传照片</span>
+                                                        <span @click="saveId(downData, 'two')">点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
@@ -428,13 +428,13 @@
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(downData)">点击上传照片</span>
+                                                            <span @click="saveId(downData, 'three')">点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.four" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(downData)">点击上传照片</span>
+                                                            <span @click="saveId(downData, 'four')">点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <!-- 是否显示更多的图片上传框关闭 -->
@@ -768,6 +768,7 @@ export default {
             //选点排期资源名称搜索
             keyword: "",
             selectRecName: "1",
+            imgOrder: '',
             //物料信息
             materialInfo: [],
             // 上刊报告Arr
@@ -781,7 +782,7 @@ export default {
             pageDownReportArr: [],
             downImgPercent: 0,
             // 上传图片地址
-            doUpload: "https://www.qinlinad.com/QADN/UpLoad",
+            doUpload: "/QADN/UpLoad",
             // 上传图片附带参数
             upLoadData: {
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
@@ -2123,7 +2124,8 @@ export default {
             return row.timeRange === value;
         },
         // 点击上传图片按钮之时进行储存所需数据(asid, ptp等)
-        saveId(row) {
+        saveId(row, order) {
+            this.imgOrder = order;
             console.log("row", row);
             this.upLoadData.ptid = row.asID;
             let username = JSON.parse(sessionStorage.getItem("session_data"))
@@ -2196,9 +2198,11 @@ export default {
                                     ptp: info.ptp
                                 };
                                 data.upImgArr.push(obj);
+                                data.upImg[this.imgOrder] = [obj];
                             }
                         }
                         this.upReportArr.push();
+                        // this.changeUpPage(this.currUpPage);
                     }
                     Message.success(res.data.MSG);
                 })
@@ -2241,9 +2245,11 @@ export default {
                                     ptp: info.ptp
                                 };
                                 data.downImgArr.push(obj);
+                                data.downImg[this.imgOrder] = [obj];
                             }
                         }
                         this.downReportArr.push();
+                        // this.changeUpPage(this.currDownPage);
                     }
                 })
                 .catch(res => {
@@ -2611,6 +2617,7 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 .el-table tr {
     height: 44px;
 }
+
 
 /deep/ .el-form-item__content {
     line-height: 46px;
@@ -3690,6 +3697,11 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
     white-space: nowrap;
 }
 
+/deep/ .el-table__row td:nth-child(2) .cell span {
+  width: 225px;
+}
+
+
 /deep/ .plan-select .el-input__inner {
     width: 180px;
     margin-left: -13px;
@@ -3811,5 +3823,9 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
     .plan-detail-right {
         width: 15%;
     }
+
+  .imgs-box{
+    padding: 0 90px;
+  }
 }
 </style>

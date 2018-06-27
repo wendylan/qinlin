@@ -1,279 +1,279 @@
 <template>
-	<div>
-		<div class="ad_mediaMana_wrap">
-			<div class="ad_mediaMana_nav clearfix">
-				<p>
-					<a href="#">图片库</a>
-				</p>
-			</div>
-			<div class="mediaList_wrap">
-				<div class="mediaList_container">
-					<el-tabs v-model="activeName" @tab-click="handleClick()">
-						<!--搜索框-->
-						<div class="search-wrap" v-if="!ludan">
-							<span>
-								<div style="display:inline-block">
-									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
-										<el-select v-model="select" slot="prepend" placeholder="请选择">
-											<el-option label="方案名称" value="1"></el-option>
-											<el-option label="媒体名称" value="2"></el-option>
-											<el-option label="资源名称" value="3"></el-option>
-										</el-select>
-									</el-input>
-								</div>
-							</span>
-							<el-cascader :options="citys" v-model="citySelect" class="plan-select" placeholder="选择地区" change-on-select>
-							</el-cascader>
-							<span>
-								<el-select v-model="LabSelect" placeholder="选择投放面" class="plan-select">
-									<el-option label="A面" value="A"></el-option>
-									<el-option label="B面" value="B"></el-option>
-								</el-select>
-							</span>
-							<span>
-								<div class="block">
-									<el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期">
-									</el-date-picker>
-								</div>
-							</span>
-							<span>
-								<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
-							</span>
-							<span>
-								<el-button plain class="map">一键导出</el-button>
-							</span>
-						</div>
-						<el-tab-pane label="上刊" name="first">
-							<div class="search-nav">
-								<!--提示或图片显示区域-->
-								<div class="tempPic">
-									<div class="noFind" v-if="showPic === 1">
-										<img src="../../assets/images/tempPic.png" alt="">
-										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-									</div>
-									<div class="cantFind" v-if="showPic === 2">
-										<img src="../../assets/images/noPic.png" alt="">
-										<h4>无匹配结果</h4>
-										<p>可以尝试扩大搜索范围重新搜索哦</p>
-									</div>
-									<!--图片列表-->
-									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(upimg,index) of upImgArr" :key="upimg.pID">
-											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-												<img :src="upimg.pURL" alt="" class="smallImg">
-												<!--查看缩略图和下载-->
-												<div class="mask-btn" v-if="showPreImg == index ">
-													<i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
-													<a :href="upimg.pURL" :download="upimg.pID+'.png'">下载图片</a>
-												</div>
-											</div>
-											<div class="detailBox">
-												<p>{{upimg.pAlt.plan}}</p>
-												<!-- <span>华南碧桂园二期-东门</span> -->
-												<span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
-												<div class="icons">
-													<span class="el-icon-location">{{upimg.pAlt.city}}</span>
-													<!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
-													<span>
-														<i class="fa fa-file-text"></i>
-														{{upimg.pAlt.asLab}}面
-													</span>
-													<el-tooltip placement="bottom" effect="light">
-														<span class="el-icon-info"></span>
-														<div slot="content" class="content">
-															<p>{{upimg.pAlt.username}}上传</p>
-															<p>{{upimg.pAlt.assettag}}</p>
-															<p>{{upimg.pAlt.address}}</p>
-														</div>
-													</el-tooltip>
-												</div>
-											</div>
-											<div class="infoBox">
-												<i>超</i>
-												<span>{{upimg.pAlt.brand}}</span>
-												<em>{{formatTime(upimg.pUTime)}}</em>
-											</div>
-										</div>
-										<!--页码-->
-										<div class="pager">
-											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-											</el-pagination>
-										</div>
-									</div>
-								</div>
-							</div>
-						</el-tab-pane>
-						<el-tab-pane label="下刊" name="second">
-							<div class="search-nav">
-								<!--未搜索占位图-->
-								<div class="tempPic">
-									<div class="noFind" v-if="showPic === 1">
-										<img src="../../assets/images/tempPic.png" alt="">
-										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-									</div>
-									<div class="cantFind" v-if="showPic === 2">
-										<img src="../../assets/images/noPic.png" alt="">
-										<h4>无匹配结果</h4>
-										<p>可以尝试扩大搜索范围重新搜索哦</p>
-									</div>
-									<!--图片列表-->
-									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(downimg,index) of downImgArr" :key="downimg.pID">
-											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-												<img :src="downimg.pURL" alt="" class="smallImg">
-												<!--查看缩略图和下载-->
-												<div class="mask-btn" v-if="showPreImg == index">
-													<i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
-													<a :href="downimg.pURL" :download="downimg.pID+'.png'">下载图片</a>
-												</div>
-											</div>
-											<div class="detailBox">
-												<p>{{downimg.pAlt.plan}}</p>
-												<!-- <span>华南碧桂园二期-东门</span> -->
-												<span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
-												<div class="icons">
-													<span class="el-icon-location">{{downimg.pAlt.city}}</span>
-													<!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
-													<span>
-														<i class="fa fa-file-text"></i>
-														{{downimg.pAlt.asLab}}面
-													</span>
-													<el-tooltip placement="bottom" effect="light">
-														<span class="el-icon-info"></span>
-														<div slot="content" class="content">
-															<p>{{downimg.pAlt.username}}上传</p>
-															<p>{{downimg.pAlt.assettag}}</p>
-															<p>{{downimg.pAlt.address}}</p>
-														</div>
-													</el-tooltip>
-												</div>
-											</div>
-											<div class="infoBox">
-												<i>超</i>
-												<span>{{downimg.pAlt.brand}}</span>
-												<em>{{formatTime(downimg.pUTime)}}</em>
-											</div>
-										</div>
-										<!--页码-->
-										<div class="pager">
-											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-											</el-pagination>
-										</div>
-									</div>
-								</div>
+    <div>
+        <div class="ad_mediaMana_wrap">
+            <div class="ad_mediaMana_nav clearfix">
+                <p>
+                    <a href="#">图片库</a>
+                </p>
+            </div>
+            <div class="mediaList_wrap">
+                <div class="mediaList_container">
+                    <el-tabs v-model="activeName" @tab-click="handleClick()">
+                        <!--搜索框-->
+                        <div class="search-wrap" v-if="!ludan">
+                            <span>
+                                <div style="display:inline-block">
+                                    <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
+                                        <el-select v-model="select" slot="prepend" placeholder="请选择">
+                                            <el-option label="方案名称" value="1"></el-option>
+                                            <el-option label="媒体名称" value="2"></el-option>
+                                            <el-option label="资源名称" value="3"></el-option>
+                                        </el-select>
+                                    </el-input>
+                                </div>
+                            </span>
+                            <el-cascader :options="citys" v-model="citySelect" class="plan-select" placeholder="选择地区" change-on-select>
+                            </el-cascader>
+                            <span>
+                                <el-select v-model="LabSelect" placeholder="选择投放面" class="plan-select">
+                                    <el-option label="A面" value="A"></el-option>
+                                    <el-option label="B面" value="B"></el-option>
+                                </el-select>
+                            </span>
+                            <span>
+                                <div class="block">
+                                    <el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期">
+                                    </el-date-picker>
+                                </div>
+                            </span>
+                            <span>
+                                <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
+                            </span>
+                            <span>
+                                <el-button plain class="map">一键导出</el-button>
+                            </span>
+                        </div>
+                        <el-tab-pane label="上刊" name="first">
+                            <div class="search-nav">
+                                <!--提示或图片显示区域-->
+                                <div class="tempPic">
+                                    <div class="noFind" v-if="showPic === 1">
+                                        <img src="../../assets/images/tempPic.png" alt="">
+                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+                                    </div>
+                                    <div class="cantFind" v-if="showPic === 2">
+                                        <img src="../../assets/images/noPic.png" alt="">
+                                        <h4>无匹配结果</h4>
+                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
+                                    </div>
+                                    <!--图片列表-->
+                                    <div class="find clearfix" v-if="showPic === 3">
+                                        <div class="photoCard" v-for="(upimg,index) of upImgArr" :key="upimg.pID">
+                                            <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                                <img :src="upimg.pURL" alt="" class="smallImg">
+                                                <!--查看缩略图和下载-->
+                                                <div class="mask-btn" v-if="showPreImg == index ">
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
+                                                    <a :href="upimg.pURL" :download="upimg.pID+'.png'">下载图片</a>
+                                                </div>
+                                            </div>
+                                            <div class="detailBox">
+                                                <p>{{upimg.pAlt.plan}}</p>
+                                                <!-- <span>华南碧桂园二期-东门</span> -->
+                                                <span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
+                                                <div class="icons">
+                                                    <span class="el-icon-location">{{upimg.pAlt.city}}</span>
+                                                    <!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
+                                                    <span>
+                                                        <i class="fa fa-file-text"></i>
+                                                        {{upimg.pAlt.asLab}}面
+                                                    </span>
+                                                    <el-tooltip placement="bottom" effect="light">
+                                                        <span class="el-icon-info"></span>
+                                                        <div slot="content" class="content">
+                                                            <p>{{upimg.pAlt.username}}上传</p>
+                                                            <p>{{upimg.pAlt.assettag}}</p>
+                                                            <p>{{upimg.pAlt.address}}</p>
+                                                        </div>
+                                                    </el-tooltip>
+                                                </div>
+                                            </div>
+                                            <div class="infoBox">
+                                                <i>超</i>
+                                                <span>{{upimg.pAlt.brand}}</span>
+                                                <em>{{formatTime(upimg.pUTime)}}</em>
+                                            </div>
+                                        </div>
+                                        <!--页码-->
+                                        <div class="pager">
+                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="下刊" name="second">
+                            <div class="search-nav">
+                                <!--未搜索占位图-->
+                                <div class="tempPic">
+                                    <div class="noFind" v-if="showPic === 1">
+                                        <img src="../../assets/images/tempPic.png" alt="">
+                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+                                    </div>
+                                    <div class="cantFind" v-if="showPic === 2">
+                                        <img src="../../assets/images/noPic.png" alt="">
+                                        <h4>无匹配结果</h4>
+                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
+                                    </div>
+                                    <!--图片列表-->
+                                    <div class="find clearfix" v-if="showPic === 3">
+                                        <div class="photoCard" v-for="(downimg,index) of downImgArr" :key="downimg.pID">
+                                            <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                                <img :src="downimg.pURL" alt="" class="smallImg">
+                                                <!--查看缩略图和下载-->
+                                                <div class="mask-btn" v-if="showPreImg == index">
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
+                                                    <a :href="downimg.pURL" :download="downimg.pID+'.png'">下载图片</a>
+                                                </div>
+                                            </div>
+                                            <div class="detailBox">
+                                                <p>{{downimg.pAlt.plan}}</p>
+                                                <!-- <span>华南碧桂园二期-东门</span> -->
+                                                <span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
+                                                <div class="icons">
+                                                    <span class="el-icon-location">{{downimg.pAlt.city}}</span>
+                                                    <!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
+                                                    <span>
+                                                        <i class="fa fa-file-text"></i>
+                                                        {{downimg.pAlt.asLab}}面
+                                                    </span>
+                                                    <el-tooltip placement="bottom" effect="light">
+                                                        <span class="el-icon-info"></span>
+                                                        <div slot="content" class="content">
+                                                            <p>{{downimg.pAlt.username}}上传</p>
+                                                            <p>{{downimg.pAlt.assettag}}</p>
+                                                            <p>{{downimg.pAlt.address}}</p>
+                                                        </div>
+                                                    </el-tooltip>
+                                                </div>
+                                            </div>
+                                            <div class="infoBox">
+                                                <i>超</i>
+                                                <span>{{downimg.pAlt.brand}}</span>
+                                                <em>{{formatTime(downimg.pUTime)}}</em>
+                                            </div>
+                                        </div>
+                                        <!--页码-->
+                                        <div class="pager">
+                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination>
+                                        </div>
+                                    </div>
+                                </div>
 
-							</div>
-						</el-tab-pane>
-						<el-tab-pane label="安装" name="third">
-							<div class="search-nav">
-								<!--未搜索占位图-->
-								<div class="tempPic">
-									<div class="noFind" v-if="showPic === 1">
-										<img src="../../assets/images/tempPic.png" alt="">
-										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-									</div>
-									<div class="cantFind" v-if="showPic === 2">
-										<img src="../../assets/images/noPic.png" alt="">
-										<h4>无匹配结果</h4>
-										<p>可以尝试扩大搜索范围重新搜索哦</p>
-									</div>
-									<!--图片列表-->
-									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(item, index) of installArr" :key="index">
-											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-												<img :src="dialogImageUrl" alt="" class="smallImg">
-												<!--查看缩略图和下载-->
-												<div class="mask-btn" v-if="showPreImg == index">
-													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-													<a href="#" download="name.jpg">下载图片</a>
-												</div>
-											</div>
-											<div class="detailBox">
-												<p>珠江帝景地产三月投放</p>
-												<span>华南碧桂园二期-东门</span>
-												<div class="icons">
-													<span class="el-icon-location">广州市</span>
-													<span class="el-icon-menu">钣金门</span>
-													<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-													<el-tooltip placement="bottom" effect="light">
-														<span class="el-icon-info"></span>
-														<div slot="content" class="content">
-															<p>{{address}}</p>
-														</div>
-													</el-tooltip>
-												</div>
-											</div>
-											<div class="infoBox">
-												<i>超</i>
-												<span>guangzhoumeijie</span>
-												<em>2018.08.30</em>
-											</div>
-										</div>
-										<!--页码-->
-										<div class="pager">
-											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-											</el-pagination>
-										</div>
-									</div>
-								</div>
-							</div>
-						</el-tab-pane>
-						<el-tab-pane label="巡点" name="fourth">
-							<div class="search-nav">
-								<!--未搜索占位图-->
-								<div class="tempPic">
-									<div class="noFind" v-if="showPic === 1">
-										<img src="../../assets/images/tempPic.png" alt="">
-										<p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
-									</div>
-									<div class="cantFind" v-if="showPic === 2">
-										<img src="../../assets/images/noPic.png" alt="">
-										<h4>无匹配结果</h4>
-										<p>可以尝试扩大搜索范围重新搜索哦</p>
-									</div>
-									<!--图片列表-->
-									<div class="find clearfix" v-if="showPic === 3">
-										<div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
-											<div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-												<img :src="dialogImageUrl" alt="" class="smallImg">
-												<!--查看缩略图和下载-->
-												<div class="mask-btn" v-if="showPreImg == index">
-													<i class="el-icon-search" @click="handlePictureCardPreview"></i>
-													<a href="#" download="name.jpg">下载图片</a>
-												</div>
-											</div>
-											<div class="detailBox">
-												<p>珠江帝景地产三月投放</p>
-												<span>华南碧桂园二期-东门</span>
-												<div class="icons">
-													<span class="el-icon-location">广州市</span>
-													<span class="el-icon-menu">钣金门</span>
-													<span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
-													<el-tooltip placement="bottom" effect="light">
-														<span class="el-icon-info"></span>
-														<div slot="content" class="content">
-															<p>{{assetID}}</p>
-															<p>{{address}}</p>
-														</div>
-													</el-tooltip>
-												</div>
-											</div>
-											<div class="infoBox">
-												<i>超</i>
-												<span>guangzhoumeijie</span>
-												<em>2018.08.30</em>
-											</div>
-										</div>
-										<!--页码-->
-										<div class="pager">
-											<el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
-											</el-pagination>
-										</div>
-									</div>
-								</div>
-							</div>
-						</el-tab-pane>
-						<!-- <el-tab-pane label="录单" name="fifth">
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="安装" name="third">
+                            <div class="search-nav">
+                                <!--未搜索占位图-->
+                                <div class="tempPic">
+                                    <div class="noFind" v-if="showPic === 1">
+                                        <img src="../../assets/images/tempPic.png" alt="">
+                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+                                    </div>
+                                    <div class="cantFind" v-if="showPic === 2">
+                                        <img src="../../assets/images/noPic.png" alt="">
+                                        <h4>无匹配结果</h4>
+                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
+                                    </div>
+                                    <!--图片列表-->
+                                    <div class="find clearfix" v-if="showPic === 3">
+                                        <div class="photoCard" v-for="(item, index) of installArr" :key="index">
+                                            <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                                <img :src="dialogImageUrl" alt="" class="smallImg">
+                                                <!--查看缩略图和下载-->
+                                                <div class="mask-btn" v-if="showPreImg == index">
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                                    <a href="#" download="name.jpg">下载图片</a>
+                                                </div>
+                                            </div>
+                                            <div class="detailBox">
+                                                <p>珠江帝景地产三月投放</p>
+                                                <span>华南碧桂园二期-东门</span>
+                                                <div class="icons">
+                                                    <span class="el-icon-location">广州市</span>
+                                                    <span class="el-icon-menu">钣金门</span>
+                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+                                                    <el-tooltip placement="bottom" effect="light">
+                                                        <span class="el-icon-info"></span>
+                                                        <div slot="content" class="content">
+                                                            <p>{{address}}</p>
+                                                        </div>
+                                                    </el-tooltip>
+                                                </div>
+                                            </div>
+                                            <div class="infoBox">
+                                                <i>超</i>
+                                                <span>guangzhoumeijie</span>
+                                                <em>2018.08.30</em>
+                                            </div>
+                                        </div>
+                                        <!--页码-->
+                                        <div class="pager">
+                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="巡点" name="fourth">
+                            <div class="search-nav">
+                                <!--未搜索占位图-->
+                                <div class="tempPic">
+                                    <div class="noFind" v-if="showPic === 1">
+                                        <img src="../../assets/images/tempPic.png" alt="">
+                                        <p style="margin-top: -10px">请先输入筛选条件搜索你所需要的图片</p>
+                                    </div>
+                                    <div class="cantFind" v-if="showPic === 2">
+                                        <img src="../../assets/images/noPic.png" alt="">
+                                        <h4>无匹配结果</h4>
+                                        <p>可以尝试扩大搜索范围重新搜索哦</p>
+                                    </div>
+                                    <!--图片列表-->
+                                    <div class="find clearfix" v-if="showPic === 3">
+                                        <div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
+                                            <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                                <img :src="dialogImageUrl" alt="" class="smallImg">
+                                                <!--查看缩略图和下载-->
+                                                <div class="mask-btn" v-if="showPreImg == index">
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                                    <a href="#" download="name.jpg">下载图片</a>
+                                                </div>
+                                            </div>
+                                            <div class="detailBox">
+                                                <p>珠江帝景地产三月投放</p>
+                                                <span>华南碧桂园二期-东门</span>
+                                                <div class="icons">
+                                                    <span class="el-icon-location">广州市</span>
+                                                    <span class="el-icon-menu">钣金门</span>
+                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+                                                    <el-tooltip placement="bottom" effect="light">
+                                                        <span class="el-icon-info"></span>
+                                                        <div slot="content" class="content">
+                                                            <p>{{assetID}}</p>
+                                                            <p>{{address}}</p>
+                                                        </div>
+                                                    </el-tooltip>
+                                                </div>
+                                            </div>
+                                            <div class="infoBox">
+                                                <i>超</i>
+                                                <span>guangzhoumeijie</span>
+                                                <em>2018.08.30</em>
+                                            </div>
+                                        </div>
+                                        <!--页码-->
+                                        <div class="pager">
+                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <!-- <el-tab-pane label="录单" name="fifth">
                 <div class="mediaList_container">
                     <div style="display:inline-block" v-if="ludan">
                         <span>
@@ -311,18 +311,18 @@
                     </div>
                 </div>
             </el-tab-pane> -->
-					</el-tabs>
-					<!--缩略图对话框-->
-					<el-dialog :visible.sync="dialogVisible">
-						<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-					</el-dialog>
-				</div>
-			</div>
-			<div class="bottom-btn">
-				<el-button plain>返回</el-button>
-			</div>
-		</div>
-	</div>
+                    </el-tabs>
+                    <!--缩略图对话框-->
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+                    </el-dialog>
+                </div>
+            </div>
+            <div class="bottom-btn">
+                <el-button plain>返回</el-button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -1056,7 +1056,11 @@ export default {
     /* position: relative; */
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    /*justify-content: space-around;*/
+}
+
+.find .photoCard {
+    margin-right: 20px;
 }
 
 .photoCard {
@@ -1601,7 +1605,7 @@ export default {
     }
 
     .photoCard {
-        margin-left: 98px;
+        margin-left: 35px;
     }
 
     .photoCard + .photoCard {

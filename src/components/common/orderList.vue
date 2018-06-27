@@ -55,7 +55,7 @@
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column label="合同编号" class="tar" min-width="7.9%">
+                        <el-table-column label="合同编号" class="tar" min-width="8.5%">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom">
                                     <span title="">{{scope.row.apQC}}</span>
@@ -72,6 +72,7 @@
                         </el-table-column>
                         <el-table-column label="投放城市(点位面数，排期)" min-width="20.2%">
                             <template slot-scope="scope">
+                                <!-- <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}</p> -->
                                 <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}</p>
                             </template>
                         </el-table-column>
@@ -90,9 +91,9 @@
                                 <span>{{ stateToText(scope.row.apState) }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" min-width="7.4%" v-if="!(role=='OP')">
+                        <el-table-column label="操作" min-width="7.0%" v-if="!(role=='OP')">
                             <template slot-scope="scope">
-                                <el-dropdown size="small" split-button trigger="click">操作
+                                <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
@@ -160,8 +161,8 @@ export default {
             // 角色
             role: "",
             //加载中
-            // loading: true,
-            loading: false,
+            loading: true,
+            // loading: false,
             rangeDate: "",
             keyword: "",
             select: "1",
@@ -894,8 +895,9 @@ a {
     }
 
     /deep/ .el-table__row td:nth-child(4) .cell span {
-        width: 138px;
+        width: 145px;
     }
+
     /deep/ .el-table__row td:nth-child(5) .cell span {
         width: 123px;
     }
