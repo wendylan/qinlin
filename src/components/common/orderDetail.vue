@@ -89,7 +89,7 @@
                                 </dl>
                                 <dl>
                                     <dt>方案金额</dt>
-                                    <dd>¥ {{orderDetail.apTotal}}</dd>
+                                    <dd>¥ {{orderDetail.Total}}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -338,7 +338,7 @@
                                                 <div class="showimgbox" @click="isShow=index" v-if="!(isShow == index)">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-show="isShow == index">
+                                                <div v-show="isShow == index" class="moreimgs">
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
@@ -425,7 +425,7 @@
                                                 <div class="showimgbox" @click="isShow2 = index" v-if="!(isShow2 == index)">
                                                     <i class="fa fa-angle-double-down"></i>
                                                 </div>
-                                                <div v-show="isShow2 == index">
+                                                <div v-show="isShow2 == index" class="moreimgs">
                                                     <div class="upload-img">
                                                         <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
@@ -1107,7 +1107,7 @@ export default {
         // 选点排期
         this.getSetPoint();
         // 报价单
-        // this.getPriceData();
+        this.getPriceData();
     },
     computed: {
         // 上刊报告进度条
@@ -1224,6 +1224,7 @@ export default {
                         res = data + "," + res;
                     }
                 }
+                res = res.toString().substring(0, res.toString().length - 1);
                 console.log(res);
             }
             return res;
@@ -1660,68 +1661,6 @@ export default {
             console.log("reuslt222-------", result);
             return result;
         },
-        // 获取过滤选点排期以便在报价单一栏显示排期信息
-        getSchedules(asidArr) {
-            // 组装数据
-            let result = [];
-            if (!result.length) {
-                let obj = {
-                    rID: asidArr[0].rID,
-                    ds: dateFormat.toDate(asidArr[0].lStar),
-                    de: dateFormat.toDate(asidArr[0].lEnd),
-                    asidlist: "",
-                    mNum: ""
-                };
-                result.push(obj);
-            }
-            // 组合asid
-            for (let res of result) {
-                let asIDs = "";
-                let mNum = 0;
-                for (let init of asidArr) {
-                    let resRID = res.rID.toString().substring(0, 4);
-                    let dataRID = init.rID.toString().substring(0, 4);
-                    let start = dateFormat.toDate(init.lStar);
-                    let end = dateFormat.toDate(init.lEnd);
-                    let resObj = {
-                        rID: init.rID,
-                        ds: start,
-                        de: end,
-                        asidlist: "",
-                        mNum: ""
-                    };
-                    if (resRID == dataRID && res.ds == start && res.de == end) {
-                        if (asIDs === "") {
-                            asIDs = init.asID.toString();
-                            mNum = 1;
-                        } else {
-                            asIDs = asIDs + "," + init.asID;
-                            mNum++;
-                        }
-                    } else {
-                        let door = 1;
-                        for (let data of result) {
-                            if (
-                                data.rID == init.rID &&
-                                data.ds == start &&
-                                data.de == end
-                            ) {
-                                door = 0;
-                            }
-                        }
-                        if (door) {
-                            result.push(resObj);
-                        }
-                    }
-                }
-                res.asidlist = asIDs;
-                res.mNum = mNum;
-
-                console.log("asidS", asIDs);
-            }
-            console.log("result-------------", result);
-            return result;
-        },
         // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
@@ -1909,7 +1848,7 @@ export default {
                                 let total = pdTotal + pdSendFee + pdOtherFee;
                                 this.$set(
                                     this.orderDetail,
-                                    "apTotal",
+                                    "Total",
                                     this.priceFormat(total / 100)
                                 );
                                 this.$set(
@@ -1979,20 +1918,18 @@ export default {
                 for (let asid of asidRes) {
                     let arrDataRID = arrData.rID.toString().substring(0, 4);
                     let dataRID = asid.rID.toString().substring(0, 4);
+                    let ds = dateFormat.toDate(asid.ds, ".");
+                    let de = dateFormat.toDate(asid.de, ".");
                     if (arrDataRID == dataRID) {
                         if (schedules == "") {
-                            schedules =
-                                asid.ds +
-                                "-" +
-                                asid.de +
-                                "(" +
-                                asid.mNum +
-                                "面)";
+                            schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules +=
-                                asid.ds +
+                            schedules =
+                                schedules +
+                                " " +
+                                ds +
                                 "-" +
-                                asid.de +
+                                de +
                                 "(" +
                                 asid.mNum +
                                 "面)";
@@ -2004,6 +1941,68 @@ export default {
             }
             console.log("arrschedules--------------", arr);
             return arr;
+        },
+        // 获取过滤选点排期以便在报价单一栏显示排期信息
+        getSchedules(asidArr) {
+            // 组装数据
+            let result = [];
+            if (!result.length) {
+                let obj = {
+                    rID: asidArr[0].rID,
+                    ds: dateFormat.toDate(asidArr[0].lStar),
+                    de: dateFormat.toDate(asidArr[0].lEnd),
+                    asidlist: "",
+                    mNum: ""
+                };
+                result.push(obj);
+            }
+            // 组合asid
+            for (let res of result) {
+                let asIDs = "";
+                let mNum = 0;
+                for (let init of asidArr) {
+                    let resRID = res.rID.toString().substring(0, 4);
+                    let dataRID = init.rID.toString().substring(0, 4);
+                    let start = dateFormat.toDate(init.lStar);
+                    let end = dateFormat.toDate(init.lEnd);
+                    let resObj = {
+                        rID: init.rID,
+                        ds: start,
+                        de: end,
+                        asidlist: "",
+                        mNum: ""
+                    };
+                    if (resRID == dataRID && res.ds == start && res.de == end) {
+                        if (asIDs === "") {
+                            asIDs = init.asID.toString();
+                            mNum = 1;
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
+                            mNum++;
+                        }
+                    } else {
+                        let door = 1;
+                        for (let data of result) {
+                            if (
+                                data.rID == init.rID &&
+                                data.ds == start &&
+                                data.de == end
+                            ) {
+                                door = 0;
+                            }
+                        }
+                        if (door) {
+                            result.push(resObj);
+                        }
+                    }
+                }
+                res.asidlist = asIDs;
+                res.mNum = mNum;
+
+                console.log("asidS", asIDs);
+            }
+            console.log("result-------------", result);
+            return result;
         },
         // 城市转换为中文
         cityToText(rid) {
@@ -3208,6 +3207,12 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 /deep/ .up-loader-header .el-input__inner {
     height: 34px;
     width: 180px;
+}
+.moreimgs {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .progress span {

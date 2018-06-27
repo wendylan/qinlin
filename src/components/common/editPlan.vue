@@ -32,7 +32,7 @@
                 </el-autocomplete>
               </el-form-item>
               <el-form-item label="公司名称：" prop="companyName">
-                <el-select v-model="planForm.companyName" @change="GetBrandByCid" placeholder="请选择公司名称">
+                <el-select v-model="planForm.companyName" placeholder="请选择公司名称">
                   <el-option
                     v-for="item in companyName"
                     :key="item.value"
@@ -424,7 +424,7 @@
                     <el-table-column width="52px">
                       <template slot-scope="scope">
                         <span style="cursor: pointer;color: #1890ff"
-                              @click="shopDeleteRow(scope.row)">删除</span>
+                              @click="deleteRow(scope.row)">删除</span>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -684,14 +684,7 @@
         inputVisible: false,
         inputValue: '',
         selectedOptions: [],
-        cityOptions: [/*{
-          value: '120000',
-          label: '天津市',
-          children: [{
-            value: '120100',
-            label: '天津市',
-          }]
-        }*/],
+        cityOptions: [],
         cityOther: false,             // 判断是否要选择全国其他城市
         isBD: true,                  // 判断登录用户是否为销售
         username: '',                   // 获取登录用户的userName
@@ -914,7 +907,7 @@
       },
       // step1投放城市权限是全国时handleClose1、showInput、handleInputConfirm
       spliceCity(tag) { // step1方案创建,删除选择城市
-        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      /*  this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
         let city_arr = this.cityOptions
         for (let i = 0; i < city_arr.length; i++) {       // 遍历城市查找城市名对应的rid，用于删除勾选的城市
           for (let j = 0; j < city_arr[i].children.length; j++) {
@@ -932,17 +925,17 @@
               }
             }
           }
-        }
+        }*/
       },
       showInput() {
-        this.inputVisible = true;
+       /* this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
-        });
+        });*/
       },
       // 选择投放城市
       handleInputConfirm() {
-        let inputValue = this.selectedOptions;
+     /*   let inputValue = this.selectedOptions;
         // console.log('********',inputValue)
         if (inputValue) {
           let cityArr = this.cityOptions
@@ -973,7 +966,7 @@
               break
             }
           }
-        }
+        }*/
       },
       // 获取浏览器session数据
       getsessionData() {
@@ -990,7 +983,7 @@
       },
       // 登录用户为媒介输入销售用户名去获取该销售的信息以便获取接下来的城市、公司、品牌、投放城市等信息
       querySearchAsync(queryString, callback) {
-        let uid = this.sessionData.uID
+       /* let uid = this.sessionData.uID
         if (queryString) {
           api.postApi('/CheckUserName', {uid: uid, sname: queryString}).then(res => {
             console.log('CheckUserName', res)
@@ -1011,11 +1004,11 @@
               this.BDData.uid = 0
             }
           });
-        }
+        }*/
       },
       //获取公司名称列表MyCustomer
       Get_cName() {
-        api.getApi('/MyCustomer', {uid: this.BDData.uid}).then(res => {
+      /*  api.getApi('/MyCustomer', {uid: this.BDData.uid}).then(res => {
           // api.getApi('/MyCustomer', {uid: 7}).then(res => {
           console.log('MyCustomer:', res.data)
           let customerList = res.data
@@ -1071,41 +1064,7 @@
             }, uWhoArr[j]);
 
           }
-        }
-      },
-      // 获取公司品牌
-      GetBrandByCid(val) {
-        this.planForm.companyBrand = ''
-        this.planForm.ownerBU = ''
-        console.log('所选公司的ID', val)
-        let cidParams = {cid: val}
-        api.getApi('/GetBrand', cidParams).then(res => {
-          console.log('公司品牌', res.data)
-          let CBrand = res.data
-          let BrandList = []
-          for (let i = 0; i < CBrand.length; i++) {
-            let brandObj = {
-              label: CBrand[i].bTitle,
-              value: CBrand[i].bID
-            }
-            BrandList.push(brandObj)
-          }
-          this.companyBrand = BrandList
-        })
-        // 选择公司后过滤联系人列表customer
-        let customerList = this.customer
-        let ownerList = []   // 联系人
-        let BrandList = []  // 公司品牌
-        for (let j = 0; j < customerList.length; j++) {
-          if (customerList[j].cID == val) {
-            let owner = {
-              label: customerList[j].realName,
-              value: customerList[j].uID,
-            }
-            ownerList.push(owner)
-          }
-        }
-        this.ownerBU = ownerList
+        }*/
       },
       // step2 获取广告限制列表
       getADLimit() {
@@ -1207,18 +1166,6 @@
           }
         })
       },
-   /*   setAdBase(params, n) {
-        let pointParams = params
-        // console.log('setAdBase提交选点的信息', pointParams)
-        api.postApi('/SendAdBase', pointParams).then(res => {
-          console.log('提交选点后返回的data', res)
-          let AdBase = res.data
-          // this.CreateAPDFun()
-          if (n >= this.CSMList.length - 1) {
-            this.CreateAPDFun()
-          }
-        })
-      },*/
       // 创建方案投放城市详情(报价单数据提交)CreateAPD
       CreateAPDFun() {
         /*  uid         int【必填】     当前账户UserID
@@ -1942,7 +1889,7 @@
         } else if (this.active === 2) {
           this.ADloading = this.$loading({
             lock: true,
-            text: 'committing',
+            text: '加急创建中...',
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           });
@@ -1998,7 +1945,7 @@
           this.changeAD = true
           this.ADchanger.rid = info.rid
           this.ADchanger.GMDate = info.GMDate
-          this.ADchanger.reaPrice = (info.advertyPrice).toFixed(2)
+          this.ADchanger.reaPrice = Math.floor(info.advertyPrice * 100) / 100
         } else if (letter === 'M') {
           this.changeMake = true
           this.makeChange.rid = info.rid
@@ -2031,7 +1978,7 @@
                   this.hideBox()
                 } else if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
                   // alert('3')
-                  this.ADchanger.reaPrice = (this.quotation[i].advertyPrice).toFixed(2)
+                  this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
                   this.$message({
                     message: '大于原价格',
                     type: 'warning'
@@ -2039,7 +1986,7 @@
                 } else {
                   // alert('4')
                   if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
-                    this.ADchanger.reaPrice = (this.quotation[i].advertyPrice).toFixed(2)
+                    this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
                     this.$message({
                       message: '大于原价格',
                       type: 'warning'
@@ -2054,7 +2001,7 @@
               } else {
                 // alert('0')
                 if (this.ADchanger.reaPrice > this.quotation[i].oldPrice) {
-                  this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+                  this.ADchanger.reaPrice =  Math.floor(this.quotation[i].advertyPrice * 100) / 100
                   this.$message({
                     message: '大于原价格',
                     type: 'warning'
@@ -2394,22 +2341,27 @@
       },
       // 购物车删除行
       deleteRow(rows) {
+        let deleteIf = false
+        //  console.log('购物车列表：',list)
+        console.log('购物车删除行', rows)
+        console.log('删除行id', rows.mID)
         if (rows.city === this.planList[0].city) {    //判断删除的城市选点是否是当前选点列表的城市
           for (let i = 0; i < this.planList.length; i++) {
             if (rows.mID === this.planList[i].mID) {
-              // console.log('相等的mID', rows.mID)
+              console.log('相等的mID', rows.mID)
               if (rows.A_B === 'A面') {
                 this.planList[i].checkBox.A = false
-                // console.log('取消行的 this.planList', this.planList[i])
+                console.log('取消行的 this.planList', this.planList[i])
                 if (!this.planList[i].checkBox.B) {
                   //  alert('1')
                   this.$refs.multipleTable.toggleRowSelection(this.planList[i], false)
                 }
-                // console.log('相等的mID的checkBox.A', this.planList[i].checkBox.A)
+                console.log('相等的mID的checkBox.A', this.planList[i].checkBox.A)
                 // 删除
                 for (let j = 0; j < this.shopingList.length;) {
-                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'A面') {
+                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'A面' && this.shopingList[j].schedules === rows.schedules) {
                     this.shopingList.splice(j, 1)
+                    deleteIf = true
                     this.badgeNumber--
                     // break
                   } else {
@@ -2424,7 +2376,8 @@
                 }
                 // 删除
                 for (let j = 0; j < this.shopingList.length;) {
-                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'B面') {
+                  if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == 'B面' && this.shopingList[j].schedules === rows.schedules) {
+                    deleteIf = true
                     this.shopingList.splice(j, 1)
                     this.badgeNumber--
                     // break
@@ -2434,32 +2387,48 @@
                 }
               }
               break
+            }else{
+
             }
           }
         } else {
-          // alert('不相同')
+          console.log('不相同')
           this.delereRowByTotal(rows)
+        }
+        if(!deleteIf){
+          console.log('deleteIf',deleteIf)
+          for (let j = 0; j < this.shopingList.length;) {
+            if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == rows.A_B && this.shopingList[j].schedules === rows.schedules) {
+              this.shopingList.splice(j, 1)
+              this.badgeNumber--
+              // break
+            } else {
+              j++
+            }
+          }
         }
         this.computeMedia_AD() // 统计购物车媒体数、面数
       },
       // 当在购物车删除项不在当前选点列表（城市不同）时，去totalPlanList查找
       delereRowByTotal(rows) {
+        let deleteIf = false
         let totalList = this.totalPlanList
-        // console.log('totalPlanList查找', totalList)
+        console.log('totalPlanList查找', totalList)
         for (let i = 0; i < totalList.length; i++) {
           if (totalList[i].list[0].city === rows.city) {
-            // console.log('找到城市:', rows.city)
+            deleteIf = true
+            console.log('找到城市:', rows.city)
             let childrenList = totalList[i].list
             for (let j = 0; j < childrenList.length; j++) {
               if (rows.mID === childrenList[j].mID) {
-                // console.log('找到mID', rows.mID)
+                console.log('找到mID', rows.mID)
                 if (rows.A_B == 'A面') {
                   childrenList[j].checkBox.A = false
-                  // console.log('删除行的 childrenList', childrenList[j])
-                  // console.log('相等的mID的checkBox.A', childrenList[j].checkBox.A)
+                  console.log('删除行的 childrenList', childrenList[j])
+                  console.log('相等的mID的checkBox.A', childrenList[j].checkBox.A)
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面') {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面' && this.shopingList[t].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -2469,7 +2438,7 @@
                   childrenList[j].checkBox.B = false
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面') {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面' && this.shopingList[t].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -2482,14 +2451,22 @@
             break
           }
         }
+        if(!deleteIf){
+          console.log('deleteIf',deleteIf)
+          for (let j = 0; j < this.shopingList.length;) {
+            if (this.shopingList[j].mID === rows.mID && this.shopingList[j].A_B == rows.A_B && this.shopingList[j].schedules === rows.schedules) {
+              this.shopingList.splice(j, 1)
+              this.badgeNumber--
+              // break
+            } else {
+              j++
+            }
+          }
+        }
       },
       // 取消勾时,删除购物车里对应的数据行
       deleteShopRow(row, letter) {
         if (letter === 'all') {     // 判断是否全选
-          // if(this.shopingList.length !== 0){
-
-          // }else{
-          // this.shopingList = []
           for (let i = 0; i < this.planList.length; i++) {
             let info = this.planList[i]
             for (let j = 0; j < 2; j++) {
@@ -2880,7 +2857,7 @@
               this.checkLock(shopList)
               console.log('购物车列表数据', this.shopingList)
             } else {
-              Message.warning(res.data.MSG);
+              Message.warning(res.data.MSG)
             }
           })
           .catch(res => {
@@ -2978,6 +2955,7 @@
             j++
           }
         }
+        this.computeMedia_AD()
       },
       shopingBeforeClose(){
         for (let j = 0; j < this.shopingList.length;j++) {

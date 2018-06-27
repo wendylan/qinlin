@@ -45,6 +45,7 @@
                                     </li>
                                     <li>
                                         <span>投放城市：</span>
+                                        <!-- <em>{{filter(planDetail.rIDs)}}</em> -->
                                         <em>{{filter(planDetail.rIDs)}}</em>
                                     </li>
                                     <li>
@@ -72,7 +73,7 @@
                                 </dl>
                                 <dl>
                                     <dt>方案金额</dt>
-                                    <dd>¥ {{planDetail.apTotal}}</dd>
+                                    <dd>¥ {{planDetail.Total}}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -143,7 +144,8 @@
                                                     <div class="tab-info">
                                                         <div class="pqxx">
                                                             <h4>排期信息</h4>
-                                                            <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p>
+                                                            <p>{{item.schedules}}</p>
+                                                            <!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
                                                             <!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
                                                         </div>
                                                         <div class="price">
@@ -250,7 +252,15 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
-import { Table, TableColumn, Tabs, TabPane, Button, Message, MessageBox } from "element-ui";
+import {
+    Table,
+    TableColumn,
+    Tabs,
+    TabPane,
+    Button,
+    Message,
+    MessageBox
+} from "element-ui";
 
 export default {
     name: "planDetail",
@@ -283,6 +293,7 @@ export default {
             },
             // 选点排期
             setpointArr: [],
+            copyAsidArr: [],
             // 报价单详情
             priceSheet: [],
             // 城市过滤结果
@@ -301,8 +312,8 @@ export default {
         this.getInitData();
         // // 选点排期
         // this.getSetPoint();
-        // 报价单
-        this.getPriceData();
+        // // 报价单
+        // this.getPriceData();
     },
     methods: {
         // // 当前行是否高亮
@@ -351,6 +362,7 @@ export default {
                     }
                 }
                 console.log(res);
+                res = res.toString().substring(0, res.toString().length - 1);
             }
             return res;
         },
@@ -472,8 +484,14 @@ export default {
                             );
                             // 选点排期
                             // this.checkLock(resInfo);
+                            // 选点排期
+                            this.copyAsidArr = JSON.parse(
+                                JSON.stringify(resInfo)
+                            );
                             this.setpointArr = resInfo;
                             this.currentSetpoint = this.setpointArr;
+                            // 报价单
+                            this.getPriceData();
                         } else {
                             Message.warning(res.data.MSG);
                         }
@@ -507,8 +525,13 @@ export default {
                                 "timeRange"
                             );
                             // 选点排期
+                            this.copyAsidArr = JSON.parse(
+                                JSON.stringify(result)
+                            );
                             this.setpointArr = result;
                             this.currentSetpoint = this.setpointArr;
+                            // 报价单
+                            this.getPriceData();
                         } else {
                             Message.warning(res.data.MSG);
                         }
@@ -603,7 +626,7 @@ export default {
                                 let total = pdTotal + pdSendFee + pdOtherFee;
                                 this.$set(
                                     this.planDetail,
-                                    "apTotal",
+                                    "Total",
                                     this.priceFormat(total / 100)
                                 );
                                 this.$set(
@@ -644,6 +667,16 @@ export default {
                                         }
                                     }
                                 }
+
+                                // 整合排期信息
+                                let asidRes = this.getSchedules(
+                                    this.copyAsidArr
+                                );
+                                // 整合排期信息并且渲染页面
+                                this.priceSheet = this.setSchedules(
+                                    arr,
+                                    asidRes
+                                );
                                 this.priceSheet = arr;
                             } else {
                                 Message.warning(res.data.MSG);
@@ -656,6 +689,107 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
+        },
+        // 整合排期信息
+        setSchedules(arr, asidRes) {
+            for (let arrData of arr) {
+                let schedules = "";
+                for (let asid of asidRes) {
+                    let arrDataRID = arrData.rID.toString().substring(0, 4);
+                    let dataRID = asid.rID.toString().substring(0, 4);
+                    let ds = dateFormat.toDate(asid.ds, ".");
+                    let de = dateFormat.toDate(asid.de, ".");
+                    if (arrDataRID == dataRID) {
+                        if (schedules == "") {
+                            schedules = ds + "-" + de + "(" + asid.mNum + "面)";
+                        } else {
+                            schedules =
+                                schedules +
+                                " " +
+                                ds +
+                                "-" +
+                                de +
+                                "(" +
+                                asid.mNum +
+                                "面)";
+                        }
+                    }
+                }
+                console.log("schedules----------", schedules);
+                arrData.schedules = schedules;
+            }
+            console.log("arrschedules--------------", arr);
+            return arr;
+        },
+        // 获取过滤选点排期以便在报价单一栏显示排期信息
+        getSchedules(asidArr) {
+            console.log("asidArr=========", asidArr);
+            // 组装数据
+            let result = [];
+            if (!result.length) {
+                let obj = {};
+                obj.rID = asidArr[0].rID;
+                obj.asidlist = "";
+                obj.mNum = "";
+                obj.ds = dateFormat.toDate(asidArr[0].lStar);
+                obj.de = dateFormat.toDate(asidArr[0].lEnd);
+                if (asidArr[0].pbStar) {
+                    obj.ds = dateFormat.toDate(asidArr[0].pbStar);
+                    obj.de = dateFormat.toDate(asidArr[0].pbEnd);
+                }
+                result.push(obj);
+            }
+            // 组合asid
+            for (let res of result) {
+                let asIDs = "";
+                let mNum = 0;
+                for (let init of asidArr) {
+                    let start = dateFormat.toDate(init.lStar);
+                    let end = dateFormat.toDate(init.lEnd);
+                    if (init.pbStar) {
+                        start = dateFormat.toDate(init.pbStar);
+                        end = dateFormat.toDate(init.pbEnd);
+                    }
+                    let resRID = res.rID.toString().substring(0, 4);
+                    let dataRID = init.rID.toString().substring(0, 4);
+                    let resObj = {
+                        rID: init.rID,
+                        ds: start,
+                        de: end,
+                        asidlist: "",
+                        mNum: ""
+                    };
+                    if (resRID == dataRID && res.ds == start && res.de == end) {
+                        if (asIDs === "") {
+                            asIDs = init.asID.toString();
+                            mNum = 1;
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
+                            mNum++;
+                        }
+                    } else {
+                        let door = 1;
+                        for (let data of result) {
+                            if (
+                                data.rID == init.rID &&
+                                data.ds == start &&
+                                data.de == end
+                            ) {
+                                door = 0;
+                            }
+                        }
+                        if (door) {
+                            result.push(resObj);
+                        }
+                    }
+                }
+                res.asidlist = asIDs;
+                res.mNum = mNum;
+
+                console.log("asidS", asIDs);
+            }
+            console.log("result-------------", result);
+            return result;
         },
         // 城市转换为中文
         cityToText(rid) {
@@ -716,7 +850,7 @@ export default {
                                     }
                                 )
                                     .then(() => {
-                                        this.$router.push('./planList');
+                                        this.$router.push("./planList");
                                     })
                                     .catch(() => {
                                         Message.info("已取消操作");

@@ -146,7 +146,7 @@
             <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px"
                      class="demo-ruleForm">
               <el-form-item label=" 媒介载体:" prop="mediaType">
-                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体" :disabled="PathHaveEdit">
+                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体" :disabled="(PathHaveEdit && key <= editMediaLength - 1)">
                   <el-option label="" value="广告门"></el-option>
                 </el-select>
               </el-form-item>
@@ -154,11 +154,11 @@
                 <el-input v-model="item.mediaForm.mediaName" placeholder="例：东门"></el-input>
               </el-form-item>
               <el-form-item label="可投面数:" prop="usableNum">
-                <el-input-number v-model.number="item.mediaForm.usableNum" controls-position="right" :disabled="PathHaveEdit"></el-input-number>
+                <el-input-number v-model.number="item.mediaForm.usableNum" controls-position="right" :disabled="(PathHaveEdit && key <= editMediaLength - 1)"></el-input-number>
               </el-form-item>
               <el-form-item label="媒体状态:" prop="mstate">
                 <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态" @change="selectMstate">
-                  <el-option label="禁止" :value="'0' + key"></el-option>
+                  <el-option label="禁用" :value="'0' + key"></el-option>
                   <el-option label="正常" :value="'1' + key"></el-option>
                   <el-option label="待安装" :value="'2' + key"></el-option>
                   <el-option label="待维修" :value="'3' + key"></el-option>
@@ -210,14 +210,6 @@
                     :label="limit.label"
                     :value="limit.value">
                   </el-option>
-                <!--  <el-option label="地产" value="地产"></el-option>
-                  <el-option label="医学" value="医学"></el-option>
-                  <el-option label="汽车" value="汽车"></el-option>
-                  <el-option label="美容" value="美容"></el-option>
-                  <el-option label="餐饮" value="餐饮"></el-option>
-                  <el-option label="食品" value="食品"></el-option>
-                  <el-option label="金融" value="金融"></el-option>
-                  <el-option label="汽车" value="汽车"></el-option>-->
                 </el-select>
               </el-form-item>
               <el-form-item label="备注:" prop="mediaRemark">
@@ -331,7 +323,7 @@
       return {
         assetIdBolean: false,
         mstateOption:[
-          {label:'禁止',value:'0'},
+          {label:'禁用',value:'0'},
           {label:'正常',value:'1'},
           {label:'待安装',value:'2'},
           {label:'待维修',value:'3'}
@@ -340,20 +332,7 @@
         dialogVisible: false,
         titleArr: ['媒体一', '媒体二', '媒体三', '媒体四', '媒体五', '媒体六', '媒体七', '媒体八', '媒体九', '媒体十'],
         titleIndex: 0,
-        /* createRec
-          rid         int【必填】     媒体所在地区ID
-          resid       int【必填】     资源ID
-          mtitle      String          媒体名称
-          pnum        int             广告位面数
-          adsize      String          广告位尺寸
-          adviewsize  String          广告可视画面
-          notpush     String          广告投放限制
-          assettag    String          资产编号
-          mtype       String          媒体类型
-          mimg        String          媒体照片
-          uid         int             安装工程师
-          mvc         String          媒介载体
-          mrk         String          媒体备注*/
+        arrMediaStatue: [],   // 编辑媒体时记录状态
         arrMedia: [
           {
             text: '媒体一',
@@ -416,20 +395,6 @@
           lat: '',
           recRemark: '',
         },
-        /*mediaForm: {
-          mediaType: '',
-          mediaName: '',
-          usableNum: '1',
-          mstate: '',
-          assetId: '',
-          doorType: '',
-          adSizeW: '',
-          adSizeH: '',
-          visualW: '',
-          visualH: '',
-          mediaRemark: '',
-          adLimit: []
-        },*/
         recRules: {
           rt: [
             {required: true, message: '请选择资源类型', trigger: 'change'},
@@ -596,7 +561,8 @@
            {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}*/],        // 上传图片的数据
         updataMedia:[],
         editMediaLength: 0,
-        sessionData:'',
+        sessionData:'',       // session数据
+
       };
     },
     beforeCreate: function () {
@@ -615,10 +581,6 @@
         api.getApi('/GetNotPush',{uid:uid}).then(res=>{
           console.log('广告限制列表',res)
           let limit = res.data
-          /*[
-{nID: 85,nTitle: "低俗",ndescript: "低俗相关的广告"},
-{nID: 88,nTitle: "游戏",ndescript: "游戏行业相关的广告"},]*/
-          //this.adLimit
           let limitArr = []
           for(let i=0;i<limit.length;i++){
             let limitObj = { value:limit[i].nTitle,label:limit[i].nTitle}
@@ -760,27 +722,59 @@
         console.log('入住时间',typeof(date));
         console.log('this.recForm.liveTime',this.recForm.liveTime,'数据类型为:',typeof(this.recForm.liveTime))
       },
-      // 选择媒体状态为待安装时修改资源编号的验为非必填
+      // 选择媒体状态为待安装时修改资源编号的验证为非必填
       selectMstate(val){
         console.log('选择了',val)
-        let valArr = val.split('');
+        let valArr = val.split('')
         console.log('valArr',valArr)
         let i = Number(valArr[1])
-        if(valArr[0] === '2'){
+        console.log('媒体状态',this.arrMedia[i].mediaForm.mstate)
+      /*  if(valArr[0] === '2'){
           this.arrMedia[i].mediaForm.assetIdBolean = true
           this.arrMedia[i].mediaForm.assetId = ''
         }else{
           this.arrMedia[i].mediaForm.assetIdBolean = false
-        }
-       /* if(val === '2'){
-          this.assetIdBolean = true
-          let arrM = this.arrMedia
-          for(let i=0;i<this.arrMedia.length;i++){
-            this.arrMedia[i].mediaForm.assetId = ''
+        }*/
+        if(this.PathHaveEdit && i <= this.editMediaLength - 1){
+          console.log('判断记录编辑媒体的状态')
+          if(this.arrMediaStatue[i] === '待安装'){
+            this.arrMedia[i].mediaForm.assetIdBolean = true
+            Message({
+              type: 'warning',
+              message: '请在亲邻助手中完成安装任务',
+            })
+            this.arrMedia[i].mediaForm.mstate = '2'+ i
+          }else if(valArr[0] === '2'){
+            this.arrMedia[i].mediaForm.assetIdBolean = false
+            Message({
+              type: 'warning',
+              message: '请按正常流程走，当前媒体已安装'
+            })
+            if(this.arrMediaStatue[i] === '禁用'){
+              this.arrMedia[i].mediaForm.mstate = '0'+ i
+            }else if(this.arrMediaStatue[i] === '正常'){
+              this.arrMedia[i].mediaForm.mstate = '1'+ i
+            }else if(this.arrMediaStatue[i] === '待维修'){
+              this.arrMedia[i].mediaForm.mstate = '3'+ i
+            }
+          }else{
+            this.arrMedia[i].mediaForm.assetIdBolean = false
+            if(valArr[0] === '0'){
+              this.arrMediaStatue[i] = '禁用'
+            }else if(valArr[0] === '1'){
+              this.arrMediaStatue[i] = '正常'
+            }else if(valArr[0] === '3'){
+              this.arrMediaStatue[i] = '待维修'
+            }
           }
         }else{
-          this.assetIdBolean = false
-        }*/
+          if(valArr[0] === '2'){
+            this.arrMedia[i].mediaForm.assetIdBolean = true
+            this.arrMedia[i].mediaForm.assetId = ''
+          }else{
+            this.arrMedia[i].mediaForm.assetIdBolean = false
+          }
+        }
       },
       //添加资源媒体
       createRec() {
@@ -792,22 +786,6 @@
            rt      int             资源类型
            resname String          资源名称
            resaddr String          资源地址*/
-        /*"resID": 1,
-         "rID": 440106,
-         "resName": "帝景山庄",
-         "resAddress": "广东省广州市天河区东圃镇悦景路11号",
-         "tradingArea": "山泉",
-         "joinTime": "2018-04-03 16:21:45.0",
-         "resType": 1*/
-        /* let obj = {
-           uid: 1,
-           rid: 440106,
-           ta: '山泉3',
-           rt: 1,
-           resname: '帝景山庄33',
-           resaddr: '广东省广州市天河区东圃镇悦景路11号',
-           latLng: '110.123;56.321'
-         }*/
         let sessionData = JSON.parse(sessionStorage.getItem('session_data'))
         this.recForm.uid = sessionData.uID
         let uWho = sessionData.uWho
@@ -1127,6 +1105,14 @@
           this.$refs['mediaForm'][i].resetFields();
         }
       },
+      //编辑媒体，记录媒体状态change前的状态
+      keepMStatue(index,statue){
+        let i = index
+        let mStatue = statue
+        console.log('i',i,',mStatue',mStatue)
+        // arrMediaStatue
+        this.arrMediaStatue[i] = mStatue
+      },
       // 媒体详情跳转过来，获取信息并编辑
       editFun() {
         let inputPath = this.$route.fullPath //this.$route.path
@@ -1171,6 +1157,7 @@
               if (i < mediaObj.length - 1) { // 创建媒体面板，默认已有一个
                 this.mediaAddFun()
               }
+              this.keepMStatue(i,mediaObj[i].mState)    // 记录编辑媒体，初始\修改前的媒体状态
               media.mid = mediaObj[i].mID
               media.mediaType = mediaObj[i].mVehicle
               media.mediaName = mediaObj[i].mTitle
@@ -1260,15 +1247,6 @@
             message: '权限受制，您无法创建该城市的媒体资源'
           });
         }else{
-          /*  let mediaArr = this.arrMedia
-            let mediaData = JSON.parse(sessionStorage.getItem('mediaList'))
-            for(let j=0; j< mediaArr.length; j++){
-              let mediaObj = mediaArr[j].mediaForm
-              let mstateName = mediaData[j].mState
-              if(mstateName === '待安装' && mediaObj.mstate !== '2'){
-
-              }
-            }*/
           for(let key in SetResCTObj){
             if(SetResCTObj[key] === undefined || SetResCTObj[key] === null){
               SetResCTObj[key] = ''
@@ -1300,7 +1278,7 @@
                 console.log('更新媒体temp_media', temp_media)
                 if(tempObj.mstate === '正常'){
                   tempObj.mstate = '1'
-                }else if(tempObj.mstate === '禁止'){
+                }else if(tempObj.mstate === '禁用'){
                   tempObj.mstate = '0'
                 }else if(tempObj.mstate === '待安装'){
                   tempObj.mstate = '2'
@@ -1384,17 +1362,6 @@
       },
       // 修改媒体状态
       editMState(uid,mid,mstate){
-        // if(mName === '待安装'){
-        //   Message({
-        //     type: 'warning',
-        //     message: '需先完成每天安装任务'
-        //   });
-        // }else if(mstate == '2'){
-        //   Message({
-        //     type: 'warning',
-        //     message: '请按正常流程走，当前媒体已安装'
-        //   });
-        // }else{
         api.postApi('/CtrlMedia',{uid:uid, mid:mid, mstate:mstate}).then(res=>{
           console.log('修改媒体状态',res)
           let data = res.data

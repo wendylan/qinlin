@@ -277,7 +277,7 @@
                       <el-form-item label="资产编号：">
                         <span>{{ props.row.assetID }}</span>
                       </el-form-item>
-                      <el-form-item :label="recType ? '入住年份:' : '建成年份:'">
+                      <el-form-item :label="recType === 1? '入住年份:' : '建成年份:'">
                         <span>{{ props.row.liveYear }}</span>
                       </el-form-item>
                       <el-form-item label="广告限制：">
@@ -326,13 +326,13 @@
                 </el-table-column>
                 <el-table-column
                   prop="buildType"
-                  :label="recType ? '楼盘类型':'写字楼类型'"
+                  :label="recType === 1? '楼盘类型':'写字楼类型'"
                   min-width="8.8%"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="houseNum"
-                  :label="recType ? '小区户数': '办公室数量'"
+                  :label="recType === 1? '小区户数': '办公室数量'"
                   min-width="7.8%"
                   class="tar"
                 >
@@ -550,62 +550,6 @@
                   </div>
                 </el-tab-pane>
               </el-tabs>
-              <!-- <el-tabs type="border-card">
-                 <el-tab-pane label='广州'>
-                   <div class="tab-info">
-                     <div class="pqxx">
-                       <h4>排期信息</h4>
-                       <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p>
-                     </div>
-                     <div class="price">
-                       <div class="price-left">
-                         <h4>广告费
-                           <el-button type="text" @click="changeAD = true">修改</el-button>
-                         </h4>
-                         <ul>
-                           <li>刊例价(面/周) <span>￥{{ADPrice}}</span></li>
-                           <li>投放量(面·天) <span>{{tfl}}</span></li>
-                           <li>赠送(面·天) <span>{{GMDate}}</span></li>
-                           <li>广告费折扣 <span>{{discount}}</span></li>
-                           <li>￥{{advertyPrice}}</li>
-                         </ul>
-                       </div>
-                       <div class="price-right">
-                         <h4>制作费
-                           <el-button type="text" @click="changeMake = true">修改</el-button>
-                         </h4>
-                         <ul>
-                           <li>制作费单价<span>￥{{MPrice}}</span></li>
-                           <li>广告画数量(张)<span>{{ADNumber}}</span></li>
-                           <li></li>
-                           <li>制作费折扣<span>{{makeDiscount}}</span></li>
-                           <li>￥{{makePrice}}</li>
-                         </ul>
-                       </div>
-                     </div>
-                     <div class="bottom">
-                       <div class="bottom-detail">
-                         <div class="remark">
-                           <p>备注：{{remark}}</p>
-                         </div>
-                         <div class="bill-title-right">
-                           <ul>
-                             <li><p><em>现金结算：</em><span>￥{{cash}}</span></p></li>
-                             <li><p><em>资源置换：</em><span>￥{{zyzh}}</span></p></li>
-                             <li><p><em>其他费用：</em><span>￥{{other}}</span></p></li>
-                           </ul>
-                         </div>
-                       </div>
-                       <div class="bottom-fin">
-                         <el-button type="text" @click="changeBill = true">修改</el-button>
-                         <p><em style="top: 5px">总计：</em><span class="totalPrice">￥{{totalPrice}}</span></p>
-                       </div>
-                     </div>
-                   </div>
-                 </el-tab-pane>
-                 <el-tab-pane label="深圳">深圳内容</el-tab-pane>
-                 <el-tab-pane label="成都">成都内容</el-tab-pane>
-               </el-tabs>-->
               <!--修改对话框-->
               <el-dialog
                 title="修改广告费"
@@ -1657,33 +1601,6 @@
               console.log('this.planList', this.planList)
               if (this.planList.length !== 0) {
                 this.judgeByselect()
-                /*  let that = this
-                  setTimeout(function () {
-                    for (let i = 0; i < that.shopingList.length; i++) {
-                      for (let j = 0; j < that.planList.length; j++) {
-                        if (that.planList[j].mID == that.shopingList[i].mID) {
-                          console.log('相同mID', that.shopingList[i].mID)
-                          if (that.shopingList[i].A_B === 'A面') {
-                            that.planList[j].checkBox.A = true
-                          } else if (that.shopingList[i].A_B === 'B面'){
-                            that.planList[j].checkBox.B = true
-                          }
-                        }
-                        if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
-                          console.log('时间排期', that.dateInput)
-                          that.planList[j].schedules = that.dateInput[0] + '-' + that.dateInput[1]
-                          that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
-                        }
-                      }
-                    }
-                   /!* for (let j = 0; j < that.planList.length; j++) {
-                      if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
-                        console.log('时间排期', that.dateInput)
-                        that.planList[j].schedules = that.dateInput[0] + '-' + that.dateInput[1],
-                          that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
-                      }
-                    }*!/
-                  }, 0)*/
                 break
               } else {
                 this.$message({
@@ -1786,7 +1703,6 @@
         let filterPlanArr = []
         let cityName = this.activeCityData.rName //this.activeRName
         let FBAIndex = this.activeIndex
-        let filterADLaunch = this.AdLaunchList[FBAIndex].list
         for (let n = 0; n < filterData.length; n++) {
           let filterAD = {
             rid: FBAIndex + n.toString(),
@@ -1815,22 +1731,7 @@
           if (filterData[n].asLabs.indexOf('B') === -1) {
             filterAD.box.B = true
           }
-          let asIDArr = filterData[n].asIDs.split(',')
-          let asLabArr = filterData[n].asLabs.split(',')
-          for (let j = 0; j < filterADLaunch.length; j++) {
-            for (let t = 0; t < 2; t++) {
-              if (filterADLaunch[j].asID == asIDArr[t]) {
-                if (asLabArr[t] === 'B') {
-                  filterAD.box.B = true
-                } else if (asLabArr[t] === 'A') {
-                  filterAD.box.A = true
-                }
-              }
-            }
-          }
-          if (filterAD.box.A !== true || filterAD.box.B !== true) {   // 去除AB两面都被占的
-            filterPlanArr.push(filterAD)
-          }
+          filterPlanArr.push(filterAD)
           if (n >= filterData.length - 1) {
             console.log('搜索中的filterPlanArr', filterPlanArr)
             this.planList = filterPlanArr
@@ -1844,59 +1745,53 @@
         this.limitName = n
       },
       // 获取广告点位列表
-      getAdList() {
-        this.ADTotalList = []
-        this.beforADTotalList = []
+      getAdList(letter) {
         this.loading = true
-        let uid = this.sessionData.uID
-//         let tempADList = [
-// {resName: "尚东3", mID:'110101000001',mTitle: "尚东3东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "7", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄改1",mID:'110101000023', mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "1,2", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改1",mID:'110101000002', mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "4,3", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改1",mID:'110101000003', mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "5,6", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄",mID:'110101000004', mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "7,8", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东",mID:'110101000005', mTitle: "尚东一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "9,10", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "尚东4",mID:'110101000006', mTitle: "尚东4东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "11", asLabs: "A", asStates: "1", tradingArea: "三里屯4", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄1", mID:'110101000007',mTitle: "帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "13,12", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄1",mID:'110101000002', mTitle: "帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "14,15", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄1",mID:'110101000009', mTitle: "帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "17,16", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄",mID:'110101000010', mTitle: "帝景门", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "19,18", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东5",mID:'110101000011', mTitle: "尚东5一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "21,20", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉5", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "尚东6",mID:'110101000012', mTitle: "尚东6东门", rName: "荔湾区", cType: "一般住宅", hNum: 100, hPrice: 56000, asIDs: "27", asLabs: "A", asStates: "1", tradingArea: "三里屯", fNum: 3, assetTag: "201805GZ-1324", notPush: ""},
-// {resName: "帝景山庄改2",mID:'110101000013', mTitle: "2帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "31,22", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改2",mID:'110101000014', mTitle: "2帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "24,23", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改2",mID:'110101000015', mTitle: "2帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "25,26", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄2",mID:'110101000016', mTitle: "帝景门2", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "27,28", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉2", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东7", mID:'110101000017',mTitle: "尚东7一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "29,30", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉7", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"},
-// {resName: "帝景山庄改3",mID:'110101000018', mTitle: "3帝景1门", rName: "越秀区", cType: "高端住宅", hNum: 120, hPrice: 6100000, asIDs: "41,32", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 9, assetTag: "201707GZ-13161", chDay: "2013", notPush: "美容"},
-// {resName: "帝景山庄改3",mID:'110101000019', mTitle: "3帝景2门2", rName: "越秀区", cType: "高端住宅", hNum: 170, hPrice: 6600000, asIDs: "34,33", asLabs: "B,A", asStates: "1,1", tradingArea: "山泉1", fNum: 12, assetTag: "201707GZ-1324", chDay: "2013", notPush: "地产"},
-// {resName: "帝景山庄改3",mID:'110101000020', mTitle: "3帝景3门3", rName: "越秀区", cType: "高端住宅", hNum: 150, hPrice: 5100000, asIDs: "35,36", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉1", fNum: 22, assetTag: "201707GZ-1329", chDay: "2013", notPush: "医学"},
-// {resName: "帝景山庄3",mID:'110101000021', mTitle: "帝景门3", rName: "白云区", cType: "别墅", hNum: 171, hPrice: 4600000, asIDs: "37,38", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉3", fNum: 15, assetTag: "201707GZ-1328", chDay: "2014", notPush: "医学"},
-// {resName: "尚东8",mID:'110101000022', mTitle: "尚东8一号", rName: "天河区", cType: "别墅", hNum: 210, hPrice: 7600000, asIDs: "39,40", asLabs: "A,B", asStates: "1,1", tradingArea: "山泉8", fNum: 30, assetTag: "201707GZ-1329", chDay: "2015", notPush: "汽车"}]
-        let throwCity = this.city
-        console.log('投放城市333333333', throwCity)
-        for (let t = 0; t < throwCity.length; t++) {
-          let rid = throwCity[t].rid
-          //  let rName = throwCity[t].rName
-          api.getApi('/GetAdS', {uid: uid, rid: rid}).then(res => {
-            console.log('选点列表：', res)
-            let ADList = res.data
-            // if (ADList.length !== 0) {
-            // let ADList = tempADList
-            let listObj = {rid: rid, list: []}
-            listObj.list = ADList
-            this.ADTotalList.push(listObj)
-            this.beforADTotalList.push(listObj)
-            this.beforADTotalList.sort(this.compareFun)
-            if (t >= throwCity.length - 1) {
-              console.log('this.beforADTotalList', this.beforADTotalList)
-              this.GetAdLaunchFun()
-            }
-          })
+        let starTime,endTime
+        if (letter === 'search') {
+          starTime = this.dateInput[0]
+          endTime = this.dateInput[1]
+        } else {
+          this.dateTime = this.GetDateStr(0)
+          starTime = this.GetDateStr(1)
+          endTime = this.GetDateStr(14)
+          this.dateInput = [starTime, endTime] // 设置默认时间
+        }
+        if(this.dateInput !== this.beforeDate){
+          this.beforADTotalList = []
+          let uid = this.sessionData.uID
+          let throwCity = this.city
+          // console.log('投放城市333333333', throwCity)
+          for (let t = 0; t < throwCity.length; t++) {
+            let rid = throwCity[t].rid
+            //  let rName = throwCity[t].rName
+            api.getApi('/GetAdS', {uid: uid, rid: rid,act:1,ls:starTime,le:endTime}).then(res => {
+              console.log('选点列表：', res)
+              let ADList = res.data
+              let listObj = {rid: rid, list: []}
+              listObj.list = ADList
+              this.ADTotalList.push(listObj)
+              this.beforADTotalList.push(listObj)
+              this.beforADTotalList.sort(this.compareFun)
+              if (this.beforADTotalList.length >= throwCity.length) {
+                console.log('GetAdS选点列表',this.beforADTotalList)
+                if(letter === 'search' && this.searchInput !== ''){
+                  this.setAdLaunchFun('search')
+                }else{
+                  this.setAdLaunchFun()
+                }
+                this.beforeDate = this.dateInput
+              }
+            })
+          }
+        }else if (this.searchInput !== '') {
+          this.ResOriginSearch()
+        } else {
+          this.loading = false
         }
       },
       // 获取被占列表
-      GetAdLaunchFun(letter) {
+      /*GetAdLaunchFun(letter) {
         this.loading = true
         let starTime, endTime
         if (letter === 'search') {
@@ -1940,112 +1835,77 @@
         } else {
           this.loading = false
         }
-      },
+      },*/
       // 重排列表，显示planList
       setAdLaunchFun(letter) {
-        console.log('重排列表')
         this.CityPlanIndex = []
         let ADArr = this.beforADTotalList
-        let ADLaunchArr = this.AdLaunchList
         let throwCity = this.city
         let totalList = []        // 全部城市的选点列表
         console.log('重排列表this.beforADTotalList', this.beforADTotalList)
-        console.log('重排列表this.AdLaunchList', this.AdLaunchList)
         console.log('重排列表throwCity', throwCity)
         for (let t = 0; t < throwCity.length; t++) {
-          console.log('城市的rid', throwCity[t].rid)
           for (let n = 0; n < ADArr.length; n++) {
-            console.log('beforADTotalList的rid', ADArr[n].rid)
             if (throwCity[t].rid == ADArr[n].rid) {
               console.log('城市与全部点位相同的rid', ADArr[n].rid)
-              for (let g = 0; g < ADLaunchArr.length; g++) {
-                console.log('被占列表AdLaunchList的rid', ADLaunchArr[g].rid)
-                if (ADLaunchArr[g].rid == ADArr[n].rid) {
-                  console.log('全部点位与被占列表相同的rid', ADLaunchArr[g].rid)
-                  let ADList = ADArr[n].list
-                  let adLaunch = ADLaunchArr[g].list
-                  console.log(throwCity[t].rid, '各城市的总选点', ADArr[n])
-                  console.log(throwCity[t].rid, '各城市的被占点位', ADLaunchArr[g])
-                  // 被占广告点位列表【选点】
-                  let planArr = {rid: throwCity[t].rid, list: []}
-                  if (ADList.length !== 0) {
-                    for (let i = 0; i < ADList.length; i++) {
-                      let adObj = {
-                        rid: t.toString() + i.toString(),
-                        mID: ADList[i].mID,
-                        asIDs: ADList[i].asIDs,
-                        asLabs: ADList[i].asLabs,
-                        recName: ADList[i].resName,
-                        city: throwCity[t].rName, //'广州',
-                        origin: ADList[i].rName,
-                        buildType: ADList[i].cType,
-                        houseNum: ADList[i].hNum,
-                        buildPrice: (ADList[i].hPrice / 100),
-                        mediaName: ADList[i].mTitle,
-                        buildNum: ADList[i].fNum,
-                        schedules: this.dateInput[0] + '-' + this.dateInput[1],
-                        businessOrigin: ADList[i].tradingArea,
-                        assetID: ADList[i].assetTag,
-                        liveYear: ADList[i].chDay,
-                        adLimit: ADList[i].notPush,
-                        checkBox: {A: false, B: false},
-                        box: {A: false, B: false},
-                      }
-                      if (ADList[i].asLabs.indexOf('A') === -1) {
-                        adObj.box.A = true
-                      }
-                      if (ADList[i].asLabs.indexOf('B') === -1) {
-                        adObj.box.B = true
-                      }
-                      let asIDArr = ADList[i].asIDs.split(',')
-                      let asLabArr = ADList[i].asLabs.split(',')
-                      for (let j = 0; j < adLaunch.length; j++) {   // 根据被占过滤禁用勾选
-                        for (let t = 0; t < 2; t++) {
-                          if (adLaunch[j].asID == asIDArr[t]) {
-                            if (asLabArr[t] === 'B') {
-                              adObj.box.B = true
-                            } else if (asLabArr[t] === 'A') {
-                              adObj.box.A = true
-                            }
-                          }
-                        }
-                      }
-                      if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                        planArr.list.push(adObj)
-                        // console.log('去除AB两面都被占的planArr',planArr)
-                      } else {
-                        // console.log('空数据',i)
-                      }
-                      let index = 19
-                      if (i >= index && ADList.length >= index && planArr.list.length >= index) {
-                        let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
-                        this.CityPlanIndex.push(indexObj)
-                        console.log('城市rid:', indexObj.rid, '遍历到的下标:', indexObj.LIndex)
-                        this.listIndex = i + 1
-                        console.log('方案选点列表1', planArr)
-                        totalList.push(planArr)
-                        break
-                      } else {
-                        if (i >= ADList.length - 1) {
-                          let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
-                          this.CityPlanIndex.push(indexObj)
-                          this.listIndex = i + 1
-                          console.log('方案选点列表长度小于19', planArr)
-                          // this.planList = planArr
-                          totalList.push(planArr)
-                        }
-                      }
-                    }
-                  } else {
+              let ADList = ADArr[n].list
+              let planArr = {rid: throwCity[t].rid, list: []}
+              if (ADList.length !== 0) {
+                for (let i = 0; i < ADList.length; i++){
+                  let adObj = {
+                    rid: t.toString() + i.toString(),
+                    mID: ADList[i].mID,
+                    asIDs: ADList[i].asIDs,
+                    asLabs: ADList[i].asLabs,
+                    recName: ADList[i].resName,
+                    city: throwCity[t].rName, //'广州',
+                    origin: ADList[i].rName,
+                    buildType: ADList[i].cType,
+                    houseNum: ADList[i].hNum,
+                    buildPrice: (ADList[i].hPrice / 100),
+                    mediaName: ADList[i].mTitle,
+                    buildNum: ADList[i].fNum,
+                    schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                    businessOrigin: ADList[i].tradingArea,
+                    assetID: ADList[i].assetTag,
+                    liveYear: ADList[i].chDay,
+                    adLimit: ADList[i].notPush,
+                    checkBox: {A: false, B: false},
+                    box: {A: false, B: false},
+                  }
+                  if (ADList[i].asLabs.indexOf('A') === -1) {
+                    adObj.box.A = true
+                  }
+                  if (ADList[i].asLabs.indexOf('B') === -1) {
+                    adObj.box.B = true
+                  }
+                  planArr.list.push(adObj)
+                  let index = 29
+                  if (i >= index && ADList.length >= index && planArr.list.length >= index) {
+                    let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
+                    this.CityPlanIndex.push(indexObj)
+                    console.log('城市rid:', indexObj.rid, '遍历到的下标:', indexObj.LIndex)
+                    this.listIndex = i + 1
+                    console.log('方案选点列表1', planArr)
                     totalList.push(planArr)
+                    break
+                  } else {
+                    if (i >= ADList.length - 1) {
+                      let indexObj = {rid: ADArr[n].rid, LIndex: i + 1}
+                      this.CityPlanIndex.push(indexObj)
+                      this.listIndex = i + 1
+                      console.log('方案选点列表长度小于19', planArr)
+                      // this.planList = planArr
+                      totalList.push(planArr)
+                    }
                   }
                 }
+              }else {
+                totalList.push(planArr)
               }
             }
           }
         }
-        console.log('11111全部城市的选点列表', totalList)
-        console.log('各城市显示到的下标this.CityPlanIndex', this.CityPlanIndex)
         this.totalPlanList = totalList
         let ATIndex = this.activeIndex
         this.planList = this.totalPlanList[ATIndex].list
@@ -2058,16 +1918,11 @@
       // 监听滚动，每次曾加20条数据
       addADList() {
         console.log('监听到滚动，并调用了addADList')
-        let begin = this.dateInput[0]
-        let end = this.dateInput[1]
-        console.log('开始日期', begin, '结束日期', end)
-        let throwCity = this.city
         let beforAD = this.beforADTotalList   // 选点列表
-        let AdLaunch = this.AdLaunchList       // 被占点位
         let cityListIndex = this.CityPlanIndex
         console.log('cityListIndex', cityListIndex)
-        console.log('投放城市333333333', throwCity)
         console.log('this.beforADTotalList', this.beforADTotalList)
+        console.log('this.activeCityData',this.activeCityData)
         for (let n = 0; n < beforAD.length; n++) {
           for (let g = 0; g < cityListIndex.length; g++) {
             if (cityListIndex[g].rid === beforAD[n].rid && this.activeCityData.rid === beforAD[n].rid) {
@@ -2075,71 +1930,49 @@
               console.log(cityListIndex[g].rid, '该城市从下标为', cityListIndex[g].LIndex)
               let myIndex = cityListIndex[g].LIndex
               let ADList = beforAD[n].list
-              // 被占广告点位列表【选点】GetAdLaunch
-              for (let m = 0; m < AdLaunch.length; m++) {
-                if (rid === AdLaunch[m].rid && beforAD[n].rid === AdLaunch[m].rid) {
-                  console.log('被占广告点位列表', rid, AdLaunch[m])
-                  let adLaunch = AdLaunch[m].list
-                  let planArr = {rid: rid, list: []}
-                  for (let i = myIndex; i < ADList.length; i++) {
-                    console.log('遍历选点列表')
-                    let adObj = {
-                      rid: n.toString() + i.toString(),
-                      mID: ADList[i].mID,
-                      asIDs: ADList[i].asIDs,
-                      asLabs: ADList[i].asLabs,
-                      recName: ADList[i].resName,
-                      city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
-                      origin: ADList[i].rName,
-                      buildType: ADList[i].cType,
-                      houseNum: ADList[i].hNum,
-                      buildPrice: (ADList[i].hPrice / 100),
-                      mediaName: ADList[i].mTitle,
-                      buildNum: ADList[i].fNum,
-                      schedules: this.dateInput[0] + '-' + this.dateInput[1],
-                      businessOrigin: ADList[i].tradingArea,
-                      assetID: ADList[i].assetTag,
-                      liveYear: ADList[i].chDay,
-                      adLimit: ADList[i].notPush,
-                      checkBox: {A: false, B: false},
-                      box: {A: false, B: false},
-                    }
-                    if (ADList[i].asLabs.indexOf('A') === -1) {
-                      adObj.box.A = true
-                    }
-                    if (ADList[i].asLabs.indexOf('B') === -1) {
-                      adObj.box.B = true
-                    }
-                    let asIDArr = ADList[i].asIDs.split(',')
-                    let asLabArr = ADList[i].asLabs.split(',')
-                    for (let j = 0; j < adLaunch.length; j++) {   // 根据被占过滤禁用勾选
-                      for (let t = 0; t < 2; t++) {
-                        if (adLaunch[j].asID == asIDArr[t]) {
-                          if (asLabArr[t] === 'B') {
-                            adObj.box.B = true
-                          } else if (asLabArr[t] === 'A') {
-                            adObj.box.A = true
-                          }
-                        }
-                      }
-                    }
-                    if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-                      planArr.list.push(adObj)
-                    }
-                    if (i >= myIndex + 19 && ADList.length >= myIndex + 19 && planArr.list.length >= 19) {
-                      this.CityPlanIndex[g].LIndex = i + 1
-                      this.listIndex = i + 1
-                      console.log('滚动加载方案选点列表', planArr)
-                      this.addListPush(planArr)
-                      break
-                    } else {
-                      if (i >= ADList.length - 1) {
-                        this.CityPlanIndex[g].LIndex = i + 1
-                        this.listIndex = i + 1
-                        console.log('滚动加载方案选点列表小于19', planArr)
-                        this.addListPush(planArr)
-                      }
-                    }
+              let planArr = {rid: rid, list: []}
+              for (let i = myIndex; i < ADList.length; i++){
+                console.log('遍历选点列表')
+                let adObj = {
+                  rid: n.toString() + i.toString(),
+                  mID: ADList[i].mID,
+                  asIDs: ADList[i].asIDs,
+                  asLabs: ADList[i].asLabs,
+                  recName: ADList[i].resName,
+                  city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
+                  origin: ADList[i].rName,
+                  buildType: ADList[i].cType,
+                  houseNum: ADList[i].hNum,
+                  buildPrice: (ADList[i].hPrice / 100),
+                  mediaName: ADList[i].mTitle,
+                  buildNum: ADList[i].fNum,
+                  schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                  businessOrigin: ADList[i].tradingArea,
+                  assetID: ADList[i].assetTag,
+                  liveYear: ADList[i].chDay,
+                  adLimit: ADList[i].notPush,
+                  checkBox: {A: false, B: false},
+                  box: {A: false, B: false},
+                }
+                if (ADList[i].asLabs.indexOf('A') === -1) {
+                  adObj.box.A = true
+                }
+                if (ADList[i].asLabs.indexOf('B') === -1) {
+                  adObj.box.B = true
+                }
+                planArr.list.push(adObj)
+                if (i >= myIndex + 29 && ADList.length >= myIndex + 29 && planArr.list.length >= 29) {
+                  this.CityPlanIndex[g].LIndex = i + 1
+                  this.listIndex = i + 1
+                  console.log('滚动加载方案选点列表', planArr)
+                  this.addListPush(planArr)
+                  break
+                } else {
+                  if (i >= ADList.length - 1) {
+                    this.CityPlanIndex[g].LIndex = i + 1
+                    this.listIndex = i + 1
+                    console.log('滚动加载方案选点列表小于29', planArr)
+                    this.addListPush(planArr)
                   }
                 }
               }
@@ -2152,35 +1985,14 @@
         let addList = addData
         console.log('addListPush滚动增加的数据', addList)
         let rid = this.city[this.activeIndex].rid
-        console.log('addListPush', rid)
-        // for(let i=0;i<addList.length;i++){
         if (rid === addList.rid) {
           let tempArr = addList.list
           for (let j = 0; j < tempArr.length; j++) {
             this.planList.push(tempArr[j])
           }
         }
-        // }
         this.judgeByselect('scoll')
         this.copyPlanList = this.planList
-        // this.activeArea(this.areaName)      // 新增后过滤区域
-        /* this.totalPlanList = totalList
-         console.log('addListPush this.city',this.city)
-         let rid = this.city[this.activeIndex].rid
-         console.log('addListPush',rid)
-         for(let i=0;i<this.totalPlanList.length;i++){
-           if(rid == this.totalPlanList[i].rid){
-           // if(this.activeIndex === i){
-             console.log('this.activeIndex',this.activeIndex)
-             console.log(i,',this.totalPlanList[i].list',this.totalPlanList[i].list)
-             let tempArr = this.totalPlanList[i].list
-             for(let j=0;j<tempArr.length;j++){
-               this.planList.push(tempArr[j])
-             }
-           }
-         }
-         this.copyPlanList = this.planList
-         this.activeArea(this.areaName) // 新增后过滤区域*/
       },
       //获取mouseEnter屏幕时的坐标像素
       mouseEnter(row, column, cell, event) {
@@ -2379,7 +2191,7 @@
           this.changeAD = true
           this.ADchanger.rid = info.rid
           this.ADchanger.GMDate = info.GMDate
-          this.ADchanger.reaPrice = (info.advertyPrice).toFixed(2)
+          this.ADchanger.reaPrice = Math.floor(info.advertyPrice * 100) / 100
         } else if (letter === 'M') {
           this.changeMake = true
           this.makeChange.rid = info.rid
@@ -2400,7 +2212,7 @@
         if (letter === 'AD') {
           for (let i = 0; i < QArr.length; i++) {
             if (QArr[i].rid === this.ADchanger.rid) {
-              this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)) //((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7)).toFixed(2)
+              this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7))
               this.quotation[i].GMDate = this.ADchanger.GMDate
               if (this.ADchanger.GMDate != 0) {
                 // alert('1')
@@ -2416,7 +2228,7 @@
                   this.hideBox()
                 } else if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
                   // alert('3')
-                  this.ADchanger.reaPrice = (this.quotation[i].advertyPrice).toFixed(2)
+                  this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
                   this.$message({
                     message: '大于原价格',
                     type: 'warning'
@@ -2424,7 +2236,7 @@
                 } else {
                   // alert('4')
                   if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
-                    this.ADchanger.reaPrice = (this.quotation[i].advertyPrice).toFixed(2)
+                    this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
                     this.$message({
                       message: '大于原价格',
                       type: 'warning'
@@ -2439,7 +2251,7 @@
               } else {
                 // alert('0')
                 if (this.ADchanger.reaPrice > this.quotation[i].oldPrice) {
-                  this.ADchanger.reaPrice = this.quotation[i].advertyPrice
+                  this.ADchanger.reaPrice =  Math.floor(this.quotation[i].advertyPrice * 100) / 100
                   this.$message({
                     message: '大于原价格',
                     type: 'warning'
@@ -2867,7 +2679,7 @@
                   console.log('相等的mID的checkBox.A', childrenList[j].checkBox.A)
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面' && this.shopingList[j].schedules === rows.schedules) {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'A面' && this.shopingList[t].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -2877,7 +2689,7 @@
                   childrenList[j].checkBox.B = false
                   // 删除
                   for (let t = 0; t < this.shopingList.length; t++) {
-                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面' && this.shopingList[j].schedules === rows.schedules) {
+                    if (this.shopingList[t].mID === rows.mID && this.shopingList[t].A_B == 'B面' && this.shopingList[t].schedules === rows.schedules) {
                       this.shopingList.splice(t, 1)
                       this.badgeNumber--
                       break
@@ -3032,7 +2844,7 @@
         console.log('搜索排期时间', this.dateInput)
         this.recType = 1
         this.areaName = '全市'
-        this.GetAdLaunchFun('search') // 根据时间段获取被占点位，并重组选点列表
+        this.getAdList('search') // 根据时间段获取被占点位，并重组选点列表
         // this.ResOriginSearch()
       },
       //计算天数差的函数，通用
@@ -3077,9 +2889,6 @@
       ResOriginSearch() {
         this.loading = true
         this.loadScroll = false
-        console.log('selectValue', this.selectValue)
-        console.log('searchInput', this.searchInput)
-        console.log('beforPlanList', this.beforADTotalList)
         let empty = false
         let arr = []
         let index = this.activeIndex
@@ -3091,7 +2900,7 @@
               arr = this.copyPlanList
               empty = true
             } else if (BPL[i].resName.includes(this.searchInput)) {
-              console.log('资源名称不为空')
+              // console.log('资源名称不为空')
               arr.push(BPL[i])
             }
           } else if (this.selectValue === '商圈') {
@@ -3099,18 +2908,16 @@
               arr = this.copyPlanList
               empty = true
             } else if (BPL[i].tradingArea.includes(this.searchInput)) {
-              console.log('商圈不为空')
+              // console.log('商圈不为空')
               arr.push(BPL[i])
             }
           }
         }
-        console.log('搜索到的数据:', arr)
-        console.log('empty', empty)
         if (!empty) {
           this.firstLevelSearch = true
           let planArr = []
           let rName = this.activeCityData.rName //this.activeRName
-          let ADLaunch = this.AdLaunchList[index].list
+          // let ADLaunch = this.AdLaunchList[index].list
           for (let n = 0; n < arr.length; n++) {
             let adObj = {
               rid: 0 + n.toString(),
@@ -3139,47 +2946,11 @@
             if (arr[n].asLabs.indexOf('B') === -1) {
               adObj.box.B = true
             }
-            let asIDArr = arr[n].asIDs.split(',')
-            let asLabArr = arr[n].asLabs.split(',')
-            for (let j = 0; j < ADLaunch.length; j++) {   // 根据被占过滤禁用勾选
-              for (let t = 0; t < 2; t++) {
-                if (ADLaunch[j].asID == asIDArr[t]) {
-                  if (asLabArr[t] === 'B') {
-                    adObj.box.B = true
-                  } else if (asLabArr[t] === 'A') {
-                    adObj.box.A = true
-                  }
-                }
-              }
-            }
-            if (adObj.box.A !== true || adObj.box.B !== true) {   // 去除AB两面都被占的
-              planArr.push(adObj)
-            }
+            planArr.push(adObj)
             if (n >= arr.length - 1) {
-              console.log('搜索过滤完成后的planArr', planArr)
+              // console.log('搜索过滤完成后的planArr', planArr)
               this.planList = planArr
               this.judgeByselect('firstLevel')
-              /*  let that = this
-                setTimeout(function () {
-                  for (let i = 0; i < that.shopingList.length; i++) {
-                    for (let j = 0; j < that.planList.length; j++) {
-                      if (that.planList[j].mID == that.shopingList[i].mID) {
-                        console.log('相同mID', that.shopingList[i].mID)
-                        if (that.shopingList[i].A_B === 'A面') {
-                          console.log('A面')
-                          that.planList[j].checkBox.A = true
-                        } else if (that.shopingList[i].A_B === 'B面'){
-                          console.log('B面')
-                          that.planList[j].checkBox.B = true
-                        }
-                      }
-                      if (that.planList[j].checkBox.A || that.planList[j].checkBox.B) {
-                        console.log('打上勾了')
-                        that.$refs.multipleTable.toggleRowSelection(that.planList[j], true)
-                      }
-                    }
-                  }
-                }, 10)*/
             }
           }
         } else {
@@ -3375,14 +3146,9 @@
       },
       // 搜索楼盘类型
       searchBT(val) {
-        let planList = []
+       /* let planList = []
         let arr = []
-        // if((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''&& this.buildNum[1] !== '')
-        //   || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')||(this.liveYear[0] !== ''&&this.liveYear[1] !== '')){
-        //   planList = this.backupsList
-        // }else{
         planList = this.copyPlanList
-        // }
         for (let i = 0; i < planList.length; i++) { //buildType
           if (val === '全部') {
             arr = planList
@@ -3390,16 +3156,9 @@
             if (val === planList[i].buildType) {
               arr.push(planList[i])
             }
-            /*else{
-                            this.$message({
-                              message:'查询数据为空',
-                              type:'warning',
-                              duration:2000
-                            })
-                          }*/
           }
         }
-        this.planList = arr
+        this.planList = arr*/
       },
       // 清空购物车
       clearShop() {

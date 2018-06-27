@@ -422,7 +422,7 @@
           Message({
             type: 'warning',
             message: '请按正常流程走，当前媒体已安装'
-          });
+          })
         } else {
           if (Status == '正常') {
             mstate = '1'
@@ -436,30 +436,36 @@
           let uid = JSON.parse(sessionStorage.getItem('session_data')).uID
           let mid = rows.mID
 
-          api.postApi('/CtrlMedia', {uid: uid, mid: mid, mstate: mstate}).then(res => {
-            console.log('修改状态：', res)
-            MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              dangerouslyUseHTMLString: true,
-              type: 'warning'
-            }).then(() => {
-              //确定
-              Message({
-                type: 'success',
-                message: '成功更改状态'
-              });
-              this.planList[index].mState = Status;
-              this.currentPlan = this.planList;
-            }).catch(() => {
-              Message({
-                type: 'info',
-                message: '已取消操作'
-              })
+          MessageBox.confirm('<p>你确定更改媒体状态为<b>' + Status + '</b>吗？</p>', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            //确定
+            api.postApi('/CtrlMedia', {uid: uid, mid: mid, mstate: mstate}).then(res => {
+              console.log('修改状态：', res)
+              if(res.data.SysCode === 200200 || res.data.MSG === '操作成功'){
+                Message({
+                  type: 'success',
+                  message: '成功更改状态'
+                });
+                this.planList[index].mState = Status;
+                this.currentPlan = this.planList;
+              }else{
+                Message({
+                  type: 'warning',
+                  message: '状态更改失败'
+                })
+              }
+            })
+          }).catch(() => {
+            Message({
+              type: 'info',
+              message: '已取消操作'
             })
           })
         }
-
       },
       submitForm() {
         this.$http({})

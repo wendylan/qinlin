@@ -242,7 +242,7 @@ export default {
                                 }
                                 item.cityArea = resultArr;
                             }
-                            console.log(item.cityArea);
+                            // console.log(item.cityArea);
                         }
                         this.currentOrder = this.orderList;
                     } else {

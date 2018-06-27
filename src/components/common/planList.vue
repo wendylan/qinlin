@@ -853,26 +853,26 @@ export default {
         },
         // 循环发布、预锁
         ctrlFangan(arr) {
-            console.log('----------arr-------------', arr);
+            console.log("----------arr-------------", arr);
             // uid         int【必填】         当前账户UserID
             // ds          String【必填】      广告开始投放日期
             // de          String【必填】      广告投放结束日期
             // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
             let holdSum = 0;
-            for(let i = 0; i < arr.length; i++){
+            for (let i = 0; i < arr.length; i++) {
                 let obj = {
                     uid: arr[i].uid,
                     ds: arr[i].ds,
                     de: arr[i].de,
                     asidlist: arr[i].asidlist
                 };
-                api.postApi('/CheckPD', obj).then(res =>{
-                    console.log('CheckPD-----------', res.data);
-                    if(res.data.length){
+                api.postApi("/CheckPD", obj).then(res => {
+                    console.log("CheckPD-----------", res.data);
+                    if (res.data.length) {
                         holdSum++;
                     }
-                    if(i >= arr.length-1){
-                        if(holdSum){
+                    if (i >= arr.length - 1) {
+                        if (holdSum) {
                             // 存在点位被占，是否立即去方案详情修改？
                             MessageBox.confirm(
                                 `存在点位被占，是否修改方案？`,
@@ -889,7 +889,7 @@ export default {
                                 .catch(() => {
                                     Message.info("已取消操作");
                                 });
-                        }else{
+                        } else {
                             // uid         int【必填】         当前账户UserID
                             // act         String【必填】      事务类型：L锁点；R发布
                             // pdid        int【必填】         选择方案投放pdID
@@ -903,6 +903,18 @@ export default {
                                     .then(res => {
                                         console.log(res.data);
                                         Message.success(res.data.MSG);
+                                        if (i >= arr.length - 1) {
+                                            for (let data of this.planList) {
+                                                if (
+                                                    data.apID == this.Info.apid
+                                                ) {
+                                                    this.$set(data, apState, 2);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        // this.Info.apid
+                                        // this.$set(row, 'apState', 2);
                                     })
                                     .catch(res => {
                                         console.log(res);
