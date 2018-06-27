@@ -190,7 +190,7 @@
               </dl>
             </div>
             <!--数量价格年份输入筛选框-->
-            <div class="filter-input">
+            <!--<div class="filter-input">
               <ul>
                 <li style="margin-left: 0">
                   <span>住户数量:</span>
@@ -247,7 +247,7 @@
                   </el-select>
                 </li>
               </ul>
-            </div>
+            </div>-->
             <!--表格-->
             <div class="table_wrap">
               <el-table

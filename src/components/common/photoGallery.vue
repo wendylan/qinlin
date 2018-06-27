@@ -616,27 +616,28 @@ export default {
             // ];
             // this.citys = this.getCitys(result);
             // this.upImgArr = result;
-            // // 真实数据
-            // if (this.upImgArr.length) {
-            //     return;
-            // }
-            // let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            // let upinfo = {
-            //     uid: uid,
-            //     ptype: "SK"
-            // };
-            // api
-            //     .postApi("/GetImg", upinfo)
-            //     .then(res => {
-            //         console.log(res.data);
-            //         let result = res.data;
-            //         this.citys = this.getCitys(result);
-            //         this.upImgArr = result;
-            //         console.log("upimginfo", this.upImgArr);
-            //     })
-            //     .catch(res => {
-            //         console.log(res);
-            //     });
+
+            // 真实数据
+            if (this.upImgArr.length) {
+                return;
+            }
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let upinfo = {
+                uid: uid,
+                ptype: "SK"
+            };
+            api
+                .postApi("/GetImg", upinfo)
+                .then(res => {
+                    console.log(res.data);
+                    let result = res.data;
+                    this.citys = this.getCitys(result);
+                    this.upImgArr = result;
+                    console.log("upimginfo", this.upImgArr);
+                })
+                .catch(res => {
+                    console.log(res);
+                });
         },
         // 区域二级联动
         getCitys(arr) {

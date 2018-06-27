@@ -250,7 +250,7 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
-import { Table, TableColumn, Tabs, TabPane, Button, Message } from "element-ui";
+import { Table, TableColumn, Tabs, TabPane, Button, Message, MessageBox } from "element-ui";
 
 export default {
     name: "planDetail",
@@ -691,7 +691,45 @@ export default {
         },
         // 编辑
         edit() {
-            this.$router.push("./editPlan");
+            let priceSheet = this.priceSheet;
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let sumLock = 0;
+            for (let i = 0; i < priceSheet.length; i++) {
+                api
+                    .postApi("/CheckLock", {
+                        uid: uid,
+                        pdid: priceSheet[i].pdID
+                    })
+                    .then(res => {
+                        if (res.data.IsLock) {
+                            sumLock++;
+                        }
+                        if (i >= priceSheet.length - 1) {
+                            if (sumLock) {
+                                MessageBox.confirm(
+                                    `该方案被预锁,请先解除预锁,是否去解锁？`,
+                                    "提示",
+                                    {
+                                        confirmButtonText: "确定",
+                                        cancelButtonText: "取消",
+                                        type: "warning"
+                                    }
+                                )
+                                    .then(() => {
+                                        this.$router.push('./planList');
+                                    })
+                                    .catch(() => {
+                                        Message.info("已取消操作");
+                                    });
+                            } else {
+                                this.$router.push("./editPlan");
+                            }
+                        }
+                    })
+                    .catch(res => {
+                        console.log(res);
+                    });
+            }
         },
         // 获取角色
         getRole() {

@@ -397,21 +397,25 @@
             type: 'warning',
             message: '当前状态已是' + Status
           });
-        } else if (rows.mState === '正常' && Status === '待安装') {
+        }
+        /* else if (rows.mState === '正常' && Status === '待安装') {
           Message({
             type: 'warning',
             message: '请按正常流程走，当前媒体已安装'
           });
-        } else if (rows.mState === '待安装') {
+        } */
+        else if (rows.mState === '待安装') {
           if (Status === '正常') {
             Message({
               type: 'warning',
-              message: '请完善资产编号'
+              message: '请在亲邻助手中完成安装任务',
+              // message: '请完善资产编号'
             });
           } else {
             Message({
               type: 'warning',
-              message: '需先完成每天安装任务'
+              message: '请在亲邻助手中完成安装任务',
+            //  message: '需先完成每天安装任务'
             });
           }
         } else if (Status === '待安装') {

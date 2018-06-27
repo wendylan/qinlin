@@ -172,12 +172,13 @@
                         <div class="second-wrap box-wrap">
                             <h4>报价单</h4>
                             <div class="panel">
-                                <el-tabs type="border-card" class="baojiadan">
+                                <el-tabs type="border-card" class="baojiadan" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                     <el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
                                         <div class="tab-info">
                                             <div class="pqxx">
                                                 <h4>排期信息</h4>
-                                                <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p>
+                                                <p>{{item.schedules}}</p>
+                                                <!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
                                                 <!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
                                             </div>
                                             <div class="price">
@@ -727,6 +728,8 @@ export default {
     },
     data() {
         return {
+            //加载中
+            loading: true,
             // 判断
             role: "",
             // 当前页
@@ -757,6 +760,7 @@ export default {
             // 选点排期
             setpointArr: [],
             currentSetpoint: [],
+            copyAsidArr: [],
             // 报价单详情
             priceSheet: [],
             // 城市过滤结果
@@ -768,7 +772,7 @@ export default {
             //选点排期资源名称搜索
             keyword: "",
             selectRecName: "1",
-            imgOrder: '',
+            imgOrder: "",
             //物料信息
             materialInfo: [],
             // 上刊报告Arr
@@ -1103,7 +1107,7 @@ export default {
         // 选点排期
         this.getSetPoint();
         // 报价单
-        this.getPriceData();
+        // this.getPriceData();
     },
     computed: {
         // 上刊报告进度条
@@ -1522,6 +1526,7 @@ export default {
                             data.timeRange = time;
                         }
                         // 选点排期
+                        this.copyAsidArr = JSON.parse(JSON.stringify(result));
                         this.setpointArr = result;
                         this.currentSetpoint = this.setpointArr;
                         // 物料信息
@@ -1555,7 +1560,7 @@ export default {
                 .postApi("/GetImg", upinfo)
                 .then(res => {
                     console.log(res.data);
-                    let result = this.setpointArr;
+                    let result = this.copyAsidArr;
                     // 初始图片
                     this.upLoadImg = res.data;
                     // 上刊数据(组合图片)
@@ -1593,7 +1598,7 @@ export default {
                 .postApi("/GetImg", downinfo)
                 .then(res => {
                     console.log(res.data);
-                    let result = this.setpointArr;
+                    let result = this.copyAsidArr;
                     this.downImg = res.data;
                     // 下刊数据(组合图片)
                     result = this.constructImg(result, this.downImg, "XK");
@@ -1653,6 +1658,68 @@ export default {
                 res.photoFormat = "JPG/TIF/AI/PSD/CDR";
             }
             console.log("reuslt222-------", result);
+            return result;
+        },
+        // 获取过滤选点排期以便在报价单一栏显示排期信息
+        getSchedules(asidArr) {
+            // 组装数据
+            let result = [];
+            if (!result.length) {
+                let obj = {
+                    rID: asidArr[0].rID,
+                    ds: dateFormat.toDate(asidArr[0].lStar),
+                    de: dateFormat.toDate(asidArr[0].lEnd),
+                    asidlist: "",
+                    mNum: ""
+                };
+                result.push(obj);
+            }
+            // 组合asid
+            for (let res of result) {
+                let asIDs = "";
+                let mNum = 0;
+                for (let init of asidArr) {
+                    let resRID = res.rID.toString().substring(0, 4);
+                    let dataRID = init.rID.toString().substring(0, 4);
+                    let start = dateFormat.toDate(init.lStar);
+                    let end = dateFormat.toDate(init.lEnd);
+                    let resObj = {
+                        rID: init.rID,
+                        ds: start,
+                        de: end,
+                        asidlist: "",
+                        mNum: ""
+                    };
+                    if (resRID == dataRID && res.ds == start && res.de == end) {
+                        if (asIDs === "") {
+                            asIDs = init.asID.toString();
+                            mNum = 1;
+                        } else {
+                            asIDs = asIDs + "," + init.asID;
+                            mNum++;
+                        }
+                    } else {
+                        let door = 1;
+                        for (let data of result) {
+                            if (
+                                data.rID == init.rID &&
+                                data.ds == start &&
+                                data.de == end
+                            ) {
+                                door = 0;
+                            }
+                        }
+                        if (door) {
+                            result.push(resObj);
+                        }
+                    }
+                }
+                res.asidlist = asIDs;
+                res.mNum = mNum;
+
+                console.log("asidS", asIDs);
+            }
+            console.log("result-------------", result);
             return result;
         },
         // 区域二级联动
@@ -1883,7 +1950,16 @@ export default {
                                         }
                                     }
                                 }
-                                this.priceSheet = arr;
+                                // 整合排期信息
+                                let asidRes = this.getSchedules(
+                                    this.copyAsidArr
+                                );
+                                // 整合排期信息并且渲染页面
+                                this.priceSheet = this.setSchedules(
+                                    arr,
+                                    asidRes
+                                );
+                                this.loading = false;
                             } else {
                                 Message.warning(res.data.MSG);
                             }
@@ -1895,6 +1971,39 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
+        },
+        // 整合排期信息
+        setSchedules(arr, asidRes) {
+            for (let arrData of arr) {
+                let schedules = "";
+                for (let asid of asidRes) {
+                    let arrDataRID = arrData.rID.toString().substring(0, 4);
+                    let dataRID = asid.rID.toString().substring(0, 4);
+                    if (arrDataRID == dataRID) {
+                        if (schedules == "") {
+                            schedules =
+                                asid.ds +
+                                "-" +
+                                asid.de +
+                                "(" +
+                                asid.mNum +
+                                "面)";
+                        } else {
+                            schedules +=
+                                asid.ds +
+                                "-" +
+                                asid.de +
+                                "(" +
+                                asid.mNum +
+                                "面)";
+                        }
+                    }
+                }
+                console.log("schedules----------", schedules);
+                arrData.schedules = schedules;
+            }
+            console.log("arrschedules--------------", arr);
+            return arr;
         },
         // 城市转换为中文
         cityToText(rid) {
@@ -2183,6 +2292,7 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     if (res.data.SysCode == 400200) {
+                        Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.upReportArr) {
                             if (data.asID == this.upLoadData.ptid) {
@@ -2204,7 +2314,6 @@ export default {
                         this.upReportArr.push();
                         // this.changeUpPage(this.currUpPage);
                     }
-                    Message.success(res.data.MSG);
                 })
                 .catch(res => {
                     console.log(res);
@@ -2228,8 +2337,8 @@ export default {
                 .postApi("/SetImg", info)
                 .then(res => {
                     console.log(res.data);
-                    Message.success(res.data.MSG);
                     if (res.data.SysCode == 400200) {
+                        Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.downReportArr) {
                             if (data.asID == this.upLoadData.ptid) {
@@ -2268,31 +2377,46 @@ export default {
                 .postApi("/SetImg", info)
                 .then(res => {
                     console.log(res.data);
-                     Message.success(res.data.MSG);
                     // 实时更新进度条
-                    if(res.data.SysCode ==400200){
+                    if (res.data.SysCode == 400200) {
+                        Message.success(res.data.MSG);
                         if (type == "SK") {
-                            for (let i=0; i<this.upReportArr.length; i++) {
+                            for (let i = 0; i < this.upReportArr.length; i++) {
                                 if (this.upReportArr[i].asID == file.ptid) {
-                                    if (this.upReportArr[i].upImgArr.length == 1) {
+                                    if (
+                                        this.upReportArr[i].upImgArr.length == 1
+                                    ) {
                                         this.upReportArr[i].upImgArr = [];
                                         this.upReportArr.push();
                                         break;
-                                    }else{
-                                        this.upReportArr[i].upImgArr.splice(i, 1);
+                                    } else {
+                                        this.upReportArr[i].upImgArr.splice(
+                                            i,
+                                            1
+                                        );
                                         this.upReportArr.push();
                                     }
                                 }
                             }
                         } else {
-                            for (let i=0; i<this.downReportArr.length; i++) {
+                            for (
+                                let i = 0;
+                                i < this.downReportArr.length;
+                                i++
+                            ) {
                                 if (this.downReportArr[i].asID == file.ptid) {
-                                    if (this.downReportArr[i].downImgArr.length == 1) {
+                                    if (
+                                        this.downReportArr[i].downImgArr
+                                            .length == 1
+                                    ) {
                                         this.downReportArr[i].downImgArr = [];
                                         this.downReportArr.push();
                                         break;
-                                    }else{
-                                        this.downReportArr[i].downImgArr.splice(i, 1);
+                                    } else {
+                                        this.downReportArr[i].downImgArr.splice(
+                                            i,
+                                            1
+                                        );
                                         this.downReportArr.push();
                                     }
                                 }
@@ -2535,9 +2659,9 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 
 .plan-panel {
     /* position: absolute;
-         top: 190px;
-         width: 100%;
-         left: 0;*/
+            top: 190px;
+            width: 100%;
+            left: 0;*/
     /*width: 100%;*/
     margin-top: -40px;
     padding-left: 60px;
@@ -2617,7 +2741,6 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 .el-table tr {
     height: 44px;
 }
-
 
 /deep/ .el-form-item__content {
     line-height: 46px;
@@ -3128,7 +3251,7 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 }
 
 /*.up-loader-Imgpanel:nth-child(4) {
-                  margin-left: 0;
+                    margin-left: 0;
                 }*/
 
 /*上传图片*/
@@ -3512,7 +3635,7 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 
 .filter-input ul {
     /* display: flex;
-         align-items: center;*/
+            align-items: center;*/
 }
 
 .filter-input ul li {
@@ -3698,9 +3821,8 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
 }
 
 /deep/ .el-table__row td:nth-child(2) .cell span {
-  width: 225px;
+    width: 225px;
 }
-
 
 /deep/ .plan-select .el-input__inner {
     width: 180px;
@@ -3803,10 +3925,10 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
     }
 
     /*.up-loader-Imgpanel + .up-loader-Imgpanel {
-          margin-left: 54px;
+            margin-left: 54px;
         }*/
     /*.up-loader-Imgpanel:nth-child(5) {
-          margin-left: 0;
+            margin-left: 0;
         }*/
     .plan-title .handleBtn {
         position: absolute;
@@ -3824,8 +3946,8 @@ MessageBox.confirm('是否取消中止 ' + recName + ' 在 ' + schedules + ' 的
         width: 15%;
     }
 
-  .imgs-box{
-    padding: 0 90px;
-  }
+    .imgs-box {
+        padding: 0 90px;
+    }
 }
 </style>
