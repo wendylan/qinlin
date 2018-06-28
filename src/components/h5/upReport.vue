@@ -109,7 +109,7 @@
                             </div>
                             <div class="typeOfRec" v-if="isActive">
                                 <div>
-                                    <div class="picBox" v-for="(up, upIndex) of currUpReportArr" :key="up.asID"  @mouseenter="showPreImg = upIndex" @mouseleave="showPreImg = null">
+                                    <div class="picBox" v-for="(up, upIndex) of currUpReportArr" :key="up.asID" @mouseenter="showPreImg = upIndex" @mouseleave="showPreImg = null">
                                         <el-carousel :autoplay="false" trigger="click">
                                             <el-carousel-item v-for="(item, index) in up.upImgArr" :key="index">
                                                 <img :src="item.url" alt="">
@@ -324,7 +324,11 @@ export default {
             let arr = this.upReportArr;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currUpReportArr = [];
@@ -338,7 +342,11 @@ export default {
             let arr = this.imgInfo;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currImgInfo = [];
@@ -710,14 +718,21 @@ export default {
                                 // 上刊数据(组合图片)
                                 resArr = this.constructImg(resArr, upImginfo);
                                 this.upReportArr = resArr;
-                                this.currUpReportArr = JSON.parse(JSON.stringify(this.upReportArr));
+                                this.currUpReportArr = JSON.parse(
+                                    JSON.stringify(this.upReportArr)
+                                );
                                 this.changeUpPage(1);
                                 console.log("upimginfo", this.upReportArr);
                                 // 上刊数据(组合图片按图片分)
                                 this.imgInfo = this.initImg(resArr, upImginfo);
-                                this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                this.currImgInfo = JSON.parse(
+                                    JSON.stringify(this.imgInfo)
+                                );
                                 this.changeDownPage(1);
-                                console.log('imgInfo----------------', this.imgInfo);
+                                console.log(
+                                    "imgInfo----------------",
+                                    this.imgInfo
+                                );
                             })
                             .catch(res => {
                                 console.log(res);
@@ -1320,9 +1335,9 @@ export default {
     top: -4px;
 }
 
-/deep/ .el-card__body{
-  display: flex;
-  flex-wrap: wrap;
+/deep/ .el-card__body {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 /*1440*/

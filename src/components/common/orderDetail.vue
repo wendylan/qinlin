@@ -2391,7 +2391,10 @@ export default {
                                         this.upReportArr.push();
                                         break;
                                     } else {
-                                        this.upReportArr[i].upImgArr.splice(i, 1);
+                                        this.upReportArr[i].upImgArr.splice(
+                                            i,
+                                            1
+                                        );
                                         this.upReportArr.push();
                                     }
                                 }

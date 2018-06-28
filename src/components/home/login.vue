@@ -1,183 +1,185 @@
 <template>
-  <div class="login_wrap">
-    <div class="loginBox">
-      <div class="logo">
-        <img src="../../assets/images/login_logo.png" alt="">
-        <p>致力于成为中国最有效的社区营销服务商</p>
-      </div>
-      <div class="login">
-        <ul class="loginType">
-          <li v-bind:class="{active:isActive}"
-              @click="loginType"
-          >密码登录
-          </li>
-          <li v-bind:class="{active:!isActive}"
-              @click="loginType">扫码登录
-          </li>
-        </ul>
-        <div class="loginInput" v-if="isActive">
-          <div class="username">
-            <input type="text" placeholder="账户" v-model="username">
-            <img src="../../assets/images/usericon.png" alt="">
-          </div>
-          <div class="password">
-            <input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
-            <img src="../../assets/images/passicon.png" alt="">
-          </div>
-          <div class="remeberUser">
-            <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
-          </div>
-          <div class="loginBtn">
-            <button id="login" @click="doLogin()">登&nbsp;录</button>
-          </div>
-        </div>
-        <div class="weixinLogin" v-if="!isActive">
-          <div class="weixinCode">
-            <img src="../../assets/images/code.jpg" alt="">
-            <p>打开微信扫一扫登录</p>
-          </div>
-        </div>
-        <div class="tip">
-          <p>温馨提示：加盟城市请(<a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
-        </div>
-      </div>
-    </div>
-    <!--背景canvas特效 -->
-    <!-- <div>
+	<div class="login_wrap">
+		<div class="loginBox">
+			<div class="logo">
+				<img src="../../assets/images/login_logo.png" alt="">
+				<p>致力于成为中国最有效的社区营销服务商</p>
+			</div>
+			<div class="login">
+				<ul class="loginType">
+					<li v-bind:class="{active:isActive}" @click="loginType">密码登录
+					</li>
+					<li v-bind:class="{active:!isActive}" @click="loginType">扫码登录
+					</li>
+				</ul>
+				<div class="loginInput" v-if="isActive">
+					<div class="username">
+						<input type="text" placeholder="账户" v-model="username">
+						<img src="../../assets/images/usericon.png" alt="">
+					</div>
+					<div class="password">
+						<input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
+						<img src="../../assets/images/passicon.png" alt="">
+					</div>
+					<div class="remeberUser">
+						<el-checkbox v-model="remeAccount">记住账号</el-checkbox>
+					</div>
+					<div class="loginBtn">
+						<button id="login" @click="doLogin()">登&nbsp;录</button>
+					</div>
+				</div>
+				<div class="weixinLogin" v-if="!isActive">
+					<div class="weixinCode">
+						<img src="../../assets/images/code.jpg" alt="">
+						<p>打开微信扫一扫登录</p>
+					</div>
+				</div>
+				<div class="tip">
+					<p>温馨提示：加盟城市请(
+						<a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
+				</div>
+			</div>
+		</div>
+		<!--背景canvas特效 -->
+		<!-- <div>
        <canvas id="Mycanvas"></canvas>
      </div>-->
-    <!--背景图片动画-->
-    <div class="backgroundImg">
-      <img src="../../assets/images/loginBg.png" alt="">
-    </div>
-    <div class="footer">
-      <p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
-    </div>
-  </div>
+		<!--背景图片动画-->
+		<div class="backgroundImg">
+			<img src="../../assets/images/loginBg.png" alt="">
+		</div>
+		<div class="footer">
+			<p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
+		</div>
+	</div>
 </template>
 
 <script>
-import { Checkbox, MessageBox, Message } from 'element-ui';
-import utils from '../../js/utils.js';
-import commentFun from '../../js/commentFun.js'
-import api from '../../api/api'
+import { Checkbox, MessageBox, Message } from "element-ui";
+import utils from "../../js/utils.js";
+import commentFun from "../../js/commentFun.js";
+import api from "../../api/api";
 
 export default {
-	name: "login",
-	components:{
-		elCheckbox: Checkbox,
-	},
-	data() {
-		return {
-			loading: false,
-			isActive: true,
-			remeAccount: false,
-			username: '', //lxj
-			password: '', //qinlin888
-			realName: '',
-			checke: false,
-			//背景动画参数
-			/*   circleArr : [],
+    name: "login",
+    components: {
+        elCheckbox: Checkbox
+    },
+    data() {
+        return {
+            loading: false,
+            isActive: true,
+            remeAccount: false,
+            username: "", //lxj
+            password: "", //qinlin888
+            realName: "",
+            checke: false
+            //背景动画参数
+            /*   circleArr : [],
 			WIDTH: '',
 			HEIGHT: '',
 			POINT: 13,
 			canvas: '',
 			context:'',*/
-		}
-	},
-	mounted: function () {
-		//  this.canvanFun()
-		//页面加载调用获取cookie值
-		this.username = utils.getCookie('username');
-		this.password = utils.getCookie('password');
-		if (this.username !== '' && this.password !== '') {
-			this.remeAccount = true;
-		}
-		// 储存行业信息
-		this.getIndustry();
-	},
-	methods: {
-		// 获取所有行业信息并保存
-		getIndustry(){
-			api.getApi('/GetIndustry', {act:'all'}).then(res =>{
-				let arr = res.data;
-				sessionStorage.setItem('industry', JSON.stringify(arr));
-			});
-		},
-		//键盘
-		show: function (ev) {
-			if (ev.keyCode === 13) {
-			this.doLogin();
-			}
-		},
-		//登录
-		doLogin: function () {
-			let name = this.username;
-			let pass = this.password;
-			if (name === '' || name == null) {
-				MessageBox.alert('请输入正确的用户名', '用户登录', {
-					showClose: false,
-					confirmButtonText: '确定',
-				});
-				return;
-			} else if (pass === '' || pass == null) {
-				MessageBox.alert('请输入正确的密码', '用户登录', {
-					showClose: false,
-					confirmButtonText: '确定',
-				});
-				return;
-			}
-			//判断复选框是否勾选，勾选则调用配置cookie方法
-			if (this.remeAccount === true) {
-				utils.setCookie('username', name, 7);
-				utils.setCookie('password', pass, 7);
-			}else{
-				utils.clearCookie()
-			}
-			//接口
-			let loginParams = {username: name, pwd: pass};
-			//    let apiUrl = 'https://beta.qinlinad.com/QADN/Login';
-			let apiUrl = '/Login';
-			api.getApi(apiUrl, loginParams).then(res => {
-			let userMsg = res.data;
-			console.log(res.data);
-			if (!userMsg.SysCode) {
-				sessionStorage.setItem("session_data", JSON.stringify(userMsg));//userMsg.realName
-				if (userMsg.uType === 'SM') {
-					//sessionStorage.getItem("real_name") 获取session的值
-					this.$router.push('/superOperate')
-				} else if (userMsg.uType === 'MD') {
-					this.$router.push('/media')
-				} else if (userMsg.uType === 'BD') {
-          sessionStorage.setItem("username", name);   // 用户为销售时，存起username以便创建方案的时候使用
-					this.$router.push('/sale')
-				} else if (userMsg.uType ==='OP'){
-					this.$router.push('/operate')
-				}
-
-			} else {
-			/* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
+        };
+    },
+    mounted: function() {
+        //  this.canvanFun()
+        //页面加载调用获取cookie值
+        this.username = utils.getCookie("username");
+        this.password = utils.getCookie("password");
+        if (this.username !== "" && this.password !== "") {
+            this.remeAccount = true;
+        }
+        // 储存行业信息
+        this.getIndustry();
+    },
+    methods: {
+        // 获取所有行业信息并保存
+        getIndustry() {
+            api.getApi("/GetIndustry", { act: "all" }).then(res => {
+                let arr = res.data;
+                sessionStorage.setItem("industry", JSON.stringify(arr));
+            });
+        },
+        //键盘
+        show: function(ev) {
+            if (ev.keyCode === 13) {
+                this.doLogin();
+            }
+        },
+        //登录
+        doLogin: function() {
+            let name = this.username;
+            let pass = this.password;
+            if (name === "" || name == null) {
+                MessageBox.alert("请输入正确的用户名", "用户登录", {
+                    showClose: false,
+                    confirmButtonText: "确定"
+                });
+                return;
+            } else if (pass === "" || pass == null) {
+                MessageBox.alert("请输入正确的密码", "用户登录", {
+                    showClose: false,
+                    confirmButtonText: "确定"
+                });
+                return;
+            }
+            //判断复选框是否勾选，勾选则调用配置cookie方法
+            if (this.remeAccount === true) {
+                utils.setCookie("username", name, 7);
+                utils.setCookie("password", pass, 7);
+            } else {
+                utils.clearCookie();
+            }
+            //接口
+            let loginParams = { username: name, pwd: pass };
+            //    let apiUrl = 'https://beta.qinlinad.com/QADN/Login';
+            let apiUrl = "/Login";
+            api
+                .getApi(apiUrl, loginParams)
+                .then(res => {
+                    let userMsg = res.data;
+                    console.log(res.data);
+                    if (!userMsg.SysCode) {
+                        sessionStorage.setItem(
+                            "session_data",
+                            JSON.stringify(userMsg)
+                        ); //userMsg.realName
+                        if (userMsg.uType === "SM") {
+                            //sessionStorage.getItem("real_name") 获取session的值
+                            this.$router.push("/superOperate");
+                        } else if (userMsg.uType === "MD") {
+                            this.$router.push("/media");
+                        } else if (userMsg.uType === "BD") {
+                            sessionStorage.setItem("username", name); // 用户为销售时，存起username以便创建方案的时候使用
+                            this.$router.push("/sale");
+                        } else if (userMsg.uType === "OP") {
+                            this.$router.push("/operate");
+                        }
+                    } else {
+                        /* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
 				showClose: false,
 				confirmButtonText: '确定',
 				});*/
-				Message({
-					message: '用户名或密码错误！',
-					type: 'warning'
-				})
-			}
-			}).catch(err => {
-				console.log(err);
-			});
+                        Message({
+                            message: "用户名或密码错误！",
+                            type: "warning"
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
 
-			/* let joinTime = '2018-04-03 16:21:45.0'
+            /* let joinTime = '2018-04-03 16:21:45.0'
 			console.log(commentFun.spliceFun(joinTime))*/
-
-		},
-		loginType() {
-			this.isActive = !this.isActive;
-		},
-		//生成max和min之间的随机数
-		/*  num (max, _min) {
+        },
+        loginType() {
+            this.isActive = !this.isActive;
+        }
+        //生成max和min之间的随机数
+        /*  num (max, _min) {
 			let min = arguments[1] || 0
 			return Math.floor(Math.random()*(max-min+1)+min)
 		},
@@ -278,95 +280,93 @@ export default {
 			//  document.getElementsByClassName('login_wrap')[0].style.background = "url('"+Mycanvas.toDataURL()+"')"loginWrap
 			}, 30);
 		}*/
-	},
-}
-
+    }
+};
 </script>
 <style scoped>
-
-  /deep/ .el-form-item__content {
-	margin-left: 0 !important;
-  }
-  /*  #Mycanvas{
+/deep/ .el-form-item__content {
+    margin-left: 0 !important;
+}
+/*  #Mycanvas{
       position:absolute;
       z-index:-1;
       top:0;
     }*/
-  .backgroundImg{
+.backgroundImg {
     position: fixed;
     top: 0;
-    bottom:0;
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: -1;
-  }
-  .backgroundImg>img{
+}
+.backgroundImg > img {
     width: 100%;
     height: 100%;
-    animation: kenburns 10s infinite;;
+    animation: kenburns 10s infinite;
     -webkit-animation: kenburns 10s infinite;
     -o-animation: kenburns 10s infinite;
-    -moz-animation:kenburns 10s infinite;
-  }
-  @keyframes kenburns{
+    -moz-animation: kenburns 10s infinite;
+}
+@keyframes kenburns {
     0% {
-      transform: scale(1.1);
-      -webkit-transform: scale(1.1);
-      -o-transform: scale(1.1);
-      -moz-transform: scale(1.1);
+        transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+        -o-transform: scale(1.1);
+        -moz-transform: scale(1.1);
     }
     50% {
-      transform: scale(1.0);
-      -webkit-transform: scale(1.0);
-      -o-transform: scale(1.0);
-      -moz-transform: scale(1.0);
+        transform: scale(1);
+        -webkit-transform: scale(1);
+        -o-transform: scale(1);
+        -moz-transform: scale(1);
     }
     100% {
-      transform: scale(1.1);
-      -webkit-transform: scale(1.1);
-      -o-transform: scale(1.1);
-      -moz-transform: scale(1.1);
+        transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+        -o-transform: scale(1.1);
+        -moz-transform: scale(1.1);
     }
-  }
-  .login_wrap {
+}
+.login_wrap {
     position: fixed;
     width: 100%;
     height: 100%;
-   /* background: url("../../assets/images/loginBg.png") no-repeat;
+    /* background: url("../../assets/images/loginBg.png") no-repeat;
     background-size: cover;*/
-  }
+}
 
-  .logo {
+.logo {
     text-align: center;
     margin-top: 125px;
     margin-bottom: 34px;
-  }
+}
 
-  .logo img {
+.logo img {
     width: 245px;
     margin-bottom: 10px;
-  }
+}
 
-  .logo p {
+.logo p {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.45);
-  }
+}
 
-  .login {
+.login {
     position: relative;
     width: 100%;
     /*display: flex;
     justify-content: center;
     align-items: center;*/
-  }
+}
 
-  .login .loginType {
+.login .loginType {
     width: 100%;
     text-align: center;
     font-size: 16px;
-  }
+}
 
-  .loginType li {
+.loginType li {
     display: inline-block;
     width: 100px;
     height: 40px;
@@ -375,16 +375,17 @@ export default {
     cursor: pointer;
     margin-right: 40px;
     margin-left: 40px;
-  }
+}
 
-  /*选中*/
-  .active {
-    border-bottom: 2px solid #1890FF;
-    color: #1890FF;
-  }
+/*选中*/
+.active {
+    border-bottom: 2px solid #1890ff;
+    color: #1890ff;
+}
 
-  .username input, .password input {
-    border: 1px solid #D9D9D9 !important;
+.username input,
+.password input {
+    border: 1px solid #d9d9d9 !important;
     border-radius: 4px;
     width: 368px;
     height: 38px;
@@ -393,84 +394,87 @@ export default {
     padding-left: 30px;
     font-size: 16px;
     box-sizing: border-box;
-  }
+}
 
-  .username, .password, .remeberUser, .loginBtn {
+.username,
+.password,
+.remeberUser,
+.loginBtn {
     width: 368px;
     margin: 0 auto;
     text-align: center;
     position: relative;
-  }
+}
 
-  .password {
+.password {
     margin-top: 24px;
     margin-bottom: 24px;
-  }
+}
 
-  .loginInput img {
+.loginInput img {
     position: absolute;
     left: 10px;
     top: 13px;
     width: 12px;
-  }
+}
 
-  input::placeholder {
+input::placeholder {
     color: rgba(0, 0, 0, 0.25);
-  }
+}
 
-  .remeberUser {
+.remeberUser {
     font-size: 14px;
     text-align: left;
     margin-bottom: 24px;
-  }
+}
 
-  /deep/ .el-checkbox {
+/deep/ .el-checkbox {
     color: #666;
-  }
+}
 
-  /deep/ .el-checkbox__input.is-checked + .el-checkbox__label {
-    color: #1890FF;
-  }
+/deep/ .el-checkbox__input.is-checked + .el-checkbox__label {
+    color: #1890ff;
+}
 
-  .loginBtn button {
+.loginBtn button {
     width: 100%;
     height: 40px;
     color: #ffffff;
     font-size: 16px;
     border: none;
-    background-color: #1890FF;
+    background-color: #1890ff;
     outline: none;
     cursor: pointer;
     border-radius: 4px;
-  }
+}
 
-  .tip {
+.tip {
     margin: 25px auto;
     width: 100%;
-  }
+}
 
-  .tip p {
+.tip p {
     text-align: center;
     font-size: 12px;
     color: #999999;
-  }
+}
 
-  .tip p a {
+.tip p a {
     font-size: 12px;
-    color: #1890FF;
-  }
+    color: #1890ff;
+}
 
-  /*扫码登录*/
-  .weixinLogin {
+/*扫码登录*/
+.weixinLogin {
     width: 100%;
     text-align: center;
-  }
+}
 
-  .weixinLogin img {
+.weixinLogin img {
     margin-bottom: 10px;
-  }
+}
 
-  .footer {
+.footer {
     width: 100%;
     text-align: center;
     position: absolute;
@@ -478,7 +482,5 @@ export default {
     left: 0;
     font-size: 12px;
     color: rgba(0, 0, 0, 0.45);
-  }
-
-
+}
 </style>

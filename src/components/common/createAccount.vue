@@ -224,7 +224,7 @@ export default {
                 ],
                 boss: [{ validator: validateBoss, trigger: "blur" }]
             },
-            CityMultiple: true,
+            CityMultiple: true
         };
     },
     mounted() {
@@ -233,36 +233,34 @@ export default {
         this.getInitEditInfo();
     },
     methods: {
-      //选择权限城市
-      handleSelectCity(val){
-        console.log('添加权限城市',val)
-        console.log('PermissionCity',this.accountForm.PermissionCity)
-        for(let i=0;i<val.length;i++){
-          if(val[i] === '0'){
-            this.throwCity = [
-              { value: "0", label: "全国" },
-            ]
-            this.accountForm.PermissionCity = ['0']
-          }
-        }
-      },
-      removeCity(val){
-        console.log('移除权限城市',val)
-        if(val === '0' || val === '全国'){
-          // this.CityMultiple = true
-          this.throwCity = [
-            { value: "0", label: "全国" },
-            { value: "110100", label: "北京" },
-            { value: "310100", label: "上海" },
-            { value: "440100", label: "广州" },
-            { value: "440300", label: "深圳" },
-            { value: "500100", label: "重庆" },
-            { value: "510100", label: "成都" },
-            { value: "330100", label: "杭州" },
-            { value: "340100", label: "合肥" },
-          ];
-        }
-      },
+        //选择权限城市
+        handleSelectCity(val) {
+            console.log("添加权限城市", val);
+            console.log("PermissionCity", this.accountForm.PermissionCity);
+            for (let i = 0; i < val.length; i++) {
+                if (val[i] === "0") {
+                    this.throwCity = [{ value: "0", label: "全国" }];
+                    this.accountForm.PermissionCity = ["0"];
+                }
+            }
+        },
+        removeCity(val) {
+            console.log("移除权限城市", val);
+            if (val === "0" || val === "全国") {
+                // this.CityMultiple = true
+                this.throwCity = [
+                    { value: "0", label: "全国" },
+                    { value: "110100", label: "北京" },
+                    { value: "310100", label: "上海" },
+                    { value: "440100", label: "广州" },
+                    { value: "440300", label: "深圳" },
+                    { value: "500100", label: "重庆" },
+                    { value: "510100", label: "成都" },
+                    { value: "330100", label: "杭州" },
+                    { value: "340100", label: "合肥" }
+                ];
+            }
+        },
         // 输入账号获取上级信息(远程搜索)
         querySearchAsync(queryString, callback) {
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -295,15 +293,15 @@ export default {
             // let uWho =  '440100,110100'
             if (uWho == "0") {
                 this.throwCity = [
-                  { value: "0", label: "全国" },
-                  { value: "110100", label: "北京" },
-                  { value: "310100", label: "上海" },
-                  { value: "440100", label: "广州" },
-                  { value: "440300", label: "深圳" },
-                  { value: "500100", label: "重庆" },
-                  { value: "510100", label: "成都" },
-                  { value: "330100", label: "杭州" },
-                  { value: "340100", label: "合肥" },
+                    { value: "0", label: "全国" },
+                    { value: "110100", label: "北京" },
+                    { value: "310100", label: "上海" },
+                    { value: "440100", label: "广州" },
+                    { value: "440300", label: "深圳" },
+                    { value: "500100", label: "重庆" },
+                    { value: "510100", label: "成都" },
+                    { value: "330100", label: "杭州" },
+                    { value: "340100", label: "合肥" }
                 ];
             } else {
                 let uWhoArr = uWho.split(","); // ['440100','110100']
