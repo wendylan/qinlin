@@ -770,8 +770,10 @@ export default {
                     } else {
                         let door = 1;
                         for (let data of result) {
+                            let dataR = data.rID.toString().substring(0, 4);
+                            let initR = init.rID.toString().substring(0, 4);
                             if (
-                                data.rID == init.rID &&
+                                dataR == initR &&
                                 data.ds == start &&
                                 data.de == end
                             ) {

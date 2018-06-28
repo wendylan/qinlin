@@ -2914,36 +2914,155 @@
               return "";
           }
       },
+    //   // 添加是否被占的状态
+    //   checkLock(tableData) {
+    //       // CheckADS
+    //       // uid         int【必填】         当前账户UserID
+    //       // asid        int【必填】         投放广告点位状态查询
+    //       let uid = this.sessionData.uID;
+    //       for (let i = 0; i < tableData.length; i++) {
+    //           tableData[i].lState = 0;
+    //           this.$set(tableData[i], "lState", 0);
+    //           api.getApi("/CheckADS", { uid: uid, asid: tableData[i].asIDs })
+    //               .then(res => {
+    //                   console.log('CheckADS',res.data);
+    //                   if (res.data.length) {
+    //                       this.$set(tableData[i], "lState", 1);
+    //                   }
+    //                   if (i >= tableData.length - 1) {
+    //                       console.log("tableData------------", tableData);
+    //                       this.shopingList = tableData;
+    //                       this.shopLoading = false
+    //                       this.computeMedia_AD()            // 统计购物车媒体数和面数
+    //                       this.getBadeNumberByShopList()
+    //                       this.FanganInfoByApid()           //获取方案详情
+    //                   }
+    //                   console.log();
+    //               })
+    //               .catch(res => {
+    //                   console.log(res);
+    //               });
+    //       }
+    //   },
       // 添加是否被占的状态
       checkLock(tableData) {
-          // CheckADS
-          // uid         int【必填】         当前账户UserID
-          // asid        int【必填】         投放广告点位状态查询
-          let uid = this.sessionData.uID;
-          for (let i = 0; i < tableData.length; i++) {
-              tableData[i].lState = 0;
-              this.$set(tableData[i], "lState", 0);
-              api.getApi("/CheckADS", { uid: uid, asid: tableData[i].asIDs })
-                  .then(res => {
-                      console.log('CheckADS',res.data);
-                      if (res.data.length) {
-                          this.$set(tableData[i], "lState", 1);
-                      }
-                      if (i >= tableData.length - 1) {
-                          console.log("tableData------------", tableData);
-                          this.shopingList = tableData;
-                          this.shopLoading = false
-                          this.computeMedia_AD()            // 统计购物车媒体数和面数
-                          this.getBadeNumberByShopList()
-                          this.FanganInfoByApid()           //获取方案详情
-                      }
-                      console.log();
-                  })
-                  .catch(res => {
-                      console.log(res);
-                  });
-          }
-      },
+		  // uid         int【必填】         当前账户UserID
+		  // ds          String【必填】      广告开始投放日期
+		  // de          String【必填】      广告投放结束日期
+		  // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
+			let resultArr = this.constructData(tableData);
+			let holdArr = [];
+			for(let i = 0; i< resultArr.length; i++){
+				api.postApi('/CheckPD', resultArr[i]).then(res =>{
+					console.log(res.data);
+					if(res.data.length){
+						holdArr.push(res.data);
+					}
+					if(i>resultArr.length-1){
+						let hightArr = [];
+						let lowArr = [];
+						for(let tab of tableData){
+							this.$set(tab, "lState", 0);
+							for(let data of holdArr){
+								if(data.asID == tab.asID){
+									this.$set(tab, "lState", 1);
+									break;
+								}
+							}
+							if(tab.lState){
+								hightArr.push(tab);
+							}else{
+								lowArr.push(tab);
+							}
+						}
+						tableData = hightArr.concat(lowArr);
+						console.log("tableData------------", tableData);
+
+						this.shopingList = tableData;
+						this.shopLoading = false
+						this.computeMedia_AD()            // 统计购物车媒体数和面数
+						this.getBadeNumberByShopList()
+						this.FanganInfoByApid()           //获取方案详情
+					}
+				});
+			}
+        //   // CheckADS
+        //   // uid         int【必填】         当前账户UserID
+        //   // asid        int【必填】         投放广告点位状态查询
+        //   let uid = this.sessionData.uID;
+        //   for (let i = 0; i < tableData.length; i++) {
+        //       tableData[i].lState = 0;
+        //       this.$set(tableData[i], "lState", 0);
+        //       api.getApi("/CheckADS", { uid: uid, asid: tableData[i].asIDs })
+        //           .then(res => {
+        //               console.log('CheckADS',res.data);
+        //               if (res.data.length) {
+        //                   this.$set(tableData[i], "lState", 1);
+        //               }
+        //               if (i >= tableData.length - 1) {
+        //                   console.log("tableData------------", tableData);
+        //                   this.shopingList = tableData;
+        //                   this.shopLoading = false
+        //                   this.computeMedia_AD()            // 统计购物车媒体数和面数
+        //                   this.getBadeNumberByShopList()
+        //                   this.FanganInfoByApid()           //获取方案详情
+        //               }
+        //               console.log();
+        //           })
+        //           .catch(res => {
+        //               console.log(res);
+        //           });
+        //   }
+	  },
+	  constructData(tableData){
+		  // uid         int【必填】         当前账户UserID
+		  // ds          String【必填】      广告开始投放日期
+		  // de          String【必填】      广告投放结束日期
+		  // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
+		  let resultArr = [];
+			if(!resultArr.length){
+				let start = this.formatTime(tableData[0].pbStar);
+				let end = this.formatTime(tableData[0].pbEnd);
+				let obj = {
+					uid : this.sessionData.uID,
+					ds : start,
+					de: end,
+					asidlist: ''
+				};
+				resultArr.push(obj);
+			}
+			for(let res of resultArr){
+				let asIDs = '';
+				for(let data of tableData){
+					let start = this.formatTime(data.pbStar);
+					let end = this.formatTime(data.pbEnd);
+					let resobj = {
+						uid : this.sessionData.uID,
+						ds : start,
+						de: end,
+						asidlist: ''
+					};
+					if(res.ds == start && res.de == end){
+						if(asIDs ==''){
+							asIDs = data.asID;
+						}else{
+							asIDs = asIDs + ','+ data.asID;
+						}
+					}else{
+						let door = 1;
+						for(let init  of  resultArr){
+							if(init.ds == start && init.de == end){
+								door = 0;
+							}
+						}
+						if(door){
+							resultArr.push(resobj);
+						}
+					}
+				}
+			}
+			return resultArr;
+	  },
       // 购物车删除被占点位
       shopDeleteRow(shopSow){
         for (let j = 0; j < this.shopingList.length;) {
