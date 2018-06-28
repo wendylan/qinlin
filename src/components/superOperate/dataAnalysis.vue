@@ -196,29 +196,29 @@ export default {
     data() {
         return {
             /*  containData: [
-            {
-              path: '/superOperate/clientList',
-              name: '客户管理',
-              smallOpera: '查看',
-              operationName: '创建客户',
-              operationPath: '/superOperate/createClient'
-            },
-            {
-              path: '/superOperate/mediaList',
-              name: '媒体管理',
-              smallOpera: '查看',
-              operationName: '录入媒体',
-              operationPath: '/superOperate/mediaInput'
-            },
-            {
-              path: '/superOperate/planList',
-              name: '方案管理',
-              smallOpera: '查看',
-              operationName: '创建方案',
-              operationPath: '/superOperate/createPlan'
-            },
-            {path: '/superOperate/orderList', name: '订单管理', smallOpera: '查看', operationName: '', operationPath: ''},
-          ],*/
+        {
+          path: '/superOperate/clientList',
+          name: '客户管理',
+          smallOpera: '查看',
+          operationName: '创建客户',
+          operationPath: '/superOperate/createClient'
+        },
+        {
+          path: '/superOperate/mediaList',
+          name: '媒体管理',
+          smallOpera: '查看',
+          operationName: '录入媒体',
+          operationPath: '/superOperate/mediaInput'
+        },
+        {
+          path: '/superOperate/planList',
+          name: '方案管理',
+          smallOpera: '查看',
+          operationName: '创建方案',
+          operationPath: '/superOperate/createPlan'
+        },
+        {path: '/superOperate/orderList', name: '订单管理', smallOpera: '查看', operationName: '', operationPath: ''},
+      ],*/
             isActive1: true,
             isActive2: true,
             //广告主方案数情况
@@ -313,8 +313,8 @@ export default {
             //社区增长趋势
             let houseCharts = this.$echarts.init(this.$refs.houseCharts);
             /*// 请求获取数据
-        this.axios.get('/url').then((data) => {
-        this.chart.setOption({
+    this.axios.get('/url').then((data) => {
+    this.chart.setOption({
 
         })
         });*/
@@ -414,8 +414,8 @@ export default {
             //广告门增长趋势
             let adDoorCharts = this.$echarts.init(this.$refs.adDoorCharts);
             /*// 请求获取数据
-        this.axios.get('/url').then((data) => {
-        this.chart.setOption({
+    this.axios.get('/url').then((data) => {
+    this.chart.setOption({
 
         })
         });*/
@@ -515,11 +515,11 @@ export default {
             //订单数量分布情况
             let orderCharts = this.$echarts.init(this.$refs.orderCharts);
             /*// 请求获取数据
-        this.axios.get('/url').then((data) => {
-        this.chart.setOption({
+    this.axios.get('/url').then((data) => {
+    this.chart.setOption({
 
-        })
-        });*/
+    })
+    });*/
             orderCharts.setOption({
                 color: ["#3398DB"],
                 tooltip: {
@@ -624,10 +624,10 @@ export default {
             //客户行业分布情况-订单金额
             let priceCharts = this.$echarts.init(this.$refs.priceCharts);
             /*// 请求获取数据
-        this.axios.get('/url').then((data) => {
-        this.chart.setOption({
-        })
-        });*/
+    this.axios.get('/url').then((data) => {
+    this.chart.setOption({
+    })
+    });*/
             let option1 = {
                 tooltip: {
                     trigger: "item",
@@ -725,10 +725,10 @@ export default {
             //客户行业分布情况-订单数量
             let numberCharts = this.$echarts.init(this.$refs.numberCharts);
             /*// 请求获取数据
-        this.axios.get('/url').then((data) => {
-        this.chart.setOption({
-        })
-        });*/
+    this.axios.get('/url').then((data) => {
+    this.chart.setOption({
+    })
+    });*/
             let option2 = {
                 tooltip: {
                     trigger: "item",
@@ -897,9 +897,11 @@ export default {
     padding: 0 10px;
     box-sizing: border-box;
 }
+
 .pop-data li {
     margin-bottom: 5px;
 }
+
 .pop-data li em {
     float: right;
 }
@@ -912,13 +914,15 @@ export default {
     margin-bottom: 20px;
     box-sizing: border-box;
 }
+
 .numbers span:last-child li {
     border-right: none;
 }
+
 /*.numbers li:last-child {
-    border-right: none;
-  }
-*/
+      border-right: none;
+    }
+  */
 .numbers li p {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.45);
@@ -968,6 +972,7 @@ export default {
     width: 93%;
     height: 418px;
 }
+
 .charts2 > div {
     height: 477px;
 }
@@ -993,12 +998,12 @@ export default {
 }
 
 /* .charts3 .title2 {
-     position: absolute;
-     z-index: 2;
-     top: 174px;
-     left: 16.5%;
-     !*width: 100%;*!
-   }*/
+       position: absolute;
+       z-index: 2;
+       top: 174px;
+       left: 16.5%;
+       !*width: 100%;*!
+     }*/
 
 .charts3 .title p {
     font-size: 14px;
