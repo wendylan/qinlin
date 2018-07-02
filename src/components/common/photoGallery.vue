@@ -58,7 +58,7 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(upimg,index) of upImgArr" :key="upimg.pID">
+                                        <div class="photoCard" v-for="(upimg,index) of currUpImgArr" :key="upimg.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
                                                 <img :src="upimg.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
@@ -96,7 +96,9 @@
                                         </div>
                                         <!--页码-->
                                         <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination> -->
+                                            <el-pagination small background :current-page="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upImgArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -118,7 +120,7 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(downimg,index) of downImgArr" :key="downimg.pID">
+                                        <div class="photoCard" v-for="(downimg,index) of currDownImgArr" :key="downimg.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
                                                 <img :src="downimg.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
@@ -156,7 +158,9 @@
                                         </div>
                                         <!--页码-->
                                         <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+											</el-pagination> -->
+                                            <el-pagination small background :current-page="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downImgArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -274,43 +278,43 @@
                             </div>
                         </el-tab-pane>
                         <!-- <el-tab-pane label="录单" name="fifth">
-                <div class="mediaList_container">
-                    <div style="display:inline-block" v-if="ludan">
-                        <span>
-                            <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
-                                <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
-                                    <el-option label="任务名称" value="1"></el-option>
-                                    <el-option label="创建人" value="2"></el-option>
-                                </el-select>
-                            </el-input>
-                        </span>
-                        <span>
-                            <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                        </span>
-                    </div>
-                    <div class="table_wrap">
-                        <el-table border width="98%" :data="caseList" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
-                            <el-table-column label="任务名称" min-width="18.3%">
-                                <template slot-scope="scope">
-                                    <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="caseType" label="任务类型" min-width="11%" :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]" :filter-method="filterCaseType" :filter-multiple="false">
-                            </el-table-column>
-                            <el-table-column prop="dwNum" label="点位数量" min-width="11%">
-                            </el-table-column>
-                            <el-table-column prop="uploadImg" label="已上传图片" min-width="11%">
-                            </el-table-column>
-                            <el-table-column prop="creater" label="创建人" min-width="11%">
-                            </el-table-column>
-                            <el-table-column prop="account" label="创建账号" min-width="13.8%">
-                            </el-table-column>
-                            <el-table-column prop="createDate" label="创建时间" min-width="11.3%">
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-            </el-tab-pane> -->
+                            <div class="mediaList_container">
+                                <div style="display:inline-block" v-if="ludan">
+                                    <span>
+                                        <el-input placeholder="请输入内容" v-model="keyword2" class="input-with-select">
+                                            <el-select v-model="ludanSelect" slot="prepend" placeholder="请选择">
+                                                <el-option label="任务名称" value="1"></el-option>
+                                                <el-option label="创建人" value="2"></el-option>
+                                            </el-select>
+                                        </el-input>
+                                    </span>
+                                    <span>
+                                        <el-button type="primary" icon="el-icon-search">搜索</el-button>
+                                    </span>
+                                </div>
+                                <div class="table_wrap">
+                                    <el-table border width="98%" :data="caseList" style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
+                                        <el-table-column label="任务名称" min-width="18.3%">
+                                            <template slot-scope="scope">
+                                                <span @click="newPath" style="color: #1890ff;cursor: pointer">{{scope.row.caseName}}</span>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column prop="caseType" label="任务类型" min-width="11%" :filters="[{text: '上刊', value: '上刊'}, {text: '下刊', value: '下刊'}]" :filter-method="filterCaseType" :filter-multiple="false">
+                                        </el-table-column>
+                                        <el-table-column prop="dwNum" label="点位数量" min-width="11%">
+                                        </el-table-column>
+                                        <el-table-column prop="uploadImg" label="已上传图片" min-width="11%">
+                                        </el-table-column>
+                                        <el-table-column prop="creater" label="创建人" min-width="11%">
+                                        </el-table-column>
+                                        <el-table-column prop="account" label="创建账号" min-width="13.8%">
+                                        </el-table-column>
+                                        <el-table-column prop="createDate" label="创建时间" min-width="11.3%">
+                                        </el-table-column>
+                                    </el-table>
+                                </div>
+                            </div>
+                        </el-tab-pane> -->
                     </el-tabs>
                     <!--缩略图对话框-->
                     <el-dialog :visible.sync="dialogVisible">
@@ -367,12 +371,19 @@ export default {
     },
     data() {
         return {
+            // 当前页
+            currUpPage: 1,
+            currDownPage: 1,
+            pageUpSize: 10,
+            pageDownSize: 10,
             //显示预览图蒙版
             showPreImg: null,
             // 上刊
             upImgArr: [],
+            currUpImgArr: [],
             // 下刊
             downImgArr: [],
+            currDownImgArr: [],
             // 安装
             installArr: [],
             // 巡点
@@ -400,8 +411,8 @@ export default {
             ludanSelect: "任务名称",
 
             //是否搜索到图片
-            // showPic: 1,
-            showPic: 3,
+            showPic: 1,
+            // showPic: 3,
             //  录单
             input: "",
             value6: "",
@@ -534,6 +545,53 @@ export default {
         // this.getDownReport();
     },
     methods: {
+        handleUpSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageUpSize = pageVal;
+            this.changeUpPage(1);
+        },
+        handleDownSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageDownSize = pageVal;
+            this.changeDownPage(1);
+        },
+        // 分页功能
+        changeUpPage(page) {
+            let pageSize = this.pageUpSize;
+            let arr = this.upImgArr;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currUpImgArr = [];
+            this.currUpImgArr = resultArr;
+            console.log("currUpImgArr", this.currUpImgArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 分页功能
+        changeDownPage(page) {
+            let pageSize = this.pageDownSize;
+            let arr = this.downImgArr;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currDownImgArr = [];
+            this.currDownImgArr = resultArr;
+            console.log("currDownImgArr", this.currDownImgArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // tabClick
         handleClick() {
             if (this.activeName == "first") {
                 this.getUpReport();
@@ -555,89 +613,95 @@ export default {
         },
         // 获取上刊图片
         getUpReport() {
-            // // 测试数据
-            // let result = [
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-            //         pID: 321,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-            //         pUTime: "2018-06-12 15:08:45.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"南门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229}',
-            //         pID: 320,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-            //         pUTime: "2018-06-12 15:08:39.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-            //         pID: 319,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-            //         pUTime: "2018-06-12 15:08:30.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门3","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645}',
-            //         pID: 318,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-            //         pUTime: "2018-06-12 15:08:20.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     }
-            // ];
-            // this.citys = this.getCitys(result);
-            // this.upImgArr = result;
+            // 测试数据
+            let result = [
+                {
+                    pAlt:
+                        '{"plan":"北京方案t","res":"龙阁公寓1","media":"东门","city":"北京市","area":"朝阳区","asLab":"B","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
+                    pID: 321,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+                    pUTime: "2018-06-12 15:08:45.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"西门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
+                    pID: 320,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+                    pUTime: "2018-06-12 15:08:39.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
+                    pID: 319,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+                    pUTime: "2018-06-12 15:08:30.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                },
+                {
+                    pAlt:
+                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"北门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
+                    pID: 318,
+                    pSrc:
+                        "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+                    pType: "SK",
+                    pURL:
+                        "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+                    pUTime: "2018-06-12 15:08:20.0",
+                    ptID: 3758,
+                    ptP: "35",
+                    puID: 3
+                }
+            ];
+            this.citys = this.getCitys(result);
+            this.upImgArr = result;
+            this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
 
-            // 真实数据
-            if (this.upImgArr.length) {
-                return;
-            }
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            let upinfo = {
-                uid: uid,
-                ptype: "SK"
-            };
-            api
-                .postApi("/GetImg", upinfo)
-                .then(res => {
-                    console.log(res.data);
-                    let result = res.data;
-                    this.citys = this.getCitys(result);
-                    this.upImgArr = result;
-                    console.log("upimginfo", this.upImgArr);
-                })
-                .catch(res => {
-                    console.log(res);
-                });
+            // // 真实数据
+            // if (this.upImgArr.length) {
+            //     return;
+            // }
+            // let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            // let upinfo = {
+            //     uid: uid,
+            //     ptype: "SK"
+            // };
+            // api
+            //     .postApi("/GetImg", upinfo)
+            //     .then(res => {
+            //         if(!res.data.SysCode){
+            //             console.log(res.data);
+            //             let result = res.data;
+            //             this.citys = this.getCitys(result);
+            //             this.upImgArr = result;
+            //             this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+            //             console.log("upimginfo", this.upImgArr);
+            //         }else{
+            //             Message.warning('登录超时,请重新登录');
+            //         }
+            //     })
+            //     .catch(res => {
+            //         console.log(res);
+            //     });
         },
         // 区域二级联动
         getCitys(arr) {
@@ -694,15 +758,18 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    console.log(res.data);
-                    let result = res.data;
-                    // for (let data of result) {
-                    //     // data.pAlt = JSON.parse(data.pAlt);
-                    //     this.$set(data, "pAlt", JSON.parse(data.pAlt));
-                    // }
-                    this.citys = this.getCitys(result);
-                    this.downImgArr = result;
-                    console.log("upimginfo", this.downImgArr);
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = res.data;
+                        this.citys = this.getCitys(result);
+                        this.downImgArr = result;
+                        this.currDownImgArr = JSON.parse(
+                            JSON.stringify(this.downImgArr)
+                        );
+                        console.log("upimginfo", this.downImgArr);
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -735,10 +802,7 @@ export default {
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
         },
-        //筛选
-        filterCaseType(value, row) {
-            return row.tag === value;
-        },
+        // 搜索图片
         searchPic(initData) {
             if (
                 !this.select &&
@@ -749,6 +813,12 @@ export default {
             ) {
                 Message.warning("请先输入搜索条件");
             } else {
+                if (this.activeName == "first") {
+                    initData = this.upImgArr;
+                } else if (this.activeName == "second") {
+                    initData = this.downImgArr;
+                }
+
                 // 搜索
                 console.log(
                     this.select,
@@ -799,7 +869,7 @@ export default {
                                     arr.push(data);
                                 }
                             }
-                        } else if (range) {
+                        } else if (range.length) {
                             if (
                                 dateFormat.toDate(alt.lstart) >= range[0] &&
                                 dateFormat.toDate(alt.lend)
@@ -825,27 +895,192 @@ export default {
                                     }
                                 } else if (lab) {
                                     if (alt.asLab == lab) {
-                                        // if(){
-                                        // }else if(){
-                                        // }else if (){
-                                        // }else{
-                                        //     arr.push(data);
-                                        // }
+                                        arr.push(data);
                                     }
                                 } else if (city.length) {
+                                    if (
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ) {
+                                        arr.push(data);
+                                    }
                                 } else {
+                                    arr.push(data);
+                                }
+                            }
+                        } else if (keyword) {
+                            if (select == "1" && alt.plan.includes(keyword)) {
+                                // arr.push(data);
+                                if (range.length) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
+                                        arr.push(data);
+                                    }
+                                } else if (city.length) {
+                                    if (
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else {
+                                    arr.push(data);
+                                }
+                            }
+                            if (select == "2" && alt.media.includes(keyword)) {
+                                // arr.push(data);
+                                if (range.length) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
+                                        arr.push(data);
+                                    }
+                                } else if (city.length) {
+                                    if (
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else {
+                                    arr.push(data);
+                                }
+                            }
+                            if (select == "3" && alt.res.includes(keyword)) {
+                                // arr.push(data);
+                                if (range.length) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
+                                        arr.push(data);
+                                    }
+                                } else if (city.length) {
+                                    if (
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else {
+                                    arr.push(data);
+                                }
+                            }
+                        } else if (lab) {
+                            if (alt.asLab == lab) {
+                                if (range.length) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (keyword) {
+                                    if (
+                                        select == "1" &&
+                                        alt.plan.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.media.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.res.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (city.length) {
+                                    if (
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else {
+                                    arr.push(data);
+                                }
+                            }
+                        } else if (city.length) {
+                            if (alt.city == city[0] && alt.area == city[1]) {
+                                if (range.length) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (keyword) {
+                                    if (
+                                        select == "1" &&
+                                        alt.plan.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.media.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "2" &&
+                                        alt.res.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
+                                        arr.push(data);
+                                    }
+                                } else {
+                                    arr.push(data);
                                 }
                             }
                         }
                     }
 
+                    if (arr.length) {
+                        this.showPic = 3;
+                        this.currUpImgArr = arr;
+                    }
                     //  this.currentOrder = arr;
                     if (!arr.length) {
+                        this.showPic = 2;
                         Message.warning("查询数据为空");
                     }
                     console.log(arr);
                 }
             }
+        },
+
+        //筛选
+        filterCaseType(value, row) {
+            return row.tag === value;
         },
         newPath() {
             this.$router.push("./ludanReport");
@@ -1227,7 +1462,7 @@ export default {
 }
 
 /*页码*/
-.pager {
+/* .pager {
     position: absolute;
     bottom: 0;
     right: 10px;
@@ -1239,7 +1474,7 @@ export default {
     position: absolute;
     right: 0;
     top: 50px;
-}
+} */
 
 /deep/ .el-pagination.is-background .el-pager li {
     font-weight: normal;

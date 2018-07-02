@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="发布日期" end-placeholder="发布日期" @change="initDate">
+                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="发布日期" end-placeholder="发布日期" @change="initData">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -246,7 +246,9 @@ export default {
                         }
                         this.currentOrder = this.orderList;
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -297,12 +299,6 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
-            if (!this.rangeDate && !this.keyword) {
-                this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
-            }
-        },
-        // 当搜索框为空的时候进行重置显示
-        initDate() {
             if (!this.rangeDate && !this.keyword) {
                 this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
             }

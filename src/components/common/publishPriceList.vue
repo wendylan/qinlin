@@ -110,20 +110,20 @@ export default {
             // 过滤去重后的城市
             filtCity: [],
             publishPriceList: [
-                {
-                    amID: 2,
-                    rID: 110100,
-                    rName: "北京市",
-                    mVehicle: "广告门",
-                    adPrice: 380000,
-                    cityUpdate: "",
-                    rNameUpdate: "",
-                    mediaUpdate: "",
-                    priceUpdate: "",
-                    showInput: false,
-                    changeBtn: false,
-                    cityArr: []
-                }
+                // {
+                //     amID: 2,
+                //     rID: 110100,
+                //     rName: "北京市",
+                //     mVehicle: "广告门",
+                //     adPrice: 380000,
+                //     cityUpdate: "",
+                //     rNameUpdate: "",
+                //     mediaUpdate: "",
+                //     priceUpdate: "",
+                //     showInput: false,
+                //     changeBtn: false,
+                //     cityArr: []
+                // }
             ]
         };
     },
@@ -159,7 +159,9 @@ export default {
                             data.cityArr = [];
                         }
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {

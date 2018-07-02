@@ -177,7 +177,7 @@
 								</div>
 							</el-form-item>
 							<el-form-item label="广告限制:" prop="adLimit">
-								<el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制">
+								<el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制" @focus="adLimitFocus(key)" @change="changeAdLimit">
 									<el-option v-for="(limit, index) in adLimit" :key="index" :label="limit.label" :value="limit.value">
 									</el-option>
 								</el-select>
@@ -251,7 +251,7 @@ export default {
     data() {
         //资产编号
         var validateAssetId = (rule, value, callback) => {
-            var reg = /[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+            let reg = /[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
             if (reg.test(value)) {
                 callback(new Error("只能输入数字字母符号"));
             } else {
@@ -259,7 +259,6 @@ export default {
             }
         };
         var validateNum = (rule, value, callback) => {
-            /*validatePrice*/
             if (value !== "" && !Number.isInteger(value)) {
                 callback(new Error("只能输入整数值"));
             } else {
@@ -270,11 +269,19 @@ export default {
                 }
             }
         };
+        var validateSpace = (rule, value, callback) => {
+            if (value) {
+                if (value.match(/^\s+$/)) {
+                    callback(new Error("所填内容不能为空格"));
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        };
         let validatePrice = (rule, value, callback) => {
-            /*validatePrice*/
-            // let reg = /^[0-9]*$/
             let reg = /^\d+(\.\d+)?$/;
-            // let reg = /^\d+(\.\d{1,2})?$/
             if (value !== "" && !reg.test(value)) {
                 callback(new Error("只能输入数字"));
             } else {
@@ -386,6 +393,7 @@ export default {
                         message: "资源名称不能为空",
                         trigger: "blur"
                     },
+                    { validator: validateSpace, trigger: "blur" },
                     {
                         max: 40,
                         message: "最多只能输入40个字节",
@@ -407,6 +415,7 @@ export default {
                     }
                 ],
                 business: [
+                    { validator: validateSpace, trigger: "blur" },
                     {
                         min: 0,
                         max: 40,
@@ -420,6 +429,7 @@ export default {
                         message: "具体地址不能为空",
                         trigger: "blur"
                     },
+                    { validator: validateSpace, trigger: "blur" },
                     {
                         min: 0,
                         max: 70,
@@ -504,7 +514,7 @@ export default {
             },
             assetIdRules: [
                 { validator: validateAssetId, trigger: "blur" },
-                { message: "资产编号不能为空", trigger: "blur" },
+                /* { message: '资产编号不能为空', trigger: 'blur'},*/
                 { max: 40, message: "最多只能输入40个字节", trigger: "blur" }
             ],
             mediaRules: {
@@ -521,6 +531,7 @@ export default {
                         message: "媒体名称不能为空",
                         trigger: "blur"
                     },
+                    { validator: validateSpace, trigger: "blur" },
                     {
                         max: 40,
                         message: "最多只能输入40个字节",
@@ -544,12 +555,12 @@ export default {
                     }
                 ],
                 assetId: [
-                    { validator: validateAssetId, trigger: "blur" },
                     {
                         required: true,
                         message: "资产编号不能为空",
-                        trigger: "blur"
+                        trigger: "change"
                     },
+                    { validator: validateAssetId, trigger: "blur" },
                     {
                         max: 40,
                         message: "最多只能输入40个字节",
@@ -557,6 +568,12 @@ export default {
                     }
                 ],
                 doorType: [
+                    {
+                        required: true,
+                        message: "媒体类型不能为空",
+                        trigger: "blur"
+                    },
+                    { validator: validateSpace, trigger: "blur" },
                     {
                         required: true,
                         min: 1,
@@ -571,7 +588,7 @@ export default {
                         required: true,
                         type: "number",
                         message: "宽度不能为空且只能为数字",
-                        trigger: "blur"
+                        trigger: "change"
                     },
                     {
                         type: "number",
@@ -587,7 +604,7 @@ export default {
                         required: true,
                         type: "number",
                         message: "高度不能为空且只能为数字",
-                        trigger: "blur"
+                        trigger: "change"
                     },
                     {
                         type: "number",
@@ -695,7 +712,8 @@ export default {
             ], // 上传图片的数据
             updataMedia: [],
             editMediaLength: 0,
-            sessionData: "" // session数据
+            sessionData: "", // session数据
+            mediaIndex: 0
         };
     },
     beforeCreate: function() {
@@ -718,6 +736,10 @@ export default {
                 let limit = res.data;
                 let limitArr = [];
                 for (let i = 0; i < limit.length; i++) {
+                    if (i === 0) {
+                        let NoLimit = { value: "不限", label: "不限" };
+                        limitArr.push(NoLimit);
+                    }
                     let limitObj = {
                         value: limit[i].nTitle,
                         label: limit[i].nTitle
@@ -727,6 +749,21 @@ export default {
                 this.adLimit = limitArr;
                 console.log("广告限制adLimit", this.adLimit);
             });
+        },
+        // 广告限制，当选择为不限时
+        changeAdLimit(val) {
+            let valArr = val;
+            console.log("选择了的广告限制", valArr);
+            for (let i = 0; i < valArr.length; i++) {
+                if (valArr[i] === "不限") {
+                    this.arrMedia[this.mediaIndex].mediaForm.adLimit = [];
+                }
+            }
+        },
+        // 当广告限制的选择框获取焦点的时候，记录下当前媒体的下标
+        adLimitFocus(key) {
+            console.log("当前key值为", key);
+            this.mediaIndex = key;
         },
         //新增媒体面板
         mediaAddFun() {
@@ -881,12 +918,6 @@ export default {
             console.log("valArr", valArr);
             let i = Number(valArr[1]);
             console.log("媒体状态", this.arrMedia[i].mediaForm.mstate);
-            /*  if(valArr[0] === '2'){
-          this.arrMedia[i].mediaForm.assetIdBolean = true
-          this.arrMedia[i].mediaForm.assetId = ''
-        }else{
-          this.arrMedia[i].mediaForm.assetIdBolean = false
-        }*/
             if (this.PathHaveEdit && i <= this.editMediaLength - 1) {
                 console.log("判断记录编辑媒体的状态");
                 if (this.arrMediaStatue[i] === "待安装") {
@@ -994,58 +1025,84 @@ export default {
                     .then(res => {
                         console.log("资源数据：", res.data);
                         let recData = res.data;
-                        if (!recData.SysCode) {
-                            // 设置资源图片信息
-                            this.upLoadData.ptid = recData.resID;
-                            this.upLoadData.palt =
-                                this.recForm.resname + "-" + recData.rID;
-                            this.setImg();
-                            // 设置媒体信息
-                            let mediaArr = this.arrMedia; //[0].mediaForm
-                            for (let j = 0; j < mediaArr.length; j++) {
-                                let arr_media = mediaArr[j].mediaForm;
-                                let adsize =
-                                    arr_media.adSizeW + "*" + arr_media.adSizeH;
-                                let adviewsize =
-                                    arr_media.visualW + "*" + arr_media.visualH;
-                                let mediaObj = {
-                                    rid: recData.rID,
-                                    resid: recData.resID,
-                                    uid: this.recForm.uid,
-                                    mtitle: arr_media.mediaName,
-                                    pnum: arr_media.usableNum,
-                                    adsize: adsize,
-                                    adviewsize: adviewsize,
-                                    notpush: arr_media.adLimit.join("、"),
-                                    assettag: arr_media.assetId,
-                                    mtype: arr_media.doorType,
-                                    mimg: "",
-                                    mvc: arr_media.mediaType,
-                                    mrk: arr_media.mediaRemark,
-                                    mstate: arr_media.mstate.split("")[0]
-                                };
-                                /*        let mediaImg = arr_media.mImg
-                mediaImg.palt = arr_media.mediaName + '门禁'*/
-                                console.log("mediaObj", mediaObj);
-                                /*arrMedia: [
-               { text: '媒体一' ,
-                 mediaForm:{
-                   mediaType: '',   //媒介载体mvc
-                   mediaName: '',  //媒体名称mtitle
-                   usableNum: '1',   //广告位面数pnum
-                   mstate: '',  //媒体状态
-                   assetId: '',      //资产编号assettag
-                   doorType: '',     // 媒介类型
-                   adSizeW: '',      //广告尺寸adsize
-                   adSizeH: '',     //广告尺寸
-                   visualW: '',      //可视画面adviewsize
-                   visualH: '',      //可视画面
-                   mediaRemark: '',  //备注 mrk
-                   adLimit: ''     //请选择广告限制 notpush
+                        if (
+                            recData !== "" &&
+                            recData !== null &&
+                            recData !== undefined
+                        ) {
+                            if (!recData.SysCode) {
+                                // 设置资源图片信息
+                                this.upLoadData.ptid = recData.resID;
+                                this.upLoadData.palt =
+                                    this.recForm.resname + "-" + recData.rID;
+                                this.setImg();
+                                // 设置媒体信息
+                                let mediaArr = this.arrMedia; //[0].mediaForm
+                                for (let j = 0; j < mediaArr.length; j++) {
+                                    let arr_media = mediaArr[j].mediaForm;
+                                    let adsize =
+                                        arr_media.adSizeW +
+                                        "*" +
+                                        arr_media.adSizeH;
+                                    let adviewsize =
+                                        arr_media.visualW +
+                                        "*" +
+                                        arr_media.visualH;
+                                    let mediaObj = {
+                                        rid: recData.rID,
+                                        resid: recData.resID,
+                                        uid: this.recForm.uid,
+                                        mtitle: arr_media.mediaName,
+                                        pnum: arr_media.usableNum,
+                                        adsize: adsize,
+                                        adviewsize: adviewsize,
+                                        notpush: arr_media.adLimit.join("、"),
+                                        assettag: arr_media.assetId,
+                                        mtype: arr_media.doorType,
+                                        mimg: "",
+                                        mvc: arr_media.mediaType,
+                                        mrk: arr_media.mediaRemark,
+                                        mstate: arr_media.mstate.split("")[0]
+                                    };
+                                    /*        let mediaImg = arr_media.mImg
+                          mediaImg.palt = arr_media.mediaName + '门禁'*/
+                                    console.log("mediaObj", mediaObj);
+                                    /*arrMedia: [
+                 { text: '媒体一' ,
+                   mediaForm:{
+                     mediaType: '',   //媒介载体mvc
+                     mediaName: '',  //媒体名称mtitle
+                     usableNum: '1',   //广告位面数pnum
+                     mstate: '',  //媒体状态
+                     assetId: '',      //资产编号assettag
+                     doorType: '',     // 媒介类型
+                     adSizeW: '',      //广告尺寸adsize
+                     adSizeH: '',     //广告尺寸
+                     visualW: '',      //可视画面adviewsize
+                     visualH: '',      //可视画面
+                     mediaRemark: '',  //备注 mrk
+                     adLimit: ''     //请选择广告限制 notpush
+                   },
                  },
-               },
-             ],*/
-                                this.createMedia(mediaObj, j);
+               ],*/
+                                    this.createMedia(mediaObj, j);
+                                }
+                            } else {
+                                this.$confirm(
+                                    "登录超时或权限异常，请重新登录",
+                                    "提示",
+                                    {
+                                        confirmButtonText: "退出重登",
+                                        showClose: false,
+                                        type: "warning "
+                                    }
+                                ).then(() => {
+                                    this.$router.push("./login");
+                                });
+                                /*Message({
+                  message: '资源创建失败！',
+                  type: 'warning'
+                })*/
                             }
                         } else {
                             Message({
@@ -1058,20 +1115,6 @@ export default {
                         console.log(err);
                     });
             }
-            /* createRec
-          rid         int【必填】     媒体所在地区ID
-          resid       int【必填】     资源ID
-          mtitle      String          媒体名称
-          pnum        int             广告位面数
-          adsize      String          广告位尺寸
-          adviewsize  String          广告可视画面
-          notpush     String          广告投放限制
-          assettag    String          资产编号
-          mtype       String          媒体类型
-          mimg        String          媒体照片
-          uid         int             安装工程师
-          mvc         String          媒介载体
-          mrk         String          媒体备注*/
         },
         // 创建媒体
         createMedia(mediaObj, n, mediaImg) {

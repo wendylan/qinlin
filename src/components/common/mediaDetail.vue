@@ -37,19 +37,19 @@
 						</el-col>
 						<el-col :span="8">
 							<ul class="">
-								<li>楼盘类型：
+								<li>{{res_village.hType}}：
 									<span>{{obj.houseType}}</span>
 								</li>
 								<li>出入口数：
 									<span>{{obj.EntryExitNum}}</span>
 								</li>
-								<li>住户数量：
+								<li>{{res_village.hNum}}：
 									<span>{{obj.HouseNum}}</span>
 								</li>
 								<li>楼盘价格：
 									<span>{{obj.housePrice}}</span>
 								</li>
-								<li>入住年份：
+								<li>{{res_village.joinTime}}：
 									<span>{{obj.joinTime}}</span>
 								</li>
 							</ul>
@@ -140,21 +140,6 @@ export default {
         return {
             haveEdit: true,
             obj: {
-                /*resName: '尚东峰景',
-          cType: '社区',
-          city: '广州',
-          cityArea: '海珠区',
-          tradingArea: '江南西',
-
-          houseType: '高档小区',
-          EntryExitNum: 100,
-          HouseNum: 20,
-          housePrice:'23333元/平方米',
-          joinTime: '2002年9月',
-
-          resAddress: '广州市海珠区工业大道北尚峰路79-81号',
-          latLng: '116.307629;116.307629',
-          remark: '小区的物业小哥很凶',*/
                 resName: "",
                 cType: "",
                 city: "",
@@ -168,40 +153,13 @@ export default {
                 resAddress: "",
                 latLng: "",
                 remark: ""
-                //  Panorama:'查看',
             },
-            mediaList: [
-                /*{
-            mTitle: '江南大道东门1',
-            mType: '钣金门',
-            mState: '待维修',
-            assetTag: '005B201710GZ-X250',
-            adSize: '840*1180',
-            adviewsize: '840*1160',
-            notPush: '地产/汽车/医疗',
-            mrk: '灯光晚上不亮并且白天也不亮',
-          },
-          {
-            mTitle: '江南大道东门2',
-            mType: '钣金门',
-            mState: '待维修',
-            assetTag: '005B201710GZ-X250',
-            adSize: '840*1180',
-            adviewsize: '840*1160',
-            notPush: '地产/汽车/医疗',
-            mrk: '灯光晚上不亮并且白天也不亮',
-          },
-          {
-            mTitle: '江南大道东门3',
-            mType: '钣金门',
-            mState: '待维修',
-            assetTag: '005B201710GZ-X250',
-            adSize: '840*1180',
-            adviewsize: '840*1160',
-            notPush: '地产/汽车/医疗',
-            mrk: '灯光晚上不亮并且白天也不亮',
-          },*/
-            ]
+            mediaList: [],
+            res_village: {
+                hType: "楼盘类型",
+                hNum: "住户数量",
+                joinTime: "入住年份"
+            }
         };
     },
     mounted() {
@@ -229,7 +187,7 @@ export default {
                 .getApi("/GetResCT", { resid: resID, info: "y" })
                 .then(res => {
                     console.log("mediaDetail res.data", res.data); //fNum楼栋数量 dNum出入数量 hNum住户数量
-                    if (res.data === null) {
+                    if (res.data === null || res.data === "") {
                         Message({
                             type: "warning",
                             message: "媒体资源信息为空"
@@ -237,8 +195,18 @@ export default {
                     }
                     if (res.data.resType == "1") {
                         this.obj.cType = "社区";
+                        this.res_village = {
+                            hType: "楼盘类型",
+                            hNum: "住户数量",
+                            joinTime: "入住年份"
+                        };
                     } else if (res.data.resType == "2") {
                         this.obj.cType = "写字楼";
+                        this.res_village = {
+                            hType: "写字楼楼盘类型",
+                            hNum: "办公室数量",
+                            joinTime: "建成年份"
+                        };
                     }
                     //  this.obj.cType = res.data.cType houseType
                     this.obj.housePrice = res.data.hPrice / 100 + "元/平方米";

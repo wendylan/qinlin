@@ -416,7 +416,9 @@ export default {
                         // 选点排期
                         this.getSetPoint();
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -493,7 +495,9 @@ export default {
                             // 报价单
                             this.getPriceData();
                         } else {
-                            Message.warning(res.data.MSG);
+                            // Message.warning(res.data.MSG);
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
                         }
                     })
                     .catch(res => {
@@ -533,7 +537,9 @@ export default {
                             // 报价单
                             this.getPriceData();
                         } else {
-                            Message.warning(res.data.MSG);
+                            // Message.warning(res.data.MSG);
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
                         }
                     })
                     .catch(res => {
@@ -679,7 +685,9 @@ export default {
                                 );
                                 this.priceSheet = arr;
                             } else {
-                                Message.warning(res.data.MSG);
+                                // Message.warning(res.data.MSG);
+                                Message.warning("登录超时,请重新登录");
+                                this.$router.push("/login");
                             }
                         })
                         .catch(res => {

@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker class="input-with-select" v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initDate">
+                                <el-date-picker class="input-with-select" v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initData">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -178,12 +178,6 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
-            if (!this.date && !this.keyword) {
-                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
-            }
-        },
-        // 当去掉时间控件的时候进行重置显示
-        initDate() {
             if (!this.date && !this.keyword) {
                 this.currentPlan = JSON.parse(JSON.stringify(this.planList));
             }
@@ -348,7 +342,9 @@ export default {
                                 "rName"
                             );
                         } else {
-                            Message.warning(res.data.MSG);
+                            // Message.warning(res.data.MSG);
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
                         }
                     })
                     .catch(res => {
@@ -375,7 +371,9 @@ export default {
                                 "rName"
                             );
                         } else {
-                            Message.warning(res.data.MSG);
+                            // Message.warning(res.data.MSG);
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
                         }
                     })
                     .catch(res => {

@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initDate()">
+                                <el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initData()">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -100,7 +100,7 @@
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">预锁
                                         </el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">发布
+                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)||(!scope.row.canSend)">发布
                                         </el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">解除预锁
                                         </el-dropdown-item>
@@ -342,7 +342,6 @@ export default {
             console.log(role);
             if (role == "MD") {
                 this.isDisable = false;
-                // for(){}
             }
             if (role != "BD" && role != "MD") {
                 this.showNewBtn = false;
@@ -392,7 +391,9 @@ export default {
                         this.loading = false;
                         this.currentPlan = this.planList;
                     } else {
-                        Message.warning(info.MSG);
+                        // Message.warning(info.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -436,12 +437,6 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
-            if (!this.rangeDate && !this.keyword) {
-                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
-            }
-        },
-        // 当去掉时间控件的时候进行重置显示
-        initDate() {
             if (!this.rangeDate && !this.keyword) {
                 this.currentPlan = JSON.parse(JSON.stringify(this.planList));
             }

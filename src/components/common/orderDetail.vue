@@ -1230,26 +1230,6 @@ export default {
             }
             return res;
         },
-        // 初始化查询图片
-        getImgInfo(type) {
-            // uid         int【必填】         当前账户UserID
-            // ptype       String【必填】      关联类型
-            // ptid        int                 关联类型对应唯一ID
-            // ptp         String              关联类型区分属性
-            let info = {
-                uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
-                ptype: type,
-                ptp: sessionStorage.getItem("order_apid")
-            };
-            api
-                .postApi("/GetImg", info)
-                .then(res => {
-                    console.log(res.data);
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
         // 获取选点排期列表数据
         getInitData() {
             // // 测试数据
@@ -1297,7 +1277,9 @@ export default {
                             ? this.orderDetail.apQC
                             : this.getContractNo(this.orderDetail.rID);
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -1540,7 +1522,9 @@ export default {
                         this.filtersData = filterFormat(result, "timeRange");
                         this.allResource = filterFormat(result, "resName");
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -1561,25 +1545,34 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    console.log(res.data);
-                    let result = this.copyAsidArr;
-                    // 初始图片
-                    this.upLoadImg = res.data;
-                    // 上刊数据(组合图片)
-                    result = this.constructImg(result, this.upLoadImg, "SK");
-                    this.upReportArr = result;
-                    this.currUpReportArr = JSON.parse(
-                        JSON.stringify(this.upReportArr)
-                    );
-                    this.changeUpPage(1);
-                    console.log("upimginfo", this.upReportArr);
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = this.copyAsidArr;
+                        // 初始图片
+                        this.upLoadImg = res.data;
+                        // 上刊数据(组合图片)
+                        result = this.constructImg(
+                            result,
+                            this.upLoadImg,
+                            "SK"
+                        );
+                        this.upReportArr = result;
+                        this.currUpReportArr = JSON.parse(
+                            JSON.stringify(this.upReportArr)
+                        );
+                        this.changeUpPage(1);
+                        console.log("upimginfo", this.upReportArr);
 
-                    // 区域二级联动
-                    this.citys = this.getCitys(result);
-                    this.citys.unshift({
-                        value: "全部",
-                        label: "全部"
-                    });
+                        // 区域二级联动
+                        this.citys = this.getCitys(result);
+                        this.citys.unshift({
+                            value: "全部",
+                            label: "全部"
+                        });
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -1599,24 +1592,29 @@ export default {
             api
                 .postApi("/GetImg", downinfo)
                 .then(res => {
-                    console.log(res.data);
-                    let result = this.copyAsidArr;
-                    this.downImg = res.data;
-                    // 下刊数据(组合图片)
-                    result = this.constructImg(result, this.downImg, "XK");
-                    this.downReportArr = result;
-                    this.currDownReportArr = JSON.parse(
-                        JSON.stringify(this.downReportArr)
-                    );
-                    this.changeDownPage(1);
-                    console.log("downimginfo", this.downReportArr);
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = this.copyAsidArr;
+                        this.downImg = res.data;
+                        // 下刊数据(组合图片)
+                        result = this.constructImg(result, this.downImg, "XK");
+                        this.downReportArr = result;
+                        this.currDownReportArr = JSON.parse(
+                            JSON.stringify(this.downReportArr)
+                        );
+                        this.changeDownPage(1);
+                        console.log("downimginfo", this.downReportArr);
 
-                    // 区域二级联动
-                    this.citys = this.getCitys(result);
-                    this.citys.unshift({
-                        value: "全部",
-                        label: "全部"
-                    });
+                        // 区域二级联动
+                        this.citys = this.getCitys(result);
+                        this.citys.unshift({
+                            value: "全部",
+                            label: "全部"
+                        });
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -1901,7 +1899,9 @@ export default {
                                 );
                                 this.loading = false;
                             } else {
-                                Message.warning(res.data.MSG);
+                                // Message.warning(res.data.MSG);
+                                Message.warning("登录超时,请重新登录");
+                                this.$router.push("/login");
                             }
                         })
                         .catch(res => {

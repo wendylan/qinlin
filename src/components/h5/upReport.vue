@@ -260,12 +260,12 @@ export default {
             //显示预览图蒙版
             showPreImg: null,
             upReport: {
-                apName: "第一个投放方案",
-                bTitle: "新光百货",
-                cName: "新光百货",
-                rIDs: "广州市,北京市,重庆市",
-                apcTime: "May 9, 2018 6:29:47 PM",
-                totalNum: "200"
+                // apName: "第一个投放方案",
+                // bTitle: "新光百货",
+                // cName: "新光百货",
+                // rIDs: "广州市,北京市,重庆市",
+                // apcTime: "May 9, 2018 6:29:47 PM",
+                // totalNum: "200"
             },
             //投放详情
             putDetail: [],
@@ -545,60 +545,6 @@ export default {
             //         resAddress: "北京市朝阳区北五环红军营南路"
             //     }
             // ];
-            // // let upImginfo = [
-            // //     {
-            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            // //         pID: 283,
-            // //         pSrc:
-            // //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            // //         pType: "SK",
-            // //         pURL:
-            // //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            // //         pUTime: "2018-06-09 18:55:26.0",
-            // //         ptID: 5,
-            // //         ptP: "7",
-            // //         puID: 3
-            // //     },
-            // //     {
-            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            // //         pID: 274,
-            // //         pSrc:
-            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            // //         pType: "SK",
-            // //         pURL:
-            // //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            // //         pUTime: "2018-06-09 18:31:14.0",
-            // //         ptID: 5,
-            // //         ptP: "7",
-            // //         puID: 3
-            // //     },
-            // //     {
-            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            // //         pID: 245,
-            // //         pSrc:
-            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            // //         pType: "SK",
-            // //         pURL:
-            // //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            // //         pUTime: "2018-06-09 18:31:14.0",
-            // //         ptID: 2,
-            // //         ptP: "7",
-            // //         puID: 3
-            // //     },
-            // //     {
-            // //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            // //         pID: 234,
-            // //         pSrc:
-            // //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            // //         pType: "SK",
-            // //         pURL:
-            // //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            // //         pUTime: "2018-06-09 18:31:14.0",
-            // //         ptID: 2,
-            // //         ptP: "7",
-            // //         puID: 3
-            // //     }
-            // // ];
             // let upImginfo = [
             //     {
             //         pAlt:

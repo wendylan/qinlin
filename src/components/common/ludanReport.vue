@@ -5,16 +5,18 @@
                 <div class="mediaMana_content_top">
                     <div class="content_top_wrap">
                         <div class="title">
-                            <h1>亲邻科技上刊报告</h1>
+                            <h1>{{Report.apName}}{{Report.ptype=='SK'?'上刊':'下刊'}}报告</h1>
                         </div>
                         <div class="detail">
                             <p>
                                 <em>订单名称：</em>
-                                <i>广州探鱼2期</i>
+                                <!-- <i>广州探鱼2期</i> -->
+                                <i>{{Report.apName}}</i>
                                 <em>任务类型：</em>
-                                <i>上刊</i>
+                                <!-- <i>上刊</i> -->
+                                <i>{{Report.ptype}}</i>
                                 <em>点位数量：</em>
-                                <i>100</i>
+                                <i>{{Report.totalNum}}</i>
                             </p>
                         </div>
                     </div>
@@ -23,195 +25,65 @@
                     <div class="sec-wrap box-wrap">
                         <h4>监播图片</h4>
                         <div class="tabs">
-                            <button class="active" @click="box1Change">按资源分</button>
-                            <button @click="box1Change">按图片分</button>
+                            <button class="active" @click="changeImgType">按资源分</button>
+                            <button @click="changeImgType">按图片分</button>
                         </div>
-                        <div class="typeOfPic">
+                        <div class="typeOfRec" v-if="isActive">
                             <div>
-                                <div class="picBox">
+                                <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
                                     <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
+                                        <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index">
+                                            <img :src="item.url" alt="">
+                                            <!--缩略图-->
+                                            <div class="mask-btn" v-if="showPreImg == downIndex ">
+                                                <i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
+                                            </div>
                                         </el-carousel-item>
                                     </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
                                     <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
+                                        <p>小区名称：{{down.pAlt.res}}</p>
+                                        <p>门禁名称：{{down.pAlt.media}}</p>
+                                        <p>资产编号：{{down.pAlt.assettag}}</p>
                                     </div>
                                 </div>
                             </div>
+                            <!-- 分页功能 -->
+                            <div class="pager">
+                                <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                </el-pagination> -->
+                                <el-pagination small background :current-page="currUpPage" :page-sizes="[5, 10]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
+                                </el-pagination>
+                            </div>
+                        </div>
+                        <div class="typeOfPic" v-if="!isActive">
                             <div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
+                                <div class="picBox" v-for="(img, index) of currImgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                    <img :src="img.pURL" alt="">
                                     <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
+                                    <div class="mask-btn" v-if="showPreImg == index ">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
                                     </div>
                                     <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
-                                    </div>
-                                </div>
-                                <div class="picBox">
-                                    <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="item in 2" :key="item">
-                                            <!--<h3>{{item}}</h3>-->
-                                            <img :src=dialogImageUrl alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <!--缩略图-->
-                                    <div class="mask-btn">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                    </div>
-                                    <div class="pic-title">
-                                        <p>小区名称：线上</p>
-                                        <p>门禁名称：大门B</p>
-                                        <p>资产编号：NSZ-0180</p>
+                                        <p>小区名称：{{img.pAlt.res}}</p>
+                                        <p>门禁名称：{{img.pAlt.media}}</p>
+                                        <p>资产编号：{{img.pAlt.assettag}}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="pager">
-                                <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
+                                </el-pagination> -->
+                                <el-pagination small background :current-page="currDownPage" :page-sizes="[5, 10]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="imgInfo.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
                                 </el-pagination>
                             </div>
                         </div>
-                        <!--缩略图对话框-->
-                        <el-dialog :visible.sync="dialogVisible">
-                            <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>
                     </div>
                 </div>
+                <!--缩略图对话框-->
+                <el-dialog :visible.sync="dialogVisible">
+                    <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+
             </div>
         </div>
     </div>
@@ -219,6 +91,7 @@
 </template>
 
 <script>
+import { api } from "../../api/api";
 import {
     Dialog,
     Tabs,
@@ -265,293 +138,230 @@ export default {
         elCarousel: Carousel,
         elCarouselItem: CarouselItem
     },
+    created() {
+        this.getCompanyInfo();
+        this.getInitData();
+    },
     data() {
         return {
-            planPanel: "first",
-            //搜索框
-            searchInput: "",
-            planSelect: "",
+            // 报告头部公司信息
+            Report: {
+                apName: "第一个投放方案",
+                bTitle: "新光百货",
+                cName: "新光百货",
+                rIDs: "广州市,北京市,重庆市",
+                apcTime: "May 9, 2018 6:29:47 PM",
+                totalNum: "200"
+            },
+            // 分页信息
+            currUpPage: 1,
+            currDownPage: 1,
+            pageUpSize: 5,
+            pageDownSize: 5,
             //监播图片内容
-            isActive1: true,
-            //搜索类型
-            typeSelect: [
-                {
-                    value: "资源名称",
-                    label: "资源名称"
-                },
-                {
-                    value: "商圈",
-                    label: "商圈"
-                },
-                {
-                    value: "城市",
-                    label: "城市"
-                }
-            ],
-            //默认
-            value: "资源名称",
-            //投放详情
-            putDetail: [
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                },
-                {
-                    recName: "珠江帝景花园二期",
-                    city: "广州",
-                    origin: "海珠区",
-                    address: "广州市天河区中山大道西109号",
-                    buildType: "高端住宅",
-                    houseNum: "600",
-                    buildPrice: "￥30,000",
-                    mediaName: "广州市中山大道",
-                    buildNum: "12",
-                    businessOrigin: "白云万达广场",
-                    assetID: "GZ201871024",
-                    liveYear: "1999年",
-                    adLimit: "地产/医药/汽车",
-                    mediaNum: 1,
-                    liveTime: "2006"
-                }
-            ],
-            //发布情况
-            postDetail: [
-                {
-                    city: "广州",
-                    planNum: 200,
-                    realNum: 200,
-                    wrongNum: 0,
-                    resolveNum: 0
-                },
-                {
-                    city: "深圳",
-                    planNum: 200,
-                    realNum: 200,
-                    wrongNum: 0,
-                    resolveNum: 0
-                }
-            ],
+            isActive: true,
+            // 监播图片
+            downReportArr: [],
+            currDownReportArr: [],
+            imgInfo: [],
+            currImgInfo: [],
             //缩略图对话框
             dialogVisible: false,
-            dialogImageUrl: "../../../static/images/testPic.png"
+            dialogImageUrl: ""
         };
+    },
+    methods: {
+        // 分页功能
+        handleUpSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageUpSize = pageVal;
+            this.changeUpPage(1);
+        },
+        handleDownSizeChange(pageVal) {
+            console.log("pageVal", pageVal);
+            this.pageDownSize = pageVal;
+            this.changeDownPage(1);
+        },
+        // 分页功能
+        changeUpPage(page) {
+            let pageSize = this.pageUpSize;
+            let arr = this.downReportArr;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currDownReportArr = [];
+            this.currDownReportArr = resultArr;
+            console.log("currDownReportArr", this.currDownReportArr);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 分页功能
+        changeDownPage(page) {
+            let pageSize = this.pageDownSize;
+            let arr = this.imgInfo;
+            let total = arr.length;
+            let resultArr = [];
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
+                resultArr.push(arr[i]);
+            }
+            this.currImgInfo = [];
+            this.currImgInfo = resultArr;
+            console.log("currImgInfo", this.currImgInfo);
+            console.log("page", page, "pageSize", pageSize);
+        },
+        // 获取公司信息
+        getCompanyInfo() {
+            // 真实数据
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let apid = sessionStorage.getItem("order_apid");
+            let info = {
+                uid: uid,
+                apid: apid
+            };
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi("/GetFanganInfo", info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let result = res.data;
+                        this.Report = result;
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 投放详情
+        getInitData() {
+            // 真实数据
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let info = {
+                uid: uid,
+                apid: sessionStorage.getItem("order_apid")
+            };
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi("/GetAdLaunch", info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let resArr = res.data;
+
+                        // uid         int【必填】         当前账户UserID
+                        // ptype       String【必填】      关联类型
+                        // ptid        int                 关联类型对应唯一ID
+                        // ptp         String              关联类型区分属性
+                        let imginfo = {
+                            uid: JSON.parse(
+                                sessionStorage.getItem("session_data")
+                            ).uID,
+                            // ptype: "XK",
+                            ptype: this.Report.ptype,
+                            ptp: sessionStorage.getItem("order_apid")
+                        };
+                        api
+                            .postApi("/GetImg", imginfo)
+                            .then(res => {
+                                console.log(res.data);
+                                let downImginfo = res.data;
+                                // 下刊数据(组合图片)
+                                resArr = this.constructImg(resArr, downImginfo);
+                                this.downReportArr = resArr;
+                                this.currDownReportArr = JSON.parse(
+                                    JSON.stringify(this.downReportArr)
+                                );
+                                this.changeUpPage(1);
+                                console.log("downimginfo", this.downReportArr);
+                                // 下刊数据(组合图片按图片分)
+                                this.imgInfo = this.initImg(
+                                    resArr,
+                                    downImginfo
+                                );
+                                this.currImgInfo = JSON.parse(
+                                    JSON.stringify(this.imgInfo)
+                                );
+                                this.changeDownPage(1);
+                                console.log(
+                                    "downImgInfo--------",
+                                    this.imgInfo
+                                );
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 组合上下刊图片数据
+        constructImg(arr, imgArr) {
+            for (let data of arr) {
+                let img = [];
+                for (let item of imgArr) {
+                    let alt = JSON.parse(item.pAlt);
+                    if (data.resID == alt.resid) {
+                        // uid         int【必填】         当前账户UserID
+                        // pid         int【必填】         图库pID
+                        // palt        String              图片标题
+                        // ptype       String              关联类型
+                        // ptid        int                 关联类型对应唯一ID
+                        // ptp         String              关联类型区分属性
+                        img.push({
+                            name: item.pID + ".png",
+                            url: item.pURL,
+                            uid: item.puID,
+                            pid: item.pID,
+                            palt: item.pAlt,
+                            ptype: item.pType,
+                            ptid: item.ptID,
+                            ptp: item.ptP
+                        });
+                    }
+                }
+                data.downImgArr = img;
+            }
+            return arr;
+        },
+        // 按照图片分类
+        initImg(arr, imgArr) {
+            for (let img of imgArr) {
+                for (let data of arr) {
+                    if (data.asID == img.ptID) {
+                        img.resName = data.resName;
+                        break;
+                    }
+                }
+            }
+            return imgArr;
+        },
+        // 按照资源还是图片分类
+        changeImgType() {
+            this.isActive = !this.isActive;
+        },
+        //缩略图
+        handlePictureCardPreview(url) {
+            console.log("item", url);
+            this.dialogImageUrl = url;
+            this.dialogVisible = true;
+        }
     },
     mounted() {
         $(function() {
@@ -563,40 +373,18 @@ export default {
                         .siblings()
                         .removeClass("active");
                 });
-            $(".picBox")
-                .mouseenter(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .show();
-                })
-                .mouseleave(function() {
-                    $(this)
-                        .find(".mask-btn")
-                        .hide();
-                });
+            // $(".picBox")
+            //     .mouseenter(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .show();
+            //     })
+            //     .mouseleave(function() {
+            //         $(this)
+            //             .find(".mask-btn")
+            //             .hide();
+            //     });
         });
-    },
-    methods: {
-        box1Change() {
-            this.isActive1 = !this.isActive1;
-        },
-        filterCity(value, row) {
-            return row.city === value;
-        },
-        filterOrigin(value, row) {
-            return row.origin === value;
-        },
-        //页码
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
-        },
-        //缩略图
-        handlePictureCardPreview() {
-            this.dialogVisible = true;
-        }
     }
 };
 </script>
