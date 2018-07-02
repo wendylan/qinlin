@@ -340,37 +340,6 @@ export default {
                     return false;
                 }
             });
-
-            /*    // 手机号码验证
-					let szReg=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
-				//  console.log('this.accountForm.phone',this.accountForm.phone)
-				if(this.accountForm.phone != '' && this.accountForm.phone != null){
-					if(!(/^1[34578]\d{9}$/.test(this.accountForm.phone))){
-						Message({
-						message: '手机号码有误，请重填！',
-						type: 'warning'
-						})
-					//  return false;
-					}else{
-						b2 = true
-					}
-				}
-					//邮箱验证
-					if(this.accountForm.email != '' && this.accountForm.email != null){
-					console.log('邮箱',this.accountForm.email)
-					if(szReg.test(this.accountForm.email)){
-						Message({
-						message: '邮箱格式不正确，请修改！',
-						type: 'warning'
-						})
-					//  return false;
-					}else{
-						b2 = true
-					}
-					}
-					if(b1&&b2&&b3){
-					this.createFun()
-					}*/
         },
         // 修改账户信息接口
         postEditInfo() {
@@ -384,6 +353,7 @@ export default {
             // position    String          职务
             // division    String          所属部门
             let accForm = this.accountForm;
+            accForm.PermissionCity.sort(this.compareFun);
             let account = {
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
                 toid: accForm.uID,
@@ -413,10 +383,23 @@ export default {
                     console.log(err);
                 });
         },
+        // 数组排序,对uWho进行小到大排
+        compareFun(obj1, obj2) {
+            let val1 = obj1;
+            let val2 = obj2;
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
         //注册接口
         createFun() {
             console.log("accountForm", this.accountForm);
             let actFrom = this.accountForm;
+            actFrom.PermissionCity.sort(this.compareFun);
             /*realname    String【必填】      用户真实姓名
 				sname       String【必填】      账户名
 				phone       int【必填】         用户手机号码
@@ -453,7 +436,7 @@ export default {
             if (actFrom.puID) {
                 account.puid = actFrom.puID;
             }
-            console.log(account);
+            console.log("提交的账号信息", account);
             api
                 .postApi("/RegUser", account)
                 .then(res => {

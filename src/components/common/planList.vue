@@ -14,7 +14,7 @@
                     <div class="mediaList_handel">
                         <span>
                             <div style="display:inline-block">
-                                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
+                                <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData()">
                                     <el-select v-model="select" slot="prepend" placeholder="请选择">
                                         <el-option label="方案名称" value="1"></el-option>
                                         <el-option label="客户名称" value="2"></el-option>
@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期">
+                                <el-date-picker class="input-with-select" v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initDate()">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -104,8 +104,8 @@
                                         </el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">解除预锁
                                         </el-dropdown-item>
-                                        <el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState!=1">删除
-                                        </el-dropdown-item>
+                                        <!-- <el-dropdown-item @click="deleteOne(scope.row)" :disabled="scope.row.apState!=1">删除
+                                        </el-dropdown-item>-->
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </template>
@@ -155,7 +155,8 @@ import {
     MessageBox,
     Message,
     Select,
-    Option
+    Option,
+    Loading
 } from "element-ui";
 
 export default {
@@ -180,6 +181,9 @@ export default {
 
     data() {
         return {
+            Ctrlloading: false,
+            // 登录信息、
+            sessionData: {},
             // 登录者角色
             role: "",
             //   判断是否有发布，预锁解锁等功能
@@ -290,6 +294,7 @@ export default {
         };
     },
     created() {
+        this.getSessionData();
         this.getUID();
         this.getPlanListData();
         this.getRole();
@@ -308,6 +313,11 @@ export default {
         // console.log('citycoDe----------------',cityCode);
     },
     methods: {
+        getSessionData() {
+            this.sessionData = JSON.parse(
+                sessionStorage.getItem("session_data")
+            );
+        },
         // 面后面添加逗号
         setComma(value) {
             if (value) {
@@ -318,7 +328,7 @@ export default {
             }
         },
         getUID() {
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let uid = this.sessionData.uID;
             this.Info = {
                 uid: uid,
                 apid: ""
@@ -326,11 +336,13 @@ export default {
         },
         // 判断角色是否有新建按钮(媒介和销售有)
         getRole() {
-            let role = JSON.parse(sessionStorage.getItem("session_data")).uType;
+            let role = this.sessionData.uType;
+            let uWhoArr = this.sessionData.uWho;
             this.role = role;
             console.log(role);
             if (role == "MD") {
                 this.isDisable = false;
+                // for(){}
             }
             if (role != "BD" && role != "MD") {
                 this.showNewBtn = false;
@@ -341,14 +353,14 @@ export default {
         },
         // 获取方案列表初始数据
         getPlanListData() {
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let uid = this.sessionData.uID;
             api
                 .getApi("./GetFangan", { uid: uid })
                 .then(res => {
                     console.log(res.data);
-                    let info = res.data.reverse();
+                    let info = res.data;
                     if (!info.SysCode) {
-                        this.planList = info;
+                        this.planList = info.reverse();
                         // for(let item of this.planList){
                         //     if(item.rIDs){
                         //         item.cityArea = item.rIDs.split(',');
@@ -424,6 +436,12 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
+            if (!this.rangeDate && !this.keyword) {
+                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
+            }
+        },
+        // 当去掉时间控件的时候进行重置显示
+        initDate() {
             if (!this.rangeDate && !this.keyword) {
                 this.currentPlan = JSON.parse(JSON.stringify(this.planList));
             }
@@ -631,7 +649,7 @@ export default {
             // // this.ctrlFangan(result);
 
             // 真实数据
-            // let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+            // let uid = this.sessionData.uID;
             // let apid = row.apID;
             // let info = {
             // 	uid: uid,
@@ -678,6 +696,16 @@ export default {
                                                         "该方案被预锁,请先解除预锁"
                                                     );
                                                 } else {
+                                                    this.Ctrlloading = Loading.service(
+                                                        {
+                                                            text:
+                                                                "请耐心等待...",
+                                                            spinner:
+                                                                "el-icon-loading",
+                                                            background:
+                                                                "rgba(0, 0, 0, 0.7)"
+                                                        }
+                                                    );
                                                     // 保存合同编号
                                                     this.saveContractNo(QCinfo);
                                                     // 组合数据并发布
@@ -745,7 +773,7 @@ export default {
                             );
                             if (act == "R") {
                                 // 循环发布
-                                this.ctrlFangan(arr);
+                                this.ctrlFangan(arr, act);
                             } else {
                                 let result = [];
                                 for (let arrData of arr) {
@@ -762,7 +790,7 @@ export default {
                                     }
                                 }
                                 console.log("resulttelajt", result);
-                                this.ctrlFangan(result);
+                                this.ctrlFangan(result, act);
                             }
                         })
                         .catch(res => {
@@ -852,7 +880,7 @@ export default {
             return result;
         },
         // 循环发布、预锁
-        ctrlFangan(arr) {
+        ctrlFangan(arr, act) {
             console.log("----------arr-------------", arr);
             // uid         int【必填】         当前账户UserID
             // ds          String【必填】      广告开始投放日期
@@ -885,9 +913,11 @@ export default {
                             )
                                 .then(() => {
                                     this.ToEdit(this.Info.apid);
+                                    this.Ctrlloading.close();
                                 })
                                 .catch(() => {
                                     Message.info("已取消操作");
+                                    this.Ctrlloading.close();
                                 });
                         } else {
                             // uid         int【必填】         当前账户UserID
@@ -903,21 +933,29 @@ export default {
                                     .then(res => {
                                         console.log(res.data);
                                         Message.success(res.data.MSG);
-                                        if (i >= arr.length - 1) {
-                                            for (let data of this.planList) {
-                                                if (
-                                                    data.apID == this.Info.apid
-                                                ) {
-                                                    this.$set(data, apState, 2);
-                                                    break;
+                                        if (act == "R") {
+                                            if (i >= arr.length - 1) {
+                                                for (let data of this
+                                                    .planList) {
+                                                    if (
+                                                        data.apID ==
+                                                        this.Info.apid
+                                                    ) {
+                                                        this.$set(
+                                                            data,
+                                                            "apState",
+                                                            2
+                                                        );
+                                                        break;
+                                                    }
                                                 }
+                                                this.Ctrlloading.close();
                                             }
                                         }
-                                        // this.Info.apid
-                                        // this.$set(row, 'apState', 2);
                                     })
                                     .catch(res => {
                                         console.log(res);
+                                        this.Ctrlloading.close();
                                     });
                             }
                         }
@@ -1003,7 +1041,7 @@ export default {
         preload(row) {
             this.isLock = true;
             this.dialogVisible = true;
-            // let uid = JSON.parse(sessionStorage.getItem('session_data')).uID;
+            // let uid = this.sessionData.uID;
             // let apid = row.apID;
             // let info = {
             // 	uid: uid,

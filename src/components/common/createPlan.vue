@@ -471,7 +471,7 @@
 									<p>赠送(面·天)</p>
 									<el-input-number v-model="ADchanger.GMDate" controls-position="right"></el-input-number>
 									<p style="margin-top: 20px">广告费</p>
-									<el-input v-model="ADchanger.reaPrice" placeholder="请输入内容"></el-input>
+									<el-input v-model="ADchanger.reaPrice" placeholder="请输入内容" @change="checkInput" :clearable="true"></el-input>
 								</div>
 								<span slot="footer" class="dialog-footer">
 									<el-button @click="changeAD = false">取 消</el-button>
@@ -482,7 +482,7 @@
 							<el-dialog title="修改制作费" :visible.sync="changeMake" width="30%">
 								<div class="changeMakePrice">
 									<p>制作费</p>
-									<el-input v-model="makeChange.MReaPrice" placeholder="请输入内容"></el-input>
+									<el-input v-model="makeChange.MReaPrice" placeholder="请输入内容" @change="checkInput" :clearable="true"></el-input>
 								</div>
 								<span slot="footer" class="dialog-footer">
 									<el-button @click="changeMake = false">取 消</el-button>
@@ -493,11 +493,11 @@
 								<div class="changeBill">
 									<h4>￥{{totalChange.total}}</h4>
 									<p>现金结算</p>
-									<el-input v-model="totalChange.cash" placeholder="请输入内容"></el-input>
+									<el-input v-model="totalChange.cash" placeholder="请输入内容" @change="checkCash" :clearable="true"></el-input>
 									<p>资源置换</p>
-									<el-input v-model="totalChange.zyzh" placeholder="请输入内容"></el-input>
+									<el-input v-model="totalChange.zyzh" placeholder="请输入内容" @change="checkZyzh" :clearable="true"></el-input>
 									<p>其他费用</p>
-									<el-input v-model="totalChange.other" placeholder="请输入内容"></el-input>
+									<el-input v-model="totalChange.other" placeholder="请输入内容" @change="checkOther" :clearable="true"></el-input>
 									<p>结算备注</p>
 									<el-input v-model="totalChange.remark" type="textarea"></el-input>
 								</div>
@@ -850,7 +850,11 @@ export default {
                 { value: "金融", label: "金融" },
                 { value: "医学", label: "医学" }
             ],
-            limitName: "全部" // 当前广告限制高亮，默认为全部
+            limitName: "全部", // 当前广告限制高亮，默认为全部
+            ADchangerReaPrice: false, // 广告费修改验证
+            totalChangeCash: false, // 修改制作费现金输入验证
+            totalChangeZyzh: false, // 修改制作费资源置换输入验证
+            totalChangeOther: false // 修改制作费其他费用输入验证
         };
     },
     mounted() {
@@ -1030,6 +1034,7 @@ export default {
                             this.BDData.realName = res.data.realName;
                             this.planForm.ownerSales = res.data.realName;
                             this.BDuWho = res.data.uWho;
+
                             this.Get_cName();
                             let results = [res.data];
                             // console.log('this.BDData.uid',this.BDData.uid)
@@ -1046,7 +1051,6 @@ export default {
         //获取公司名称列表MyCustomer
         Get_cName() {
             api.getApi("/MyCustomer", { uid: this.BDData.uid }).then(res => {
-                // api.getApi('/MyCustomer', {uid: 7}).then(res => {
                 console.log("MyCustomer:", res.data);
                 let customerList = res.data;
                 this.customer = res.data; //保存所有信息，方便后面的过滤使用
@@ -1075,8 +1079,6 @@ export default {
                         companyList.push(companyObj);
                     }
                 }
-                // console.log('companyList:', companyList)
-                // console.log('联系人列表:', ownerList)
                 this.companyName = companyList; // 公司名称列表
                 this.ownerBU = ownerList; // 联系人列表
             });
@@ -1234,13 +1236,13 @@ export default {
             api.getApi("/GetAPD", { uid: uid, apid: apID }).then(res => {
                 console.log("获取pdid", res);
                 let APDData = res.data;
-                let pointArr = [];
                 if (APDData.length !== 0) {
                     for (let j = 0; j < APDData.length; j++) {
                         for (let t = 0; t < this.cityOptions.length; t++) {
                             let child = this.cityOptions[t].children;
                             for (let g = 0; g < child.length; g++) {
                                 if (child[g].value == APDData[j].rID) {
+                                    console.log("提交的城市", child[g].label);
                                     let city = child[g].label;
                                     for (let n = 0; n < csmArr.length; n++) {
                                         let asIDs = "";
@@ -1255,12 +1257,9 @@ export default {
                                                 csmArr[n].schedules ===
                                                     shopingArr[i].schedules
                                             ) {
-                                                // alert('2')
                                                 if (asIDs === "") {
-                                                    // alert('2aa',shopingArr[i].asIDs)
                                                     asIDs = shopingArr[i].asIDs;
                                                 } else {
-                                                    // alert('3aa',shopingArr[i].asIDs)
                                                     asIDs =
                                                         asIDs +
                                                         "," +
@@ -1293,111 +1292,26 @@ export default {
                                                 )
                                                 .then(res => {
                                                     console.log(
-                                                        "提交选点后返回的data",
+                                                        csmArr[n].city,
+                                                        ",提交选点后返回的data",
                                                         res
                                                     );
-                                                    let AdBase = res.data;
-                                                    // this.CreateAPDFun()
-                                                    if (
-                                                        n >=
-                                                        csmArr.length - 1
-                                                    ) {
-                                                        if (
-                                                            j >=
-                                                            APDData.length - 1
-                                                        ) {
-                                                            this.CreateAPDFun();
-                                                        }
-                                                    }
+                                                    /*  if (j >= APDData.length - 1) {
+                              this.CreateAPDFun()
+                            }*/
                                                 });
                                         }
                                     }
-
-                                    /*   console.log('城市名',child[g].label,'城市rid',child[g].value,'pdid',APDData[j].pdID)
-                       let pointParams = {
-                         uid: uid,
-                         pdid: APDData[j].pdID,
-                         pbs: '',
-                         pbe: '',
-                         asids: '',
-                       }
-                       let params = { city:child[g].label,obj:pointParams}
-                       console.log('params',params)
-                       pointArr.push(params)
-                       if(j >= APDData.length-1){
-                         this.SendAdBaseFun(pointArr)
-                         console.log('pointArr',pointArr)
-                       }*/
                                 }
                             }
                         }
                     }
+                } else {
+                    console.log("获取的pdid为空");
                 }
             });
+            this.CreateAPDFun();
         },
-
-        SendAdBaseFun(pointArr) {
-            let csmArr = this.CSMList;
-            let shopingArr = this.shopingList;
-            console.log("shopingArr", shopingArr);
-            console.log("csmArr", csmArr);
-            console.log("pointArr", pointArr);
-            for (let j = 0; j < pointArr.length; j++) {
-                for (let n = 0; n < csmArr.length; n++) {
-                    let asIDs = "";
-                    for (let i = 0; i < shopingArr.length; i++) {
-                        if (
-                            csmArr[n].city === shopingArr[i].city &&
-                            csmArr[n].schedules === shopingArr[i].schedules
-                        ) {
-                            // alert('2')
-                            if (asIDs === "") {
-                                // alert('2aa',shopingArr[i].asIDs)
-                                asIDs = shopingArr[i].asIDs;
-                            } else {
-                                // alert('3aa',shopingArr[i].asIDs)
-                                asIDs = asIDs + "," + shopingArr[i].asIDs;
-                            }
-                        }
-                    }
-                    console.log("+++++++++++++", asIDs);
-                    if (csmArr[n].city == pointArr[j].city) {
-                        //asids: asIDs,
-                        pointArr[j].obj.pbs = csmArr[n].schedules.split("-")[0];
-                        pointArr[j].obj.pbe = csmArr[n].schedules.split("-")[1];
-                        pointArr[j].obj.asids = asIDs;
-                        let pointParams = pointArr[j].obj;
-                        console.log(
-                            "提交选点的信息",
-                            csmArr[n].city,
-                            pointParams
-                        );
-                        api.postApi("/SendAdBase", pointParams).then(res => {
-                            console.log("提交选点后返回的data", res);
-                            let AdBase = res.data;
-                            // this.CreateAPDFun()
-                            if (n >= csmArr.length - 1) {
-                                if (j >= pointArr.length - 1) {
-                                    this.CreateAPDFun();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        },
-        /*   setAdBase(params, n) {
-        let pointParams = params
-        // console.log('setAdBase提交选点的信息', pointParams)
-        api.postApi('/SendAdBase', pointParams).then(res => {
-          console.log('提交选点后返回的data', res)
-          let AdBase = res.data
-          // this.CreateAPDFun()
-          if (n >= this.CSMList.length - 1) {
-            this.CreateAPDFun()
-          }
-        })
-      },*/
         // 创建方案投放城市详情(报价单数据提交)CreateAPD
         CreateAPDFun() {
             /*  uid         int【必填】     当前账户UserID
@@ -1416,6 +1330,7 @@ export default {
             pdsf        int【必填】     置换金额
             pdof        int【必填】     其他金额*/
 
+            console.log("创建方案投放城市详情quotation", this.quotation);
             for (let i = 0; i < this.quotation.length; i++) {
                 let CAPDParams = {
                     uid: this.sessionData.uID, // 当前账户UserID
@@ -1438,9 +1353,19 @@ export default {
                 if (this.sessionData.uType === "BD") {
                     delete CAPDParams.muid;
                 }
-                let schedulesArr = this.quotation[i].schedules.split("-");
-                CAPDParams.ps = schedulesArr[0];
-                CAPDParams.pe = schedulesArr[schedulesArr.length - 1];
+                let schedulesArr = "";
+                if (
+                    this.quotation[i].schedules !== "" &&
+                    this.quotation[i].schedules !== null &&
+                    this.quotation[i].schedules !== undefined
+                ) {
+                    schedulesArr = this.quotation[i].schedules.split("-");
+                    CAPDParams.ps = schedulesArr[0];
+                    CAPDParams.pe = schedulesArr[schedulesArr.length - 1];
+                } else {
+                    CAPDParams.ps = this.dateInput[0];
+                    CAPDParams.pe = this.dateInput[1];
+                }
                 console.log(
                     "广告画数：",
                     this.quotation[i].ADNumber,
@@ -1448,7 +1373,7 @@ export default {
                     CAPDParams
                 );
                 api.postApi("/CreateAPD", CAPDParams).then(res => {
-                    console.log("提交报价单后台返回数据：", res);
+                    console.log(",提交报价单后台返回数据：", res);
                     let APD_data = res.data;
                     this.ADloading.close();
                     if (!res.data.SysCode) {
@@ -1608,6 +1533,7 @@ export default {
                 let adObj = {
                     rid: 0 + i.toString(),
                     mID: datalist[i].mID,
+                    resType: datalist[i].resType,
                     asIDs: datalist[i].asIDs,
                     asLabs: datalist[i].asLabs,
                     recName: datalist[i].resName,
@@ -1641,6 +1567,31 @@ export default {
             }
             this.loading = false;
         },
+        //切换城市及区域的时候进行资源类型的过滤
+        filterByResType(data, letter) {
+            let dataList = data;
+            let TypeNum = this.recType;
+            let tempList = [];
+            for (let i = 0; i < dataList.length; i++) {
+                if (dataList[i].resType == TypeNum) {
+                    console.log("i:", i);
+                    tempList.push(dataList[i]);
+                } else {
+                    console.log("***");
+                }
+            }
+            if (letter === "Fcity") {
+                // if(this.recType === 1){
+                //   console.log('资源类型为社区',this.recType)
+                //   tempList = this.setADS_scroll(tempList)
+                // }else if(this.recType === 2){
+                console.log("资源类型为写字楼", this.recType);
+                tempList = this.filterByADLaunch(tempList, letter);
+                // }
+            }
+            console.log("资源类型切换tempList", tempList);
+            return tempList;
+        },
         // stpe2, tab切换城市
         activeCity(item, index) {
             this.activeIndex = index;
@@ -1654,8 +1605,9 @@ export default {
             ) {
                 this.ResOriginSearch();
             } else {
-                // 切换城市置空搜索框，可执行滚动加载
-                this.loadScroll = true;
+                if (this.recType === 1) {
+                    this.loadScroll = true;
+                }
                 console.log(
                     "item.rid",
                     item.rid,
@@ -1664,9 +1616,15 @@ export default {
                 );
                 for (let i = 0; i < this.totalPlanList.length; i++) {
                     if (this.totalPlanList[i].rid === item.rid) {
-                        //    console.log('this.totalPlanList[i]',this.totalPlanList[i])
-                        this.planList = this.totalPlanList[i].list;
-                        this.copyPlanList = this.planList;
+                        // console.log('this.totalPlanList[i]',this.totalPlanList[i])
+                        if (this.recType === 2) {
+                            this.planList = this.filterByResType(
+                                this.beforADTotalList[i].list,
+                                "Fcity"
+                            );
+                        } else {
+                            this.planList = this.totalPlanList[i].list;
+                        }
                         console.log("this.planList", this.planList);
                         if (this.planList.length !== 0) {
                             this.judgeByselect();
@@ -1749,11 +1707,12 @@ export default {
             console.log("切换区域", AName, ",copyPlan", copyPlan);
             let FBA = [];
             if (this.searchInput !== "" && this.searchInput !== null) {
-                FBA = this.firstLevelData; //this.planList
-                // this.firstLevelData =  this.planList
+                FBA = this.filterByResType(this.firstLevelData); // this.planList
             } else {
                 let FBAIndex = this.activeIndex;
-                FBA = this.beforADTotalList[FBAIndex].list;
+                FBA = this.filterByResType(
+                    this.beforADTotalList[FBAIndex].list
+                );
                 console.log(
                     FBAIndex,
                     ",城市区域过滤的beforPlanList",
@@ -1803,7 +1762,7 @@ export default {
             }
         },
         // 根据过滤条件得到的数据再根据被占列表AdLaunchList进行帅选
-        filterByADLaunch(fdata) {
+        filterByADLaunch(fdata, letter) {
             let filterData = fdata;
             let filterPlanArr = [];
             let cityName = this.activeCityData.rName; //this.activeRName
@@ -1812,6 +1771,7 @@ export default {
                 let filterAD = {
                     rid: FBAIndex + n.toString(),
                     mID: filterData[n].mID,
+                    resType: filterData[n].resType,
                     asIDs: filterData[n].asIDs,
                     asLabs: filterData[n].asLabs,
                     recName: filterData[n].resName,
@@ -1839,11 +1799,58 @@ export default {
                 filterPlanArr.push(filterAD);
                 if (n >= filterData.length - 1) {
                     console.log("搜索中的filterPlanArr", filterPlanArr);
-                    this.planList = filterPlanArr;
-                    this.judgeByselect("FArea");
+                    if (letter === "Fcity") {
+                        this.loading = false;
+                        return filterPlanArr;
+                    } else {
+                        this.planList = filterPlanArr;
+                        this.judgeByselect("FArea");
+                    }
                 }
             }
             this.loading = false;
+        },
+        // 有滚动加载的帅选
+        setADS_scroll(fdata, letter) {
+            /* let filterData_scroll = fdata
+         let filterPlanArr_scroll = []
+         let cityName_scroll = this.activeCityData.rName //this.activeRName
+         let FBAIndex_scroll = this.activeIndex
+         for (let n = 0; n < filterData_scroll.length; n++){
+           let filterAD = {
+             rid: FBAIndex_scroll + n.toString(),
+             mID: filterData_scroll[n].mID,
+             asIDs: filterData_scroll[n].asIDs,
+             asLabs: filterData_scroll[n].asLabs,
+             recName: filterData_scroll[n].resName,
+             city: cityName_scroll, //'广州',
+             origin: filterData_scroll[n].rName,
+             buildType: filterData_scroll[n].cType,
+             houseNum: filterData_scroll[n].hNum,
+             buildPrice: (filterData_scroll[n].hPrice / 100),
+             mediaName: filterData_scroll[n].mTitle,
+             buildNum: filterData_scroll[n].fNum,
+             schedules: this.dateInput[0] + '-' + this.dateInput[1],
+             businessOrigin: filterData_scroll[n].tradingArea,
+             assetID: filterData_scroll[n].assetTag,
+             liveYear: filterData_scroll[n].chDay,
+             adLimit: filterData_scroll[n].notPush,
+             checkBox: {A: false, B: false},
+             box: {A: false, B: false},
+           }
+           if (filterData_scroll[n].asLabs.indexOf('A') === -1) {
+             filterAD.box.A = true
+           }
+           if (filterData_scroll[n].asLabs.indexOf('B') === -1) {
+             filterAD.box.B = true
+           }
+           filterPlanArr_scroll.push(filterAD)
+           let index = 29 // i >= index && ADList.length >= index && planArr.list.length >= index
+           if(n >= index && filterData_scroll.length >= index && filterPlanArr_scroll.length >= index){
+
+           }
+
+         }*/
         },
         // 广告限制切换
         activeADLimit(n) {
@@ -1911,52 +1918,6 @@ export default {
                 this.loading = false;
             }
         },
-        // 获取被占列表
-        /*GetAdLaunchFun(letter) {
-        this.loading = true
-        let starTime, endTime
-        if (letter === 'search') {
-          starTime = this.dateInput[0]
-          endTime = this.dateInput[1]
-        } else {
-          this.dateTime = this.GetDateStr(0)
-          starTime = this.GetDateStr(1)
-          endTime = this.GetDateStr(14)
-          this.dateInput = [starTime, endTime] // 设置默认时间
-        }
-        if (this.dateInput != this.beforeDate) {
-          this.AdLaunchList = []
-          console.log('开始日期', starTime, '结束日期', endTime)
-          let uid = this.sessionData.uID
-          let throwCity = this.city
-          console.log('投放城市333333333', throwCity)
-          for (let t = 0; t < throwCity.length; t++) {
-            let rid = throwCity[t].rid
-            let LaunchParams = {uid: uid, rid: rid, ls: starTime, le: endTime}
-            api.getApi('/GetAdLaunch', LaunchParams).then(res => {
-              console.log('被占选点列表', res) //AdLaunchList
-              let adLaunch = res.data
-              let ADLaunchObj = {rid: rid, list: []}
-              ADLaunchObj.list = adLaunch
-              this.AdLaunchList.push(ADLaunchObj)
-              this.AdLaunchList.sort(this.compareFun)
-              if (this.AdLaunchList.length >= throwCity.length) {
-                console.log('this.AdLaunchList', this.AdLaunchList)
-                if (letter === 'search') {
-                  this.setAdLaunchFun('search')
-                } else {
-                  this.setAdLaunchFun()
-                }
-                this.beforeDate = this.dateInput
-              }
-            })
-          }
-        } else if (this.searchInput !== '') {
-          this.ResOriginSearch()
-        } else {
-          this.loading = false
-        }
-      },*/
         // 重排列表，显示planList
         setAdLaunchFun(letter) {
             this.CityPlanIndex = [];
@@ -1976,6 +1937,7 @@ export default {
                                 let adObj = {
                                     rid: t.toString() + i.toString(),
                                     mID: ADList[i].mID,
+                                    resType: ADList[i].resType,
                                     asIDs: ADList[i].asIDs,
                                     asLabs: ADList[i].asLabs,
                                     recName: ADList[i].resName,
@@ -2003,7 +1965,12 @@ export default {
                                 if (ADList[i].asLabs.indexOf("B") === -1) {
                                     adObj.box.B = true;
                                 }
-                                planArr.list.push(adObj);
+                                console.log("资源类型为", this.recType);
+                                if (ADList[i].resType === this.recType) {
+                                    // 资源类型过滤
+                                    planArr.list.push(adObj);
+                                }
+                                // planArr.list.push(adObj)
                                 let index = 29;
                                 if (
                                     i >= index &&
@@ -2055,6 +2022,8 @@ export default {
             this.copyPlanList = this.planList;
             if (letter === "search" && this.searchInput !== "") {
                 this.ResOriginSearch(); // 资源名称或商圈搜索
+            } else {
+                this.judgeByselect();
             }
         },
         // 监听滚动，每次曾加20条数据
@@ -2085,6 +2054,7 @@ export default {
                             let adObj = {
                                 rid: n.toString() + i.toString(),
                                 mID: ADList[i].mID,
+                                resType: ADList[i].resType,
                                 asIDs: ADList[i].asIDs,
                                 asLabs: ADList[i].asLabs,
                                 recName: ADList[i].resName,
@@ -2110,7 +2080,11 @@ export default {
                             if (ADList[i].asLabs.indexOf("B") === -1) {
                                 adObj.box.B = true;
                             }
-                            planArr.list.push(adObj);
+                            if (ADList[i].resType === this.recType) {
+                                // 资源类型过滤
+                                planArr.list.push(adObj);
+                            }
+                            // planArr.list.push(adObj)
                             if (
                                 i >= myIndex + 29 &&
                                 ADList.length >= myIndex + 29 &&
@@ -2244,10 +2218,13 @@ export default {
                 let shopingArr = this.shopingList;
                 let planListCity = this.planList[0].city;
                 for (let i = 0; i < shopingArr.length; ) {
-                    if (planListCity === shopingArr[i].city) {
+                    if (
+                        planListCity === shopingArr[i].city &&
+                        this.planList[0].schedules === shopingArr[i].schedules
+                    ) {
                         console.log("删除城市为：", planListCity);
                         // shopingArr.splice(i, 1)
-                        this.deleteRow(shopingArr[i]);
+                        this.deleteRow(shopingArr[i], "delAll");
                     } else {
                         i++;
                     }
@@ -2342,13 +2319,13 @@ export default {
         // 继续创建
         continueCreate() {
             /* this.active = 0;
-        this.$refs['planForm'].resetFields();
-        Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
-        // this.timeout = null
-        clearTimeout(this.timeout)
-        this.areaCity = areaArr.cityArea()
-        this.getsessionData()
-        this.getADLimit()*/
+         this.$refs['planForm'].resetFields();
+         Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
+         // this.timeout = null
+         clearTimeout(this.timeout)
+         this.areaCity = areaArr.cityArea()
+         this.getsessionData()
+         this.getADLimit()*/
             location.reload(false);
         },
         changePrice(letter, info) {
@@ -2376,65 +2353,134 @@ export default {
             // 'AD'为广告费修改，'M'为制作费修改, 'SM'为修改结算方式
             let QArr = this.quotation;
             if (letter === "AD") {
-                for (let i = 0; i < QArr.length; i++) {
-                    if (QArr[i].rid === this.ADchanger.rid) {
-                        this.quotation[i].advertyPrice =
-                            (this.quotation[i].tfl - this.ADchanger.GMDate) *
-                            (this.quotation[i].ADPrice / 7);
-                        this.quotation[i].GMDate = this.ADchanger.GMDate;
-                        if (this.ADchanger.GMDate != 0) {
-                            // alert('1')
-                            console.log(
-                                "ADchanger.reaPrice",
-                                this.ADchanger.reaPrice
-                            );
-                            console.log(
-                                "quotation.advertyPrice",
-                                this.quotation[i].advertyPrice
-                            );
-                            console.log(
-                                "quotation.reaPrice",
-                                this.quotation[i].reaPrice
-                            );
+                if (this.ADchangerReaPrice === true) {
+                    for (let i = 0; i < QArr.length; i++) {
+                        if (QArr[i].rid === this.ADchanger.rid) {
+                            // this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7))
+                            // this.quotation[i].GMDate = this.ADchanger.GMDate
+                            if (this.ADchanger.GMDate != 0) {
+                                let reg = /^[0-9]\d*$/;
+                                if (
+                                    this.ADchanger.GMDate >
+                                    this.quotation[i].tfl
+                                ) {
+                                    this.ADchanger.GMDate = this.quotation[
+                                        i
+                                    ].GMDate;
+                                    this.$message({
+                                        message: "赠送(面·天)大于投放量",
+                                        type: "warning"
+                                    });
+                                } else if (
+                                    new RegExp(reg).test(
+                                        this.ADchanger.GMDate
+                                    ) === false
+                                ) {
+                                    // console.log('非数字')
+                                    this.$message({
+                                        message: "请输入正整数",
+                                        type: "warning"
+                                    });
+                                } else {
+                                    this.quotation[i].advertyPrice =
+                                        (this.quotation[i].tfl -
+                                            this.ADchanger.GMDate) *
+                                        (this.quotation[i].ADPrice / 7);
+                                    this.quotation[
+                                        i
+                                    ].GMDate = this.ADchanger.GMDate;
 
-                            if (
-                                this.ADchanger.reaPrice ===
-                                this.quotation[i].reaPrice
-                            ) {
-                                // alert('2')
-                                this.ADchanger.reaPrice = this.quotation[
-                                    i
-                                ].advertyPrice.toFixed(2);
-                                this.quotation[i].reaPrice = this.quotation[
-                                    i
-                                ].advertyPrice;
-                                this.quotation[i].discount =
-                                    Math.round(
-                                        this.quotation[i].advertyPrice /
-                                            this.quotation[i].oldPrice *
-                                            10000
-                                    ) /
-                                        100.0 +
-                                    "%"; // 折扣百分比
-                                this.hideBox();
-                            } else if (
-                                this.ADchanger.reaPrice >
-                                this.quotation[i].advertyPrice
-                            ) {
-                                // alert('3')
-                                this.ADchanger.reaPrice =
-                                    Math.floor(
-                                        this.quotation[i].advertyPrice * 100
-                                    ) / 100;
-                                this.$message({
-                                    message: "大于原价格",
-                                    type: "warning"
-                                });
+                                    console.log(
+                                        "ADchanger.reaPrice",
+                                        this.ADchanger.reaPrice
+                                    );
+                                    console.log(
+                                        "quotation.advertyPrice",
+                                        this.quotation[i].advertyPrice
+                                    );
+                                    console.log(
+                                        "quotation.reaPrice",
+                                        this.quotation[i].reaPrice
+                                    );
+
+                                    if (
+                                        this.ADchanger.reaPrice ===
+                                        this.quotation[i].reaPrice
+                                    ) {
+                                        // alert('2')
+                                        this.ADchanger.reaPrice = this.quotation[
+                                            i
+                                        ].advertyPrice.toFixed(2);
+                                        this.quotation[
+                                            i
+                                        ].reaPrice = this.quotation[
+                                            i
+                                        ].advertyPrice;
+                                        this.quotation[i].discount =
+                                            Math.round(
+                                                this.quotation[i].advertyPrice /
+                                                    this.quotation[i].oldPrice *
+                                                    10000
+                                            ) /
+                                                100.0 +
+                                            "%"; // 折扣百分比
+                                        this.hideBox();
+                                    } else if (
+                                        this.ADchanger.reaPrice >
+                                        this.quotation[i].advertyPrice
+                                    ) {
+                                        // alert('3')
+                                        this.ADchanger.reaPrice =
+                                            Math.floor(
+                                                this.quotation[i].advertyPrice *
+                                                    100
+                                            ) / 100;
+                                        this.$message({
+                                            message: "大于原价格",
+                                            type: "warning"
+                                        });
+                                    } else {
+                                        // alert('4')
+                                        // if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
+                                        //   this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
+                                        //   this.$message({
+                                        //     message: '大于原价格',
+                                        //     type: 'warning'
+                                        //   });
+                                        // } else {
+                                        this.quotation[
+                                            i
+                                        ].reaPrice = this.quotation[
+                                            i
+                                        ].advertyPrice;
+                                        this.quotation[
+                                            i
+                                        ].advertyPrice = this.ADchanger.reaPrice;
+                                        this.quotation[i].discount =
+                                            Math.round(
+                                                this.quotation[i].advertyPrice /
+                                                    this.quotation[i].oldPrice *
+                                                    10000
+                                            ) /
+                                                100.0 +
+                                            "%"; // 折扣百分比
+                                        this.hideBox();
+                                        // }
+                                    }
+                                }
                             } else {
-                                // alert('4')
+                                // alert('0')
+                                this.quotation[i].advertyPrice =
+                                    (this.quotation[i].tfl -
+                                        this.ADchanger.GMDate) *
+                                    (this.quotation[i].ADPrice / 7);
+                                this.quotation[
+                                    i
+                                ].GMDate = this.ADchanger.GMDate;
+
                                 if (
                                     this.ADchanger.reaPrice >
-                                    this.quotation[i].advertyPrice
+                                    this.quotation[i].oldPrice
                                 ) {
                                     this.ADchanger.reaPrice =
                                         Math.floor(
@@ -2445,12 +2491,12 @@ export default {
                                         type: "warning"
                                     });
                                 } else {
-                                    this.quotation[i].reaPrice = this.quotation[
-                                        i
-                                    ].advertyPrice;
                                     this.quotation[
                                         i
                                     ].advertyPrice = this.ADchanger.reaPrice;
+                                    this.quotation[i].reaPrice = this.quotation[
+                                        i
+                                    ].oldPrice;
                                     this.quotation[i].discount =
                                         Math.round(
                                             this.quotation[i].advertyPrice /
@@ -2462,115 +2508,105 @@ export default {
                                     this.hideBox();
                                 }
                             }
-                        } else {
-                            // alert('0')
+                            // break
+                            this.quotation[i].total =
+                                Number(this.quotation[i].advertyPrice) +
+                                Number(this.quotation[i].makePrice);
+                            this.quotation[i].cash = this.quotation[i].total;
+                            this.computeTotal();
+                        }
+                    }
+                } else {
+                    this.checkInput(this.ADchanger.reaPrice);
+                }
+            } else if (letter === "M") {
+                // 制作费修改
+                if (this.ADchangerReaPrice === true) {
+                    for (let i = 0; i < QArr.length; i++) {
+                        if (QArr[i].rid === this.makeChange.rid) {
                             if (
-                                this.ADchanger.reaPrice >
-                                this.quotation[i].oldPrice
+                                this.makeChange.MReaPrice >
+                                this.quotation[i].MReaPrice
                             ) {
-                                this.ADchanger.reaPrice =
-                                    Math.floor(
-                                        this.quotation[i].advertyPrice * 100
-                                    ) / 100;
                                 this.$message({
                                     message: "大于原价格",
                                     type: "warning"
                                 });
                             } else {
-                                this.quotation[
-                                    i
-                                ].advertyPrice = this.ADchanger.reaPrice;
-                                this.quotation[i].reaPrice = this.quotation[
-                                    i
-                                ].oldPrice;
-                                // this.quotation[i].discount = Math.round(this.quotation[i].advertyPrice / this.quotation[i].reaPrice * 10000) / 100.00 + "%" // 折扣百分比
-                                this.quotation[i].discount =
+                                this.quotation[i].makeDiscount =
                                     Math.round(
-                                        this.quotation[i].advertyPrice /
-                                            this.quotation[i].oldPrice *
+                                        this.makeChange.MReaPrice /
+                                            this.quotation[i].MReaPrice *
                                             10000
                                     ) /
                                         100.0 +
-                                    "%"; // 折扣百分比
+                                    "%"; // 制作费折扣百分比
+                                this.quotation[
+                                    i
+                                ].makePrice = this.makeChange.MReaPrice;
                                 this.hideBox();
                             }
+                            // break
+                            this.quotation[i].total =
+                                Number(this.quotation[i].advertyPrice) +
+                                Number(this.quotation[i].makePrice);
+                            this.quotation[i].cash = this.quotation[i].total;
+                            this.computeTotal();
                         }
-                        // break
-                        this.quotation[i].total =
-                            Number(this.quotation[i].advertyPrice) +
-                            Number(this.quotation[i].makePrice);
-                        this.quotation[i].cash = this.quotation[i].total;
-                        this.computeTotal();
                     }
-                }
-            } else if (letter === "M") {
-                // 制作费修改
-                for (let i = 0; i < QArr.length; i++) {
-                    if (QArr[i].rid === this.makeChange.rid) {
-                        if (
-                            this.makeChange.MReaPrice >
-                            this.quotation[i].MReaPrice
-                        ) {
-                            this.$message({
-                                message: "大于原价格",
-                                type: "warning"
-                            });
-                        } else {
-                            this.quotation[i].makeDiscount =
-                                Math.round(
-                                    this.makeChange.MReaPrice /
-                                        this.quotation[i].MReaPrice *
-                                        10000
-                                ) /
-                                    100.0 +
-                                "%"; // 制作费折扣百分比
-                            this.quotation[
-                                i
-                            ].makePrice = this.makeChange.MReaPrice;
-                            this.hideBox();
-                        }
-                        // break
-                        this.quotation[i].total =
-                            Number(this.quotation[i].advertyPrice) +
-                            Number(this.quotation[i].makePrice);
-                        this.quotation[i].cash = this.quotation[i].total;
-                        this.computeTotal();
-                    }
+                } else {
+                    this.checkInput(this.makeChange.MReaPrice);
                 }
             } else if (letter === "TP") {
                 // 修改结算方式
-                for (let i = 0; i < QArr.length; i++) {
-                    if (QArr[i].rid === this.totalChange.rid) {
-                        // alert('1')
-                        let total =
-                            Number(this.totalChange.other) +
-                            Number(this.totalChange.zyzh) +
-                            Number(this.totalChange.cash);
-                        console.log("total", total, this.totalChange.total);
-                        if (total > this.totalChange.total) {
-                            this.$message({
-                                message: "大于总价格",
-                                type: "warning"
-                            });
-                        } else {
-                            this.totalChange.other =
-                                this.totalChange.total -
-                                (Number(this.totalChange.zyzh) +
-                                    Number(this.totalChange.cash));
-                            this.quotation[i].cash = Number(
-                                this.totalChange.cash
-                            ); // Number(this.totalChange.cash).toFixed(2)
-                            this.quotation[i].zyzh = Number(
-                                this.totalChange.zyzh
-                            ); // Number(this.totalChange.zyzh).toFixed(2)
-                            this.quotation[i].other = Number(
-                                this.totalChange.other
-                            ); // Number(this.totalChange.other).toFixed(2)
-                            this.quotation[i].remark = this.totalChange.remark;
-                            this.computeTotal();
-                            this.hideBox();
+                if (
+                    this.totalChangeCash &&
+                    this.totalChangeZyzh &&
+                    this.totalChangeOther
+                ) {
+                    for (let i = 0; i < QArr.length; i++) {
+                        if (QArr[i].rid === this.totalChange.rid) {
+                            // alert('1')
+                            let total =
+                                Number(this.totalChange.other) +
+                                Number(this.totalChange.zyzh) +
+                                Number(this.totalChange.cash);
+                            console.log("total", total, this.totalChange.total);
+                            if (total > this.totalChange.total) {
+                                this.$message({
+                                    message: "大于总价格",
+                                    type: "warning"
+                                });
+                            } else {
+                                this.totalChange.other =
+                                    this.totalChange.total -
+                                    (Number(this.totalChange.zyzh) +
+                                        Number(this.totalChange.cash));
+                                this.quotation[i].cash = Number(
+                                    this.totalChange.cash
+                                ); // Number(this.totalChange.cash).toFixed(2)
+                                this.quotation[i].zyzh = Number(
+                                    this.totalChange.zyzh
+                                ); // Number(this.totalChange.zyzh).toFixed(2)
+                                this.quotation[i].other = Number(
+                                    this.totalChange.other
+                                ); // Number(this.totalChange.other).toFixed(2)
+                                this.quotation[
+                                    i
+                                ].remark = this.totalChange.remark;
+                                this.computeTotal();
+                                this.hideBox();
+                            }
+                            break;
                         }
-                        break;
+                    }
+                } else {
+                    if (!this.totalChangeCash) {
+                        this.checkCash(this.totalChange.cash);
+                    } else if (!this.totalChangeZyzh) {
+                        this.checkZyzh(this.totalChange.zyzh);
+                    } else if (!this.totalChangeOther) {
+                        this.checkOther(this.totalChange.other);
                     }
                 }
             }
@@ -2942,7 +2978,7 @@ export default {
             }
         },
         // 购物车删除行
-        deleteRow(rows) {
+        deleteRow(rows, letter) {
             let deleteIf = false;
             //  console.log('购物车列表：',list)
             console.log("购物车删除行", rows);
@@ -3035,7 +3071,9 @@ export default {
                     }
                 }
             }
-            this.computeMedia_AD(); // 统计购物车媒体数、面数
+            if (letter !== "delAll") {
+                this.computeMedia_AD(); // 统计购物车媒体数、面数
+            }
         },
         // 当在购物车删除项不在当前选点列表（城市不同）时，去totalPlanList查找
         delereRowByTotal(rows) {
@@ -3371,41 +3409,53 @@ export default {
                 this.firstLevelSearch = true;
                 let planArr = [];
                 let rName = this.activeCityData.rName; //this.activeRName
-                // let ADLaunch = this.AdLaunchList[index].list
-                for (let n = 0; n < arr.length; n++) {
-                    let adObj = {
-                        rid: 0 + n.toString(),
-                        mID: arr[n].mID,
-                        asIDs: arr[n].asIDs,
-                        asLabs: arr[n].asLabs,
-                        recName: arr[n].resName,
-                        city: rName, //'广州',
-                        origin: arr[n].rName,
-                        buildType: arr[n].cType,
-                        houseNum: arr[n].hNum,
-                        buildPrice: arr[n].hPrice / 100,
-                        mediaName: arr[n].mTitle,
-                        buildNum: arr[n].fNum,
-                        schedules: this.dateInput[0] + "-" + this.dateInput[1],
-                        businessOrigin: arr[n].tradingArea,
-                        assetID: arr[n].assetTag,
-                        liveYear: arr[n].chDay,
-                        adLimit: arr[n].notPush,
-                        checkBox: { A: false, B: false },
-                        box: { A: false, B: false }
-                    };
-                    if (arr[n].asLabs.indexOf("A") === -1) {
-                        adObj.box.A = true;
+                if (arr.length !== 0) {
+                    for (let n = 0; n < arr.length; n++) {
+                        let adObj = {
+                            rid: 0 + n.toString(),
+                            mID: arr[n].mID,
+                            resType: arr[n].resType,
+                            asIDs: arr[n].asIDs,
+                            asLabs: arr[n].asLabs,
+                            recName: arr[n].resName,
+                            city: rName, //'广州',
+                            origin: arr[n].rName,
+                            buildType: arr[n].cType,
+                            houseNum: arr[n].hNum,
+                            buildPrice: arr[n].hPrice / 100,
+                            mediaName: arr[n].mTitle,
+                            buildNum: arr[n].fNum,
+                            schedules:
+                                this.dateInput[0] + "-" + this.dateInput[1],
+                            businessOrigin: arr[n].tradingArea,
+                            assetID: arr[n].assetTag,
+                            liveYear: arr[n].chDay,
+                            adLimit: arr[n].notPush,
+                            checkBox: { A: false, B: false },
+                            box: { A: false, B: false }
+                        };
+                        if (arr[n].asLabs.indexOf("A") === -1) {
+                            adObj.box.A = true;
+                        }
+                        if (arr[n].asLabs.indexOf("B") === -1) {
+                            adObj.box.B = true;
+                        }
+                        if (this.recType === arr[n].resType) {
+                            planArr.push(adObj);
+                        }
+                        // planArr.push(adObj)
+                        if (n >= arr.length - 1) {
+                            // console.log('搜索过滤完成后的planArr', planArr)
+                            this.planList = planArr;
+                            this.judgeByselect("firstLevel");
+                        }
                     }
-                    if (arr[n].asLabs.indexOf("B") === -1) {
-                        adObj.box.B = true;
-                    }
-                    planArr.push(adObj);
-                    if (n >= arr.length - 1) {
-                        // console.log('搜索过滤完成后的planArr', planArr)
-                        this.planList = planArr;
-                        this.judgeByselect("firstLevel");
-                    }
+                } else {
+                    this.loadScroll = true;
+                    Message({
+                        type: "warning",
+                        message: "暂时搜索不到数据"
+                    });
                 }
             } else {
                 this.planList = arr;
@@ -3415,174 +3465,174 @@ export default {
         tableHSearch(letter) {
             // 表头搜索this.copyPlanList
             /*  console.log(' this.copyPlanList', this.copyPlanList)
-        let arr = [];
-        for (let data of this.copyPlanList) {
-          if (letter === 'H') {
-            console.log('this.houseNum', this.houseNum)
-            let keyword = this.houseNum
-            if (keyword[0] !== '' && keyword[1] !== '') {
-              if ((this.buildNum[0] !== '' && this.buildNum[1] !== '') || (this.buildPrice[0] !== ''
-                && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                this.tableHSearch_2(keyword, 'H')
-                break
+          let arr = [];
+          for (let data of this.copyPlanList) {
+            if (letter === 'H') {
+              console.log('this.houseNum', this.houseNum)
+              let keyword = this.houseNum
+              if (keyword[0] !== '' && keyword[1] !== '') {
+                if ((this.buildNum[0] !== '' && this.buildNum[1] !== '') || (this.buildPrice[0] !== ''
+                  && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
+                  this.tableHSearch_2(keyword, 'H')
+                  break
+                } else {
+                  console.log('其他为空')
+                  if (data.houseNum >= keyword[0] && data.houseNum <= keyword[1]) {
+                    console.log('h')
+                    arr.push(data);
+                  }
+                }
               } else {
-                console.log('其他为空')
-                if (data.houseNum >= keyword[0] && data.houseNum <= keyword[1]) {
-                  console.log('h')
-                  arr.push(data);
+                // alert('1')
+                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
+                  this.tableHSearch('Y')
+                  return
+                } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
+                  this.tableHSearch('P')
+                  return
+                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
+                  this.tableHSearch('B')
+                  return
+                } else {
+                  arr = this.copyPlanList
                 }
               }
-            } else {
-              // alert('1')
-              if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                this.tableHSearch('Y')
-                return
-              } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                this.tableHSearch('P')
-                return
-              } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                this.tableHSearch('B')
-                return
+            } else if (letter === 'B') {
+              let keyword = this.buildNum
+              if (keyword[0] !== '' && keyword[1] !== '') {
+                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildPrice[0] !== ''
+                  && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
+                  this.tableHSearch_2(keyword, 'B')
+                  break
+                } else {
+                  console.log('其他为空')
+                  if (data.buildNum >= keyword[0] && data.buildNum <= keyword[1]) {
+                    console.log('b')
+                    arr.push(data);
+                  }
+                }
               } else {
-                arr = this.copyPlanList
-              }
-            }
-          } else if (letter === 'B') {
-            let keyword = this.buildNum
-            if (keyword[0] !== '' && keyword[1] !== '') {
-              if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildPrice[0] !== ''
-                && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                this.tableHSearch_2(keyword, 'B')
-                break
-              } else {
-                console.log('其他为空')
-                if (data.buildNum >= keyword[0] && data.buildNum <= keyword[1]) {
-                  console.log('b')
-                  arr.push(data);
+                // alert('2')
+                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
+                  this.tableHSearch('Y')
+                  return
+                } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
+                  this.tableHSearch('P')
+                  return
+                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
+                  this.tableHSearch('H')
+                  return
+                } else {
+                  arr = this.copyPlanList
                 }
               }
-            } else {
-              // alert('2')
-              if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                this.tableHSearch('Y')
-                return
-              } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                this.tableHSearch('P')
-                return
-              } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                this.tableHSearch('H')
-                return
+            } else if (letter === 'P') {
+              let keyword = this.buildPrice
+              if (keyword[0] !== '' && keyword[1] !== '') {
+                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
+                  && this.buildNum[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
+                  this.tableHSearch_2(keyword, 'P')
+                  break
+                } else {
+                  // alert('其他为空')
+                  if (data.buildPrice >= keyword[0] && data.buildPrice <= keyword[1]) {
+                    // alert('p')
+                    arr.push(data);
+                  }
+                }
               } else {
-                arr = this.copyPlanList
-              }
-            }
-          } else if (letter === 'P') {
-            let keyword = this.buildPrice
-            if (keyword[0] !== '' && keyword[1] !== '') {
-              if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
-                && this.buildNum[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                this.tableHSearch_2(keyword, 'P')
-                break
-              } else {
-                // alert('其他为空')
-                if (data.buildPrice >= keyword[0] && data.buildPrice <= keyword[1]) {
-                  // alert('p')
-                  arr.push(data);
+                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
+                  this.tableHSearch('Y')
+                  return
+                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
+                  this.tableHSearch('B')
+                  return
+                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
+                  this.tableHSearch('H')
+                  return
+                } else {
+                  arr = this.copyPlanList
                 }
               }
-            } else {
-              if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                this.tableHSearch('Y')
-                return
-              } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                this.tableHSearch('B')
-                return
-              } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                this.tableHSearch('H')
-                return
-              } else {
-                arr = this.copyPlanList
-              }
-            }
-          } else if (letter === 'Y') {
-            let keyword = this.liveYear
-            if (keyword[0] !== '' && keyword[1] !== '') {
-              if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
-                && this.buildNum[1] !== '') || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')) {
-                this.tableHSearch_2(keyword, 'Y')
-                break
-              } else {
-                // alert('其他为空')
-                if (data.liveYear >= keyword[0] && data.liveYear <= keyword[1]) {
-                  //   alert('y')
-                  arr.push(data);
+            } else if (letter === 'Y') {
+              let keyword = this.liveYear
+              if (keyword[0] !== '' && keyword[1] !== '') {
+                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
+                  && this.buildNum[1] !== '') || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')) {
+                  this.tableHSearch_2(keyword, 'Y')
+                  break
+                } else {
+                  // alert('其他为空')
+                  if (data.liveYear >= keyword[0] && data.liveYear <= keyword[1]) {
+                    //   alert('y')
+                    arr.push(data);
+                  }
                 }
-              }
-            } else {
-              if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                this.tableHSearch('P')
-                return
-              } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                this.tableHSearch('B')
-                return
-              } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                this.tableHSearch('H')
-                return
               } else {
-                arr = this.copyPlanList
+                if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
+                  this.tableHSearch('P')
+                  return
+                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
+                  this.tableHSearch('B')
+                  return
+                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
+                  this.tableHSearch('H')
+                  return
+                } else {
+                  arr = this.copyPlanList
+                }
               }
             }
           }
-        }
-        this.planList = arr
-        this.backupsList = arr
-        this.HSearch = ''*/
+          this.planList = arr
+          this.backupsList = arr
+          this.HSearch = ''*/
             //    this.ResOriginSearch()
         },
         tableHSearch_2(data, letter) {
             /*  let arr = [];
-        let keyword = data
-        console.log('this.planList', this.planList)
-        let planList = []
-        if (this.planList.length === 0) {
-          planList = this.copyPlanList
-        } else {
-          // planList = this.planList
-          planList = this.backupsList
-        }
-        for (let i = 0; i < planList.length; i++) {
-          if (letter === 'H') {
-            if (planList[i].houseNum >= keyword[0] && planList[i].houseNum <= keyword[1]) {
-              // alert('h2')
-              arr.push(planList[i]);
+          let keyword = data
+          console.log('this.planList', this.planList)
+          let planList = []
+          if (this.planList.length === 0) {
+            planList = this.copyPlanList
+          } else {
+            // planList = this.planList
+            planList = this.backupsList
+          }
+          for (let i = 0; i < planList.length; i++) {
+            if (letter === 'H') {
+              if (planList[i].houseNum >= keyword[0] && planList[i].houseNum <= keyword[1]) {
+                // alert('h2')
+                arr.push(planList[i]);
+              }
+            } else if (letter === 'B') {
+              if (planList[i].buildNum >= keyword[0] && planList[i].buildNum <= keyword[1]) {
+                // alert('b2')
+                arr.push(planList[i]);
+                console.log('*********1233', arr)
+              }
+            } else if (letter === 'P') {
+              if (planList[i].buildPrice >= keyword[0] && planList[i].buildPrice <= keyword[1]) {
+                // alert('p2')
+                arr.push(planList[i]);
+              }
+            } else if (letter === 'Y') {
+              if (planList[i].liveYear >= keyword[0] && planList[i].liveYear <= keyword[1]) {
+                //  alert('y2')
+                arr.push(planList[i]);
+              }
             }
-          } else if (letter === 'B') {
-            if (planList[i].buildNum >= keyword[0] && planList[i].buildNum <= keyword[1]) {
-              // alert('b2')
-              arr.push(planList[i]);
+            if (i >= planList.length - 1) {
+              console.log('遍历完成')
               console.log('*********1233', arr)
+              let that = this
+              setTimeout(function () {
+                that.planList = arr
+                console.log('11111111111111', that.planList)
+              }, 0)
             }
-          } else if (letter === 'P') {
-            if (planList[i].buildPrice >= keyword[0] && planList[i].buildPrice <= keyword[1]) {
-              // alert('p2')
-              arr.push(planList[i]);
-            }
-          } else if (letter === 'Y') {
-            if (planList[i].liveYear >= keyword[0] && planList[i].liveYear <= keyword[1]) {
-              //  alert('y2')
-              arr.push(planList[i]);
-            }
-          }
-          if (i >= planList.length - 1) {
-            console.log('遍历完成')
-            console.log('*********1233', arr)
-            let that = this
-            setTimeout(function () {
-              that.planList = arr
-              console.log('11111111111111', that.planList)
-            }, 0)
-          }
-        }*/
+          }*/
         },
         emptyFun(letter) {
             // 清空
@@ -3603,40 +3653,40 @@ export default {
         // 搜索楼盘类型
         searchBT(val) {
             /* let planList = []
-        let arr = []
-        planList = this.copyPlanList
-        for (let i = 0; i < planList.length; i++) { //buildType
-          if (val === '全部') {
-            arr = planList
-          } else {
-            if (val === planList[i].buildType) {
-              arr.push(planList[i])
-            }
-          }
-        }
-        this.planList = arr*/
+         let arr = []
+         planList = this.copyPlanList
+         for (let i = 0; i < planList.length; i++) { //buildType
+           if (val === '全部') {
+             arr = planList
+           } else {
+             if (val === planList[i].buildType) {
+               arr.push(planList[i])
+             }
+           }
+         }
+         this.planList = arr*/
         },
         // 清空购物车
         clearShop() {
             /*  let shopingArr = this.shopingList
-        // let planListCity = this.planList[0].city
-        console.log('this.city', this.city)
-        for (let j = 0; j < this.city.length; j++) {
-          for (let i = 0; i < shopingArr.length;) {
-            if (this.city[j].rName === shopingArr[i].city) {
-              console.log('删除城市为：', this.city[j].rName)
-              // shopingArr.splice(i, 1)
-              this.deleteRow(shopingArr[i])
-            } else {
-              i++
+          // let planListCity = this.planList[0].city
+          console.log('this.city', this.city)
+          for (let j = 0; j < this.city.length; j++) {
+            for (let i = 0; i < shopingArr.length;) {
+              if (this.city[j].rName === shopingArr[i].city) {
+                console.log('删除城市为：', this.city[j].rName)
+                // shopingArr.splice(i, 1)
+                this.deleteRow(shopingArr[i])
+              } else {
+                i++
+              }
+              if (j >= shopingArr.length - 1) {
+                this.shopMedia_ADNum.mediaNum = 0
+                this.shopMedia_ADNum.ADNum = 0
+                this.getBadeNumberByShopList()
+              }
             }
-            if (j >= shopingArr.length - 1) {
-              this.shopMedia_ADNum.mediaNum = 0
-              this.shopMedia_ADNum.ADNum = 0
-              this.getBadeNumberByShopList()
-            }
-          }
-        }*/
+          }*/
             this.shopingList = [];
             this.getBadeNumberByShopList();
             this.computeMedia_AD();
@@ -3703,16 +3753,6 @@ export default {
                     }
                 }
             }
-            /*for(i = 0; i < len; i++){
-          for(j = i + 1; j < len; j++){
-            if(arr[i] === arr[j]){
-              j = ++i;
-            }
-          }
-          result.push(arr[i]);
-        }
-        return result;
-      }*/
         },
         // 价格加上逗号
         priceFormat(price) {
@@ -3730,6 +3770,65 @@ export default {
         clearData() {
             this.$router.push("./planList");
             // this.$router.go(-1)
+        },
+        // 修改广告费和制作费的验证
+        checkInput(value) {
+            let reg = /[^\d\.]/g;
+            if (value) {
+                if (new RegExp(reg).test(value)) {
+                    this.$message({
+                        message: "请输入正确的数字",
+                        type: "warning"
+                    });
+                    this.ADchangerReaPrice = false;
+                } else {
+                    this.ADchangerReaPrice = true;
+                }
+            }
+            console.log("checkInput", this.ADchangerReaPrice);
+        },
+        // 修改结算方式的验证checkCash、checkZyzh、checkOther
+        checkCash(val) {
+            let reg = /[^\d\.]/g;
+            if (val) {
+                if (new RegExp(reg).test(val)) {
+                    this.$message({
+                        message: "现金金额只能为数字",
+                        type: "warning"
+                    });
+                    this.totalChangeCash = false;
+                } else {
+                    this.totalChangeCash = true;
+                }
+            }
+        },
+        checkZyzh(val) {
+            let reg = /[^\d\.]/g;
+            if (val) {
+                if (new RegExp(reg).test(val)) {
+                    this.$message({
+                        message: "请输入数字.",
+                        type: "warning"
+                    });
+                    this.totalChangeZyzh = false;
+                } else {
+                    this.totalChangeZyzh = true;
+                }
+            }
+        }, //checkOther
+        checkOther(val) {
+            let reg = /[^\d\.]/g;
+            if (val) {
+                if (new RegExp(reg).test(val)) {
+                    this.$message({
+                        message: "请输入数字..",
+                        type: "warning"
+                    });
+                    this.totalChangeOther = false;
+                } else {
+                    this.totalChangeOther = true;
+                }
+            }
         }
     }
 };
@@ -4791,7 +4890,9 @@ export default {
     margin-top: 20px;
     margin-bottom: 6px;
 }
-
+/deep/ .step3 .el-input {
+    width: 348px;
+}
 /deep/ .step3 .el-input__inner,
 /deep/ .step3 .el-textarea__inner {
     width: 348px;

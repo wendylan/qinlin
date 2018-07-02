@@ -1175,7 +1175,7 @@ export default {
 .picBox img {
     width: 210px;
     height: 280px;
-    margin-bottom: 4px;
+    margin-bottom: 15px;
     border-bottom: 1px solid #e9e9e9;
 }
 
@@ -1191,7 +1191,10 @@ export default {
 }
 
 /deep/ .el-carousel__indicators {
-    bottom: 28px;
+    /*bottom: 28px;*/
+}
+/deep/ .el-carousel__button {
+    background-color: #666;
 }
 
 /*发布情况*/

@@ -178,7 +178,7 @@
 							</el-form-item>
 							<el-form-item label="广告限制:" prop="adLimit">
 								<el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制">
-									<el-option v-for="limit in adLimit" :key="limit.value" :label="limit.label" :value="limit.value">
+									<el-option v-for="(limit, index) in adLimit" :key="index" :label="limit.label" :value="limit.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
@@ -325,7 +325,7 @@ export default {
                         visualW: "", //可视画面adviewsize
                         visualH: "", //可视画面
                         mediaRemark: "", //备注 mrk
-                        adLimit: "", //请选择广告限制 notpush
+                        adLimit: [], //请选择广告限制 notpush
                         assetIdBolean: false,
                         mImg: ""
                     }
@@ -725,6 +725,7 @@ export default {
                     limitArr.push(limitObj);
                 }
                 this.adLimit = limitArr;
+                console.log("广告限制adLimit", this.adLimit);
             });
         },
         //新增媒体面板
@@ -745,7 +746,7 @@ export default {
                         visualW: "",
                         visualH: "",
                         mediaRemark: "",
-                        adLimit: "",
+                        adLimit: [],
                         assetIdBolean: false
                     }
                 }
@@ -1324,6 +1325,9 @@ export default {
                         tempObj.lat = Number(recObj.latLng.split(";")[0]);
                         tempObj.lng = Number(recObj.latLng.split(";")[1]);
                     }
+                    if (tempObj.rt === "写字楼") {
+                        this.selectRec("2");
+                    }
                     tempObj.recRemark = recObj.remark;
                     this.recForm = tempObj;
                     console.log("recForm", this.recForm);
@@ -1362,9 +1366,11 @@ export default {
                             mediaObj[i].notPush !== undefined &&
                             mediaObj[i].notPush !== null
                         ) {
+                            console.log("广告限制不为空");
                             media.adLimit = mediaObj[i].notPush.split("、");
                         } else {
-                            media.adLimit = mediaObj[i].notPush;
+                            console.log("广告限制为空");
+                            media.adLimit = [];
                         }
                         // media.mediaRemark = ''
                         console.log("media", media);

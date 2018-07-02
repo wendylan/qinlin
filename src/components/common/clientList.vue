@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker class="input-with-select" v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期">
+                                <el-date-picker class="input-with-select" v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="创建日期" end-placeholder="创建日期" @change="initDate">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -67,7 +67,12 @@
                         </el-table-column>
                         <el-table-column prop="rName" label="所在城市" min-width="8%" :filters="filtCity" :filter-method="filterCity" :filter-multiple="false">
                         </el-table-column>
-                        <el-table-column prop="cBrand" label="公司品牌" min-width="12.1%">
+                        <el-table-column label="公司品牌" min-width="12.1%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cBrand" placement="bottom">
+                                    <span>{{scope.row.cBrand}}</span>
+                                </el-tooltip>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="puName" label="所有人" min-width="6.1%">
                         </el-table-column>
@@ -173,6 +178,12 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
+            if (!this.date && !this.keyword) {
+                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
+            }
+        },
+        // 当去掉时间控件的时候进行重置显示
+        initDate() {
             if (!this.date && !this.keyword) {
                 this.currentPlan = JSON.parse(JSON.stringify(this.planList));
             }
@@ -433,33 +444,33 @@ export default {
 }
 
 /*/deep/ .el-date-editor .el-range__close-icon {
-      position: relative;
-      top: -2px;
-      left: 3px;
-    }*/
+        position: relative;
+        top: -2px;
+        left: 3px;
+      }*/
 
 /*/deep/ .el-picker-panel .el-date-range-picker .el-popper {
-      left: 335px !important;
-    }
-    /deep/ .el-date-editor .el-range-separator {
-      font-size: 14px;
-      height: 34px;
-      position: relative;
-      top: -3px;
-      !*top: -4px;*!
-    }*/
+        left: 335px !important;
+      }
+      /deep/ .el-date-editor .el-range-separator {
+        font-size: 14px;
+        height: 34px;
+        position: relative;
+        top: -3px;
+        !*top: -4px;*!
+      }*/
 /* /deep/ .el-range-editor .el-range-input{
-      font-size: 14px;
-      padding: 8px 0px;
-      height: 30px;
-      line-height: 14px;
-      box-sizing: border-box;
-      !*top: -4px;*!
-      width: 85px;
-      position: relative;
-      top: -3px;
+        font-size: 14px;
+        padding: 8px 0px;
+        height: 30px;
+        line-height: 14px;
+        box-sizing: border-box;
+        !*top: -4px;*!
+        width: 85px;
+        position: relative;
+        top: -3px;
 
-    }*/
+      }*/
 /deep/ .el-date-editor i,
 /deep/ .el-date-editor input,
 /deep/ .el-date-editor span {
@@ -645,7 +656,7 @@ export default {
 }
 
 /deep/ .el-table__row td:nth-child(6) .cell {
-    width: 145px;
+    width: 180px;
 }
 
 /deep/ .el-table__row td:nth-child(8) .cell {
@@ -729,8 +740,16 @@ export default {
         width: 1284px;
     }
 
+    /deep/ .el-table__row td:nth-child(1) .cell {
+        width: 101px;
+    }
+
     /deep/ .el-table__row td:nth-child(2) .cell {
-        width: 103px;
+        width: 109px;
+    }
+
+    /deep/ .el-table__row td:nth-child(6) .cell {
+        width: 196px;
     }
 }
 

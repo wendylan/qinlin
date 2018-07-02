@@ -24,10 +24,10 @@
 								<li>资源类型：
 									<span>{{obj.cType}}</span>
 								</li>
-								<li>所在城市：
+								<li>所属城市：
 									<span>{{obj.city}}</span>
 								</li>
-								<li>所在区域：
+								<li>所属区域：
 									<span>{{obj.cityArea}}</span>
 								</li>
 								<li>所属商圈：
@@ -49,7 +49,7 @@
 								<li>楼盘价格：
 									<span>{{obj.housePrice}}</span>
 								</li>
-								<li>入住时间：
+								<li>入住年份：
 									<span>{{obj.joinTime}}</span>
 								</li>
 							</ul>
@@ -87,7 +87,7 @@
 						<el-table border :data="mediaList" style="width: 100%">
 							<el-table-column prop="mTitle" label="媒体名称" min-width="8%">
 							</el-table-column>
-							<el-table-column prop="mType" label="门体类型" min-width="7%">
+							<el-table-column prop="mType" label="媒体类型" min-width="7%">
 							</el-table-column>
 							<el-table-column prop="mState" label="状态" min-width="7%">
 							</el-table-column>

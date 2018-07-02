@@ -140,32 +140,37 @@ export default {
                 .getApi(apiUrl, loginParams)
                 .then(res => {
                     let userMsg = res.data;
-                    console.log(res.data);
-                    if (!userMsg.SysCode) {
-                        sessionStorage.setItem(
-                            "session_data",
-                            JSON.stringify(userMsg)
-                        ); //userMsg.realName
-                        if (userMsg.uType === "SM") {
-                            //sessionStorage.getItem("real_name") 获取session的值
-                            this.$router.push("/superOperate");
-                        } else if (userMsg.uType === "MD") {
-                            this.$router.push("/media");
-                        } else if (userMsg.uType === "BD") {
-                            sessionStorage.setItem("username", name); // 用户为销售时，存起username以便创建方案的时候使用
-                            this.$router.push("/sale");
-                        } else if (userMsg.uType === "OP") {
-                            this.$router.push("/operate");
+                    console.log("登录返回的数据", res.data);
+                    if (userMsg) {
+                        if (!userMsg.SysCode) {
+                            sessionStorage.setItem(
+                                "session_data",
+                                JSON.stringify(userMsg)
+                            ); //userMsg.realName
+                            if (userMsg.uType === "SM") {
+                                //sessionStorage.getItem("real_name") 获取session的值
+                                this.$router.push("/superOperate");
+                            } else if (userMsg.uType === "MD") {
+                                this.$router.push("/media");
+                            } else if (userMsg.uType === "BD") {
+                                sessionStorage.setItem("username", name); // 用户为销售时，存起username以便创建方案的时候使用
+                                this.$router.push("/sale");
+                            } else if (userMsg.uType === "OP") {
+                                this.$router.push("/operate");
+                            }
+                        } else {
+                            Message({
+                                message: "用户名或密码错误！",
+                                type: "warning"
+                            });
                         }
                     } else {
-                        /* MessageBox.alert('用户名或密码错误,请重新输入', '用户登录', {
-				showClose: false,
-				confirmButtonText: '确定',
-				});*/
-                        Message({
-                            message: "用户名或密码错误！",
-                            type: "warning"
-                        });
+                        setTimeout(function() {
+                            Message({
+                                message: "登录异常！",
+                                type: "warning"
+                            });
+                        }, 1000);
                     }
                 })
                 .catch(err => {

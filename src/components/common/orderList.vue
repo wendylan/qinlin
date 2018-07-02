@@ -25,7 +25,7 @@
                         </span>
                         <span>
                             <div class="block">
-                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="发布日期" end-placeholder="发布日期">
+                                <el-date-picker v-model="rangeDate" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="发布日期" end-placeholder="发布日期" @change="initDate">
                                 </el-date-picker>
                             </div>
                         </span>
@@ -297,6 +297,12 @@ export default {
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
+            if (!this.rangeDate && !this.keyword) {
+                this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
+            }
+        },
+        // 当搜索框为空的时候进行重置显示
+        initDate() {
             if (!this.rangeDate && !this.keyword) {
                 this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
             }
@@ -766,7 +772,7 @@ a {
 }
 
 /deep/ .el-table__row td:nth-child(5) .cell span {
-    width: 87px;
+    width: 85px;
 }
 
 /deep/ .el-table__row td:nth-child(7) .cell span {
@@ -774,7 +780,7 @@ a {
 }
 
 /deep/ .el-table__row td:nth-child(4) .cell span {
-    width: 87px;
+    width: 95px;
 }
 
 /deep/ .el-table__row td:nth-child(3) .cell span {
@@ -782,7 +788,7 @@ a {
 }
 
 /deep/ .el-table__row td:nth-child(2) .cell span {
-    width: 133px;
+    width: 130px;
 }
 
 /*筛选*/
@@ -868,6 +874,9 @@ a {
 
     .mediaList_wrap .mediaList_container .table_wrap {
         width: 1284px;
+    }
+    /deep/ .el-table__row td:nth-child(4) .cell span {
+        width: 100px;
     }
 }
 

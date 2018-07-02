@@ -3223,6 +3223,7 @@ export default {
             let uid = this.sessionData.uID;
             let apid = sessionStorage.getItem("plan_apid");
             let info = { uid: uid, apid: apid };
+            console.log("uWhoArr---------", uWhoArr);
             // let info = {uid: 3, apid: 77}
             api
                 .getApi("/GetADB", info)
@@ -3230,8 +3231,10 @@ export default {
                     console.log("选点排期数据", res.data);
                     if (!res.data.SysCode) {
                         let resInfo = res.data;
+                        // 当一个方案有账号权限外的城市不能进行编辑，需要进行剔除
+                        let resultArr = this.getLimitCity();
                         let shopList = [];
-                        for (let data of resInfo) {
+                        for (let data of resultArr) {
                             this.$set(
                                 data,
                                 "city",
@@ -3253,6 +3256,10 @@ export default {
                                 checkBox.B = true;
                             }
                             let selectInfo = {
+                                asID: data.asID,
+                                pbStar: data.pbStar,
+                                pbEnd: data.pbEnd,
+                                rID: data.rID,
                                 rid: data.rID,
                                 mID: data.mID,
                                 asIDs: data.asID,
@@ -3275,6 +3282,7 @@ export default {
                             };
                             shopList.push(selectInfo);
                         }
+                        console.log("shoplist---------", shopList);
                         /* // 城市筛选过滤
               this.filterCityData = filterFormat(resInfo, "city")
               this.filtersArea = filterFormat(resInfo, "origin")
@@ -3288,6 +3296,23 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
+        },
+        getLimitCity(resInfo) {
+            let uWhoArr = this.sessionData.uWho;
+            // 当一个方案有账号权限外的城市不能进行编辑，需要进行剔除
+            let resultArr = [];
+            if (uWhoArr == 0) {
+                resultArr = resInfo;
+            } else {
+                for (let data of resInfo) {
+                    data.rID = data.rID.toString().substring(0, 4) + "00";
+                    if (uWhoArr.indexOf(data.rID) != -1) {
+                        resultArr.push(data);
+                    }
+                }
+            }
+            console.log("resultArr----uwho-----", resultArr);
+            return resultArr;
         },
         // 根据编辑方案的apid获取该方案的详情
         FanganInfoByApid() {
@@ -3376,22 +3401,24 @@ export default {
             // de          String【必填】      广告投放结束日期
             // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
             let resultArr = this.constructData(tableData);
+            console.log("resultArr ------------", resultArr);
             let holdArr = [];
             for (let i = 0; i < resultArr.length; i++) {
                 api.postApi("/CheckPD", resultArr[i]).then(res => {
                     console.log(res.data);
                     if (res.data.length) {
-                        holdArr.push(res.data);
+                        holdArr = holdArr.concat(res.data);
                     }
-                    if (i > resultArr.length - 1) {
+                    console.log("i-holdArr", i, holdArr);
+                    if (i >= resultArr.length - 1) {
                         let hightArr = [];
                         let lowArr = [];
+                        // 把被占的提前显示
                         for (let tab of tableData) {
                             this.$set(tab, "lState", 0);
                             for (let data of holdArr) {
                                 if (data.asID == tab.asID) {
                                     this.$set(tab, "lState", 1);
-                                    break;
                                 }
                             }
                             if (tab.lState) {
@@ -3446,8 +3473,8 @@ export default {
             // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
             let resultArr = [];
             if (!resultArr.length) {
-                let start = this.formatTime(tableData[0].pbStar);
-                let end = this.formatTime(tableData[0].pbEnd);
+                let start = dateFormat.toDate(tableData[0].pbStar);
+                let end = dateFormat.toDate(tableData[0].pbEnd);
                 let obj = {
                     uid: this.sessionData.uID,
                     ds: start,
@@ -3459,8 +3486,8 @@ export default {
             for (let res of resultArr) {
                 let asIDs = "";
                 for (let data of tableData) {
-                    let start = this.formatTime(data.pbStar);
-                    let end = this.formatTime(data.pbEnd);
+                    let start = dateFormat.toDate(data.pbStar);
+                    let end = dateFormat.toDate(data.pbEnd);
                     let resobj = {
                         uid: this.sessionData.uID,
                         ds: start,
@@ -3485,6 +3512,7 @@ export default {
                         }
                     }
                 }
+                res.asidlist = asIDs;
             }
             return resultArr;
         },
