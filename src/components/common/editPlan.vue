@@ -256,7 +256,7 @@
 											<span @click="clearShop" style="cursor: pointer">清空已选</span>
 										</h4>
 									</div>
-									<el-table v-loading="shopLoading" element-loading-text="加载中" element-loading-spinner="el-icon-loading" border :row-class-name="tableRowClassName" :highlight-current-row="true" :data="shopingList" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+									<el-table v-loading="shopLoading" element-loading-text="加载中" element-loading-spinner="el-icon-loading" border :row-class-name="tableRowClassName" :highlight-current-row="true" :data="shopingList" style="width: 100%">
 										<el-table-column type="expand">
 											<template slot-scope="props">
 												<el-form label-position="left" inline class="demo-table-expand">

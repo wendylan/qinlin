@@ -605,10 +605,11 @@ export default {
                             }else{
                                 this.changRoute('没有权限修改公司信息,是否跳转到列表页面');
                             }
-                        }else{
-                            // Message.warning(mes.MSG);
+                        }else if(mes.SysCode == 100302){
                             Message.warning('登录超时,请重新登录');
                             this.$router.push('/login');
+                        }else{
+                            Message.warning(mes.MSG);
                         }
                     })
                     .catch(res => {
@@ -698,10 +699,11 @@ export default {
                         }else{
                            this.changRoute('成功修改客户信息,是否跳转到列表页面');  
                         }
-                    } else {
-                        // Message.warning(userMsg.MSG);
+                    } else if(userMsg.SysCode == 100302){
                         Message.warning('登录超时,请重新登录');
                         this.$router.push('/login');
+                    }else{
+                        Message.warning(userMsg.MSG);
                     }
                 })
                 .catch(res => {

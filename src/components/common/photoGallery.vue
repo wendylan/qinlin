@@ -613,95 +613,98 @@ export default {
         },
         // 获取上刊图片
         getUpReport() {
-            // 测试数据
-            let result = [
-                {
-                    pAlt:
-                        '{"plan":"北京方案t","res":"龙阁公寓1","media":"东门","city":"北京市","area":"朝阳区","asLab":"B","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
-                    pID: 321,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-                    pUTime: "2018-06-12 15:08:45.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙阁公寓","media":"西门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
-                    pID: 320,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-                    pUTime: "2018-06-12 15:08:39.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
-                    pID: 319,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-                    pUTime: "2018-06-12 15:08:30.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                },
-                {
-                    pAlt:
-                        '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"北门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
-                    pID: 318,
-                    pSrc:
-                        "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pType: "SK",
-                    pURL:
-                        "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-                    pUTime: "2018-06-12 15:08:20.0",
-                    ptID: 3758,
-                    ptP: "35",
-                    puID: 3
-                }
-            ];
-            this.citys = this.getCitys(result);
-            this.upImgArr = result;
-            this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+            // // 测试数据
+            // let result = [
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案t","res":"龙阁公寓1","media":"东门","city":"北京市","area":"朝阳区","asLab":"B","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
+            //         pID: 321,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
+            //         pUTime: "2018-06-12 15:08:45.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"西门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
+            //         pID: 320,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
+            //         pUTime: "2018-06-12 15:08:39.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
+            //         pID: 319,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
+            //         pUTime: "2018-06-12 15:08:30.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     },
+            //     {
+            //         pAlt:
+            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"北门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
+            //         pID: 318,
+            //         pSrc:
+            //             "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+            //         pType: "SK",
+            //         pURL:
+            //             "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
+            //         pUTime: "2018-06-12 15:08:20.0",
+            //         ptID: 3758,
+            //         ptP: "35",
+            //         puID: 3
+            //     }
+            // ];
+            // this.citys = this.getCitys(result);
+            // this.upImgArr = result;
+            // this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
 
-            // // 真实数据
-            // if (this.upImgArr.length) {
-            //     return;
-            // }
-            // let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            // let upinfo = {
-            //     uid: uid,
-            //     ptype: "SK"
-            // };
-            // api
-            //     .postApi("/GetImg", upinfo)
-            //     .then(res => {
-            //         if(!res.data.SysCode){
-            //             console.log(res.data);
-            //             let result = res.data;
-            //             this.citys = this.getCitys(result);
-            //             this.upImgArr = result;
-            //             this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
-            //             console.log("upimginfo", this.upImgArr);
-            //         }else{
-            //             Message.warning('登录超时,请重新登录');
-            //         }
-            //     })
-            //     .catch(res => {
-            //         console.log(res);
-            //     });
+            // 真实数据
+            if (this.upImgArr.length) {
+                return;
+            }
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let upinfo = {
+                uid: uid,
+                ptype: "SK"
+            };
+            api
+                .postApi("/GetImg", upinfo)
+                .then(res => {
+                    if(!res.data.SysCode){
+                        console.log(res.data);
+                        let result = res.data;
+                        this.citys = this.getCitys(result);
+                        this.upImgArr = result;
+                        this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                        console.log("upimginfo", this.upImgArr);
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
         },
         // 区域二级联动
         getCitys(arr) {
@@ -767,8 +770,11 @@ export default {
                             JSON.stringify(this.downImgArr)
                         );
                         console.log("upimginfo", this.downImgArr);
-                    } else {
+                    } else if(res.data.SysCode == 100302){
                         Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {

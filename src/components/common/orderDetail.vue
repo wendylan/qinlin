@@ -72,10 +72,10 @@
                                         <span>联系人：</span>
                                         <em>{{orderDetail.cuName}}</em>
                                     </li>
-                                    <li>
-                                        <span>方案备注：</span>
-                                        <em>{{orderDetail.remark||"无"}}</em>
-                                    </li>
+                                    <!-- <li>
+										<span>方案备注：</span>
+										<em>{{orderDetail.remark||"无"}}</em>
+									</li> -->
                                     <li>
                                         <span>其他费用：</span>
                                         <em>¥ {{orderDetail.pdOtherFee}}</em>
@@ -1262,10 +1262,11 @@ export default {
                         this.apQC = this.orderDetail.apQC
                             ? this.orderDetail.apQC
                             : this.getContractNo(this.orderDetail.rID);
-                    } else {
-                        // Message.warning(res.data.MSG);
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -1315,10 +1316,11 @@ export default {
                         this.filtersData = filterFormat(result, "timeRange");
                         this.allResource = filterFormat(result, "resName");
                         this.loading = false;
-                    } else {
-                        // Message.warning(res.data.MSG);
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -1366,9 +1368,11 @@ export default {
                             label: "全部"
                         });
                         this.UpReportLoading = false;
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -1410,9 +1414,11 @@ export default {
                             label: "全部"
                         });
                         this.DownReportLoading = false;
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -1568,20 +1574,6 @@ export default {
             if (this.priceSheet.length) {
                 return;
             }
-            // 测试数据
-            // let ADPriceList = [
-            // 	{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
-            // 	{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
-            // 	{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
-            // 	{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-            // 	{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
-            // let adPrice = ADPriceList;
-            // let plandata = [
-            // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-            // ];
-
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("order_apid");
@@ -1711,10 +1703,11 @@ export default {
                                     asidRes
                                 );
                                 // this.loading = false;
-                            } else {
-                                // Message.warning(res.data.MSG);
+                            } else if (res.data.SysCode == 100302) {
                                 Message.warning("登录超时,请重新登录");
                                 this.$router.push("/login");
+                            } else {
+                                Message.warning(res.data.MSG);
                             }
                         })
                         .catch(res => {
@@ -2129,9 +2122,11 @@ export default {
                         }
                         this.upReportArr.push();
                         // this.changeUpPage(this.currUpPage);
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -2178,9 +2173,11 @@ export default {
                         }
                         this.downReportArr.push();
                         // this.changeUpPage(this.currDownPage);
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -2244,9 +2241,11 @@ export default {
                                 }
                             }
                         }
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -2299,8 +2298,13 @@ export default {
                     if (res.data.SysCode == 300200) {
                         // this.orderDetail.apQC = qc;
                         this.$set(this.orderDetail, "apQC", qc);
+                        Message.info(res.data.MSG);
+                    } else if (res.data.SysCode == 100302) {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
-                    Message.info(res.data.MSG);
                 })
                 .catch(res => {
                     console.log(res);

@@ -125,10 +125,11 @@ export default {
                                     .catch(() => {
                                         console.log("cancel");
                                     });
-                            } else {
-                                // Message.warning(result.MSG);
+                            } else if (result.SysCode == 100302) {
                                 Message.warning("登录超时,请重新登录");
                                 this.$router.push("/login");
+                            } else {
+                                Message.warning(result.MSG);
                             }
                         })
                         .catch(res => {

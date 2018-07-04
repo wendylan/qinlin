@@ -341,10 +341,11 @@ export default {
                                 this.planList,
                                 "rName"
                             );
-                        } else {
-                            // Message.warning(res.data.MSG);
+                        } else if (res.data.SysCode == 100302) {
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
+                        } else {
+                            Message.warning(res.data.MSG);
                         }
                     })
                     .catch(res => {
@@ -370,10 +371,11 @@ export default {
                                 this.planList,
                                 "rName"
                             );
-                        } else {
-                            // Message.warning(res.data.MSG);
+                        } else if (res.data.SysCode == 100302) {
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
+                        } else {
+                            Message.warning(res.data.MSG);
                         }
                     })
                     .catch(res => {

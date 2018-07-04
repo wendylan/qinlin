@@ -83,13 +83,13 @@
 								<!--<el-input  v-model="recForm.liveTime" placeholder="请输入年份"></el-input>-->
 							</el-form-item>
 							<el-form-item label="经纬度:" prop="lng" class="lngNlat">
-								<el-input v-model.number="recForm.lng" placeholder="经度"></el-input>
+								<el-input v-model.number.trim="recForm.lng" placeholder="经度"></el-input>
 							</el-form-item>
 							<el-form-item prop="lat" class="lngNlat RlngNlat">
-								<el-input v-model.number="recForm.lat" placeholder="纬度"></el-input>
+								<el-input v-model.number.trim="recForm.lat" placeholder="纬度"></el-input>
 							</el-form-item>
-							<el-form-item label="备注:" prop="recRemark">
-								<el-input type="textarea" v-model="recForm.recRemark" placeholder="请填写备注信息"></el-input>
+							<el-form-item label="物业公司:" prop="pmc">
+								<el-input v-model="recForm.pmc" placeholder="物业公司"></el-input>
 							</el-form-item>
 							<el-form-item label="小区全貌:" prop="mImg">
 								<div class="upload_img_wrap" style="width: 120px;">
@@ -367,7 +367,7 @@ export default {
                 liveTime: "",
                 lng: "",
                 lat: "",
-                recRemark: ""
+                pmc: ""
             },
             recRules: {
                 rt: [
@@ -467,7 +467,7 @@ export default {
                     {
                         required: true,
                         message: "经度不能为空",
-                        trigger: "blur"
+                        trigger: "change"
                     },
                     {
                         type: "number",
@@ -482,7 +482,7 @@ export default {
                     {
                         required: true,
                         message: "纬度不能为空",
-                        trigger: "blur"
+                        trigger: "change"
                     },
                     {
                         type: "number",
@@ -493,11 +493,11 @@ export default {
                     }
                     // {min:0, max:90,message: '纬度范围0-90', trigger: 'blur'}
                 ],
-                recRemark: [
+                pmc: [
                     /*{ validator: validateRemark,trigger:'change'},*/
                     {
-                        max: 200,
-                        message: "最多只能输入200个字符",
+                        max: 20,
+                        message: "最多只能输入20个字符",
                         trigger: "change"
                     }
                 ]
@@ -707,7 +707,7 @@ export default {
     },
     mounted: function() {
         //  uWho: "440100,440300,110100"
-        /*    let userMsg = {uID: 12, realName: "销售", division: "销售", rID: 0, uType: "BD", uWho: "440100,440300,110100",
+        /*     let userMsg = {uID: 12, realName: "销售", division: "销售", rID: 0, uType: "BD", uWho: "440100,440300,110100",
                       puID: 0,token:"4FFBADA18815465B42ECBBF89833CE3F"}
       sessionStorage.setItem("session_data", JSON.stringify(userMsg));*/
         this.ShowRegion();
@@ -1013,7 +1013,8 @@ export default {
                 hp: this.recForm.buildingPrice * 100, // 楼盘价格
                 fn: this.recForm.buildingNum, // 楼栋数量
                 dn: this.recForm.doorwayNum, // 出入口数量
-                hn: this.recForm.households // 小区户数
+                hn: this.recForm.households, // 小区户数
+                pmc: this.recForm.pmc // 物业公司
             };
             /* uid     int【必填】     UserID
             rid     int             地区id
@@ -1126,7 +1127,11 @@ export default {
                         }
                     })
                     .catch(err => {
-                        console.log(err);
+                        console.log("新建资源请求错误", err);
+                        Message({
+                            message: "新建资源请求异常",
+                            type: "warning"
+                        });
                     });
             }
         },
@@ -1312,12 +1317,12 @@ export default {
                 // 前台验证
                 if (this.PathHaveEdit) {
                     //判断是创建还是修改
-                    /*    this.Editloading = this.$loading({
-              lock: true,
-              text: '保存中...',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            })*/
+                    this.Editloading = this.$loading({
+                        lock: true,
+                        text: "保存中...",
+                        spinner: "el-icon-loading",
+                        background: "rgba(0, 0, 0, 0.7)"
+                    });
                     this.postEditMsg();
                 } else {
                     this.createRec();
@@ -1356,9 +1361,6 @@ export default {
                     this.PathHaveEdit = true;
                     let tempObj = {};
                     // 设置默认选中的城市
-                    /*    this.recForm.city[0] = Number(recObj.rid.toString().substring(0, 2) + '0000')
-            this.handleItemChange(this.recForm.city)
-            this.recForm.city[1] = Number(recObj.rid.toString().substring(0, 4) + '00')*/
                     if (this.sessionData.uWho == "0") {
                         this.recForm.city[0] =
                             recObj.rid.toString().substring(0, 2) + "0000";
@@ -1386,6 +1388,7 @@ export default {
                         recObj.housePrice.split("元")[0]
                     );
                     tempObj.liveTime = recObj.joinTime;
+                    tempObj.pmc = recObj.pmc;
                     //    console.log('经纬度',typeof(recObj.latLng),recObj.latLng)
                     if (
                         recObj.latLng != null &&
@@ -1394,6 +1397,8 @@ export default {
                     ) {
                         tempObj.lat = Number(recObj.latLng.split(";")[0]);
                         tempObj.lng = Number(recObj.latLng.split(";")[1]);
+                    } else {
+                        console.log("经纬度！！");
                     }
                     if (tempObj.rt === "写字楼") {
                         this.selectRec("2");
@@ -1501,7 +1506,8 @@ export default {
                 hp: recObj.buildingPrice * 100,
                 fn: recObj.buildingNum,
                 dn: recObj.doorwayNum,
-                hn: recObj.households
+                hn: recObj.households,
+                pmc: recObj.pmc
             };
             let recDetail = JSON.parse(sessionStorage.getItem("recDetail"));
             if (recObj.region === recDetail.cityArea) {
@@ -1525,155 +1531,178 @@ export default {
                         SetResCTObj[key] = "";
                     }
                 }
-                api.postApi("/SetResCT", SetResCTObj).then(res => {
-                    console.log("修改资源信息", res);
-                    if (
-                        res.data.SysCode === 200200 ||
-                        res.data.MSG === "操作成功"
-                    ) {
-                        let mediaArr = this.arrMedia; // this.arrMedia[0].mediaForm
-                        // let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
-                        for (let i = 0; i < mediaArr.length; i++) {
-                            console.log(
-                                "下标",
-                                i,
-                                "this.editMediaLength",
-                                this.editMediaLength
-                            );
-                            let tempObj = mediaArr[i].mediaForm;
-                            if (i < this.editMediaLength) {
-                                if (
-                                    tempObj.assetId === null ||
-                                    tempObj.assetId === undefined
-                                ) {
-                                    tempObj.assetId = "";
-                                }
-                                let temp_media = {
-                                    uid: uid,
-                                    mid: tempObj.mid,
-                                    mtitle: tempObj.mediaName,
-                                    adsize:
-                                        tempObj.adSizeW + "*" + tempObj.adSizeH,
-                                    adviewsize:
-                                        tempObj.visualW + "*" + tempObj.visualH,
-                                    notpush: tempObj.adLimit.join("、"),
-                                    assettag: tempObj.assetId,
-                                    mtype: tempObj.doorType,
-                                    mrk: tempObj.mediaRemark,
-                                    mimg: ""
-                                };
-                                console.log("更新媒体temp_media", temp_media);
-                                if (tempObj.mstate === "正常") {
-                                    tempObj.mstate = "1";
-                                } else if (tempObj.mstate === "禁用") {
-                                    tempObj.mstate = "0";
-                                } else if (tempObj.mstate === "待安装") {
-                                    tempObj.mstate = "2";
-                                } else if (tempObj.mstate === "待维修") {
-                                    tempObj.mstate = "3";
-                                }
-                                // let mstateName = mediaObj[i].mState
-                                tempObj.mstate = tempObj.mstate.split("")[0];
-                                this.editMState(
-                                    uid,
-                                    tempObj.mid,
-                                    tempObj.mstate
+                api
+                    .postApi("/SetResCT", SetResCTObj)
+                    .then(res => {
+                        console.log("修改资源信息", res);
+                        if (
+                            res.data.SysCode === 200200 ||
+                            res.data.MSG === "操作成功"
+                        ) {
+                            let mediaArr = this.arrMedia; // this.arrMedia[0].mediaForm
+                            // let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
+                            for (let i = 0; i < mediaArr.length; i++) {
+                                console.log(
+                                    "下标",
+                                    i,
+                                    "this.editMediaLength",
+                                    this.editMediaLength
                                 );
-                                api
-                                    .postApi("/SetMediaInfo", temp_media)
-                                    .then(res => {
-                                        console.log("SetMediaInfo", res);
-                                        let mediaInfo = res.data;
-                                        if (!mediaInfo.SysCode) {
-                                            if (i >= mediaArr.length - 1) {
+                                let tempObj = mediaArr[i].mediaForm;
+                                if (i < this.editMediaLength) {
+                                    if (
+                                        tempObj.assetId === null ||
+                                        tempObj.assetId === undefined
+                                    ) {
+                                        tempObj.assetId = "";
+                                    }
+                                    let temp_media = {
+                                        uid: uid,
+                                        mid: tempObj.mid,
+                                        mtitle: tempObj.mediaName,
+                                        adsize:
+                                            tempObj.adSizeW +
+                                            "*" +
+                                            tempObj.adSizeH,
+                                        adviewsize:
+                                            tempObj.visualW +
+                                            "*" +
+                                            tempObj.visualH,
+                                        notpush: tempObj.adLimit.join("、"),
+                                        assettag: tempObj.assetId,
+                                        mtype: tempObj.doorType,
+                                        mrk: tempObj.mediaRemark,
+                                        mimg: ""
+                                    };
+                                    console.log(
+                                        "更新媒体temp_media",
+                                        temp_media
+                                    );
+                                    if (tempObj.mstate === "正常") {
+                                        tempObj.mstate = "1";
+                                    } else if (tempObj.mstate === "禁用") {
+                                        tempObj.mstate = "0";
+                                    } else if (tempObj.mstate === "待安装") {
+                                        tempObj.mstate = "2";
+                                    } else if (tempObj.mstate === "待维修") {
+                                        tempObj.mstate = "3";
+                                    }
+                                    // let mstateName = mediaObj[i].mState
+                                    tempObj.mstate = tempObj.mstate.split(
+                                        ""
+                                    )[0];
+                                    this.editMState(
+                                        uid,
+                                        tempObj.mid,
+                                        tempObj.mstate
+                                    );
+                                    api
+                                        .postApi("/SetMediaInfo", temp_media)
+                                        .then(res => {
+                                            console.log("SetMediaInfo", res);
+                                            let mediaInfo = res.data;
+                                            if (!mediaInfo.SysCode) {
+                                                if (i >= mediaArr.length - 1) {
+                                                    Message({
+                                                        message: "保存成功",
+                                                        type: "success"
+                                                    });
+                                                    this.$router.push(
+                                                        "./mediaDetail"
+                                                    );
+                                                }
+                                            } else {
                                                 Message({
-                                                    message: "保存成功",
-                                                    type: "success"
+                                                    message: "媒体保存失败！",
+                                                    type: "warning"
                                                 });
-                                                this.$router.push(
-                                                    "./mediaDetail"
-                                                );
                                             }
-                                        } else {
-                                            Message({
-                                                message: "媒体保存失败！",
-                                                type: "warning"
-                                            });
-                                        }
-                                    });
+                                        });
+                                } else {
+                                    let mediaObj = {
+                                        rid: SetResCTObj.rid,
+                                        resid: rID,
+                                        uid: this.recForm.uid,
+                                        mtitle: tempObj.mediaName,
+                                        pnum: tempObj.usableNum,
+                                        adsize:
+                                            tempObj.adSizeW +
+                                            "*" +
+                                            tempObj.adSizeH,
+                                        adviewsize:
+                                            tempObj.visualW +
+                                            "*" +
+                                            tempObj.visualH,
+                                        notpush: tempObj.adLimit.join("、"),
+                                        assettag: tempObj.assetId,
+                                        mtype: tempObj.doorType,
+                                        mimg: "",
+                                        mvc: tempObj.mediaType,
+                                        mrk: tempObj.mediaRemark,
+                                        mstate: tempObj.mstate.split("")[0]
+                                    };
+                                    console.log("更新媒体时新增的", mediaObj);
+                                    api
+                                        .postApi("/CreateMedia", mediaObj)
+                                        .then(res => {
+                                            console.log(
+                                                "更新时创建新媒体返回data",
+                                                res
+                                            );
+                                            let mData = res.data;
+                                            if (!res.SysCode) {
+                                                // mediaImg.ptid = mData.mid
+                                                // mediaImg.ptp = ''
+                                                // this.setImg(mediaImg)
+                                                if (i >= mediaArr.length - 1) {
+                                                    this.resetForm(); // 请求成功后重置表单
+                                                    Message({
+                                                        message: "保存成功！",
+                                                        type: "success"
+                                                    });
+                                                    this.$router.push(
+                                                        "./mediaDetail"
+                                                    );
+                                                }
+                                            } else {
+                                                Message({
+                                                    message:
+                                                        tempObj.mediaName +
+                                                        "媒体保存失败！",
+                                                    type: "warning"
+                                                });
+                                            }
+                                        });
+                                }
+                            }
+                        } else {
+                            if (
+                                res.data.SysCode === 100302 ||
+                                res.data.MSG === "登陆超时"
+                            ) {
+                                this.Editloading.close();
+                                Message({
+                                    message: "登陆超时,请重新登录",
+                                    type: "warning"
+                                });
+                                this.$router.push("/login");
                             } else {
-                                let mediaObj = {
-                                    rid: SetResCTObj.rid,
-                                    resid: rID,
-                                    uid: this.recForm.uid,
-                                    mtitle: tempObj.mediaName,
-                                    pnum: tempObj.usableNum,
-                                    adsize:
-                                        tempObj.adSizeW + "*" + tempObj.adSizeH,
-                                    adviewsize:
-                                        tempObj.visualW + "*" + tempObj.visualH,
-                                    notpush: tempObj.adLimit.join("、"),
-                                    assettag: tempObj.assetId,
-                                    mtype: tempObj.doorType,
-                                    mimg: "",
-                                    mvc: tempObj.mediaType,
-                                    mrk: tempObj.mediaRemark,
-                                    mstate: tempObj.mstate.split("")[0]
-                                };
-                                console.log("更新媒体时新增的", mediaObj);
-                                api
-                                    .postApi("/CreateMedia", mediaObj)
-                                    .then(res => {
-                                        console.log(
-                                            "更新时创建新媒体返回data",
-                                            res
-                                        );
-                                        let mData = res.data;
-                                        if (!res.SysCode) {
-                                            // mediaImg.ptid = mData.mid
-                                            // mediaImg.ptp = ''
-                                            // this.setImg(mediaImg)
-                                            if (i >= mediaArr.length - 1) {
-                                                this.resetForm(); // 请求成功后重置表单
-                                                Message({
-                                                    message: "保存成功！",
-                                                    type: "success"
-                                                });
-                                                this.$router.push(
-                                                    "./mediaDetail"
-                                                );
-                                            }
-                                        } else {
-                                            Message({
-                                                message:
-                                                    tempObj.mediaName +
-                                                    "媒体保存失败！",
-                                                type: "warning"
-                                            });
-                                        }
-                                    });
+                                Message({
+                                    message: "资源保存失败",
+                                    type: "warning"
+                                });
                             }
                         }
-                        // this.Editloading = false
-                    } else {
-                        // this.Editloading = false
-                        if (
-                            res.data.SysCode === 100302 ||
-                            res.data.MSG === "登陆超时"
-                        ) {
-                            Message({
-                                message: "登陆超时,请重新登录",
-                                type: "warning"
-                            });
-                            this.$router.push("/login");
-                        } else {
-                            Message({
-                                message: "资源保存失败",
-                                type: "warning"
-                            });
-                        }
-                    }
-                });
+                        this.Editloading.close();
+                    })
+                    .catch(err => {
+                        this.Editloading.close();
+                        console.log("资源保存请求错误", err);
+                        Message({
+                            message: "资源保存请求异常",
+                            type: "warning"
+                        });
+                    });
             }
             /*mid         int【必填】     媒体ID
             mtitle      String          媒体名称

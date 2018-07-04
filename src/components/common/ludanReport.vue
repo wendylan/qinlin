@@ -228,6 +228,9 @@ export default {
                     if (!res.data.SysCode) {
                         let result = res.data;
                         this.Report = result;
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -267,21 +270,28 @@ export default {
                             .postApi("/GetImg", imginfo)
                             .then(res => {
                                 console.log(res.data);
-                                let downImginfo = res.data;
-                                // 下刊数据(组合图片)
-                                resArr = this.constructImg(resArr, downImginfo);
-                                this.downReportArr = resArr;
-                                this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
-                                this.changeUpPage(1);
-                                console.log("downimginfo", this.downReportArr);
-                                // 下刊数据(组合图片按图片分)
-                                this.imgInfo = this.initImg(
-                                    resArr,
-                                    downImginfo
-                                );
-                                this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
-                                this.changeDownPage(1);
-                                console.log('downImgInfo--------', this.imgInfo);
+                                if(!res.data.SysCode){
+                                    let downImginfo = res.data;
+                                    // 下刊数据(组合图片)
+                                    resArr = this.constructImg(resArr, downImginfo);
+                                    this.downReportArr = resArr;
+                                    this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                                    this.changeUpPage(1);
+                                    console.log("downimginfo", this.downReportArr);
+                                    // 下刊数据(组合图片按图片分)
+                                    this.imgInfo = this.initImg(
+                                        resArr,
+                                        downImginfo
+                                    );
+                                    this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                    this.changeDownPage(1);
+                                    console.log('downImgInfo--------', this.imgInfo);
+                                } else if(res.data.SysCode == 100302){
+                                    Message.warning("登录超时,请重新登录");
+                                    this.$router.push("/login");
+                                } else {
+                                    Message.warning(res.data.MSG);
+                                }
                             })
                             .catch(res => {
                                 console.log(res);

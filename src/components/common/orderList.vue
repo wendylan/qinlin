@@ -245,10 +245,11 @@ export default {
                             // console.log(item.cityArea);
                         }
                         this.currentOrder = this.orderList;
-                    } else {
-                        // Message.warning(res.data.MSG);
+                    } else if(res.data.SysCode == 100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -871,9 +872,9 @@ a {
     .mediaList_wrap .mediaList_container .table_wrap {
         width: 1284px;
     }
-    /deep/ .el-table__row td:nth-child(4) .cell span {
-        width: 100px;
-    }
+  /deep/ .el-table__row td:nth-child(4) .cell span {
+    width: 100px;
+  }
 }
 
 /*1920*/

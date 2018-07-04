@@ -62,8 +62,8 @@
 								<li>经纬度：
 									<span>{{obj.latLng}}</span>
 								</li>
-								<li> 小区备注：
-									<span>{{obj.remark}}</span>
+								<li> 物业公司：
+									<span>{{obj.pmc}}</span>
 								</li>
 								<li> 小区全貌：
 									<a href="#" style="color: #108EE9">查看</a>
@@ -152,7 +152,7 @@ export default {
                 joinTime: "",
                 resAddress: "",
                 latLng: "",
-                remark: ""
+                pmc: ""
             },
             mediaList: [],
             res_village: {
@@ -220,6 +220,7 @@ export default {
                     this.obj.buildingNum = res.data.fNum;
                     this.obj.rid = res.data.rID;
                     this.obj.houseType = res.data.cType;
+                    this.obj.pmc = res.data.resPMC;
                     areaToText.toTextCityArea(data => {
                         console.log("公司信息所在城市", data);
                         this.obj.city = data.city;

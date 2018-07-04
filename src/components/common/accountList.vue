@@ -277,10 +277,11 @@ export default {
                         console.log("cityList", cityList);
 
                         this.currAccount = this.accountList;
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     } else {
-                        // Message.warning(res.data.MSG);
-                        Message.warning('登录超时,请重新登录');
-                        this.$router.push('/login');
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -427,9 +428,11 @@ export default {
                             if (res.data.SysCode == 100200) {
                                 Message.success("操作成功");
                                 row.uState = row.uState ? 0 : 1;
+                            } else if(res.data.SysCode == 100302){
+                                Message.warning("登录超时,请重新登录");
+                                this.$router.push("/login");
                             }else{
-                                Message.warning('登录超时,请重新登录');
-                                this.$router.push('/login');
+                                Message.warning(res.data.MSG);
                             }
                         })
                         .catch(res => {

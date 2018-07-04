@@ -100,7 +100,9 @@
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">预锁
                                         </el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)||(!scope.row.canSend)">发布
+                                        <!-- <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)||(!scope.row.canSend)">发布
+                                        </el-dropdown-item> -->
+                                        <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">发布
                                         </el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">解除预锁
                                         </el-dropdown-item>
@@ -209,88 +211,9 @@ export default {
             // 搜索的select框
             select: "1",
             // 表格数据
-            currentPlan: [
-                // {
-                //     apID: 1,
-                //     apName: "第一个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 65400,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     // apcTime: "2018-05-09 18:29:47.0",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 1
-                // },
-                // {
-                //     apID: 1,
-                //     apName: "第二个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     // apcTime: "2018-05-09 18:29:47.0",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 2
-                // },
-                // {
-                //     apID: 1,
-                //     apName: "第二个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     // apcTime: "2018-05-09 18:29:47.0",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 3
-                // }
-            ],
+            currentPlan: [],
             //所有数据
-            planList: [
-                // {
-                //     apID: 1,
-                //     apName: "第一个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 1
-                // },
-                // {
-                //     apID: 1,
-                //     apName: "第二个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     // apcTime: "2018-05-09 18:29:47.0",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 2
-                // },
-                // {
-                //     apID: 1,
-                //     apName: "第二个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     // apcTime: "2018-05-09 18:29:47.0",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 3
-                // }
-            ]
+            planList: []
         };
     },
     created() {
@@ -298,19 +221,6 @@ export default {
         this.getUID();
         this.getPlanListData();
         this.getRole();
-        // 测试数据
-        // let pdidArr = [
-        // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-        // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-        // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-        // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-        // ];
-        // let cityCode = filterFormat(pdidArr, "rID", 'pdID');
-        // console.log('cityfdsalfjkajl', cityCode);
-        // for (let item of cityCode) {
-        // 	item.rName = areaToText.toTextCity(item.value);
-        // }
-        // console.log('citycoDe----------------',cityCode);
     },
     methods: {
         getSessionData() {
@@ -360,11 +270,6 @@ export default {
                     let info = res.data;
                     if (!info.SysCode) {
                         this.planList = info.reverse();
-                        // for(let item of this.planList){
-                        //     if(item.rIDs){
-                        //         item.cityArea = item.rIDs.split(',');
-                        //     }
-                        // }
 
                         for (let item of this.planList) {
                             if (item.rIDs) {
@@ -390,10 +295,11 @@ export default {
 
                         this.loading = false;
                         this.currentPlan = this.planList;
-                    } else {
-                        // Message.warning(info.MSG);
+                    }else if(info.SysCode ==100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    } else {
+                        Message.warning(info.MSG);
                     }
                 })
                 .catch(res => {
@@ -559,98 +465,8 @@ export default {
         // 发布
         release(row) {
             // console.log(row);
-            // // 测试数据
-            // let uid = 3;
-            // let pdidArr = [
-            // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-20",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-            // ];
-            // let asidArr = [
-            // 	{asID: 1,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 19, 2018",fNum: 12,resName: "帝景山庄改1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "A",pbID: 1,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "May 25, 2018"},
-            // 	{asID: 2,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 110104,notPush: "美容",hNum: 170,pbStar: "May 19, 2018",fNum: 12,resName: "帝景山庄改1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 6,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "May 25, 2018"},
-            // 	{asID: 3,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 440104,notPush: "美容",hNum: 170,pbStar: "May 19, 2018",fNum: 12,resName: "帝景山庄改1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 6,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "May 25, 2018"},
-            // 	{asID: 4,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 500100,notPush: "美容",hNum: 170,pbStar: "May 19, 2018",fNum: 12,resName: "帝景山庄改1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 6,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "May 25, 2018"},
-            // 	{asID: 5,cType: "高端住宅",tradingArea: "山泉1",adSize: "1181*841",assetTag: "201707GZ-13161",rID: 500100,notPush: "美容",hNum: 170,pbStar: "May 20, 2018",fNum: 12,resName: "帝景山庄改1",chDay: "2013",hPrice: 6100000,rName: "越秀区",asLab: "B",pbID: 6,adViewSize: "118*84",mTitle: "帝景1门",pbEnd: "May 25, 2018"},
-            // ];
-
-            // let arr = [];
-            // // 组合asid
-            // for(let asid of asidArr){
-            // 	let start = dateFormat.toDate(asid.pbStar);
-            // 	let end = dateFormat.toDate(asid.pbEnd);
-            // 	if(!arr.length){
-            // 		arr.push({
-            // 			uid: uid,
-            // 			act: 'R',
-            // 			pdid: '',
-            // 			rID: asid.rID,
-            // 			ds: start,
-            // 			de: end,
-            // 			asidlist: asid.asID.toString()
-            // 		});
-            // 	}else{
-            // 		for(let arrData of arr){
-            // 			let asIdRID = asid.rID.toString().substring(0, 4);
-            // 			let arrRID = arrData.rID.toString().substring(0, 4);
-            // 			console.log('bool', arrRID != asIdRID, start != arrData.ds, end != arrData.de);
-            // 			if((arrRID != asIdRID) || (start != arrData.ds) || (end != arrData.de)){
-            // 				arr.push({
-            // 					uid: uid,
-            // 					act: 'R',
-            // 					pdid: '',
-            // 					rID: asid.rID,
-            // 					ds: start,
-            // 					de: end,
-            // 					asidlist: asid.asID.toString()
-            // 				});
-            // 			}else{
-            // 				arrData.asidlist = asid.asID+','+arrData.asidlist;
-            // 			}
-            // 				break;
-            // 		}
-            // 	}
-            // }
-
-            // console.log('arr', arr);
-            // // 组合pdid
-            // for(let arrData of arr ){
-            // 	for(let pdData of pdidArr){
-            // 		let pdDataRID = pdData.rID.toString().substring(0, 4);
-            // 		let arrRID = arrData.rID.toString().substring(0, 4);
-            // 		if( (pdDataRID == arrRID) && (arrData.ds >= pdData.pdStar) && (arrData.de <= pdData.pdEnd) ){
-            // 			arrData.pdid = pdData.pdID;
-            // 			break;
-            // 		}
-            // 	}
-            // }
-            // console.log('resultArr', arr);
-            // let result = [];
-            // let citySelect = [
-            // 	{value: 440100, rName: '广州市'},
-            // 	{value: 110100, rName: '北京市'},
-            // ];
-            // for(let arrData of arr){
-            // 	for(let city of citySelect){
-            // 		let arrRID = arrData.rID.toString().substring(0, 4);
-            // 		let cityRID = city.value.toString().substring(0, 4);
-            // 		if(arrRID == cityRID){
-            // 			result.push(arrData);
-            // 		}
-            // 	}
-            // }
-            // console.log('resulttelajt', result);
-            // // this.ctrlFangan(result);
 
             // 真实数据
-            // let uid = this.sessionData.uID;
-            // let apid = row.apID;
-            // let info = {
-            // 	uid: uid,
-            // 	apid: apid
-            // };
-
             this.Info.apid = row.apID;
             let info = this.Info;
             // uid         int【必填】     当前账户UserID
@@ -683,7 +499,7 @@ export default {
                                             pdid: cityContent[i].pdID
                                         })
                                         .then(res => {
-                                            if (res.data.IsLock) {
+                                            if (!res.data.IsLock) {
                                                 sumNotLock++;
                                             }else{
                                                 sumLock++;
@@ -708,12 +524,13 @@ export default {
                                                     "R"
                                                 );
                                             } else {
-                                                if (i >= priceSheet.length - 1) {
+                                                if (i >= cityContent.length - 1) {
                                                     if(sumLock){
                                                         Message.warning("该方案被预锁,请先解除预锁");
                                                     }
                                                 }
                                             }
+
                                             // if (i >= cityContent.length - 1) {
                                             //     if (sumLock) {
                                             //         Message.warning(
@@ -742,6 +559,9 @@ export default {
                                     message: "已取消操作"
                                 });
                             });
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -761,6 +581,10 @@ export default {
                 .postApi("/SetAdPlan", info)
                 .then(res => {
                     console.log(res);
+                     if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -788,24 +612,28 @@ export default {
                             );
                             if (act == "R") {
                                 // 循环发布
-                                this.ctrlFangan(arr, act);
+                                if(arr.length){
+                                    this.ctrlFangan(arr, act);
+                                }else{
+                                    Message.warning('没有符合的数据进行预锁');
+                                }
                             } else {
                                 let result = [];
                                 for (let arrData of arr) {
                                     for (let city of citySelect) {
-                                        let arrRID = arrData.rID
-                                            .toString()
-                                            .substring(0, 4);
-                                        let cityRID = city.value
-                                            .toString()
-                                            .substring(0, 4);
+                                        let arrRID = arrData.rID.toString().substring(0, 4);
+                                        let cityRID = city.value.toString().substring(0, 4);
                                         if (arrRID == cityRID) {
                                             result.push(arrData);
                                         }
                                     }
                                 }
                                 console.log("resulttelajt", result);
-                                this.ctrlFangan(result, act);
+                                if(result.length){
+                                    this.ctrlFangan(result, act);
+                                }else{
+                                    Message.warning('没有符合的数据进行预锁');
+                                }
                             }
                         })
                         .catch(res => {
@@ -858,8 +686,10 @@ export default {
                     } else {
                         let door = 1;
                         for (let data of result) {
+                            let dataR = data.rID.toString().substring(0, 4);
+                            let initR = init.rID.toString().substring(0, 4);
                             if (
-                                data.rID == init.rID &&
+                                dataR == initR &&
                                 data.ds == start &&
                                 data.de == end
                             ) {
@@ -902,6 +732,15 @@ export default {
             // de          String【必填】      广告投放结束日期
             // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
             let holdSum = 0;
+            let holdNoSum = 0;
+
+            this.Ctrlloading = Loading.service(
+                {
+                    text: "请耐心等待...",
+                    spinner: "el-icon-loading",
+                    background: "rgba(0, 0, 0, 0.7)"
+                }
+            );
             for (let i = 0; i < arr.length; i++) {
                 let obj = {
                     uid: arr[i].uid,
@@ -913,68 +752,135 @@ export default {
                     console.log("CheckPD-----------", res.data);
                     if (res.data.length) {
                         holdSum++;
+                    }else{
+                        holdNoSum++;
                     }
-                    if (i >= arr.length - 1) {
-                        if (holdSum) {
-                            // 存在点位被占，是否立即去方案详情修改？
-                            MessageBox.confirm(
-                                `存在点位被占，是否修改方案？`,
-                                "提示",
-                                {
-                                    confirmButtonText: "确定",
-                                    cancelButtonText: "取消",
-                                    type: "warning"
-                                }
-                            )
-                                .then(() => {
-                                    this.ToEdit(this.Info.apid);
-                                    this.Ctrlloading.close();
-                                })
-                                .catch(() => {
-                                    Message.info("已取消操作");
-                                    this.Ctrlloading.close();
-                                });
-                        } else {
-                            // uid         int【必填】         当前账户UserID
-                            // act         String【必填】      事务类型：L锁点；R发布
-                            // pdid        int【必填】         选择方案投放pdID
-                            // ds          String【必填】      广告开始投放日期
-                            // de          String【必填】      广告投放结束日期
-                            // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
-                            // 发布接口
-                            for (let i = 0; i < arr.length; i++) {
-                                api
-                                    .postApi("/CtrlFangan", arr[i])
-                                    .then(res => {
-                                        console.log(res.data);
-                                        Message.success(res.data.MSG);
-                                        if (act == "R") {
-                                            if (i >= arr.length - 1) {
-                                                for (let data of this
-                                                    .planList) {
-                                                    if (
-                                                        data.apID ==
-                                                        this.Info.apid
-                                                    ) {
-                                                        this.$set(
-                                                            data,
-                                                            "apState",
-                                                            2
-                                                        );
-                                                        break;
-                                                    }
+
+                    if(holdNoSum >= arr.length){
+                        // uid         int【必填】         当前账户UserID
+                        // act         String【必填】      事务类型：L锁点；R发布
+                        // pdid        int【必填】         选择方案投放pdID
+                        // ds          String【必填】      广告开始投放日期
+                        // de          String【必填】      广告投放结束日期
+                        // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
+                        // 发布接口
+                        for (let i = 0; i < arr.length; i++) {
+                            api
+                                .postApi("/CtrlFangan", arr[i])
+                                .then(res => {
+                                    console.log(res.data);
+                                    Message.success(res.data.MSG);
+                                    if (act == "R") {
+                                        if (i >= arr.length - 1) {
+                                            for (let data of this
+                                                .planList) {
+                                                if (
+                                                    data.apID ==
+                                                    this.Info.apid
+                                                ) {
+                                                    this.$set(
+                                                        data,
+                                                        "apState",
+                                                        2
+                                                    );
+                                                    break;
                                                 }
-                                                this.Ctrlloading.close();
                                             }
                                         }
+                                    }
+                                    this.Ctrlloading.close();
+                                })
+                                .catch(res => {
+                                    console.log(res);
+                                    this.Ctrlloading.close();
+                                });
+                        }
+                    }else{
+                        if (i >= arr.length - 1) {
+                            if (holdSum) {
+                                // 存在点位被占，是否立即去方案详情修改？
+                                MessageBox.confirm(
+                                    `存在点位被占，是否修改方案？`,
+                                    "提示",
+                                    {
+                                        confirmButtonText: "确定",
+                                        cancelButtonText: "取消",
+                                        type: "warning"
+                                    }
+                                )
+                                    .then(() => {
+                                        this.ToEdit(this.Info.apid);
+                                        this.Ctrlloading.close();
                                     })
-                                    .catch(res => {
-                                        console.log(res);
+                                    .catch(() => {
+                                        Message.info("已取消操作");
                                         this.Ctrlloading.close();
                                     });
                             }
                         }
                     }
+
+                    // if (i >= arr.length - 1) {
+                    //     if (holdSum) {
+                    //         // 存在点位被占，是否立即去方案详情修改？
+                    //         MessageBox.confirm(
+                    //             `存在点位被占，是否修改方案？`,
+                    //             "提示",
+                    //             {
+                    //                 confirmButtonText: "确定",
+                    //                 cancelButtonText: "取消",
+                    //                 type: "warning"
+                    //             }
+                    //         )
+                    //             .then(() => {
+                    //                 this.ToEdit(this.Info.apid);
+                    //                 this.Ctrlloading.close();
+                    //             })
+                    //             .catch(() => {
+                    //                 Message.info("已取消操作");
+                    //                 this.Ctrlloading.close();
+                    //             });
+                    //     } else {
+                    //         // uid         int【必填】         当前账户UserID
+                    //         // act         String【必填】      事务类型：L锁点；R发布
+                    //         // pdid        int【必填】         选择方案投放pdID
+                    //         // ds          String【必填】      广告开始投放日期
+                    //         // de          String【必填】      广告投放结束日期
+                    //         // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
+                    //         // 发布接口
+                    //         for (let i = 0; i < arr.length; i++) {
+                    //             api
+                    //                 .postApi("/CtrlFangan", arr[i])
+                    //                 .then(res => {
+                    //                     console.log(res.data);
+                    //                     Message.success(res.data.MSG);
+                    //                     if (act == "R") {
+                    //                         if (i >= arr.length - 1) {
+                    //                             for (let data of this
+                    //                                 .planList) {
+                    //                                 if (
+                    //                                     data.apID ==
+                    //                                     this.Info.apid
+                    //                                 ) {
+                    //                                     this.$set(
+                    //                                         data,
+                    //                                         "apState",
+                    //                                         2
+                    //                                     );
+                    //                                     break;
+                    //                                 }
+                    //                             }
+                    //                             this.Ctrlloading.close();
+                    //                         }
+                    //                     }
+                    //                 })
+                    //                 .catch(res => {
+                    //                     console.log(res);
+                    //                     this.Ctrlloading.close();
+                    //                 });
+                    //         }
+                    //     }
+                    // }
                 });
             }
         },
@@ -998,38 +904,45 @@ export default {
                 .getApi("/GetAPD", info)
                 .then(res => {
                     console.log(res.data);
-                    let pdidArr = res.data;
-                    let uWhoArr = JSON.parse(
-                        sessionStorage.getItem("session_data")
-                    ).uWho;
-                    // 媒介权限大于销售的才能操作方案对应的城市,也就是说：当一个方案有账号权限外的城市不能进行操作，需要进行剔除
-                    let resultArr = [];
-                    if (uWhoArr == 0) {
-                        resultArr = pdidArr;
-                    } else {
-                        for (let data of pdidArr) {
-                            if (uWhoArr.indexOf(data.rID) != -1) {
-                                resultArr.push(data);
+                    if(!res.data.SysCode){
+                        let pdidArr = res.data;
+                        let uWhoArr = JSON.parse(
+                            sessionStorage.getItem("session_data")
+                        ).uWho;
+                        // 媒介权限大于销售的才能操作方案对应的城市,也就是说：当一个方案有账号权限外的城市不能进行操作，需要进行剔除
+                        let resultArr = [];
+                        if (uWhoArr == 0) {
+                            resultArr = pdidArr;
+                        } else {
+                            for (let data of pdidArr) {
+                                if (uWhoArr.indexOf(data.rID) != -1) {
+                                    resultArr.push(data);
+                                }
                             }
                         }
+                        console.log("resultArr----uwho-----", resultArr);
+    
+                        for (let data of resultArr) {
+                            data.IsLock = true;
+                        }
+                        let cityCode = filterFormat(
+                            resultArr,
+                            "rID",
+                            "pdID",
+                            "IsLock"
+                        );
+                        for (let item of cityCode) {
+                            item.rName = areaToText.toTextCity(item.value);
+                        }
+                        this.cityList = cityCode;
+                        // 获取是否锁住
+                        this.getIsLock();
+                    }else if(res.data.SysCode ==100302){
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
+                    }else{
+                        Message.warning(res.data.MSG);
                     }
-                    console.log("resultArr----uwho-----", resultArr);
-
-                    for (let data of resultArr) {
-                        data.IsLock = true;
-                    }
-                    let cityCode = filterFormat(
-                        resultArr,
-                        "rID",
-                        "pdID",
-                        "IsLock"
-                    );
-                    for (let item of cityCode) {
-                        item.rName = areaToText.toTextCity(item.value);
-                    }
-                    this.cityList = cityCode;
-                    // 获取是否锁住
-                    this.getIsLock();
                 })
                 .catch(res => {
                     console.log(res);
@@ -1068,6 +981,7 @@ export default {
         },
         // 解除预锁
         clearLock(row) {
+            this.cityChoose = [];
             this.isLock = false;
             this.dialogVisible = true;
             this.Info.apid = row.apID;

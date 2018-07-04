@@ -56,10 +56,10 @@
                                         <span>所属销售：</span>
                                         <em>{{planDetail.realName}}</em>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <span>方案备注：</span>
                                         <em>{{planDetail.apRemark}}</em>
-                                    </li>
+                                    </li> -->
                                     <li>
                                         <span>其他费用：</span>
                                         <em>¥ {{planDetail.pdOtherFee}}</em>
@@ -315,7 +315,7 @@ export default {
         // // 选点排期
         // this.getSetPoint();
         // // 报价单
-        this.getPriceData();
+        // this.getPriceData();
     },
     methods: {
         // // 当前行是否高亮
@@ -405,7 +405,7 @@ export default {
             // uid         int【必填】     当前账户UserID
             // apid        int             公司对应方案apID
             api
-                .postApi("/GetFanganInfo", info)
+                .getApi("/GetFanganInfo", info)
                 .then(res => {
                     console.log(res.data);
                     if (!res.data.SysCode) {
@@ -417,10 +417,11 @@ export default {
                         this.planDetail = info;
                         // 选点排期
                         this.getSetPoint();
-                    } else {
-                        // Message.warning(res.data.MSG);
+                    } else if(res.data.SysCode == 100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
+                    }else{
+                        Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -429,25 +430,6 @@ export default {
         },
         // 获取选点排期
         getSetPoint() {
-            // // 测试数据情况
-            // this.setpointArr = [
-            // 	{resName: "尚东3",mTitle: "尚东3东门",rName: "荔湾区",cType: "一般住宅",hNum: 100,hPrice: 56000,rID: 440104,asIDs: "7",asLab: "A",asStates: "1",tradingArea: "三里屯",fNum: 3,assetTag: "201805GZ-1324",notPush: ""},
-            // 	{resName: "帝景山庄改1",mTitle: "帝景1门",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "2,1",asLab: "B,",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-13161",chDay: "2013",notPush: "美容"},
-            // 	{resName: "帝景山庄改1",mTitle: "帝景2门2",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "3,4",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1324",chDay: "2013",notPush: "地产"},
-            // 	{resName: "帝景山庄改1",mTitle: "帝景3门3",rName: "越秀区",cType: "高端住宅",hNum: 170,hPrice: 6100000,rID: 440104,asIDs: "5,6",asLab: "A,B",asStates: "1,1",tradingArea: "山泉1",fNum: 12,assetTag: "201707GZ-1329",chDay: "2013",notPush: "医学"}
-            // ];
-            // for(let data of this.setpointArr){
-            // 	this.$set(data, 'city', areaToText.toTextCity(data.rID));
-            // 	let time = this.formatTime(data.pbStar) +"-"+ this.formatTime(data.pbEnd);
-            // 	this.$set(data, 'timeRange', time);
-            // }
-            // this.filterCityData = filterFormat(this.setpointArr, 'city');
-            // this.filtersArea = filterFormat(this.setpointArr, 'rName');
-            // this.filtersData = filterFormat(this.setpointArr, 'timeRange');
-            // // 选点排期
-            // this.checkLock(this.setpointArr);
-            // this.currentSetpoint = this.setpointArr;
-
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -482,25 +464,21 @@ export default {
                             // 城市筛选过滤
                             this.filterCityData = filterFormat(resInfo, "city");
                             this.filtersArea = filterFormat(resInfo, "rName");
-                            this.filtersData = filterFormat(
-                                resInfo,
-                                "timeRange"
-                            );
+                            this.filtersData = filterFormat(resInfo, "timeRange");
                             // 选点排期
                             // this.checkLock(resInfo);
                             // 选点排期
-                            this.copyAsidArr = JSON.parse(
-                                JSON.stringify(resInfo)
-                            );
+                            this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
                             this.setpointArr = resInfo;
                             this.currentSetpoint = this.setpointArr;
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
-                        } else {
-                            // Message.warning(res.data.MSG);
+                        } else if(res.data.SysCode == 100302){
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
+                        } else {
+                            Message.warning(res.data.MSG);
                         }
                     })
                     .catch(res => {
@@ -539,10 +517,13 @@ export default {
                             this.setpointArr = result;
                             this.currentSetpoint = this.setpointArr;
                             this.loading = false;
-                        } else {
-                            // Message.warning(res.data.MSG);
+                            // 报价单
+                            this.getPriceData();
+                        } else if(res.data.SysCode == 100302){
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
+                        } else {
+                            Message.warning(res.data.MSG);
                         }
                     })
                     .catch(res => {
@@ -553,20 +534,6 @@ export default {
         },
         // 获取三个费用价格(报价单)
         getPriceData() {
-            // 测试数据
-            // let ADPriceList = [
-            // 	{amID: 110, rID: 440200, rName: "韶关市", mVehicle: "广告门", adPrice: 500000},
-            // 	{amID: 109, rID: 440100, rName: "广州市", mVehicle: "广告门", adPrice: 600000},
-            // 	{amID: 108, rID: 310100, rName: "上海市", mVehicle: "广告门", adPrice: 888800},
-            // 	{amID: 107, rID: 110100, rName: "北京市", mVehicle: "广告门", adPrice: 777700},
-            // 	{amID: 106, rID: 120100, rName: "天津市", mVehicle: "广告门", adPrice: 588800}];
-            // let adPrice = ADPriceList;
-            // let plandata = [
-            // 	{pdID: 1,apID: 1,rID: 440100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 4,pdAdMake: 40000,pdTotal: 760000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 2,apID: 1,rID: 110100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0},
-            // 	{pdID: 3,apID: 1,rID: 500100,muID: 0,pdDays: 7,pdStar: "2018-05-19",pdEnd: "2018-05-25",pdFreeNum: 0,pdAdFee: 0,pdNum: 6,pdAdMake: 60000,pdTotal: 1140000,pdSendFee: 0,pdOtherFee: 0}
-            // ];
-
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -697,10 +664,11 @@ export default {
                                     asidRes
                                 );
                                 this.priceSheet = arr;
-                            } else {
-                                // Message.warning(res.data.MSG);
+                            } else if(res.data.SysCode == 100302){
                                 Message.warning("登录超时,请重新登录");
                                 this.$router.push("/login");
+                            } else {
+                                Message.warning(res.data.MSG);
                             }
                         })
                         .catch(res => {
@@ -724,15 +692,7 @@ export default {
                         if (schedules == "") {
                             schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules =
-                                schedules +
-                                " " +
-                                ds +
-                                "-" +
-                                de +
-                                "(" +
-                                asid.mNum +
-                                "面)";
+                            schedules = schedules + " " + ds + "-" + de + "(" + asid.mNum +"面)";
                         }
                     }
                 }
@@ -887,27 +847,6 @@ export default {
                                 }
                             }
                         }
-                        // if (i >= priceSheet.length - 1) {
-                        //     if (sumLock) {
-                        //         MessageBox.confirm(
-                        //             `该方案被预锁,请先解除预锁,是否去解锁？`,
-                        //             "提示",
-                        //             {
-                        //                 confirmButtonText: "确定",
-                        //                 cancelButtonText: "取消",
-                        //                 type: "warning"
-                        //             }
-                        //         )
-                        //             .then(() => {
-                        //                 this.$router.push("./planList");
-                        //             })
-                        //             .catch(() => {
-                        //                 Message.info("已取消操作");
-                        //             });
-                        //     } else {
-                        //         this.$router.push("./editPlan");
-                        //     }
-                        // }
                     })
                     .catch(res => {
                         console.log(res);

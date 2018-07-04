@@ -772,9 +772,11 @@ export default {
                         let puid = this.sessionData.uID;
                         let cid = res.data.cID;
                         this.regUser(puid, cid, 'new');
-                    }else{
+                    }else if(userMsg.SysCode == 100302){
                         Message.warning('登录超时,请重新登录');
                         this.$router.push('/login');
+                    }else{
+                        Message.warning(userMsg.MSG);
                     }
                 })
                 .catch(res => {
@@ -835,9 +837,11 @@ export default {
                             str = '成功创建客户,没有权限修改公司信息,是否跳转到列表页面';
                         }
                         this.changRoute(str);
-                    }else{
+                    }else if(userMsg.SysCode == 100302){
                         Message.warning('登录超时,请重新登录');
                         this.$router.push('/login');
+                    }else{
+                        Message.warning(userMsg.MSG);
                     }
                 })
                 .catch(res => {
