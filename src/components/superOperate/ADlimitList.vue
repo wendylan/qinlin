@@ -115,7 +115,9 @@ export default {
                             data.detailUpdate = "";
                         }
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -156,7 +158,10 @@ export default {
                         if (res.data.SysCode == 200200) {
                             this.ADlist.splice(index, 1);
                             Message.success(res.data.MSG);
-                        } else {
+                        } else if(res.data.SysCode == 100302){
+                            Message.warning('登录超时,请重新登录');
+                            this.$router.push('/login');
+                        }else {
                             Message.warning(res.data.MSG);
                         }
                     });
@@ -216,7 +221,10 @@ export default {
                             // this.$set(rows, 'showInput', !rows.showInput);
                             // this.$set(rows, 'changeBtn', !rows.changeBtn);
                             // this.ADlist.push();
-                        } else {
+                        } else if(res.data.SysCode == 100302){
+                            Message.warning('登录超时,请重新登录');
+                            this.$router.push('/login');
+                        }else {
                             // Message.warning(res.data.MSG);
                             Message.warning("广告限制不能重复");
                         }
@@ -251,7 +259,10 @@ export default {
                             this.$set(rows, "showInput", !rows.showInput);
                             this.$set(rows, "changeBtn", !rows.changeBtn);
                             this.ADlist.push();
-                        } else {
+                        } else if(res.data.SysCode == 100302){
+                            Message.warning('登录超时,请重新登录');
+                            this.$router.push('/login');
+                        }else {
                             Message.warning(res.data.MSG);
                         }
                     })

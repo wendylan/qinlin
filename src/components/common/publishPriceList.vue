@@ -160,8 +160,8 @@ export default {
                         }
                     } else {
                         // Message.warning(res.data.MSG);
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -243,7 +243,10 @@ export default {
                         if (res.data.SysCode == 200200) {
                             this.publishPriceList.splice(index, 1);
                             Message.success(res.data.MSG);
-                        } else {
+                        } else if(res.data.SysCode == 100302){
+                            Message.warning('登录超时,请重新登录');
+                            this.$router.push('/login');
+                        }else {
                             Message.warning(res.data.MSG);
                         }
                     });
@@ -302,7 +305,12 @@ export default {
                     .then(res => {
                         console.log(res);
                         if (res.data.SysCode) {
-                            Message.success("该城市已存在刊例价，请勿重复添加");
+                            if(res.data.SysCode == 100302){
+                                Message.warning('登录超时,请重新登录');
+                                this.$router.push('/login');
+                            }else{
+                                Message.success("该城市已存在刊例价，请勿重复添加");
+                            }
                         } else {
                             if (res.data) {
                                 location.reload();
@@ -318,10 +326,6 @@ export default {
                                 // console.log(rows);
                                 // this.publishPriceList.push();
                                 Message.warning("添加成功");
-                            } else {
-                                Message.success(
-                                    "该城市已存在刊例价，请勿重复添加"
-                                );
                             }
                         }
                     })
@@ -359,7 +363,10 @@ export default {
                             this.$set(rows, "showInput", !rows.showInput);
                             this.$set(rows, "changeBtn", !rows.changeBtn);
                             this.publishPriceList.push();
-                        } else {
+                        } else if(res.data.SysCode == 100302){
+                            Message.warning('登录超时,请重新登录');
+                            this.$router.push('/login');
+                        }else {
                             Message.warning(res.data.MSG);
                         }
                     })

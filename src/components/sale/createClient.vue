@@ -386,10 +386,8 @@ export default {
         this.getAreaData();
     },
     methods: {
-        getSession() {
-            this.sessionData = JSON.parse(
-                sessionStorage.getItem("session_data")
-            );
+        getSession(){
+            this.sessionData = JSON.parse(sessionStorage.getItem('session_data'));
         },
         handle(item) {
             console.log(item);
@@ -487,7 +485,7 @@ export default {
                             // this.allCompany = res.data;
                             // var results = this.allCompany;
                             var results = res.data;
-                            this.companyForm.cID = "";
+                            this.companyForm.cID = '';
                             clearTimeout(this.timeout);
                             this.timeout = setTimeout(() => {
                                 callback(results);
@@ -497,6 +495,7 @@ export default {
             }
         },
         handleSelect(item) {
+
             this.companyTags = [];
             console.log(item);
             console.log(item.rID);
@@ -538,7 +537,7 @@ export default {
             this.oldcompanyInfo = JSON.parse(JSON.stringify(item));
             // this.$refs["companyForm"].clearValidate();
             // this.isFill = true;
-            Message.warning("该公司已有销售相关联");
+            Message.warning('该公司已有销售相关联');
         },
         selectAnother() {
             // this.isFill = false;
@@ -623,7 +622,7 @@ export default {
                     return false;
                 }
             });
-            if (client_bool && company_bool) {
+            if(client_bool && company_bool){
                 // 邮箱变成小写
                 this.clientForm.email = this.clientForm.email.toLowerCase();
                 console.log(this.companyForm.cID);
@@ -637,12 +636,14 @@ export default {
                     // 修改公司信息
                     this.updateCompany();
                     // this.isAdd = true;
+
                 } else {
                     console.log("nocom", company_bool, client_bool);
                     // this.isAdd = true;
                     // 创建公司和用户
                     this.createCompany();
                 }
+
             }
         },
         // 判断公司信息是否修改
@@ -695,7 +696,7 @@ export default {
                 cremark: cForm.cRemark ? cForm.cRemark : ""
             };
             console.log("companyInfo-------", companyInfo);
-            if (this.isChangeCom()) {
+            if(this.isChangeCom()){
                 // 修改公司信息
                 api
                     .postApi("/SetMyCom", companyInfo)
@@ -707,24 +708,24 @@ export default {
                             let puid = this.sessionData.uID;
                             let cid = this.companyForm.cID;
                             this.regUser(puid, cid, mes.SysCode);
-                        } else if (mes.SysCode == 100403) {
+                        } else if(mes.SysCode == 100403) {
                             // Message.warning(mes.MSG);
                             // 注册用户
                             let puid = this.sessionData.uID;
                             let cid = this.companyForm.cID;
                             this.regUser(puid, cid, mes.SysCode);
-                        } else {
+                        }else{
                             Message.warning(mes.MSG);
                         }
                     })
                     .catch(res => {
                         console.log(res);
                     });
-            } else {
+            }else{
                 // 注册客户
                 let puid = this.sessionData.uID;
                 let cid = this.companyForm.cID;
-                this.regUser(puid, cid, "client");
+                this.regUser(puid, cid, 'client');
             }
         },
         // 创建公司
@@ -770,7 +771,10 @@ export default {
                         // 注册客户
                         let puid = this.sessionData.uID;
                         let cid = res.data.cID;
-                        this.regUser(puid, cid, "new");
+                        this.regUser(puid, cid, 'new');
+                    }else{
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -820,32 +824,20 @@ export default {
                     let userMsg = res.data;
                     if (!userMsg.SysCode) {
                         this.resetForm();
-                        let str = "";
-                        if (code == "new") {
-                            str =
-                                "成功创建客户,成功创建公司,是否跳转到列表页面";
-                        } else if (code == "client") {
-                            str = "成功创建客户,是否跳转到列表页面";
-                        } else if (code == 100200) {
-                            str =
-                                "成功创建客户,成功修改公司信息,是否跳转到列表页面";
-                        } else {
-                            str =
-                                "成功创建客户,没有权限修改公司信息,是否跳转到列表页面";
+                        let str = '';
+                        if(code =="new"){
+                            str = '成功创建客户,成功创建公司,是否跳转到列表页面';
+                        }else if(code =='client'){
+                            str = '成功创建客户,是否跳转到列表页面';
+                        }else if(code ==100200){
+                            str = '成功创建客户,成功修改公司信息,是否跳转到列表页面';
+                        }else{
+                            str = '成功创建客户,没有权限修改公司信息,是否跳转到列表页面';
                         }
-                        MessageBox.confirm(`${str}`, "提示", {
-                            showClose: false,
-                            confirmButtonText: "确定",
-                            type: "warning"
-                        })
-                            .then(() => {
-                                this.$router.push("./clientList");
-                            })
-                            .catch(res => {
-                                this.companyTags = [];
-                                this.oldBrandTags = [];
-                                // this.isFill = false;
-                            });
+                        this.changRoute(str);
+                    }else{
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -853,6 +845,26 @@ export default {
                         type: "warning",
                         message: res.data.MSG
                     });
+                });
+        },
+        // 新建之后进行跳转
+        changRoute(str){
+            MessageBox.confirm(
+                `${str}`,
+                "提示",
+                {
+                    showClose: false,
+                    confirmButtonText: "确定",
+                    type: "warning"
+                }
+            )
+                .then(() => {
+                    this.$router.push("./clientList");
+                })
+                .catch(res => {
+                    this.companyTags = [];
+                    this.oldBrandTags = [];
+                    // this.isFill = false;
                 });
         },
         //重置表单
@@ -1007,20 +1019,7 @@ export default {
     cursor: pointer;
 }
 
-.mediaMana_content_bottom .content_bottom_btn button.create {
-    background: #108ee9;
-    border-radius: 2px;
-    font-size: 14px;
-    border: none;
-    color: #ffffff;
-}
 
-.mediaMana_content_bottom .content_bottom_btn button.cancel {
-    background: #f5f6fa;
-    border: none;
-    font-size: 14px;
-    color: #979797;
-}
 
 /*tags样式*/
 .el-tag {

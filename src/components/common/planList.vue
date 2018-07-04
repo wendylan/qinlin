@@ -673,6 +673,7 @@ export default {
                             .then(() => {
                                 console.log("rowData-----------", row);
                                 console.log("row.cityarea", row.cityArea);
+                                let sumNotLock = 0;
                                 let sumLock = 0;
                                 let cityContent = row.cityArea;
                                 for (let i = 0; i < cityContent.length; i++) {
@@ -683,33 +684,52 @@ export default {
                                         })
                                         .then(res => {
                                             if (res.data.IsLock) {
+                                                sumNotLock++;
+                                            }else{
                                                 sumLock++;
                                             }
-                                            if (i >= cityContent.length - 1) {
-                                                if (sumLock) {
-                                                    Message.warning(
-                                                        "该方案被预锁,请先解除预锁"
-                                                    );
-                                                } else {
-                                                    this.Ctrlloading = Loading.service(
-                                                        {
-                                                            text:
-                                                                "请耐心等待...",
-                                                            spinner:
-                                                                "el-icon-loading",
-                                                            background:
-                                                                "rgba(0, 0, 0, 0.7)"
-                                                        }
-                                                    );
-                                                    // 保存合同编号
-                                                    this.saveContractNo(QCinfo);
-                                                    // 组合数据并发布
-                                                    this.getDataOfSetPrice(
-                                                        info,
-                                                        "R"
-                                                    );
+                                            if (
+                                                sumNotLock >= cityContent.length
+                                            ) {
+                                                this.Ctrlloading = Loading.service(
+                                                    {
+                                                        text: "请耐心等待...",
+                                                        spinner:
+                                                            "el-icon-loading",
+                                                        background:
+                                                            "rgba(0, 0, 0, 0.7)"
+                                                    }
+                                                );
+                                                // 保存合同编号
+                                                this.saveContractNo(QCinfo);
+                                                // 组合数据并发布
+                                                this.getDataOfSetPrice(
+                                                    info,
+                                                    "R"
+                                                );
+                                            } else {
+                                                if (i >= priceSheet.length - 1) {
+                                                    if(sumLock){
+                                                        Message.warning("该方案被预锁,请先解除预锁");
+                                                    }
                                                 }
                                             }
+                                            // if (i >= cityContent.length - 1) {
+                                            //     if (sumLock) {
+                                            //         Message.warning(
+                                            //             "该方案被预锁,请先解除预锁"
+                                            //         );
+                                            //     } else {
+                                            //         this.Ctrlloading = Loading.service({ text: '请耐心等待...',spinner: 'el-icon-loading',background: 'rgba(0, 0, 0, 0.7)'});
+                                            //         // 保存合同编号
+                                            //         this.saveContractNo(QCinfo);
+                                            //         // 组合数据并发布
+                                            //         this.getDataOfSetPrice(
+                                            //             info,
+                                            //             "R"
+                                            //         );
+                                            //     }
+                                            // }
                                         })
                                         .catch(res => {
                                             console.log(res);
@@ -1034,6 +1054,7 @@ export default {
         },
         //预锁
         preload(row) {
+            this.cityChoose = [];
             this.isLock = true;
             this.dialogVisible = true;
             // let uid = this.sessionData.uID;

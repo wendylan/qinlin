@@ -1214,10 +1214,18 @@ export default {
                     this.getPDIDFun(FAData.apID);
                     sessionStorage.setItem("plan_apid", FAData.apID);
                 } else {
-                    this.$message({
-                        message: "创建方案失败",
-                        type: "warning"
-                    });
+                    if (
+                        FAData.SysCode === 100302 ||
+                        FAData.MSG === "登陆超时"
+                    ) {
+                        this.ADloading.close();
+                        this.loginTimeout();
+                    } else {
+                        this.$message({
+                            message: "创建方案失败",
+                            type: "warning"
+                        });
+                    }
                 }
             });
         },
@@ -1313,6 +1321,10 @@ export default {
                     }
                 } else {
                     console.log("获取的pdid为空");
+                    this.$message({
+                        message: "提交选点失败",
+                        type: "warning"
+                    });
                 }
             });
             this.CreateAPDFun();
@@ -1735,14 +1747,24 @@ export default {
         },
         // 重置planList的勾选
         resetPlanList() {
+            console.log("重置planList的勾选开始");
             for (let i = 0; i < this.planList.length; i++) {
-                this.planList[i].checkBox.A = false;
-                this.planList[i].checkBox.B = false;
-                this.$refs.multipleTable.toggleRowSelection(
-                    this.planList[i],
-                    false
-                );
+                if (
+                    this.planList[i].checkBox.A ||
+                    this.planList[i].checkBox.B
+                ) {
+                    console.log("有勾选");
+                    this.planList[i].checkBox.A = false;
+                    this.planList[i].checkBox.B = false;
+                    this.$refs.multipleTable.toggleRowSelection(
+                        this.planList[i],
+                        false
+                    );
+                } else {
+                    console.log("无勾选");
+                }
             }
+            console.log("重置planList的勾选结束");
         },
         //点位有时间交叉
         crossSchedules(sche) {
@@ -1751,28 +1773,34 @@ export default {
                 this.dateInput[0] == scheArr[0] &&
                 this.dateInput[1] == scheArr[1]
             ) {
+                console.log("1");
                 return true;
             } else if (
                 this.dateInput[0] < scheArr[0] &&
                 this.dateInput[1] > scheArr[0]
             ) {
+                console.log("2");
                 return true;
             } else if (
                 this.dateInput[0] > scheArr[0] &&
                 this.dateInput[0] < scheArr[1]
             ) {
+                console.log("3");
                 return true;
             } else if (
                 this.dateInput[1] > scheArr[0] &&
                 this.dateInput[1] < scheArr[1]
             ) {
+                console.log("4");
                 return true;
             } else if (
                 this.dateInput[0] < scheArr[1] &&
                 this.dateInput[1] > scheArr[1]
             ) {
+                console.log("5");
                 return true;
             } else {
+                console.log("0");
                 return false;
             }
         },
@@ -1970,28 +1998,44 @@ export default {
                         })
                         .then(res => {
                             console.log("选点列表：", res);
-                            let ADList = res.data;
-                            let listObj = { rid: rid, list: [] };
-                            listObj.list = ADList;
-                            this.ADTotalList.push(listObj);
-                            this.beforADTotalList.push(listObj);
-                            this.beforADTotalList.sort(this.compareFun);
-                            if (
-                                this.beforADTotalList.length >= throwCity.length
-                            ) {
-                                console.log(
-                                    "GetAdS选点列表",
-                                    this.beforADTotalList
-                                );
+                            if (!res.data.SysCode) {
+                                let ADList = res.data;
+                                let listObj = { rid: rid, list: [] };
+                                listObj.list = ADList;
+                                this.ADTotalList.push(listObj);
+                                this.beforADTotalList.push(listObj);
+                                this.beforADTotalList.sort(this.compareFun);
                                 if (
-                                    letter === "search" &&
-                                    this.searchInput !== ""
+                                    this.beforADTotalList.length >=
+                                    throwCity.length
                                 ) {
-                                    this.setAdLaunchFun("search");
-                                } else {
-                                    this.setAdLaunchFun();
+                                    console.log(
+                                        "GetAdS选点列表",
+                                        this.beforADTotalList
+                                    );
+                                    if (
+                                        letter === "search" &&
+                                        this.searchInput !== ""
+                                    ) {
+                                        this.setAdLaunchFun("search");
+                                    } else {
+                                        this.setAdLaunchFun();
+                                    }
+                                    this.beforeDate = this.dateInput;
                                 }
-                                this.beforeDate = this.dateInput;
+                            } else {
+                                if (
+                                    res.data.SysCode === 100302 ||
+                                    res.data.MSG === "登陆超时"
+                                ) {
+                                    this.loginTimeout(); // 登录超时
+                                } else {
+                                    this.$message({
+                                        message: "权限异常,请重新登录",
+                                        type: "warning"
+                                    });
+                                    this.$router.push("/login");
+                                }
                             }
                         });
                 }
@@ -2300,19 +2344,34 @@ export default {
             } else {
                 let shopingArr = this.shopingList;
                 let planListCity = this.planList[0].city;
+                this.resetPlanList(); // 重置当前planList的勾选
                 for (let i = 0; i < shopingArr.length; ) {
-                    if (
-                        planListCity === shopingArr[i].city &&
-                        this.planList[0].schedules === shopingArr[i].schedules
-                    ) {
-                        console.log("删除城市为：", planListCity);
-                        // shopingArr.splice(i, 1)
-                        this.deleteRow(shopingArr[i], "delAll");
+                    console.log("111");
+                    if (planListCity === shopingArr[i].city) {
+                        // && this.planList[0].schedules === shopingArr[i].schedules
+                        let crossIf = this.crossSchedules(
+                            this.shopingList[i].schedules
+                        );
+                        console.log(
+                            "crossIf",
+                            crossIf,
+                            "this.shopingList[i]",
+                            i,
+                            this.shopingList[i]
+                        );
+                        if (crossIf) {
+                            console.log("删除城市为：", planListCity);
+                            // this.deleteRow(shopingArr[i],'delAll')
+                            this.selectAlldelRow(shopingArr[i]); // 取消全勾选时的购物车删除
+                        } else {
+                            i++;
+                        }
                     } else {
                         i++;
                     }
                     if (i >= shopingArr.length - 1) {
                         // this.shopingList = shopingArr
+                        this.computeMedia_AD();
                         this.getBadeNumberByShopList();
                     }
                 }
@@ -2853,116 +2912,130 @@ export default {
             let uid = this.sessionData.uID;
             api.getApi("/GetAdPrice", { uid: uid }).then(res => {
                 console.log("刊例价信息", res);
-                let ADPriceList = res.data;
-                console.log("投放城市信息", this.planForm.throwCity);
-                // let throwCityList = this.planForm.throwCity
-                let quotation = this.quotation;
-                for (let i = 0; i < ADPriceList.length; i++) {
-                    // 报价单过滤
-                    for (let j = 0; j < quotation.length; j++) {
-                        // 投放城市过滤
-                        let quotationObj = quotation[j];
-                        for (let g = 0; g < this.shopListCity.length; g++) {
-                            // 购物车里有的城市（选中点对应的城市）
-                            if (
-                                ADPriceList[i].rID == quotationObj.rid &&
-                                this.shopListCity[g] === quotationObj.city
-                            ) {
-                                // alert(ADPriceList[i].adPrice)
-                                let mDate = 0;
-                                let mNUm = 0;
-                                let csm_arr = this.CSMList;
-                                for (let t = 0; t < csm_arr.length; t++) {
-                                    if (csm_arr[t].city === quotationObj.city) {
-                                        let begin = csm_arr[t].schedules.split(
-                                            "-"
-                                        )[0];
-                                        let end = csm_arr[t].schedules.split(
-                                            "-"
-                                        )[1];
-                                        console.log(
-                                            "begin",
-                                            begin,
-                                            ",end",
-                                            end
-                                        );
-                                        let schedul =
-                                            this.DateDiff(begin, end) + 1;
-                                        console.log("schedul", schedul);
-                                        mDate += schedul * csm_arr[t].mNum;
-                                        mNUm += csm_arr[t].mNum;
+                let ADPriceList = res.data; //SysCode: 100302, MSG: "登陆超时"
+                if (
+                    ADPriceList.SysCode === 100302 ||
+                    ADPriceList.MSG === "登陆超时"
+                ) {
+                    this.computeAuotation.close();
+                    this.loginTimeout();
+                } else {
+                    console.log("投放城市信息", this.planForm.throwCity);
+                    // let throwCityList = this.planForm.throwCity
+                    let quotation = this.quotation;
+                    for (let i = 0; i < ADPriceList.length; i++) {
+                        // 报价单过滤
+                        for (let j = 0; j < quotation.length; j++) {
+                            // 投放城市过滤
+                            let quotationObj = quotation[j];
+                            for (let g = 0; g < this.shopListCity.length; g++) {
+                                // 购物车里有的城市（选中点对应的城市）
+                                if (
+                                    ADPriceList[i].rID == quotationObj.rid &&
+                                    this.shopListCity[g] === quotationObj.city
+                                ) {
+                                    // alert(ADPriceList[i].adPrice)
+                                    let mDate = 0;
+                                    let mNUm = 0;
+                                    let csm_arr = this.CSMList;
+                                    for (let t = 0; t < csm_arr.length; t++) {
+                                        if (
+                                            csm_arr[t].city ===
+                                            quotationObj.city
+                                        ) {
+                                            let begin = csm_arr[
+                                                t
+                                            ].schedules.split("-")[0];
+                                            let end = csm_arr[
+                                                t
+                                            ].schedules.split("-")[1];
+                                            console.log(
+                                                "begin",
+                                                begin,
+                                                ",end",
+                                                end
+                                            );
+                                            let schedul =
+                                                this.DateDiff(begin, end) + 1;
+                                            console.log("schedul", schedul);
+                                            mDate += schedul * csm_arr[t].mNum;
+                                            mNUm += csm_arr[t].mNum;
+                                        }
                                     }
+                                    console.log(
+                                        "天数mDate",
+                                        mDate,
+                                        ",面数mNUm",
+                                        mNUm
+                                    );
+                                    console.log(
+                                        ADPriceList[i].rName,
+                                        "广告门价格为",
+                                        ADPriceList[i].adPrice
+                                    );
+                                    // 广告费计算
+                                    quotationObj.ADPrice =
+                                        ADPriceList[i].adPrice / (100 * 2); //(ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
+                                    console.log(
+                                        "刊例价(面/周)",
+                                        quotationObj.ADPrice
+                                    );
+                                    quotationObj.tfl = mDate; //this.badgeNumber * 14                                         // 投放量(面·天)
+                                    console.log(
+                                        "(quotationObj.tfl * (quotationObj.ADPrice / 7))",
+                                        quotationObj.tfl *
+                                            (quotationObj.ADPrice / 7)
+                                    );
+                                    quotationObj.reaPrice =
+                                        quotationObj.tfl *
+                                        (quotationObj.ADPrice / 7); //(quotationObj.tfl * (quotationObj.ADPrice / 7)).toFixed(2)        // 广告费总价
+                                    console.log(
+                                        quotationObj,
+                                        "quotationObj.reaPrice",
+                                        quotationObj.reaPrice
+                                    );
+                                    quotationObj.oldPrice =
+                                        quotationObj.reaPrice; // 保存最初计算的价格
+
+                                    quotationObj.advertyPrice =
+                                        quotationObj.reaPrice;
+                                    console.log(
+                                        "广告费总价",
+                                        quotationObj.advertyPrice
+                                    );
+                                    quotationObj.discount =
+                                        Math.round(
+                                            quotationObj.advertyPrice /
+                                                quotationObj.reaPrice *
+                                                10000
+                                        ) /
+                                            100.0 +
+                                        "%"; // 广告费折扣百分比
+
+                                    // 制作费计算
+                                    quotationObj.ADNumber = mNUm; //this.badgeNumber                                           // 广告画数量
+                                    quotationObj.makePrice =
+                                        quotationObj.ADNumber *
+                                        quotationObj.MPrice; //(quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
+                                    quotationObj.MReaPrice =
+                                        quotationObj.makePrice;
+                                    quotationObj.makeDiscount =
+                                        Math.round(
+                                            quotationObj.makePrice /
+                                                quotationObj.MReaPrice *
+                                                10000
+                                        ) /
+                                            100.0 +
+                                        "%"; // 制作费折扣百分比
+
+                                    quotationObj.total =
+                                        Number(quotationObj.advertyPrice) +
+                                        Number(quotationObj.makePrice); //(Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice)).toFixed(2)
+                                    quotationObj.cash = quotationObj.total;
+                                    // 计算总价格
+                                    this.computeTotal();
+                                    this.computeAuotation.close(); // 计算完成关闭loading
                                 }
-                                console.log(
-                                    "天数mDate",
-                                    mDate,
-                                    ",面数mNUm",
-                                    mNUm
-                                );
-                                console.log(
-                                    ADPriceList[i].rName,
-                                    "广告门价格为",
-                                    ADPriceList[i].adPrice
-                                );
-                                // 广告费计算
-                                quotationObj.ADPrice =
-                                    ADPriceList[i].adPrice / (100 * 2); //(ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
-                                console.log(
-                                    "刊例价(面/周)",
-                                    quotationObj.ADPrice
-                                );
-                                quotationObj.tfl = mDate; //this.badgeNumber * 14                                         // 投放量(面·天)
-                                console.log(
-                                    "(quotationObj.tfl * (quotationObj.ADPrice / 7))",
-                                    quotationObj.tfl *
-                                        (quotationObj.ADPrice / 7)
-                                );
-                                quotationObj.reaPrice =
-                                    quotationObj.tfl *
-                                    (quotationObj.ADPrice / 7); //(quotationObj.tfl * (quotationObj.ADPrice / 7)).toFixed(2)        // 广告费总价
-                                console.log(
-                                    quotationObj,
-                                    "quotationObj.reaPrice",
-                                    quotationObj.reaPrice
-                                );
-                                quotationObj.oldPrice = quotationObj.reaPrice; // 保存最初计算的价格
-
-                                quotationObj.advertyPrice =
-                                    quotationObj.reaPrice;
-                                console.log(
-                                    "广告费总价",
-                                    quotationObj.advertyPrice
-                                );
-                                quotationObj.discount =
-                                    Math.round(
-                                        quotationObj.advertyPrice /
-                                            quotationObj.reaPrice *
-                                            10000
-                                    ) /
-                                        100.0 +
-                                    "%"; // 广告费折扣百分比
-
-                                // 制作费计算
-                                quotationObj.ADNumber = mNUm; //this.badgeNumber                                           // 广告画数量
-                                quotationObj.makePrice =
-                                    quotationObj.ADNumber * quotationObj.MPrice; //(quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
-                                quotationObj.MReaPrice = quotationObj.makePrice;
-                                quotationObj.makeDiscount =
-                                    Math.round(
-                                        quotationObj.makePrice /
-                                            quotationObj.MReaPrice *
-                                            10000
-                                    ) /
-                                        100.0 +
-                                    "%"; // 制作费折扣百分比
-
-                                quotationObj.total =
-                                    Number(quotationObj.advertyPrice) +
-                                    Number(quotationObj.makePrice); //(Number(quotationObj.advertyPrice) + Number(quotationObj.makePrice)).toFixed(2)
-                                quotationObj.cash = quotationObj.total;
-                                // 计算总价格
-                                this.computeTotal();
-                                this.computeAuotation.close(); // 计算完成关闭loading
                             }
                         }
                     }
@@ -3058,6 +3131,18 @@ export default {
                     selectInfo.A_B = "A面";
                 }
                 this.shopingList.push(selectInfo);
+            }
+        },
+        // 取消全选时的购物车删除
+        selectAlldelRow(rows) {
+            for (let j = 0; j < this.shopingList.length; j++) {
+                if (
+                    this.shopingList[j].mID === rows.mID &&
+                    this.shopingList[j].schedules === rows.schedules
+                ) {
+                    this.shopingList.splice(j, 1);
+                    break;
+                }
             }
         },
         // 购物车删除行
@@ -3829,25 +3914,6 @@ export default {
         },
         // 清空购物车
         clearShop() {
-            /*  let shopingArr = this.shopingList
-          // let planListCity = this.planList[0].city
-          console.log('this.city', this.city)
-          for (let j = 0; j < this.city.length; j++) {
-            for (let i = 0; i < shopingArr.length;) {
-              if (this.city[j].rName === shopingArr[i].city) {
-                console.log('删除城市为：', this.city[j].rName)
-                // shopingArr.splice(i, 1)
-                this.deleteRow(shopingArr[i])
-              } else {
-                i++
-              }
-              if (j >= shopingArr.length - 1) {
-                this.shopMedia_ADNum.mediaNum = 0
-                this.shopMedia_ADNum.ADNum = 0
-                this.getBadeNumberByShopList()
-              }
-            }
-          }*/
             this.shopingList = [];
             this.getBadeNumberByShopList();
             this.computeMedia_AD();
@@ -3892,12 +3958,12 @@ export default {
                 if (mediaArr.indexOf(shopList[i].mID) === -1) {
                     mediaArr.push(shopList[i].mID);
                 } else {
-                    console.log("重复的asIDs是", shopList[i].mID);
+                    // console.log('重复的asIDs是', shopList[i].mID)
                 }
                 if (mediaAD.indexOf(shopList[i].asIDs) === -1) {
                     mediaAD.push(shopList[i].asIDs);
                 } else {
-                    console.log("重复的asIDs是", shopList[i].asIDs);
+                    // console.log('重复的asIDs是', shopList[i].asIDs)
                 }
             }
             console.log("mediaArr", mediaArr);
@@ -3990,6 +4056,14 @@ export default {
                     this.totalChangeOther = true;
                 }
             }
+        },
+        // 登录超时
+        loginTimeout() {
+            this.$message({
+                message: "登录超时或权限异常,请重新登录",
+                type: "warning"
+            });
+            this.$router.push("/login");
         }
     }
 };

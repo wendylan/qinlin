@@ -11,7 +11,7 @@
             </div>
             <!--资源信息-->
             <div class="mediaMana_content_top">
-                <div class="content_top_wrap">
+                <div class="content_top_wrap" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                     <div class="plan-title">
                         <h4>
                             <img src="../../assets/images/orderlogo.png" alt="">{{planDetail.apName}}
@@ -84,7 +84,7 @@
                                         <h4>选点排期</h4>
                                         <div class="table_wrap">
                                             <!-- <el-table border :data="setpointArr" :row-class-name="tableRowClassName" :highlight-current-row="true" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"> -->
-                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                                 <el-table-column type="expand">
                                                     <template slot-scope="props">
                                                         <el-form label-position="left" inline class="demo-table-expand">
@@ -273,6 +273,8 @@ export default {
     },
     data() {
         return {
+            //加载中
+            loading: true,
             role: "",
             // 方案详情
             planDetail: {
@@ -313,7 +315,7 @@ export default {
         // // 选点排期
         // this.getSetPoint();
         // // 报价单
-        // this.getPriceData();
+        this.getPriceData();
     },
     methods: {
         // // 当前行是否高亮
@@ -492,6 +494,7 @@ export default {
                             );
                             this.setpointArr = resInfo;
                             this.currentSetpoint = this.setpointArr;
+                            this.loading = false;
                             // 报价单
                             this.getPriceData();
                         } else {
@@ -501,6 +504,7 @@ export default {
                         }
                     })
                     .catch(res => {
+                        this.loading = false;
                         console.log(res);
                     });
             } else {
@@ -534,8 +538,7 @@ export default {
                             );
                             this.setpointArr = result;
                             this.currentSetpoint = this.setpointArr;
-                            // 报价单
-                            this.getPriceData();
+                            this.loading = false;
                         } else {
                             // Message.warning(res.data.MSG);
                             Message.warning("登录超时,请重新登录");
@@ -543,6 +546,7 @@ export default {
                         }
                     })
                     .catch(res => {
+                        this.loading = false;
                         console.log(res);
                     });
             }
@@ -619,7 +623,8 @@ export default {
                                         pdSendFee: price.pdSendFee / 100,
                                         // 其他费用
                                         pdOtherFee: price.pdOtherFee / 100,
-                                        allprice: 0
+                                        allprice: 0,
+                                        pdRemark: price.pdRemark
                                     };
                                     obj.allprice =
                                         (price.pdTotal +
@@ -656,19 +661,27 @@ export default {
                                         if (ad.rID == ta.rID) {
                                             ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
                                             let onedayPrice = ta.adPrice / 7;
-                                            ta.discount =
+                                            let discount =
                                                 Math.round(
                                                     ta.pdAdFee /
                                                         (onedayPrice *
                                                             ta.pdDays) *
                                                         10000
-                                                ) / 100; // 广告费折扣百分比
-                                            ta.ADMakeDiscount =
+                                                ) / 100;
+                                            let ADMakeDiscount =
                                                 Math.round(
                                                     ta.pdAdMake /
                                                         (100 * ta.pdNum) *
                                                         10000
-                                                ) / 100; // 制作费折扣百分比
+                                                ) / 100;
+                                            ta.discount = isNaN(discount)
+                                                ? 0
+                                                : discount; // 广告费折扣百分比
+                                            ta.ADMakeDiscount = isNaN(
+                                                ADMakeDiscount
+                                            )
+                                                ? 0
+                                                : ADMakeDiscount; // 制作费折扣百分比
                                             break;
                                         }
                                     }
@@ -837,6 +850,7 @@ export default {
         edit() {
             let priceSheet = this.priceSheet;
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let sumNotLock = 0;
             let sumLock = 0;
             for (let i = 0; i < priceSheet.length; i++) {
                 api
@@ -845,30 +859,55 @@ export default {
                         pdid: priceSheet[i].pdID
                     })
                     .then(res => {
-                        if (res.data.IsLock) {
+                        if (!res.data.IsLock) {
+                            sumNotLock++;
+                        }else{
                             sumLock++;
                         }
-                        if (i >= priceSheet.length - 1) {
-                            if (sumLock) {
-                                MessageBox.confirm(
-                                    `该方案被预锁,请先解除预锁,是否去解锁？`,
-                                    "提示",
-                                    {
-                                        confirmButtonText: "确定",
-                                        cancelButtonText: "取消",
-                                        type: "warning"
-                                    }
-                                )
-                                    .then(() => {
-                                        this.$router.push("./planList");
-                                    })
-                                    .catch(() => {
-                                        Message.info("已取消操作");
-                                    });
-                            } else {
-                                this.$router.push("./editPlan");
+                        if (sumNotLock >= priceSheet.length) {
+                            this.$router.push("./editPlan");
+                        } else {
+                            if (i >= priceSheet.length - 1) {
+                                if(sumLock){
+                                    MessageBox.confirm(
+                                        `该方案被预锁,请先解除预锁,是否去解锁？`,
+                                        "提示",
+                                        {
+                                            confirmButtonText: "确定",
+                                            cancelButtonText: "取消",
+                                            type: "warning"
+                                        }
+                                    )
+                                        .then(() => {
+                                            this.$router.push("./planList");
+                                        })
+                                        .catch(() => {
+                                            Message.info("已取消操作");
+                                        });
+                                }
                             }
                         }
+                        // if (i >= priceSheet.length - 1) {
+                        //     if (sumLock) {
+                        //         MessageBox.confirm(
+                        //             `该方案被预锁,请先解除预锁,是否去解锁？`,
+                        //             "提示",
+                        //             {
+                        //                 confirmButtonText: "确定",
+                        //                 cancelButtonText: "取消",
+                        //                 type: "warning"
+                        //             }
+                        //         )
+                        //             .then(() => {
+                        //                 this.$router.push("./planList");
+                        //             })
+                        //             .catch(() => {
+                        //                 Message.info("已取消操作");
+                        //             });
+                        //     } else {
+                        //         this.$router.push("./editPlan");
+                        //     }
+                        // }
                     })
                     .catch(res => {
                         console.log(res);
@@ -1290,7 +1329,7 @@ export default {
 
 .plan-detail-left {
     float: left;
-    width: 82%;
+    width: 78%;
 }
 
 .plan-detail-left ul {
@@ -1303,7 +1342,7 @@ export default {
 
 .plan-detail-left ul li {
     float: left;
-    width: 300px;
+    width: 280px;
     margin-bottom: 12px;
 }
 
@@ -1323,7 +1362,7 @@ export default {
 .plan-detail-right {
     display: flex;
     justify-content: space-between;
-    width: 18%;
+    width: 21%;
     float: right;
 }
 

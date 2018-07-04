@@ -279,8 +279,8 @@ export default {
                         this.currAccount = this.accountList;
                     } else {
                         // Message.warning(res.data.MSG);
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -427,6 +427,9 @@ export default {
                             if (res.data.SysCode == 100200) {
                                 Message.success("操作成功");
                                 row.uState = row.uState ? 0 : 1;
+                            }else{
+                                Message.warning('登录超时,请重新登录');
+                                this.$router.push('/login');
                             }
                         })
                         .catch(res => {

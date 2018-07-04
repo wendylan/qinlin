@@ -126,7 +126,9 @@ export default {
                                         console.log("cancel");
                                     });
                             } else {
-                                Message.warning(result.MSG);
+                                // Message.warning(result.MSG);
+                                Message.warning("登录超时,请重新登录");
+                                this.$router.push("/login");
                             }
                         })
                         .catch(res => {

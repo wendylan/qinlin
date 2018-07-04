@@ -455,76 +455,14 @@ export default {
                 });
         },
         getData() {
-            // let reclist =  [
-            //   {resID: 1,rID: 440106,rName: "越秀区",resName: "帝景山庄1",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            //   {resID: 2,rID: 110101,rName: "东城区",resName: "帝景山庄2",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            //   {resID: 3,rID: 440103,rName: "荔湾区",resName: "帝景山庄3",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            //   {resID: 4,rID: 440303,rName: "荔湾区",resName: "帝景山庄4",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景4门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 5,rID: 440106,rName: "越秀区",resName: "帝景山庄5",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景5门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 6,rID: 110101,rName: "东城区",resName: "帝景山庄6",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景6门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 7,rID: 440105,rName: "海珠区",resName: "帝景山庄7",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景7门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 8,rID: 440303,rName: "南山区",resName: "帝景山庄8",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景8门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 9,rID: 440111,rName: "白云区",resName: "帝景山庄9",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景9门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 10,rID: 110101,rName: "东城区",resName: "帝景山庄10",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景10门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 11,rID: 440106,rName: "越秀区",resName: "帝景山庄11",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景11门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 12,rID: 440303,rName: "南山区",resName: "帝景山庄12",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景12门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 13,rID: 440106,rName: "越秀区",resName: "帝景山庄13",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景13门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 14,rID: 110101,rName: "东城区",resName: "帝景山庄14",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景14门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 15,rID: 440106,rName: "越秀区",resName: "帝景山庄15",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景15门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 16,rID: 440303,rName: "南山区",resName: "帝景山庄16",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景16门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 17,rID: 440303,rName: "南山区",resName: "帝景山庄17",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景12门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 18,rID: 440106,rName: "越秀区",resName: "帝景山庄18",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景13门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 19,rID: 110101,rName: "东城区",resName: "帝景山庄19",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景14门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 20,rID: 440106,rName: "越秀区",resName: "帝景山庄20",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景15门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 21,rID: 440303,rName: "南山区",resName: "帝景山庄21",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景16门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 22,rID: 440106,rName: "越秀区",resName: "帝景山庄22",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景1门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 23,rID: 110101,rName: "东城区",resName: "帝景山庄23",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景2门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 24,rID: 440103,rName: "荔湾区",resName: "帝景山庄24",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景3门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 25,rID: 440303,rName: "荔湾区",resName: "帝景山庄25",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景4门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 26,rID: 440106,rName: "越秀区",resName: "帝景山庄26",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景5门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 27,rID: 110101,rName: "东城区",resName: "帝景山庄27",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景6门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 28,rID: 440105,rName: "海珠区",resName: "帝景山庄28",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景7门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 29,rID: 440303,rName: "南山区",resName: "帝景山庄29",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景8门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 30,rID: 440111,rName: "白云区",resName: "帝景山庄30",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景9门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 31,rID: 110101,rName: "东城区",resName: "帝景山庄31",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景10门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 32,rID: 440106,rName: "越秀区",resName: "帝景山庄32",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景11门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 33,rID: 440303,rName: "南山区",resName: "帝景山庄33",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景12门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 34,rID: 440106,rName: "越秀区",resName: "帝景山庄34",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景13门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 35,rID: 110101,rName: "东城区",resName: "帝景山庄35",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景14门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 36,rID: 440106,rName: "越秀区",resName: "帝景山庄36",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景15门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 37,rID: 440303,rName: "南山区",resName: "帝景山庄37",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景16门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 38,rID: 440303,rName: "南山区",resName: "帝景山庄38",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景12门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"},
-            // {resID: 39,rID: 440106,rName: "越秀区",resName: "帝景山庄39",tradingArea: "山泉1",rtName: "社区",mID: 440106000001,mVehicle: "广告门",mTitle: "帝景13门",assetTag: "201707GZ-1316",pNum: 2,mState: "1"},
-            // {resID: 40,rID: 110101,rName: "东城区",resName: "帝景山庄40",tradingArea: "山泉2",rtName: "写字楼",mID: 440106000002,mVehicle: "广告门",mTitle: "帝景14门",assetTag: "201707GZ-1324",pNum: 2,mState: "2"},
-            // {resID: 41,rID: 440106,rName: "越秀区",resName: "帝景山庄41",tradingArea: "山泉3",rtName: "社区",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景15门",assetTag: "201707GZ-1329",pNum: 2,mState: "0"},
-            // {resID: 42,rID: 440303,rName: "南山区",resName: "帝景山庄42",tradingArea: "山泉4",rtName: "写字楼",mID: 440106000003,mVehicle: "广告门",mTitle: "帝景16门",assetTag: "201707GZ-1329",pNum: 2,mState: "3"}]
-            // this.planList = reclist
-            // for(let i=0;i<this.planList.length;i++){
-            //   let rName = {
-            //     text: this.planList[i].rName,
-            //     value: this.planList[i].rName
-            //   }
-            //   let rCity = {
-            //     text: this.planList[i].city,
-            //     value: this.planList[i].city
-            //   }
-            //   //  this.filtersRName.push(rName)
-            //   if(JSON.stringify(this.filtersRName).indexOf(rName.value) === -1){
-            //     this.filtersRName.push(rName)
-            //   }
-            //   if(JSON.stringify(this.filtersCity).indexOf(rCity.value) === -1){
-            //     this.filtersCity.push(rCity)
-            //   }
-            // }
-            //请求
             let dataArr = [];
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             api.getApi("/GetRMList", { uid: uid }).then(res => {
                 console.log("资源媒体列表：", res.data);
-                let RMList = res.data.reverse();
+                let RMList = res.data;
                 if (!RMList.SysCode) {
                     // let RMList = reclist
-                    this.beforMediaList = RMList;
+                    this.beforMediaList = RMList.reverse();
                     if (RMList) {
                         console.log("资源媒体列表：", res.data);
                         for (let i = 0; i < RMList.length; i++) {
@@ -568,8 +506,9 @@ export default {
                 } else {
                     Message({
                         type: "warning",
-                        message: RMList.MSG
+                        message: RMList.MSG + ",请重新登录"
                     });
+                    this.$router.push("/login");
                 }
             });
         },

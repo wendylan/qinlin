@@ -813,20 +813,15 @@ export default {
             ) {
                 Message.warning("请先输入搜索条件");
             } else {
-                if (this.activeName == "first") {
+                if(this.activeName == 'first'){
                     initData = this.upImgArr;
-                } else if (this.activeName == "second") {
+                }else if(this.activeName =='second'){
                     initData = this.downImgArr;
                 }
 
+
                 // 搜索
-                console.log(
-                    this.select,
-                    this.keyword,
-                    this.LabSelect,
-                    this.date,
-                    this.citySelect
-                );
+                console.log(this.select,this.keyword,this.LabSelect,this.date,this.citySelect);
                 let arr = [];
                 let range = this.date;
                 let select = this.select;
@@ -898,103 +893,108 @@ export default {
                                         arr.push(data);
                                     }
                                 } else if (city.length) {
-                                    if (
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
-                        } else if (keyword) {
-                            if (select == "1" && alt.plan.includes(keyword)) {
+                        }else if(keyword){
+                            if (
+                                select == "1" &&
+                                alt.plan.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range.length) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range.length){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend)
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "2" && alt.media.includes(keyword)) {
+                            if (
+                                select == "2" &&
+                                alt.media.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range.length) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range.length){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend)
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "3" && alt.res.includes(keyword)) {
+                            if (
+                                select == "3" &&
+                                alt.res.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range.length) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range.length){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend)
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (lab) {
-                            if (alt.asLab == lab) {
-                                if (range.length) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if(lab){
+                            if(alt.asLab == lab){
+                                if(range.length){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend)
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1013,28 +1013,30 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if(city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (city.length) {
-                            if (alt.city == city[0] && alt.area == city[1]) {
-                                if (range.length) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if (city.length){
+                            if(
+                                alt.city == city[0] &&
+                                alt.area == city[1]
+                            ){
+                                if(range.length){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend)
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1053,18 +1055,18 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (lab) {
-                                    if (alt.asLab == lab) {
+                                }else if(lab){
+                                    if(alt.asLab == lab){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
                         }
                     }
 
-                    if (arr.length) {
+                    if(arr.length){
                         this.showPic = 3;
                         this.currUpImgArr = arr;
                     }
@@ -1077,7 +1079,7 @@ export default {
                 }
             }
         },
-
+        
         //筛选
         filterCaseType(value, row) {
             return row.tag === value;

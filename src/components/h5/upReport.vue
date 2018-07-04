@@ -423,7 +423,9 @@ export default {
                                 console.log(res);
                             });
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {
@@ -687,7 +689,9 @@ export default {
                                 console.log(res);
                             });
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
                     }
                 })
                 .catch(res => {

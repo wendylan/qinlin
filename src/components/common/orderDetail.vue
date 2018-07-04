@@ -10,7 +10,7 @@
             </div>
             <!--资源信息-->
             <div class="mediaMana_content_top">
-                <div class="content_top_wrap">
+                <div class="content_top_wrap" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                     <div class="plan-title">
                         <h4>
                             <img src="../../assets/images/planlogo.png" alt="">{{orderDetail.apName}}
@@ -120,7 +120,7 @@
                             </div>
 
                             <div class="table_wrap">
-                                <el-table border :data="currentSetpoint" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+                                <el-table border :data="currentSetpoint" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                     <el-table-column type="expand">
                                         <template slot-scope="props">
                                             <el-form label-position="left" inline class="demo-table-expand">
@@ -172,7 +172,7 @@
                         <div class="second-wrap box-wrap">
                             <h4>报价单</h4>
                             <div class="panel">
-                                <el-tabs type="border-card" class="baojiadan" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                <el-tabs type="border-card" class="baojiadan">
                                     <el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
                                         <div class="tab-info">
                                             <div class="pqxx">
@@ -220,7 +220,7 @@
                                             <div class="bottom">
                                                 <div class="bottom-detail">
                                                     <div class="remark">
-                                                        <p>备注：无</p>
+                                                        <p>备注：{{item.pdRemark}}</p>
                                                     </div>
                                                     <div class="bill-title-right">
                                                         <ul>
@@ -284,10 +284,10 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="上刊报告" name="forth" :disabled="usableBtn">
+                    <el-tab-pane label="上刊报告" name="forth" :disabled="usableBtn||role =='OP'">
                         <div class="forth-wrap box-wrap">
                             <h4>上刊报告</h4>
-                            <div class="panel">
+                            <div class="panel" v-loading="UpReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                 <div class="up-report">
                                     <div class="up-loader-header">
                                         <el-cascader :options="citys" v-model="citySelect" @change="searchImg(upReportArr, 'upImgArr')">
@@ -308,7 +308,7 @@
                                     </div>
 
                                     <div class="imgs-box">
-                                        <div class="up-loader-Imgpanel" v-for="(updata,index) in currUpReportArr" :key="updata.asID">
+                                        <div class="up-loader-Imgpanel" v-for="(updata,index) in currUpReportArr" :key="index">
                                             <el-card class="box-card" shadow="never">
                                                 <div slot="header" class="clearfix img-car">
                                                     <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
@@ -317,21 +317,21 @@
                                                         <ol slot-scope="scope" style="text-align:center">
                                                             <li>{{updata.timeRange}}</li>
                                                             <!-- <li>2017.10.10-2018.10.10</li>
-                              <li>2017.10.10-2018.10.10</li> -->
+                                                            <li>2017.10.10-2018.10.10</li> -->
                                                         </ol>
                                                         <i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
                                                     </el-popover>
                                                 </div>
                                                 <div class="upload-img">
-                                                    <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.one" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                    <el-upload @click.native="saveId(updata, 'one')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.one" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(updata, 'one')">点击上传照片</span>
+                                                        <span>点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <div class="upload-img">
-                                                    <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.two" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                    <el-upload @click.native="saveId(updata, 'two')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.two" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(updata, 'two')">点击上传照片</span>
+                                                        <span>点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
@@ -340,15 +340,15 @@
                                                 </div>
                                                 <div v-show="isShow == index" class="moreimgs">
                                                     <div class="upload-img">
-                                                        <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <el-upload @click.native="saveId(updata, 'three')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(updata, 'three')">点击上传照片</span>
+                                                            <span>点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <div class="upload-img">
-                                                        <el-upload :action="doUpload" list-type="picture-card" :file-list="updata.upImg.four" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <el-upload @click.native="saveId(updata, 'four')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.four" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(updata, 'four')">点击上传照片</span>
+                                                            <span>点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <!-- 是否显示更多的图片上传框关闭 -->
@@ -379,10 +379,10 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn">
+                    <el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn||role =='OP'">
                         <div class="forth-wrap box-wrap">
                             <h4>下刊报告</h4>
-                            <div class="panel">
+                            <div class="panel" v-loading="DownReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                 <div class="up-report">
                                     <div class="up-loader-header">
                                         <el-cascader :options="citys" v-model="citySelect" @change="searchImg(downReportArr, 'downImgArr')">
@@ -402,7 +402,7 @@
                                         </div>
                                     </div>
                                     <div class="imgs-box">
-                                        <div class="up-loader-Imgpanel" v-for="(downData,index) in currDownReportArr" :key="downData.asID">
+                                        <div class="up-loader-Imgpanel" v-for="(downData,index) in currDownReportArr" :key="index">
                                             <el-card class="box-card" shadow="never">
                                                 <div slot="header" class="clearfix img-car">
                                                     <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
@@ -410,15 +410,15 @@
                                                     <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
                                                 </div>
                                                 <div class="upload-img">
-                                                    <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.one" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                    <el-upload @click.native="saveId(downData, 'one')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.one" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(downData, 'one')">点击上传照片</span>
+                                                        <span>点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <div class="upload-img">
-                                                    <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.two" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                    <el-upload @click.native="saveId(downData, 'two')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.two" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                         <i class="el-icon-plus"></i>
-                                                        <span @click="saveId(downData, 'two')">点击上传照片</span>
+                                                        <span>点击上传照片</span>
                                                     </el-upload>
                                                 </div>
                                                 <!-- 是否显示更多的图片上传框打开 -->
@@ -427,15 +427,15 @@
                                                 </div>
                                                 <div v-show="isShow2 == index" class="moreimgs">
                                                     <div class="upload-img">
-                                                        <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <el-upload @click.native="saveId(downData, 'three')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(downData, 'three')">点击上传照片</span>
+                                                            <span>点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <div class="upload-img">
-                                                        <el-upload :action="doUpload" list-type="picture-card" :file-list="downData.downImg.four" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <el-upload @click.native="saveId(downData, 'four')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.four" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                             <i class="el-icon-plus"></i>
-                                                            <span @click="saveId(downData, 'four')">点击上传照片</span>
+                                                            <span>点击上传照片</span>
                                                         </el-upload>
                                                     </div>
                                                     <!-- 是否显示更多的图片上传框关闭 -->
@@ -730,6 +730,8 @@ export default {
         return {
             //加载中
             loading: true,
+            UpReportLoading: true,
+            DownReportLoading: true,
             // 判断
             role: "",
             // 当前页
@@ -1205,6 +1207,12 @@ export default {
             if (this.planPanel == "second") {
                 this.getPriceData();
             }
+            if (this.planPanel == "third") {
+                // 物料信息
+                this.getMaterialInfo(this.copyAsidArr);
+                // this.materialInfo = this.getMaterialInfo(this.copyAsidArr);
+                console.log("materialInfo", this.materialInfo);
+            }
             if (this.planPanel == "forth") {
                 this.getUpImgInfo();
             }
@@ -1232,28 +1240,6 @@ export default {
         },
         // 获取选点排期列表数据
         getInitData() {
-            // // 测试数据
-            // let order = {
-            // 	realName: "黄启炜",
-            // 	apState: 1,
-            // 	rIDs: "广州市,北京市,重庆市",
-            // 	cName: "新光百货",
-            // 	apID: 1,
-            // 	apcTime: "May 9, 2018 6:29:47 PM",
-            // 	cuName: "赵爽",
-            // 	bTitle: "新光百货",
-            // 	apTotal: 465200,
-            // 	apName: "第一个投放方案",
-            // 	apQC: "QC201803284401001",
-            //     rID: 110100,
-            // 	pdTotal: 0,
-            // 	pdSendFee: 0,
-            // 	pdOtherFee: 0
-            // };
-            // order.apTotal = this.priceFormat(order.apTotal);
-            // this.orderDetail = order;
-            // this.apQC = this.orderDetail.apQC? this.orderDetail.apQC:this.getContractNo(this.orderDetail.rID);
-
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("order_apid");
@@ -1288,199 +1274,6 @@ export default {
         },
         // 获取选点排期
         getSetPoint() {
-            // // 测试数据
-            // let testInfo = [
-            //     {
-            //         asID: 5,
-            //         lID: 6,
-            //         cType: "高端住宅",
-            //         lStar: "May 26, 2018",
-            //         tradingArea: "山泉1",
-            //         adSize: "1181*841",
-            //         assetTag: "201707GZ-13161",
-            //         rID: 440104,
-            //         notPush: "美容",
-            //         hNum: 170,
-            //         fNum: 12,
-            //         resName: "帝景山庄",
-            //         chDay: "2013",
-            //         hPrice: 6100000,
-            //         rName: "越秀区",
-            //         asLab: "A",
-            //         adViewSize: "118*84",
-            //         mTitle: "帝景1门",
-            //         lEnd: "Jun 1, 2018"
-            //     },
-            //     {
-            //         asID: 2,
-            //         lID: 7,
-            //         cType: "高端住宅",
-            //         lStar: "Jun 6, 2018",
-            //         tradingArea: "山泉1",
-            //         adSize: "1181*841",
-            //         assetTag: "201707GZ-13161",
-            //         rID: 440104,
-            //         notPush: "美容",
-            //         hNum: 170,
-            //         fNum: 12,
-            //         resName: "帝景山庄",
-            //         chDay: "2013",
-            //         hPrice: 6100000,
-            //         rName: "天河区",
-            //         asLab: "B",
-            //         adViewSize: "118*84",
-            //         mTitle: "帝景1门",
-            //         lEnd: "Jun 13, 2018"
-            //     },
-            //     {
-            //         asID: 4,
-            //         lID: 8,
-            //         cType: "高端住宅",
-            //         lStar: "Jun 6, 2018",
-            //         tradingArea: "山泉1",
-            //         adSize: "1181*841",
-            //         assetTag: "201707GZ-13161",
-            //         rID: 440304,
-            //         notPush: "美容",
-            //         hNum: 170,
-            //         fNum: 12,
-            //         resName: "帝景山庄",
-            //         chDay: "2013",
-            //         hPrice: 6100000,
-            //         rName: "福田区",
-            //         asLab: "B",
-            //         adViewSize: "118*84",
-            //         mTitle: "帝景1门",
-            //         lEnd: "Jun 13, 2018"
-            //     },
-            //     {
-            //         asID: 3,
-            //         lID: 9,
-            //         cType: "高端住宅",
-            //         lStar: "Jun 6, 2018",
-            //         tradingArea: "山泉1",
-            //         adSize: "1181*841",
-            //         assetTag: "201707GZ-13161",
-            //         rID: 440304,
-            //         notPush: "美容",
-            //         hNum: 170,
-            //         fNum: 12,
-            //         resName: "帝景山庄",
-            //         chDay: "2013",
-            //         hPrice: 6100000,
-            //         rName: "宝安区",
-            //         asLab: "B",
-            //         adViewSize: "118*84",
-            //         mTitle: "帝景1门",
-            //         lEnd: "Jun 13, 2018"
-            //     }
-            // ];
-            // let upimginfo = [
-            //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 274,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pUTime: "2018-06-09 18:31:14.0",
-            //         ptID: 5,
-            //         ptP: "7",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 283,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pUTime: "2018-06-09 18:55:26.0",
-            //         ptID: 5,
-            //         ptP: "7",
-            //         puID: 3
-            //     }
-            // ];
-            // let downimginfo = [
-            //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 274,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pType: "XK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/83d326c78d3647debba869c966c186fa.png",
-            //         pUTime: "2018-06-09 18:31:14.0",
-            //         ptID: 5,
-            //         ptP: "7",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt: "广州市-越秀区-帝景山庄-帝景3门3-A",
-            //         pID: 283,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pType: "XK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/076785993d7e4189a69d27e023c1584e.png",
-            //         pUTime: "2018-06-09 18:55:26.0",
-            //         ptID: 5,
-            //         ptP: "7",
-            //         puID: 3
-            //     }
-            // ];
-
-            // // 物料信息
-            // this.materialInfo = this.getMaterialInfo(testInfo);
-            // console.log("materialInfo", this.materialInfo);
-            // // 城市筛选过滤
-            // // this.filterCityData = filterFormat(testInfo, 'city');
-            // this.filterCityData = filterFormat(testInfo, "city", "rID");
-            // console.log("filtercitydata", this.filterCityData);
-            // this.filtersArea = filterFormat(testInfo, "rName");
-            // this.filtersData = filterFormat(testInfo, "timeRange");
-            // this.allResource = filterFormat(testInfo, "resName");
-            // // 选点排期
-            // for (let data of testInfo) {
-            //     // 城市中文名称
-            //     data.city = areaToText.toTextCity(data.rID);
-            //     let time =
-            //         this.formatTime(data.lStar) +
-            //         "-" +
-            //         this.formatTime(data.lEnd);
-            //     data.timeRange = time;
-            // }
-            // // 选点排期
-            // this.setpointArr = testInfo;
-            // this.currentSetpoint = this.setpointArr;
-
-            // // 初始图片
-            // this.upLoadImg = upimginfo;
-            // this.downImg = downimginfo;
-            // // 上刊数据(组合图片)
-            // testInfo = this.constructImg(testInfo, this.upLoadImg, "SK");
-            // this.upReportArr = testInfo;
-            // this.currUpReportArr = JSON.parse(JSON.stringify(this.upReportArr));
-
-            // this.changeUpPage(1);
-            // console.log("upimginfo", this.upReportArr);
-            // // 下刊数据(组合图片)
-            // testInfo = this.constructImg(testInfo, this.downImg, "XK");
-            // this.downReportArr = testInfo;
-            // this.currDownReportArr = JSON.parse(
-            //     JSON.stringify(this.downReportArr)
-            // );
-            // this.changeDownPage(1);
-            // console.log("downimginfo", this.downReportArr);
-            // // 区域二级联动
-            // this.citys = this.getCitys(testInfo);
-            // this.citys.unshift({
-            //     value: "全部",
-            //     label: "全部"
-            // });
-
             if (this.setpointArr.length) {
                 return;
             }
@@ -1513,14 +1306,15 @@ export default {
                         this.copyAsidArr = JSON.parse(JSON.stringify(result));
                         this.setpointArr = result;
                         this.currentSetpoint = this.setpointArr;
-                        // 物料信息
-                        this.materialInfo = this.getMaterialInfo(result);
-                        console.log("materialInfo", this.materialInfo);
+                        // // 物料信息
+                        // this.materialInfo = this.getMaterialInfo(result);
+                        // console.log("materialInfo", this.materialInfo);
                         // 城市筛选过滤
                         this.filterCityData = filterFormat(result, "city");
                         this.filtersArea = filterFormat(result, "rName");
                         this.filtersData = filterFormat(result, "timeRange");
                         this.allResource = filterFormat(result, "resName");
+                        this.loading = false;
                     } else {
                         // Message.warning(res.data.MSG);
                         Message.warning("登录超时,请重新登录");
@@ -1528,6 +1322,7 @@ export default {
                     }
                 })
                 .catch(res => {
+                    this.loading = false;
                     console.log(res);
                 });
         },
@@ -1542,6 +1337,7 @@ export default {
                 ptype: "SK",
                 ptp: sessionStorage.getItem("order_apid")
             };
+
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
@@ -1569,12 +1365,14 @@ export default {
                             value: "全部",
                             label: "全部"
                         });
+                        this.UpReportLoading = false;
                     } else {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     }
                 })
                 .catch(res => {
+                    this.UpReportLoading = false;
                     console.log(res);
                 });
         },
@@ -1611,17 +1409,22 @@ export default {
                             value: "全部",
                             label: "全部"
                         });
+                        this.DownReportLoading = false;
                     } else {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     }
                 })
                 .catch(res => {
+                    this.DownReportLoading = false;
                     console.log(res);
                 });
         },
         // 组装成物料信息数据
         getMaterialInfo(info) {
+            if (this.materialInfo.length) {
+                return;
+            }
             let result = [];
             for (let data of info) {
                 let door = 1;
@@ -1658,6 +1461,7 @@ export default {
                 res.photoFormat = "JPG/TIF/AI/PSD/CDR";
             }
             console.log("reuslt222-------", result);
+            this.materialInfo = result;
             return result;
         },
         // 区域二级联动
@@ -1834,7 +1638,8 @@ export default {
                                         pdSendFee: price.pdSendFee / 100,
                                         // 其他费用
                                         pdOtherFee: price.pdOtherFee / 100,
-                                        allprice: 0
+                                        allprice: 0,
+                                        pdRemark: price.pdRemark
                                     };
                                     obj.allprice =
                                         (price.pdTotal +
@@ -1871,19 +1676,27 @@ export default {
                                         if (ad.rID == ta.rID) {
                                             ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
                                             let onedayPrice = ta.adPrice / 7;
-                                            ta.discount =
+                                            let discount =
                                                 Math.round(
                                                     ta.pdAdFee /
                                                         (onedayPrice *
                                                             ta.pdDays) *
                                                         10000
-                                                ) / 100; // 广告费折扣百分比
-                                            ta.ADMakeDiscount =
+                                                ) / 100;
+                                            let ADMakeDiscount =
                                                 Math.round(
                                                     ta.pdAdMake /
                                                         (100 * ta.pdNum) *
                                                         10000
-                                                ) / 100; // 制作费折扣百分比
+                                                ) / 100;
+                                            ta.discount = isNaN(discount)
+                                                ? 0
+                                                : discount; // 广告费折扣百分比
+                                            ta.ADMakeDiscount = isNaN(
+                                                ADMakeDiscount
+                                            )
+                                                ? 0
+                                                : ADMakeDiscount; // 制作费折扣百分比
                                             break;
                                         }
                                     }
@@ -1897,7 +1710,7 @@ export default {
                                     arr,
                                     asidRes
                                 );
-                                this.loading = false;
+                                // this.loading = false;
                             } else {
                                 // Message.warning(res.data.MSG);
                                 Message.warning("登录超时,请重新登录");
@@ -1905,6 +1718,7 @@ export default {
                             }
                         })
                         .catch(res => {
+                            // this.loading = false;
                             console.log(res);
                         });
                 })
@@ -2236,9 +2050,9 @@ export default {
         },
         // 点击上传图片按钮之时进行储存所需数据(asid, ptp等)
         saveId(row, order) {
-            this.imgOrder = order;
-            console.log("row", row);
+            console.log("row------, order----", row, order);
             this.upLoadData.ptid = row.asID;
+            this.imgOrder = order;
             let username = JSON.parse(sessionStorage.getItem("session_data"))
                 .realName;
             let alt = {
@@ -2315,6 +2129,9 @@ export default {
                         }
                         this.upReportArr.push();
                         // this.changeUpPage(this.currUpPage);
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -2361,6 +2178,9 @@ export default {
                         }
                         this.downReportArr.push();
                         // this.changeUpPage(this.currDownPage);
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
@@ -2424,6 +2244,9 @@ export default {
                                 }
                             }
                         }
+                    } else {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
                     }
                 })
                 .catch(res => {
