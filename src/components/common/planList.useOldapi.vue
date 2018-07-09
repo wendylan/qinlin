@@ -100,6 +100,8 @@
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item @click.native.prevent="preload(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">预锁
                                         </el-dropdown-item>
+                                        <!-- <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)||(!scope.row.canSend)">发布
+                                        </el-dropdown-item> -->
                                         <el-dropdown-item @click.native.prevent="release(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">发布
                                         </el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="clearLock(scope.row)" :disabled="isDisable||(scope.row.apState!=1)">解除预锁
@@ -311,7 +313,7 @@ export default {
                 { text: "进行中", value: 1 },
                 { text: "未投放", value: 2 },
                 { text: "投放中", value: 3 },
-                { text: "强制结束", value: 5 }
+                { text: "强行结束", value: 5 }
             ];
             for (let data of state) {
                 if (val == data.value) {
@@ -561,15 +563,16 @@ export default {
                                                                 sumNotLock >=
                                                                 cityContent.length
                                                             ) {
-                                                                // this.Ctrlloading = Loading.service(
-                                                                //     {
-                                                                //         text: "请耐心等待...",
-                                                                //         spinner:
-                                                                //             "el-icon-loading",
-                                                                //         background:
-                                                                //             "rgba(0, 0, 0, 0.7)"
-                                                                //     }
-                                                                // );
+                                                                this.Ctrlloading = Loading.service(
+                                                                    {
+                                                                        text:
+                                                                            "请耐心等待...",
+                                                                        spinner:
+                                                                            "el-icon-loading",
+                                                                        background:
+                                                                            "rgba(0, 0, 0, 0.7)"
+                                                                    }
+                                                                );
                                                                 // 保存合同编号
                                                                 this.saveContractNo(
                                                                     QCinfo
@@ -667,47 +670,6 @@ export default {
                     console.log(res);
                 });
         },
-        // 发布方案(优化后的接口)
-        releaseFangan(info) {
-            info.act = "R";
-            api
-                .postApi("/SetFangan", info)
-                .then(res => {
-                    console.log(res.data);
-                    if (res.data.SysCode == 300200) {
-                        this.Ctrlloading.close();
-                        Message.success(res.data.MSG);
-                        for (let data of this.planList) {
-                            if (data.apID == this.Info.apid) {
-                                this.$set(data, "apState", 2);
-                                break;
-                            }
-                        }
-                    } else if (res.data.length) {
-                        // 存在点位被占，是否立即去方案详情修改？
-                        MessageBox.confirm(
-                            `存在点位被占，是否修改方案？`,
-                            "提示",
-                            {
-                                confirmButtonText: "确定",
-                                cancelButtonText: "取消",
-                                type: "warning"
-                            }
-                        )
-                            .then(() => {
-                                this.ToEdit(this.Info.apid);
-                                this.Ctrlloading.close();
-                            })
-                            .catch(() => {
-                                Message.info("已取消操作");
-                                this.Ctrlloading.close();
-                            });
-                    }
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
         // 发布需要请求的数据组合
         getDataOfSetPrice(info, act, citySelect = []) {
             // 获取pdid
@@ -733,10 +695,9 @@ export default {
                                 if (arr.length) {
                                     this.ctrlFangan(arr, act);
                                 } else {
-                                    Message.warning("没有符合的数据进行发布");
+                                    Message.warning("没有符合的数据进行预锁");
                                 }
                             } else {
-                                // 筛选所选城市的数据
                                 let result = [];
                                 for (let arrData of arr) {
                                     for (let city of citySelect) {
@@ -753,7 +714,7 @@ export default {
                                 }
                                 console.log("resulttelajt", result);
                                 if (result.length) {
-                                    this.ctrlFangan(result, act, citySelect);
+                                    this.ctrlFangan(result, act);
                                 } else {
                                     Message.warning("没有符合的数据进行预锁");
                                 }
@@ -848,7 +809,7 @@ export default {
             return result;
         },
         // 循环发布、预锁
-        ctrlFangan(arr, act, citySelect = []) {
+        ctrlFangan(arr, act) {
             console.log("----------arr-------------", arr);
             // uid         int【必填】         当前账户UserID
             // ds          String【必填】      广告开始投放日期
@@ -885,42 +846,35 @@ export default {
                         // de          String【必填】      广告投放结束日期
                         // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
                         // 发布接口
-                        if (act == "R") {
-                            this.releaseFangan(this.Info);
-                        } else {
-                            this.SetLock(citySelect);
+                        for (let i = 0; i < arr.length; i++) {
+                            api
+                                .postApi("/CtrlFangan", arr[i])
+                                .then(res => {
+                                    console.log(res.data);
+                                    Message.success(res.data.MSG);
+                                    if (act == "R") {
+                                        if (i >= arr.length - 1) {
+                                            for (let data of this.planList) {
+                                                if (
+                                                    data.apID == this.Info.apid
+                                                ) {
+                                                    this.$set(
+                                                        data,
+                                                        "apState",
+                                                        2
+                                                    );
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    this.Ctrlloading.close();
+                                })
+                                .catch(res => {
+                                    console.log(res);
+                                    this.Ctrlloading.close();
+                                });
                         }
-                        // for (let i = 0; i < arr.length; i++) {
-                        //     api
-                        //         .postApi("/CtrlFangan", arr[i])
-                        //         .then(res => {
-                        //             console.log(res.data);
-                        //             Message.success(res.data.MSG);
-                        //             if (act == "R") {
-                        //                 if (i >= arr.length - 1) {
-                        //                     for (let data of this
-                        //                         .planList) {
-                        //                         if (
-                        //                             data.apID ==
-                        //                             this.Info.apid
-                        //                         ) {
-                        //                             this.$set(
-                        //                                 data,
-                        //                                 "apState",
-                        //                                 2
-                        //                             );
-                        //                             break;
-                        //                         }
-                        //                     }
-                        //                 }
-                        //             }
-                        //             this.Ctrlloading.close();
-                        //         })
-                        //         .catch(res => {
-                        //             console.log(res);
-                        //             this.Ctrlloading.close();
-                        //         });
-                        // }
                     } else {
                         if (i >= arr.length - 1) {
                             if (holdSum) {
@@ -1182,9 +1136,7 @@ export default {
                         }
                     }
                 }
-                // 原来接口
                 this.getDataOfSetPrice(this.Info, "L", arr);
-                // this.SetLock(arr);
                 console.log("test", arr);
             } else {
                 let pdidArr = [];
@@ -1198,36 +1150,6 @@ export default {
                 this.delLock(pdidArr);
             }
             this.dialogVisible = false;
-        },
-        // 预锁
-        SetLock(arr) {
-            for (let data of arr) {
-                let info = {
-                    uid: this.Info.uid,
-                    act: "L",
-                    pdid: data.pdID
-                };
-                // uid         int【必填】         当前账户UserID
-                // act         String【必填】      事务类型：L锁点；R发布；E强制停止；
-                // apid        int【二选一】            选择方案投放apID
-                // pdid        int【二选一】            选择方案投放pdID(该参数多用于锁点)
-                api
-                    .postApi("/SetFangan", info)
-                    .then(res => {
-                        console.log(res.data);
-                        if (res.data.SysCode == 300200) {
-                            this.Ctrlloading.close();
-                            Message.success(res.data.MSG);
-                        } else {
-                            this.Ctrlloading.close();
-                            Message.warning(res.data.MSG);
-                        }
-                    })
-                    .catch(res => {
-                        console.log(res);
-                        this.Ctrlloading.close();
-                    });
-            }
         }
     }
 };
@@ -1662,10 +1584,6 @@ a {
 
     /deep/ .el-table__row td:nth-child(4) .cell span {
         width: 135px;
-    }
-
-    /deep/ .el-table__row td:nth-child(1) .cell a {
-        width: 250px;
     }
 }
 

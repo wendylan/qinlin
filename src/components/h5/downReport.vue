@@ -108,7 +108,7 @@
                                 <div>
                                     <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
                                         <el-carousel :autoplay="false" trigger="click">
-                                            <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index" >
+                                            <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index">
                                                 <img :src="item.url" alt="">
                                                 <!--缩略图-->
                                                 <div class="mask-btn" v-if="showPreImg == downIndex ">
@@ -324,7 +324,11 @@ export default {
             let arr = this.downReportArr;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currDownReportArr = [];
@@ -338,7 +342,11 @@ export default {
             let arr = this.imgInfo;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currImgInfo = [];
@@ -410,10 +418,10 @@ export default {
                             .catch(res => {
                                 console.log(res);
                             });
-                    } else if(res.data.SysCode ==100302){
-                        Message.warning('登录超时,请重新登录');
-                        this.$router.push('/login');
-                    }else{
+                    } else if (res.data.SysCode == 100302) {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
                         Message.warning(res.data.MSG);
                     }
                 })
@@ -465,7 +473,9 @@ export default {
                                 // 下刊数据(组合图片)
                                 resArr = this.constructImg(resArr, downImginfo);
                                 this.downReportArr = resArr;
-                                this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                                this.currDownReportArr = JSON.parse(
+                                    JSON.stringify(this.downReportArr)
+                                );
                                 this.changeUpPage(1);
                                 console.log("downimginfo", this.downReportArr);
                                 // 下刊数据(组合图片按图片分)
@@ -473,17 +483,22 @@ export default {
                                     resArr,
                                     downImginfo
                                 );
-                                this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                this.currImgInfo = JSON.parse(
+                                    JSON.stringify(this.imgInfo)
+                                );
                                 this.changeDownPage(1);
-                                console.log('downImgInfo--------', this.imgInfo);
+                                console.log(
+                                    "downImgInfo--------",
+                                    this.imgInfo
+                                );
                             })
                             .catch(res => {
                                 console.log(res);
                             });
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning('登录超时,请重新登录');
-                        this.$router.push('/login');
-                    }else{
+                    } else if (res.data.SysCode == 100302) {
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
                         Message.warning(res.data.MSG);
                     }
                 })
@@ -996,8 +1011,8 @@ export default {
 /deep/ .el-carousel__indicators {
     /*bottom: 28px;*/
 }
-/deep/ .el-carousel__button{
-  background-color: #666;
+/deep/ .el-carousel__button {
+    background-color: #666;
 }
 
 /*发布情况*/

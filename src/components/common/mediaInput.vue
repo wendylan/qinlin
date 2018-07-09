@@ -70,43 +70,27 @@
 							</el-form-item>
 							<el-form-item :label="rt_village?'入住年份:':'建成年份:'" prop="liveTime">
 								<!-- v-model="recForm.liveTime"-->
-								<!-- <el-date-picker
-                   v-model="liveTime"
-                   type="date"
-                   @change="getTime"
-                   format="yyyy 年 MM 月 dd 日"
-                   value-format="yyyy-MM-dd"
-                   placeholder="选择日期时间">
-                 </el-date-picker>-->
 								<el-date-picker v-model="recForm.liveTime" type="year" @change="getTime" value-format="yyyy" format="yyyy 年" :editable="false" placeholder="选择年">
 								</el-date-picker>
-								<!--<el-input  v-model="recForm.liveTime" placeholder="请输入年份"></el-input>-->
 							</el-form-item>
-							<el-form-item label="经纬度:" prop="lng" class="lngNlat">
-								<el-input v-model.number.trim="recForm.lng" placeholder="经度"></el-input>
+							<el-form-item label="经纬度:" prop="lat" class="lngNlat">
+								<el-input v-model.number.trim="recForm.lat" placeholder="经度"></el-input>
 							</el-form-item>
-							<el-form-item prop="lat" class="lngNlat RlngNlat">
-								<el-input v-model.number.trim="recForm.lat" placeholder="纬度"></el-input>
+							<el-form-item prop="lng" class="lngNlat RlngNlat">
+								<el-input v-model.number.trim="recForm.lng" placeholder="纬度"></el-input>
 							</el-form-item>
-							<el-form-item label="物业公司:" prop="pmc">
-								<el-input v-model="recForm.pmc" placeholder="物业公司"></el-input>
+							<el-form-item label="所属物业:" prop="pmc">
+								<el-input v-model="recForm.pmc" placeholder="所属物业"></el-input>
 							</el-form-item>
 							<el-form-item label="小区全貌:" prop="mImg">
 								<div class="upload_img_wrap" style="width: 120px;">
 									<!--:auto-upload = 'false'-->
-									<el-upload :action="doUpload" list-type="picture-card" :file-list="updata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemoveR">
+									<el-upload :action="doUpload" list-type="picture-card" :file-list="resUpdata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview_res" :on-remove="handleRemoveR">
 										<i class="el-icon-plus"></i>
 									</el-upload>
-									<!-- <el-upload
-                     action="doUpload"
-                     list-type="picture-card"
-                     :limit = '1'
-                     :auto-upload = 'false'
-                     :on-change="recUploadChange"
-                     :on-preview="handlePictureCardPreview"
-                     :on-remove="handleRemove">
-                     <i class="el-icon-plus"></i>
-                   </el-upload>-->
+									<el-dialog :visible.sync="resImgDialog">
+										<img width="100%" :src="resImgUrl" alt="">
+									</el-dialog>
 								</div>
 							</el-form-item>
 						</el-form>
@@ -141,7 +125,7 @@
 									<el-option label="待维修" :value="'3' + key"></el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item label="资产编号:" prop="assetId" :rules="item.mediaForm.assetIdBolean ? assetIdRules: mediaRules.assetId">
+							<el-form-item label="资产编号:" prop="assetId" ref="ResAssetId" :rules="item.mediaForm.assetIdBolean ? assetIdRules: mediaRules.assetId">
 								<el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21" :disabled="item.mediaForm.assetIdBolean"></el-input>
 							</el-form-item>
 							<el-form-item label=" 媒体类型:" prop="doorType">
@@ -190,7 +174,6 @@
 							</el-form-item>
 							<el-form-item label="门禁照片:" prop="mImg">
 								<div class="upload_img_wrap" style="width: 120px;">
-									<!--:auto-upload='false'-->
 									<el-upload :action="doUpload" list-type="picture-card" :limit='1' :file-list="updataMedia" :on-success="mediaUploadSuccess" :on-change="mediaUploadChange" :on-preview="handlePictureCardPreview">
 										<i class="el-icon-plus" @click="saveImgInfo(item.text)"></i>
 									</el-upload>
@@ -463,7 +446,7 @@ export default {
                 liveTime: [
                     // {type: 'number', min: 1970, max: 2018,message: '只能输入数字(1970-2018)', trigger: 'blur'},
                 ],
-                lng: [
+                lat: [
                     {
                         required: true,
                         message: "经度不能为空",
@@ -478,7 +461,7 @@ export default {
                     }
                     // {min:0, max:180,message: '经度范围0-180', trigger: 'blur'}
                 ],
-                lat: [
+                lng: [
                     {
                         required: true,
                         message: "纬度不能为空",
@@ -548,7 +531,7 @@ export default {
                     {
                         required: true,
                         message: "资产编号不能为空",
-                        trigger: "change"
+                        trigger: "blur"
                     },
                     { validator: validateAssetId, trigger: "blur" },
                     {
@@ -683,7 +666,7 @@ export default {
                 ptp: "" // 关联类型区分属性
             },
             liveTime: "", // 资源时间
-            doUpload: "/api" + "/UpLoad",
+            doUpload: "/QADN/UpLoad", //'/api'+ '/UpLoad',
             upLoadData: {
                 // 上传图片附带参数
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
@@ -693,23 +676,26 @@ export default {
                 ptid: "", // 关联类型对应唯一ID
                 ptp: "" // 关联类型区分属性
             },
-            updata: [], // 上传图片的数据
+            resUpdata: [], // 编辑资源时显示已有图片
             updataMedia: [],
             editMediaLength: 0, // 编辑资源媒体时记录下原媒体的个数
-            sessionData: "", // session数据
             mediaIndex: 0, // 当选择广告限制是记录下媒体的下标
             Editloading: true, // 提交时的loading
             sessionData: "", // session中登录的数据
             throwCity: "", // 用户权限不为全国时，根据uWho确定可选城市
             uWho_throwCity: "", // 用户权限不为全国时
-            cityOther: true // 默认显示全国省份城市
+            cityOther: true, // 默认显示全国省份城市
+            beforeResPID: "", // 编辑资源前资源图片的pid
+            resImgDialog: false, // 资源图片，大图
+            resImgUrl: "" // 上传成功后的url地址，用于显示大图
         };
     },
     mounted: function() {
         //  uWho: "440100,440300,110100"
-        /*     let userMsg = {uID: 12, realName: "销售", division: "销售", rID: 0, uType: "BD", uWho: "440100,440300,110100",
+        /*  let userMsg = {uID: 12, realName: "销售", division: "销售", rID: 0, uType: "BD", uWho: "440100,440300,110100",
                       puID: 0,token:"4FFBADA18815465B42ECBBF89833CE3F"}
       sessionStorage.setItem("session_data", JSON.stringify(userMsg));*/
+        this.resUpdata = [];
         this.ShowRegion();
         this.editFun(); // 编辑方法
         this.getADLimit(); // 获取广告限制列表
@@ -976,6 +962,7 @@ export default {
                     }
                 }
             }
+            this.$refs["ResAssetId"][0].clearValidate(); // 清除资产编号的验证
         },
         //添加资源媒体
         createRec() {
@@ -993,9 +980,9 @@ export default {
             this.recForm.uid = sessionData.uID;
             let uWho = sessionData.uWho;
 
-            this.recForm.latLng = this.recForm.lat + ";" + this.recForm.lng;
-            delete this.recForm.lat;
-            delete this.recForm.lng;
+            this.recForm.latlng = this.recForm.lat + ";" + this.recForm.lng;
+            // delete this.recForm.lat
+            // delete this.recForm.lng
             console.log("this.recForm", this.recForm);
             for (let i = 0; i < this.arrMedia.length; i++) {
                 console.log("arrMedia", i, this.arrMedia[i].mediaForm);
@@ -1007,7 +994,7 @@ export default {
                 rt: this.recForm.rt, // 资源类型
                 resname: this.recForm.resname, // 资源名称
                 resaddr: this.recForm.resaddr,
-                //    latLng: this.recForm.latLng,
+                latlng: this.recForm.latlng, // 经纬度 重庆:9.61;106.47  北京:116.46;39.92 广州: 113.27;23.13  上海:121.29;31.11 深圳:113.46;22.27
                 ct: this.recForm.buildingType, //楼盘类型
                 cd: this.recForm.liveTime, // 入住时间 '2017'
                 hp: this.recForm.buildingPrice * 100, // 楼盘价格
@@ -1051,7 +1038,7 @@ export default {
                         ) {
                             if (!recData.SysCode) {
                                 // 设置资源图片信息
-                                this.upLoadData.ptid = recData.resID;
+                                this.upLoadData.ptid = recData.resID; // 资源图片的ptid就是资源的id
                                 this.upLoadData.palt =
                                     this.recForm.resname + "-" + recData.rID;
                                 this.setImg();
@@ -1086,24 +1073,6 @@ export default {
                                     /*        let mediaImg = arr_media.mImg
                           mediaImg.palt = arr_media.mediaName + '门禁'*/
                                     console.log("mediaObj", mediaObj);
-                                    /*arrMedia: [
-                 { text: '媒体一' ,
-                   mediaForm:{
-                     mediaType: '',   //媒介载体mvc
-                     mediaName: '',  //媒体名称mtitle
-                     usableNum: '1',   //广告位面数pnum
-                     mstate: '',  //媒体状态
-                     assetId: '',      //资产编号assettag
-                     doorType: '',     // 媒介类型
-                     adSizeW: '',      //广告尺寸adsize
-                     adSizeH: '',     //广告尺寸
-                     visualW: '',      //可视画面adviewsize
-                     visualH: '',      //可视画面
-                     mediaRemark: '',  //备注 mrk
-                     adLimit: ''     //请选择广告限制 notpush
-                   },
-                 },
-               ],*/
                                     this.createMedia(mediaObj, j);
                                 }
                             } else {
@@ -1159,6 +1128,7 @@ export default {
                         })
                             .then(() => {
                                 this.resetForm(); // 请求成功后重置表单
+                                this.resUpdata = [];
                             })
                             .catch(() => {
                                 this.$router.push("./mediaList");
@@ -1172,15 +1142,37 @@ export default {
         /*  submitUpload() {
         this.$refs.upload.submit();
       },*/
+        // 删除原资源图片，进行重新选择
         handleRemoveR(file, fileList) {
-            console.log(file, fileList);
+            console.log("删除或修改了资源图片", file, fileList);
+            let imgInfo = {
+                uid: this.sessionData.uID,
+                pid: this.upLoadData.pid,
+                ptype: "del"
+            };
+            api
+                .postApi("/SetImg", imgInfo)
+                .then(res => {
+                    console.log("把上次上传的图片ptype修改为del", res.data);
+                    this.upLoadData.pid = "";
+                    // Message.success(res.data.MSG);
+                })
+                .catch(err => {
+                    console.log("error", err);
+                });
+            // this.upLoadData.pid = ''
         },
         handlePreview(file) {
             console.log(file);
         },
-        handlePictureCardPreview(file) {
+        //资源图片
+        handlePictureCardPreview_res(file) {
             console.log(file);
+            this.resImgUrl = file.url;
+            this.resImgDialog = true;
         },
+        //媒体图片
+        handlePictureCardPreview() {},
         mediaUploadChange() {},
         handleDownSuccess(res) {
             console.log("上传资源图片", res);
@@ -1192,7 +1184,7 @@ export default {
             console.log("上传图片的信息", this.upLoadData);
             console.log("mediaImg", mediaImg);
             let info = [];
-            if (mediaImg == undefined) {
+            if (mediaImg == undefined || mediaImg == null) {
                 console.log("上传资源图片的信息", this.upLoadData);
                 info = this.upLoadData;
             } else {
@@ -1206,15 +1198,19 @@ export default {
                 info.pid !== undefined
             ) {
                 console.log("info.pid", info.pid);
-                api
-                    .postApi("/SetImg", info)
-                    .then(res => {
-                        console.log(res.data);
-                        // Message.success(res.data.MSG);
-                    })
-                    .catch(res => {
-                        console.log(res);
-                    });
+                if (info.pid !== this.beforeResPID) {
+                    api
+                        .postApi("/SetImg", info)
+                        .then(res => {
+                            console.log(res.data);
+                            // Message.success(res.data.MSG);
+                        })
+                        .catch(res => {
+                            console.log(res);
+                        });
+                } else {
+                    console.log("资源图片为修改！");
+                }
             }
         },
         // 设置媒体图片信息
@@ -1234,59 +1230,6 @@ export default {
             }
             console.log("媒体信息", this.arrMedia);
         },
-        /*//缩略图
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        console.log(this.dialogImageUrl)
-        this.dialogVisible = true;
-      },
-
-      //recUploadChange\mediaUploadChange图片文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
-      recUploadChange(file) {
-        const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
-        const isLt1M = file.size / 1024 / 1024 < 1;
-
-        if (!isIMAGE) {
-          this.$message.error('只能上传jpg/png图片!');
-          return false;
-        }
-        if (!isLt1M) {
-          this.$message.error('上传文件大小不能超过 1MB!');
-          return false;
-        }
-        /!*  let that = this
-          let reader = new FileReader();
-          reader.readAsDataURL(file.raw);
-          reader.onload = function(e){
-            console.log(this.result)//图片的base64数据
-            console.log(that.recFormImg)
-          }*!/
-      },
-      mediaUploadChange(file) {
-        const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png');
-        const isLt1M = file.size / 1024 / 1024 < 1;
-
-        if (!isIMAGE) {
-          this.$message.error('只能上传jpg/png图片!');
-          return false;
-        }
-        if (!isLt1M) {
-          this.$message.error('上传文件大小不能超过 1MB!');
-          return false;
-        }
-        this.arrMedia[0].mediaForm.mImg = file.raw
-        /!*  let that = this
-          let reader = new FileReader();
-          reader.readAsDataURL(file.raw);
-          reader.onload = function(e){
-            console.log(this.result)//图片的base64数据
-            console.log(that.mediaFormImg)
-          }*!/
-      },*/
-
         // 表单验证
         submitForm(r_item, m_item) {
             let r_boolean = false;
@@ -1381,6 +1324,7 @@ export default {
                     tempObj.business = recObj.tradingArea;
                     tempObj.resaddr = recObj.resAddress;
                     tempObj.buildingType = recObj.houseType;
+                    //    tempObj.latLng = recObj.latLng              // 无字段
                     tempObj.doorwayNum = recObj.EntryExitNum;
                     tempObj.buildingNum = recObj.buildingNum;
                     tempObj.households = recObj.HouseNum;
@@ -1395,10 +1339,10 @@ export default {
                         recObj.latLng != "" &&
                         recObj.latLng != undefined
                     ) {
-                        tempObj.lat = Number(recObj.latLng.split(";")[0]);
-                        tempObj.lng = Number(recObj.latLng.split(";")[1]);
+                        tempObj.lat = Number(recObj.latLng.split(";")[0]); // 经度
+                        tempObj.lng = Number(recObj.latLng.split(";")[1]); // 纬度
                     } else {
-                        console.log("经纬度！！");
+                        console.log("暂无经纬度！！");
                     }
                     if (tempObj.rt === "写字楼") {
                         this.selectRec("2");
@@ -1465,11 +1409,36 @@ export default {
                     this.$router.push("./mediaInput");
                     this.PathHaveEdit = false;
                 }
+                this.constructResImg(); //组装要显示的资源图片
             } else {
                 this.PathHaveEdit = false;
                 sessionStorage.removeItem("recDetail");
                 sessionStorage.removeItem("mediaList");
             }
+            //resUpdata
+        },
+        constructResImg() {
+            let resID = sessionStorage.getItem("resID");
+            let uid = this.sessionData.uID;
+            api
+                .getApi("/GetImg", { uid: uid, ptype: "restype", ptid: resID })
+                .then(res => {
+                    console.log("资源图片的信息", res);
+                    if (res.data.length === 0) {
+                        console.log("暂时没有该资源的图片");
+                    } else {
+                        let resImg = {
+                            name: res.data[0].pAlt,
+                            url: res.data[0].pURL
+                        };
+                        this.resUpdata.push(resImg);
+                        this.upLoadData.pid = res.data[0].pID;
+                        this.beforeResPID = res.data[0].pID;
+                    }
+                })
+                .catch(err => {
+                    console.log("error", err);
+                });
         },
         postEditMsg() {
             // 修改资源
@@ -1494,6 +1463,7 @@ export default {
             let rID = sessionStorage.getItem("resID");
             //    this.recForm.latLng = this.recForm.lat + ';' + this.recForm.lng
             let recObj = this.recForm;
+            console.log("recObj", recObj);
             let SetResCTObj = {
                 uid: recObj.uid,
                 resid: rID,
@@ -1501,8 +1471,9 @@ export default {
                 ta: recObj.business,
                 resname: recObj.resname,
                 resaddr: recObj.resaddr,
-                ct: recObj.buildingType, //
-                cd: recObj.liveTime, //'2010',
+                latlng: recObj.lat + ";" + recObj.lng,
+                ct: recObj.buildingType,
+                cd: recObj.liveTime,
                 hp: recObj.buildingPrice * 100,
                 fn: recObj.buildingNum,
                 dn: recObj.doorwayNum,
@@ -1539,8 +1510,12 @@ export default {
                             res.data.SysCode === 200200 ||
                             res.data.MSG === "操作成功"
                         ) {
-                            let mediaArr = this.arrMedia; // this.arrMedia[0].mediaForm
-                            // let mediaObj = JSON.parse(sessionStorage.getItem('mediaList'))
+                            // 设置资源图片信息
+                            this.upLoadData.ptid = SetResCTObj.resid; // 资源图片的ptid就是资源的id
+                            this.upLoadData.palt =
+                                SetResCTObj.resname + "-" + SetResCTObj.rid;
+                            this.setImg();
+                            let mediaArr = this.arrMedia;
                             for (let i = 0; i < mediaArr.length; i++) {
                                 console.log(
                                     "下标",

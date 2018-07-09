@@ -688,14 +688,16 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    if(!res.data.SysCode){
+                    if (!res.data.SysCode) {
                         console.log(res.data);
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.upImgArr = result;
-                        this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                        this.currUpImgArr = JSON.parse(
+                            JSON.stringify(this.upImgArr)
+                        );
                         console.log("upimginfo", this.upImgArr);
-                    } else if(res.data.SysCode == 100302){
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     } else {
@@ -770,7 +772,7 @@ export default {
                             JSON.stringify(this.downImgArr)
                         );
                         console.log("upimginfo", this.downImgArr);
-                    } else if(res.data.SysCode == 100302){
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     } else {
@@ -819,28 +821,33 @@ export default {
             ) {
                 Message.warning("请先输入搜索条件");
             } else {
-                if(this.activeName == 'first'){
+                if (this.activeName == "first") {
                     initData = this.upImgArr;
-                }else if(this.activeName =='second'){
+                } else if (this.activeName == "second") {
                     initData = this.downImgArr;
                 }
 
-
                 // 搜索
-                console.log(this.select,this.keyword,this.LabSelect,this.date,this.citySelect);
+                console.log(
+                    this.select,
+                    this.keyword,
+                    this.LabSelect,
+                    this.date,
+                    this.citySelect
+                );
                 let arr = [];
                 let range = this.date;
                 let select = this.select;
                 let keyword = this.keyword;
                 let lab = this.LabSelect;
                 let city = this.citySelect;
-                if (range.length || keyword || lab || city.length) {
+                if (range || keyword || lab || city.length) {
                     for (let data of initData) {
                         let alt = data.pAlt;
                         if (range && keyword && lab && city.length) {
                             if (
                                 dateFormat.toDate(alt.lstart) >= range[0] &&
-                                dateFormat.toDate(alt.lend)
+                                dateFormat.toDate(alt.lend) <= range[1]
                             ) {
                                 if (
                                     select == "1" &&
@@ -870,10 +877,10 @@ export default {
                                     arr.push(data);
                                 }
                             }
-                        } else if (range.length) {
+                        } else if (range) {
                             if (
                                 dateFormat.toDate(alt.lstart) >= range[0] &&
-                                dateFormat.toDate(alt.lend)
+                                dateFormat.toDate(alt.lend) <= range[1]
                             ) {
                                 if (keyword) {
                                     if (
@@ -899,108 +906,103 @@ export default {
                                         arr.push(data);
                                     }
                                 } else if (city.length) {
-                                    if(
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if(keyword){
-                            if (
-                                select == "1" &&
-                                alt.plan.includes(keyword)
-                            ) {
+                        } else if (keyword) {
+                            if (select == "1" && alt.plan.includes(keyword)) {
                                 // arr.push(data);
-                                if(range.length){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
-                                        dateFormat.toDate(alt.lend)
-                                    ){
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend) <= range[1]
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                            if (
-                                select == "2" &&
-                                alt.media.includes(keyword)
-                            ) {
+                            if (select == "2" && alt.media.includes(keyword)) {
                                 // arr.push(data);
-                                if(range.length){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
-                                        dateFormat.toDate(alt.lend)
-                                    ){
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend) <= range[1]
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                            if (
-                                select == "3" &&
-                                alt.res.includes(keyword)
-                            ) {
+                            if (select == "3" && alt.res.includes(keyword)) {
                                 // arr.push(data);
-                                if(range.length){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
-                                        dateFormat.toDate(alt.lend)
-                                    ){
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend) <= range[1]
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if(lab){
-                            if(alt.asLab == lab){
-                                if(range.length){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
-                                        dateFormat.toDate(alt.lend)
-                                    ){
+                        } else if (lab) {
+                            if (alt.asLab == lab) {
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend) <= range[1]
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if(keyword){
+                                } else if (keyword) {
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1019,30 +1021,28 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                }else if(city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if (city.length){
-                            if(
-                                alt.city == city[0] &&
-                                alt.area == city[1]
-                            ){
-                                if(range.length){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
-                                        dateFormat.toDate(alt.lend)
-                                    ){
+                        } else if (city.length) {
+                            if (alt.city == city[0] && alt.area == city[1]) {
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
+                                        dateFormat.toDate(alt.lend) <= range[1]
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if(keyword){
+                                } else if (keyword) {
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1061,20 +1061,33 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                }else if(lab){
-                                    if(alt.asLab == lab){
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
                         }
                     }
 
-                    if(arr.length){
+                    if (arr.length) {
                         this.showPic = 3;
-                        this.currUpImgArr = arr;
+                        // 上刊
+                        if (this.activeName == "first") {
+                            this.currUpImgArr = arr;
+                        }
+                        // 下刊
+                        if (this.activeName == "second") {
+                            this.currDownImgArr = arr;
+                        }
+                        // 安装
+                        if (this.activeName == "third") {
+                        }
+                        // 巡点
+                        if (this.activeName == "fourth") {
+                        }
                     }
                     //  this.currentOrder = arr;
                     if (!arr.length) {
@@ -1085,7 +1098,7 @@ export default {
                 }
             }
         },
-        
+
         //筛选
         filterCaseType(value, row) {
             return row.tag === value;

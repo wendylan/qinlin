@@ -85,7 +85,7 @@
 								{ text: '投放中', value: 0 },
 								{ text: '已完成', value: 1 },
 								{ text: '未投放', value: 2 },
-								{ text: '强制结束', value: 3 }
+								{ text: '强制结束', value: 5 }
 							]" :filter-method="filterStatus" :filter-multiple="false">
                             <template slot-scope="scope">
                                 <span>{{ stateToText(scope.row.apState) }}</span>
@@ -95,7 +95,7 @@
                             <template slot-scope="scope">
                                 <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item @click.native.prevent="confirmBox1" class="finish">结束订单</el-dropdown-item>
+                                        <el-dropdown-item v-if="(role=='SM')" @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
                                         <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
                                         </el-dropdown-item>
                                         <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->
@@ -245,7 +245,7 @@ export default {
                             // console.log(item.cityArea);
                         }
                         this.currentOrder = this.orderList;
-                    } else if(res.data.SysCode == 100302){
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     } else {
@@ -274,7 +274,7 @@ export default {
                 { text: "投放中", value: 0 },
                 { text: "已完成", value: 1 },
                 { text: "未投放", value: 2 },
-                { text: "强制结束", value: 3 }
+                { text: "强制结束", value: 5 }
             ];
             for (let data of state) {
                 if (val == data.value) {
@@ -297,6 +297,65 @@ export default {
         // 价格加上逗号
         priceFormat(price) {
             return commaFormat.init(price);
+        },
+        // 结束订单
+        finishOrder(row) {
+            let info = {
+                uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
+                apid: row.apID,
+                act: "E"
+            };
+            // Message.warning("该功能尚未完善");
+            MessageBox.confirm(
+                "是否结束<b>" + row.apName + "</b>订单投放？",
+                "提示",
+                {
+                    confirmButtonText: "是",
+                    cancelButtonText: "否",
+                    dangerouslyUseHTMLString: true,
+                    type: "warning"
+                }
+            )
+                .then(() => {
+                    api
+                        .postApi("/SetFangan", info)
+                        .then(res => {
+                            console.log(res.data);
+                            // Message.success("操作成功");
+                            if (res.data.SysCode == 300200) {
+                                Message.success(res.data.MSG);
+                                this.$set(row, "apState", 5);
+                            } else if (res.data.SysCode == 100302) {
+                                Message.warning("登录超时,请重新登录");
+                                this.$router.push("/login");
+                            } else {
+                                Message.warning(res.data.MSG);
+                            }
+                        })
+                        .catch(res => {
+                            console.log(res);
+                        });
+                })
+                .catch(() => {
+                    Message.info("已取消操作");
+                });
+        },
+        //筛选
+        filterStatus(value, row) {
+            let sum = 0;
+            for (let data of this.orderList) {
+                if (data.apState != value) {
+                    sum++;
+                }
+            }
+            //sum和所有数据的长度相同时说明都不匹配
+            if (sum == this.orderList.length) {
+                Message.warning({
+                    message: "筛选数据为空",
+                    duration: 1500
+                });
+            }
+            return row.apState === value;
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
@@ -400,44 +459,6 @@ export default {
             //     .catch(() => {
             //         Message.info("取消输入");
             //     });
-        },
-
-        confirmBox1() {
-            Message.warning("该功能尚未完善");
-            // MessageBox.confirm(
-            //     "是否结束<b>" + this.orderList[0].orderName + "</b>订单投放？",
-            //     "提示",
-            //     {
-            //         confirmButtonText: "是",
-            //         cancelButtonText: "否",
-            //         dangerouslyUseHTMLString: true,
-            //         type: "warning"
-            //     }
-            // )
-            //     .then(() => {
-            //         //确定
-            //         Message.success("操作成功");
-            //     })
-            //     .catch(() => {
-            //         Message.info("已取消操作");
-            //     });
-        },
-        //筛选
-        filterStatus(value, row) {
-            let sum = 0;
-            for (let data of this.orderList) {
-                if (data.apState != value) {
-                    sum++;
-                }
-            }
-            //sum和所有数据的长度相同时说明都不匹配
-            if (sum == this.orderList.length) {
-                Message.warning({
-                    message: "筛选数据为空",
-                    duration: 1500
-                });
-            }
-            return row.apState === value;
         }
         //状态
     }
@@ -872,9 +893,9 @@ a {
     .mediaList_wrap .mediaList_container .table_wrap {
         width: 1284px;
     }
-  /deep/ .el-table__row td:nth-child(4) .cell span {
-    width: 100px;
-  }
+    /deep/ .el-table__row td:nth-child(4) .cell span {
+        width: 100px;
+    }
 }
 
 /*1920*/

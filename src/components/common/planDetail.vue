@@ -84,7 +84,7 @@
                                         <h4>选点排期</h4>
                                         <div class="table_wrap">
                                             <!-- <el-table border :data="setpointArr" :row-class-name="tableRowClassName" :highlight-current-row="true" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"> -->
-                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                                 <el-table-column type="expand">
                                                     <template slot-scope="props">
                                                         <el-form label-position="left" inline class="demo-table-expand">
@@ -417,10 +417,10 @@ export default {
                         this.planDetail = info;
                         // 选点排期
                         this.getSetPoint();
-                    } else if(res.data.SysCode == 100302){
+                    } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
-                    }else{
+                    } else {
                         Message.warning(res.data.MSG);
                     }
                 })
@@ -464,17 +464,22 @@ export default {
                             // 城市筛选过滤
                             this.filterCityData = filterFormat(resInfo, "city");
                             this.filtersArea = filterFormat(resInfo, "rName");
-                            this.filtersData = filterFormat(resInfo, "timeRange");
+                            this.filtersData = filterFormat(
+                                resInfo,
+                                "timeRange"
+                            );
                             // 选点排期
                             // this.checkLock(resInfo);
                             // 选点排期
-                            this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
+                            this.copyAsidArr = JSON.parse(
+                                JSON.stringify(resInfo)
+                            );
                             this.setpointArr = resInfo;
                             this.currentSetpoint = this.setpointArr;
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
-                        } else if(res.data.SysCode == 100302){
+                        } else if (res.data.SysCode == 100302) {
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
                         } else {
@@ -519,7 +524,7 @@ export default {
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
-                        } else if(res.data.SysCode == 100302){
+                        } else if (res.data.SysCode == 100302) {
                             Message.warning("登录超时,请重新登录");
                             this.$router.push("/login");
                         } else {
@@ -664,7 +669,7 @@ export default {
                                     asidRes
                                 );
                                 this.priceSheet = arr;
-                            } else if(res.data.SysCode == 100302){
+                            } else if (res.data.SysCode == 100302) {
                                 Message.warning("登录超时,请重新登录");
                                 this.$router.push("/login");
                             } else {
@@ -821,14 +826,14 @@ export default {
                     .then(res => {
                         if (!res.data.IsLock) {
                             sumNotLock++;
-                        }else{
+                        } else {
                             sumLock++;
                         }
                         if (sumNotLock >= priceSheet.length) {
                             this.$router.push("./editPlan");
                         } else {
                             if (i >= priceSheet.length - 1) {
-                                if(sumLock){
+                                if (sumLock) {
                                     MessageBox.confirm(
                                         `该方案被预锁,请先解除预锁,是否去解锁？`,
                                         "提示",
