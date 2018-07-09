@@ -82,10 +82,11 @@
                             </template>
                         </el-table-column>
                         <el-table-column class="Status" prop="apState" label="状态" min-width="5%" :filters="[
-								{ text: '投放中', value: 0 },
-								{ text: '已完成', value: 1 },
-								{ text: '未投放', value: 2 },
-								{ text: '强制结束', value: 5 }
+								{text: '已完成', value: 0},
+                                {text: '进行中', value: 1},
+                                {text: '未投放', value: 2},
+                                {text: '投放中', value: 3},
+                                {text: '强行结束', value: 5}
 							]" :filter-method="filterStatus" :filter-multiple="false">
                             <template slot-scope="scope">
                                 <span>{{ stateToText(scope.row.apState) }}</span>
@@ -271,10 +272,11 @@ export default {
         // 状态转换成文本
         stateToText(val) {
             let state = [
-                { text: "投放中", value: 0 },
-                { text: "已完成", value: 1 },
+                { text: "已完成", value: 0 },
+                { text: "进行中", value: 1 },
                 { text: "未投放", value: 2 },
-                { text: "强制结束", value: 5 }
+                { text: "投放中", value: 3 },
+                { text: "强行结束", value: 5 }
             ];
             for (let data of state) {
                 if (val == data.value) {

@@ -295,7 +295,7 @@ export default {
 
                         this.loading = false;
                         this.currentPlan = this.planList;
-                    } else if (info.SysCode == 100302) {
+                    }else if(info.SysCode ==100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     } else {
@@ -469,186 +469,149 @@ export default {
             // 真实数据
             this.Info.apid = row.apID;
             let info = this.Info;
-            api
-                .getApi("/GetAPD", info)
-                .then(res => {
-                    console.log(res.data);
-                    if (!res.data.SysCode) {
-                        let dataArr = res.data;
-                        let rIDArr = "";
-                        let uWhoArr = this.sessionData.uWho;
-                        let isRelease = false;
-                        for (let data of dataArr) {
-                            rIDArr = data.rID + "," + rIDArr;
-                        }
-                        rIDArr = rIDArr
-                            .substring(0, rIDArr.length - 1)
-                            .split(",")
-                            .sort(function(a, b) {
-                                return a - b;
-                            })
-                            .join(",");
-                        console.log("rIDArr----------", rIDArr);
-                        if (uWhoArr == "0") {
+            api.getApi('/GetAPD', info).then(res =>{
+                console.log(res.data);
+                if(!res.data.SysCode){
+                    let dataArr = res.data;
+                    let rIDArr = '';
+                    let uWhoArr = this.sessionData.uWho;
+                    let isRelease = false;
+                    for(let data of dataArr){
+                        rIDArr = data.rID + ',' + rIDArr;
+                    }
+                    rIDArr = rIDArr.substring(0, rIDArr.length-1).split(',').sort(function(a, b){
+                        return a-b;
+                    }).join(',');
+                    console.log('rIDArr----------', rIDArr);
+                    if(uWhoArr == '0'){
+                        isRelease = true;
+                    }else{
+                        // 数组排序,对uWho进行小到大排
+                        uWhoArr = uWhoArr.split(',').sort(function(a, b){
+                            return a-b;
+                        }).join(',');
+                        console.log('uWhoArr-------------', uWhoArr);
+                        if(uWhoArr.includes(rIDArr)){
+                            console.log('uWhoArr-------------', uWhoArr);
                             isRelease = true;
-                        } else {
-                            // 数组排序,对uWho进行小到大排
-                            uWhoArr = uWhoArr
-                                .split(",")
-                                .sort(function(a, b) {
-                                    return a - b;
-                                })
-                                .join(",");
-                            console.log("uWhoArr-------------", uWhoArr);
-                            if (uWhoArr.includes(rIDArr)) {
-                                console.log("uWhoArr-------------", uWhoArr);
-                                isRelease = true;
-                            }
-                            console.log("isrelease-----------", isRelease);
                         }
-                        if (isRelease) {
-                            // uid         int【必填】     当前账户UserID
-                            // apid        int             公司对应方案apID
-                            api
-                                .getApi("/GetFanganInfo", info)
-                                .then(res => {
-                                    console.log(res.data);
-                                    if (!res.data.SysCode) {
-                                        let text = res.data;
-                                        let QCinfo = this.getContractNo(
-                                            text.rID
-                                        );
-                                        console.log(QCinfo);
-                                        MessageBox.prompt("合同编号:", {
-                                            confirmButtonText: "是",
-                                            cancelButtonText: "否",
-                                            inputPattern: /^[^\u4e00-\u9fa5]{0,}$/,
-                                            inputErrorMessage:
-                                                "只能输入数字,字母,字符",
-                                            inputValue: QCinfo
-                                        })
-                                            .then(() => {
-                                                console.log(
-                                                    "rowData-----------",
-                                                    row
-                                                );
-                                                console.log(
-                                                    "row.cityarea",
-                                                    row.cityArea
-                                                );
-                                                let sumNotLock = 0;
-                                                let sumLock = 0;
-                                                let cityContent = row.cityArea;
-                                                for (
-                                                    let i = 0;
-                                                    i < cityContent.length;
-                                                    i++
-                                                ) {
-                                                    api
-                                                        .postApi("/CheckLock", {
-                                                            uid: this.Info.uid,
-                                                            pdid:
-                                                                cityContent[i]
-                                                                    .pdID
-                                                        })
-                                                        .then(res => {
-                                                            if (
-                                                                !res.data.IsLock
-                                                            ) {
-                                                                sumNotLock++;
-                                                            } else {
-                                                                sumLock++;
-                                                            }
-                                                            if (
-                                                                sumNotLock >=
-                                                                cityContent.length
-                                                            ) {
-                                                                this.Ctrlloading = Loading.service(
-                                                                    {
-                                                                        text:
-                                                                            "请耐心等待...",
-                                                                        spinner:
-                                                                            "el-icon-loading",
-                                                                        background:
-                                                                            "rgba(0, 0, 0, 0.7)"
-                                                                    }
-                                                                );
-                                                                // 保存合同编号
-                                                                this.saveContractNo(
-                                                                    QCinfo
-                                                                );
-                                                                // 组合数据并发布
-                                                                this.getDataOfSetPrice(
-                                                                    info,
-                                                                    "R"
-                                                                );
-                                                            } else {
-                                                                if (
-                                                                    i >=
-                                                                    cityContent.length -
-                                                                        1
-                                                                ) {
-                                                                    if (
-                                                                        sumLock
-                                                                    ) {
-                                                                        Message.warning(
-                                                                            "该方案被预锁,请先解除预锁"
-                                                                        );
-                                                                    }
+                        console.log('isrelease-----------', isRelease);
+                    }
+                    if(isRelease){
+                        // uid         int【必填】     当前账户UserID
+                        // apid        int             公司对应方案apID
+                        api
+                            .getApi("/GetFanganInfo", info)
+                            .then(res => {
+                                console.log(res.data);
+                                if (!res.data.SysCode) {
+                                    let text = res.data;
+                                    let QCinfo = this.getContractNo(text.rID);
+                                    console.log(QCinfo);
+                                    MessageBox.prompt("合同编号:", {
+                                        confirmButtonText: "是",
+                                        cancelButtonText: "否",
+                                        inputPattern: /^[^\u4e00-\u9fa5]{0,}$/,
+                                        inputErrorMessage: "只能输入数字,字母,字符",
+                                        inputValue: QCinfo
+                                    })
+                                        .then(() => {
+                                            console.log("rowData-----------", row);
+                                            console.log("row.cityarea", row.cityArea);
+                                            let sumNotLock = 0;
+                                            let sumLock = 0;
+                                            let cityContent = row.cityArea;
+                                            for (let i = 0; i < cityContent.length; i++) {
+                                                api
+                                                    .postApi("/CheckLock", {
+                                                        uid: this.Info.uid,
+                                                        pdid: cityContent[i].pdID
+                                                    })
+                                                    .then(res => {
+                                                        if (!res.data.IsLock) {
+                                                            sumNotLock++;
+                                                        }else{
+                                                            sumLock++;
+                                                        }
+                                                        if (
+                                                            sumNotLock >= cityContent.length
+                                                        ) {
+                                                            this.Ctrlloading = Loading.service(
+                                                                {
+                                                                    text: "请耐心等待...",
+                                                                    spinner:
+                                                                        "el-icon-loading",
+                                                                    background:
+                                                                        "rgba(0, 0, 0, 0.7)"
+                                                                }
+                                                            );
+                                                            // 保存合同编号
+                                                            this.saveContractNo(QCinfo);
+                                                            // 组合数据并发布
+                                                            this.getDataOfSetPrice(
+                                                                info,
+                                                                "R"
+                                                            );
+                                                        } else {
+                                                            if (i >= cityContent.length - 1) {
+                                                                if(sumLock){
+                                                                    Message.warning("该方案被预锁,请先解除预锁");
                                                                 }
                                                             }
-
-                                                            // if (i >= cityContent.length - 1) {
-                                                            //     if (sumLock) {
-                                                            //         Message.warning(
-                                                            //             "该方案被预锁,请先解除预锁"
-                                                            //         );
-                                                            //     } else {
-                                                            //         this.Ctrlloading = Loading.service({ text: '请耐心等待...',spinner: 'el-icon-loading',background: 'rgba(0, 0, 0, 0.7)'});
-                                                            //         // 保存合同编号
-                                                            //         this.saveContractNo(QCinfo);
-                                                            //         // 组合数据并发布
-                                                            //         this.getDataOfSetPrice(
-                                                            //             info,
-                                                            //             "R"
-                                                            //         );
-                                                            //     }
-                                                            // }
-                                                        })
-                                                        .catch(res => {
-                                                            console.log(res);
-                                                        });
-                                                }
-                                            })
-                                            .catch(() => {
-                                                Message({
-                                                    type: "info",
-                                                    message: "已取消操作"
-                                                });
+                                                        }
+            
+                                                        // if (i >= cityContent.length - 1) {
+                                                        //     if (sumLock) {
+                                                        //         Message.warning(
+                                                        //             "该方案被预锁,请先解除预锁"
+                                                        //         );
+                                                        //     } else {
+                                                        //         this.Ctrlloading = Loading.service({ text: '请耐心等待...',spinner: 'el-icon-loading',background: 'rgba(0, 0, 0, 0.7)'});
+                                                        //         // 保存合同编号
+                                                        //         this.saveContractNo(QCinfo);
+                                                        //         // 组合数据并发布
+                                                        //         this.getDataOfSetPrice(
+                                                        //             info,
+                                                        //             "R"
+                                                        //         );
+                                                        //     }
+                                                        // }
+                                                    })
+                                                    .catch(res => {
+                                                        console.log(res);
+                                                    });
+                                            }
+                                        })
+                                        .catch(() => {
+                                            Message({
+                                                type: "info",
+                                                message: "已取消操作"
                                             });
-                                    } else if (res.data.SysCode == 100302) {
-                                        Message.warning("登录超时,请重新登录");
-                                        this.$router.push("/login");
-                                    } else {
-                                        Message.warning(res.data.MSG);
-                                    }
-                                })
-                                .catch(res => {
-                                    console.log(res);
-                                });
-                        } else {
-                            Message.warning("您没有权限发布该方案");
-                        }
-                    } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
-                        Message.warning(res.data.MSG);
+                                        });
+                                } else if(res.data.SysCode == 100302){
+                                    Message.warning("登录超时,请重新登录");
+                                    this.$router.push("/login");
+                                } else {
+                                    Message.warning(res.data.MSG);
+                                }
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    }else{
+                        Message.warning('您没有权限发布该方案');
                     }
-                })
-                .catch(res => {
-                    console.log(res);
-                });
+                    
+                } else if(res.data.SysCode == 100302){
+                    Message.warning("登录超时,请重新登录");
+                    this.$router.push("/login");
+                } else {
+                    Message.warning(res.data.MSG);
+                }
+            }).catch(res=>{
+                console.log(res);
+            });
+            
         },
         // 保存合同编号
         saveContractNo(contractNo) {
@@ -661,7 +624,7 @@ export default {
                 .postApi("/SetAdPlan", info)
                 .then(res => {
                     console.log(res);
-                    if (res.data.SysCode == 100302) {
+                     if(res.data.SysCode == 100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     }
@@ -692,31 +655,27 @@ export default {
                             );
                             if (act == "R") {
                                 // 循环发布
-                                if (arr.length) {
+                                if(arr.length){
                                     this.ctrlFangan(arr, act);
-                                } else {
-                                    Message.warning("没有符合的数据进行预锁");
+                                }else{
+                                    Message.warning('没有符合的数据进行预锁');
                                 }
                             } else {
                                 let result = [];
                                 for (let arrData of arr) {
                                     for (let city of citySelect) {
-                                        let arrRID = arrData.rID
-                                            .toString()
-                                            .substring(0, 4);
-                                        let cityRID = city.value
-                                            .toString()
-                                            .substring(0, 4);
+                                        let arrRID = arrData.rID.toString().substring(0, 4);
+                                        let cityRID = city.value.toString().substring(0, 4);
                                         if (arrRID == cityRID) {
                                             result.push(arrData);
                                         }
                                     }
                                 }
                                 console.log("resulttelajt", result);
-                                if (result.length) {
+                                if(result.length){
                                     this.ctrlFangan(result, act);
-                                } else {
-                                    Message.warning("没有符合的数据进行预锁");
+                                }else{
+                                    Message.warning('没有符合的数据进行预锁');
                                 }
                             }
                         })
@@ -818,11 +777,13 @@ export default {
             let holdSum = 0;
             let holdNoSum = 0;
 
-            this.Ctrlloading = Loading.service({
-                text: "请耐心等待...",
-                spinner: "el-icon-loading",
-                background: "rgba(0, 0, 0, 0.7)"
-            });
+            this.Ctrlloading = Loading.service(
+                {
+                    text: "请耐心等待...",
+                    spinner: "el-icon-loading",
+                    background: "rgba(0, 0, 0, 0.7)"
+                }
+            );
             for (let i = 0; i < arr.length; i++) {
                 let obj = {
                     uid: arr[i].uid,
@@ -834,11 +795,11 @@ export default {
                     console.log("CheckPD-----------", res.data);
                     if (res.data.length) {
                         holdSum++;
-                    } else {
+                    }else{
                         holdNoSum++;
                     }
 
-                    if (holdNoSum >= arr.length) {
+                    if(holdNoSum >= arr.length){
                         // uid         int【必填】         当前账户UserID
                         // act         String【必填】      事务类型：L锁点；R发布
                         // pdid        int【必填】         选择方案投放pdID
@@ -854,9 +815,11 @@ export default {
                                     Message.success(res.data.MSG);
                                     if (act == "R") {
                                         if (i >= arr.length - 1) {
-                                            for (let data of this.planList) {
+                                            for (let data of this
+                                                .planList) {
                                                 if (
-                                                    data.apID == this.Info.apid
+                                                    data.apID ==
+                                                    this.Info.apid
                                                 ) {
                                                     this.$set(
                                                         data,
@@ -875,7 +838,7 @@ export default {
                                     this.Ctrlloading.close();
                                 });
                         }
-                    } else {
+                    }else{
                         if (i >= arr.length - 1) {
                             if (holdSum) {
                                 // 存在点位被占，是否立即去方案详情修改？
@@ -984,7 +947,7 @@ export default {
                 .getApi("/GetAPD", info)
                 .then(res => {
                     console.log(res.data);
-                    if (!res.data.SysCode) {
+                    if(!res.data.SysCode){
                         let pdidArr = res.data;
                         let uWhoArr = JSON.parse(
                             sessionStorage.getItem("session_data")
@@ -1001,7 +964,7 @@ export default {
                             }
                         }
                         console.log("resultArr----uwho-----", resultArr);
-
+    
                         for (let data of resultArr) {
                             data.IsLock = true;
                         }
@@ -1017,10 +980,10 @@ export default {
                         this.cityList = cityCode;
                         // 获取是否锁住
                         this.getIsLock();
-                    } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
+                    }else if(res.data.SysCode ==100302){
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
+                    }else{
                         Message.warning(res.data.MSG);
                     }
                 })

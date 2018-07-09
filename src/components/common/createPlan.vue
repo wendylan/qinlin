@@ -1369,10 +1369,13 @@ export default {
                     //commaFormat.noComma(this.quotation[i].advertyPrice) * 100,
                     pdfee: parseInt(this.quotation[i].advertyPrice * 100), //  实际广告费用
                     pdn: this.quotation[i].ADNumber, // 投放点位数
-                    pdm: this.quotation[i].makePrice * 100, // 实计制作费用
-                    pdt: commaFormat.noComma(this.quotation[i].cash) * 100, // 现金金额
-                    pdsf: commaFormat.noComma(this.quotation[i].zyzh) * 100, // 置换金额
-                    pdof: commaFormat.noComma(this.quotation[i].other) * 100 // 其他金额
+                    pdm: (this.quotation[i].makePrice * 100).toFixed(0), // 实计制作费用
+                    pdt: (this.quotation[i].cash * 100).toFixed(0),
+                    pdsf: (this.quotation[i].zyzh * 100).toFixed(0),
+                    pdof: (this.quotation[i].other * 100).toFixed(0)
+                    // pdt: commaFormat.noComma(this.quotation[i].cash) * 100,        // 现金金额
+                    // pdsf: commaFormat.noComma(this.quotation[i].zyzh) * 100,       // 置换金额
+                    // pdof: commaFormat.noComma(this.quotation[i].other) * 100,      // 其他金额
                 };
                 if (this.sessionData.uType === "BD") {
                     delete CAPDParams.muid;

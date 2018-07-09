@@ -1219,6 +1219,7 @@ export default {
             pdt         int【必填】     现金金额
             pdsf        int【必填】     置换金额
             pdof        int【必填】     其他金额*/
+            console.log("this.quotation2222212", this.quotation);
             let apid = sessionStorage.getItem("plan_apid");
             for (let i = 0; i < this.quotation.length; i++) {
                 let CAPDParams = {
@@ -1233,11 +1234,14 @@ export default {
                     pe: "", // 投放结束日期
                     //commaFormat.noComma(this.quotation[i].advertyPrice) * 100,
                     pdfee: parseInt(this.quotation[i].advertyPrice * 100), //  实际广告费用
-                    pdn: this.quotation[i].ADNumber, // 投放点位数
-                    pdm: this.quotation[i].makePrice * 100, // 实计制作费用
-                    pdt: commaFormat.noComma(this.quotation[i].cash) * 100, // 现金金额
-                    pdsf: commaFormat.noComma(this.quotation[i].zyzh) * 100, // 置换金额
-                    pdof: commaFormat.noComma(this.quotation[i].other) * 100 // 其他金额
+                    pdn: this.quotation[i].ADNumber, // 投放点位数cash
+                    pdm: (this.quotation[i].makePrice * 100).toFixed(0), // 实计制作费用
+                    pdt: (this.quotation[i].cash * 100).toFixed(0),
+                    pdsf: (this.quotation[i].zyzh * 100).toFixed(0),
+                    pdof: (this.quotation[i].other * 100).toFixed(0)
+                    // pdt: commaFormat.noComma(this.quotation[i].cash) * 100,        // 现金金额
+                    // pdsf: commaFormat.noComma(this.quotation[i].zyzh) * 100,       // 置换金额
+                    // pdof: commaFormat.noComma(this.quotation[i].other) * 100,      // 其他金额
                 };
                 if (this.sessionData.uType === "BD") {
                     delete CAPDParams.muid;
