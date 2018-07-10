@@ -58,9 +58,10 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(upimg,index) of currUpImgArr" :key="upimg.pID">
+                                        <div class="photoCard" v-for="(upimg,index) of pageUpImgArr" :key="upimg.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-                                                <img :src="upimg.pURL" alt="" class="smallImg">
+                                                <!-- <img :src="upimg.pURL" alt="" class="smallImg"> -->
+                                                <img v-lazyload="upimg.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index ">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
@@ -73,7 +74,6 @@
                                                 <span>{{upimg.pAlt.res}}-{{upimg.pAlt.media}}</span>
                                                 <div class="icons">
                                                     <span class="el-icon-location">{{upimg.pAlt.city}}</span>
-                                                    <!-- <span @mouseover="getAddresss(upimg.pAlt)"> -->
                                                     <span>
                                                         <i class="fa fa-file-text"></i>
                                                         {{upimg.pAlt.asLab}}面
@@ -89,7 +89,8 @@
                                                 </div>
                                             </div>
                                             <div class="infoBox">
-                                                <i>超</i>
+                                                <!-- <i>超</i> -->
+                                                <i>{{upimg.pAlt.username.substr(-1)}}</i>
                                                 <span>{{upimg.pAlt.brand}}</span>
                                                 <em>{{formatTime(upimg.pUTime)}}</em>
                                             </div>
@@ -98,7 +99,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
 											</el-pagination> -->
-                                            <el-pagination small background :current-page="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upImgArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
+                                            <el-pagination small background :current-page="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -120,9 +121,10 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(downimg,index) of currDownImgArr" :key="downimg.pID">
+                                        <div class="photoCard" v-for="(downimg,index) of pageDownImgArr" :key="downimg.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-                                                <img :src="downimg.pURL" alt="" class="smallImg">
+                                                <!-- <img :src="downimg.pURL" alt="" class="smallImg"> -->
+                                                <img v-lazyload="downimg.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
@@ -135,7 +137,6 @@
                                                 <span>{{downimg.pAlt.res}}-{{downimg.pAlt.media}}</span>
                                                 <div class="icons">
                                                     <span class="el-icon-location">{{downimg.pAlt.city}}</span>
-                                                    <!-- <span @mouseover="getAddresss(downimg.pAlt)"> -->
                                                     <span>
                                                         <i class="fa fa-file-text"></i>
                                                         {{downimg.pAlt.asLab}}面
@@ -151,7 +152,8 @@
                                                 </div>
                                             </div>
                                             <div class="infoBox">
-                                                <i>超</i>
+                                                <!-- <i>超</i> -->
+                                                <i>{{downimg.pAlt.username.substr(-1)}}</i>
                                                 <span>{{downimg.pAlt.brand}}</span>
                                                 <em>{{formatTime(downimg.pUTime)}}</em>
                                             </div>
@@ -160,7 +162,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
 											</el-pagination> -->
-                                            <el-pagination small background :current-page="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downImgArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
+                                            <el-pagination small background :current-page="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -183,39 +185,48 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(item, index) of installArr" :key="index">
+                                        <div class="photoCard" v-for="(install, index) of pageInstallImgArr" :key="install.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-                                                <img :src="dialogImageUrl" alt="" class="smallImg">
+                                                <!-- <img :src="install.pURL" alt="" class="smallImg"> -->
+                                                <img v-lazyload="install.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                                    <a href="#" download="name.jpg">下载图片</a>
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview(install)"></i>
+                                                    <a :href="install.pURL" :download="install.pID+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
-                                                <p>珠江帝景地产三月投放</p>
-                                                <span>华南碧桂园二期-东门</span>
+                                                <p>{{install.pAlt.plan}}</p>
+                                                <!-- <span>华南碧桂园二期-东门</span> -->
+                                                <span>{{install.pAlt.res}}-{{install.pAlt.media}}</span>
                                                 <div class="icons">
-                                                    <span class="el-icon-location">广州市</span>
-                                                    <span class="el-icon-menu">钣金门</span>
-                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+                                                    <span class="el-icon-location">{{install.pAlt.city}}</span>
+                                                    <span>
+                                                        <i class="fa fa-file-text"></i>
+                                                        {{install.pAlt.asLab}}面
+                                                    </span>
                                                     <el-tooltip placement="bottom" effect="light">
                                                         <span class="el-icon-info"></span>
                                                         <div slot="content" class="content">
-                                                            <p>{{address}}</p>
+                                                            <p>{{install.pAlt.username}}上传</p>
+                                                            <p>{{install.pAlt.assettag}}</p>
+                                                            <p>{{install.pAlt.address}}</p>
                                                         </div>
                                                     </el-tooltip>
                                                 </div>
                                             </div>
                                             <div class="infoBox">
-                                                <i>超</i>
-                                                <span>guangzhoumeijie</span>
-                                                <em>2018.08.30</em>
+                                                <!-- <i>超</i> -->
+                                                <i>{{install.pAlt.username.substr(-1)}}</i>
+                                                <span>{{install.pAlt.brand}}</span>
+                                                <em>{{formatTime(install.pUTime)}}</em>
                                             </div>
                                         </div>
                                         <!--页码-->
                                         <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination> -->
+                                            <el-pagination small background :current-page="currInstallPage" :page-sizes="[10, 20]" :page-size="pageInstallSize" layout="sizes, prev, pager, next, jumper" :total="currInstallImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -237,40 +248,48 @@
                                     </div>
                                     <!--图片列表-->
                                     <div class="find clearfix" v-if="showPic === 3">
-                                        <div class="photoCard" v-for="(item, index) of searchAreaArr" :key="index">
+                                        <div class="photoCard" v-for="(search, index) of pageSearchImgArr" :key="search.pID">
                                             <div class="imgBox" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-                                                <img :src="dialogImageUrl" alt="" class="smallImg">
+                                                <!-- <img :src="search.pURL" alt="" class="smallImg"> -->
+                                                <img v-lazyload="search.pURL" alt="" class="smallImg">
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
-                                                    <i class="el-icon-search" @click="handlePictureCardPreview"></i>
-                                                    <a href="#" download="name.jpg">下载图片</a>
+                                                    <i class="el-icon-search" @click="handlePictureCardPreview(search)"></i>
+                                                    <a :href="search.pURL" :download="search.pID+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
-                                                <p>珠江帝景地产三月投放</p>
-                                                <span>华南碧桂园二期-东门</span>
+                                                <p>{{search.pAlt.plan}}</p>
+                                                <!-- <span>华南碧桂园二期-东门</span> -->
+                                                <span>{{search.pAlt.res}}-{{search.pAlt.media}}</span>
                                                 <div class="icons">
-                                                    <span class="el-icon-location">广州市</span>
-                                                    <span class="el-icon-menu">钣金门</span>
-                                                    <span><img src="../../assets/images/xzIcon.png" alt=""> 闲置中</span>
+                                                    <span class="el-icon-location">{{search.pAlt.city}}</span>
+                                                    <span>
+                                                        <i class="fa fa-file-text"></i>
+                                                        {{search.pAlt.asLab}}面
+                                                    </span>
                                                     <el-tooltip placement="bottom" effect="light">
                                                         <span class="el-icon-info"></span>
                                                         <div slot="content" class="content">
-                                                            <p>{{assetID}}</p>
-                                                            <p>{{address}}</p>
+                                                            <p>{{search.pAlt.username}}上传</p>
+                                                            <p>{{search.pAlt.assettag}}</p>
+                                                            <p>{{search.pAlt.address}}</p>
                                                         </div>
                                                     </el-tooltip>
                                                 </div>
                                             </div>
                                             <div class="infoBox">
-                                                <i>超</i>
-                                                <span>guangzhoumeijie</span>
-                                                <em>2018.08.30</em>
+                                                <!-- <i>超</i> -->
+                                                <i>{{search.pAlt.username.substr(-1)}}</i>
+                                                <span>{{search.pAlt.brand}}</span>
+                                                <em>{{formatTime(search.pUTime)}}</em>
                                             </div>
                                         </div>
                                         <!--页码-->
                                         <div class="pager">
-                                            <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
+                                            </el-pagination> -->
+                                            <el-pagination small background :current-page="currSearchPage" :page-sizes="[10, 20]" :page-size="pageSearchSize" layout="sizes, prev, pager, next, jumper" :total="currSearchImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -322,14 +341,17 @@
                     </el-dialog>
                 </div>
             </div>
-            <div class="bottom-btn">
+            <!-- <div class="bottom-btn">
                 <el-button plain>返回</el-button>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import LazyLoad from '../../commonFun/lazyLoad.js'
+Vue.use(LazyLoad);
 import { api } from "../../api/api.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
@@ -376,18 +398,28 @@ export default {
             currDownPage: 1,
             pageUpSize: 10,
             pageDownSize: 10,
+            currInstallPage: 1,
+            currSearchPage: 1,
+            pageInstallSize: 10,
+            pageSearchSize: 10,
             //显示预览图蒙版
             showPreImg: null,
             // 上刊
             upImgArr: [],
             currUpImgArr: [],
+            pageUpImgArr: [],
             // 下刊
             downImgArr: [],
             currDownImgArr: [],
+            pageDownImgArr: [],
             // 安装
             installArr: [],
+            currInstallImgArr: [],
+            pageInstallImgArr: [],
             // 巡点
             searchAreaArr: [],
+            currSearchImgArr: [],
+            pageSearchImgArr: [],
             //地区搜索
             citys: [],
             citySelect: [],
@@ -395,7 +427,7 @@ export default {
             select: "1",
             keyword: "",
             LabSelect: "",
-            date: "",
+            date: '',
             // tab默认选择第一项
             activeName: "first",
 
@@ -545,51 +577,62 @@ export default {
         // this.getDownReport();
     },
     methods: {
-        handleUpSizeChange(pageVal) {
+        // 页数大小改变
+        sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            this.pageUpSize = pageVal;
-            this.changeUpPage(1);
-        },
-        handleDownSizeChange(pageVal) {
-            console.log("pageVal", pageVal);
-            this.pageDownSize = pageVal;
-            this.changeDownPage(1);
+            if(this.activeName == 'first'){
+                this.pageUpSize = pageVal;
+            }else if(this.activeName == 'second'){
+                this.pageDownSize = pageVal;
+            }else if(this.activeName == 'third'){
+                this.pageInstallSize = pageVal;
+            }else{
+                this.pageSearchSize = pageVal;
+            }
+            this.changePage(1);
         },
         // 分页功能
-        changeUpPage(page) {
-            let pageSize = this.pageUpSize;
-            let arr = this.upImgArr;
-            let total = arr.length;
+        changePage(page) {
+            console.log('page-------', page);
+            let pageSize = '';
+            let arr = [];
             let resultArr = [];
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
+
+            if(this.activeName == 'first'){
+                pageSize = this.pageUpSize;
+                // arr = this.upImgArr;
+                // this.currUpPage = page;
+                arr = this.currUpImgArr;
+            }else if(this.activeName == 'second'){
+                pageSize = this.pageDownSize;
+                // this.currDownPage = page;
+                // arr = this.downImgArr;
+                arr = this.currDownImgArr;
+            }else if(this.activeName == 'third'){
+                pageSize = this.pageInstallSize;
+                // this.currInstallPage = page;
+                // arr = this.installArr;
+                arr = this.currInstallImgArr;
+            }else{
+                pageSize = this.pageSearchSize;
+                // this.currSearchPage = page;
+                // arr = this.searchAreaArr;
+                arr = this.currSearchImgArr;
+            }
+            
+            let total = arr.length;
+            for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
                 resultArr.push(arr[i]);
             }
-            this.currUpImgArr = [];
-            this.currUpImgArr = resultArr;
-            console.log("currUpImgArr", this.currUpImgArr);
-            console.log("page", page, "pageSize", pageSize);
-        },
-        // 分页功能
-        changeDownPage(page) {
-            let pageSize = this.pageDownSize;
-            let arr = this.downImgArr;
-            let total = arr.length;
-            let resultArr = [];
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
-                resultArr.push(arr[i]);
+            if(this.activeName == 'first'){
+                this.pageUpImgArr = resultArr;
+            }else if(this.activeName == 'second'){
+                this.pageDownImgArr = resultArr;
+            }else if(this.activeName == 'third'){
+                this.pageInstallImgArr = resultArr;
+            }else{
+                this.pageSearchImgArr = resultArr;
             }
-            this.currDownImgArr = [];
-            this.currDownImgArr = resultArr;
-            console.log("currDownImgArr", this.currDownImgArr);
-            console.log("page", page, "pageSize", pageSize);
         },
         // tabClick
         handleClick() {
@@ -602,9 +645,11 @@ export default {
                 this.ludan = false;
             }
             if (this.activeName == "third") {
+                this.getInstallImg();
                 this.ludan = false;
             }
             if (this.activeName == "fourth") {
+                this.getSearchImg();
                 this.ludan = false;
             }
             if (this.activeName == "fifth") {
@@ -613,71 +658,9 @@ export default {
         },
         // 获取上刊图片
         getUpReport() {
-            // // 测试数据
-            // let result = [
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案t","res":"龙阁公寓1","media":"东门","city":"北京市","area":"朝阳区","asLab":"B","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
-            //         pID: 321,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/8f4e2601541f487b9a4634f7943f1e01.png",
-            //         pUTime: "2018-06-12 15:08:45.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙阁公寓","media":"西门","city":"北京市","area":"朝阳区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ00323","brand":"AC9美容院","username":"周昭杰","resid":11229,"address":"广州市越秀区珠光北路116号小区"}',
-            //         pID: 320,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/5ff93ff39b52454a802eedbd6745ffa3.png",
-            //         pUTime: "2018-06-12 15:08:39.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"南门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
-            //         pID: 319,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/54cdb518a7ca4eed99247e6718022a2e.png",
-            //         pUTime: "2018-06-12 15:08:30.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     },
-            //     {
-            //         pAlt:
-            //             '{"plan":"北京方案test3","res":"龙锦苑东5区","media":"北门","city":"北京市","area":"昌平区","asLab":"A","lstart":"Jun 28, 2018","lend":"Jul 12, 2018","assettag":"NBJ01493","brand":"AC9美容院","username":"周昭杰","resid":11645,"address":"广州市越秀区珠光北路116号小区"}',
-            //         pID: 318,
-            //         pSrc:
-            //             "/data/web/beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-            //         pType: "SK",
-            //         pURL:
-            //             "https://beta.qinlinad.com/upload/2018/6/7a9614e275bd4ae2a7d5d9cd99653a8e.png",
-            //         pUTime: "2018-06-12 15:08:20.0",
-            //         ptID: 3758,
-            //         ptP: "35",
-            //         puID: 3
-            //     }
-            // ];
-            // this.citys = this.getCitys(result);
-            // this.upImgArr = result;
-            // this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
-
             // 真实数据
             if (this.upImgArr.length) {
+                this.searchPic();
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -688,16 +671,15 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    if (!res.data.SysCode) {
+                    if(!res.data.SysCode){
                         console.log(res.data);
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.upImgArr = result;
-                        this.currUpImgArr = JSON.parse(
-                            JSON.stringify(this.upImgArr)
-                        );
+                        this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                        this.searchPic();
                         console.log("upimginfo", this.upImgArr);
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         Message.warning("登录超时,请重新登录");
                         this.$router.push("/login");
                     } else {
@@ -708,7 +690,108 @@ export default {
                     console.log(res);
                 });
         },
-        // 区域二级联动
+        // 获取下刊图片
+        getDownReport() {
+            if (this.downImgArr.length) {
+                this.searchPic();
+                return;
+            }
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let upinfo = {
+                uid: uid,
+                ptype: "XK"
+            };
+            api
+                .postApi("/GetImg", upinfo)
+                .then(res => {
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = res.data;
+                        this.citys = this.getCitys(result);
+                        this.downImgArr = result;
+                        this.currDownImgArr = JSON.parse(JSON.stringify(this.downImgArr));
+                        this.searchPic();
+                        console.log("upimginfo", this.downImgArr);
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 获取安装图片
+        getInstallImg(){
+            // 真实数据
+            if (this.installArr.length) {
+                this.searchPic();
+                return;
+            }
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let upinfo = {
+                uid: uid,
+                ptype: "AZ"
+            };
+            api
+                .postApi("/GetImg", upinfo)
+                .then(res => {
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = res.data;
+                        this.citys = this.getCitys(result);
+                        this.installArr = result;
+                        this.currInstallImgArr = JSON.parse(JSON.stringify(this.installArr));
+                        this.searchPic();
+                        console.log("upimginfo", this.installArr);
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+        // 获取巡点图片
+        getSearchImg(){
+            // 真实数据
+            if (this.searchAreaArr.length) {
+                this.searchPic();
+                return;
+            }
+            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
+            let upinfo = {
+                uid: uid,
+                ptype: "XD"
+            };
+            api
+                .postApi("/GetImg", upinfo)
+                .then(res => {
+                    if (!res.data.SysCode) {
+                        console.log(res.data);
+                        let result = res.data;
+                        this.citys = this.getCitys(result);
+                        this.searchAreaArr = result;
+                        this.currSearchImgArr = JSON.parse(JSON.stringify(this.searchAreaArr));
+                        this.searchPic();
+                        console.log("upimginfo", this.searchAreaArr);
+                    } else if(res.data.SysCode == 100302){
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
+        },
+         // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
@@ -750,68 +833,18 @@ export default {
             console.log("cityArr---------------fda", cityArr);
             return cityArr;
         },
-        // 获取下刊图片
-        getDownReport() {
-            if (this.downImgArr.length) {
-                return;
-            }
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            let upinfo = {
-                uid: uid,
-                ptype: "XK"
-            };
-            api
-                .postApi("/GetImg", upinfo)
-                .then(res => {
-                    if (!res.data.SysCode) {
-                        console.log(res.data);
-                        let result = res.data;
-                        this.citys = this.getCitys(result);
-                        this.downImgArr = result;
-                        this.currDownImgArr = JSON.parse(
-                            JSON.stringify(this.downImgArr)
-                        );
-                        console.log("upimginfo", this.downImgArr);
-                    } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
-                        Message.warning(res.data.MSG);
-                    }
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
-        // 获取地址详细信息
-        getAddresss(row) {
-            // resid       int【必填】     资源ID
-            // info        String          是否输出完整资源信息（小写：y）
-            let info = {
-                resid: row.resid,
-                info: "y"
-            };
-            api
-                .getApi("/GetResCT", info)
-                .then(res => {
-                    console.log(res.data);
-                    this.$set(row, "address", res.data.resAddress);
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
         // 时间格式规范
         formatTime(val) {
             return dateFormat.toDate(val, ".");
         },
         // 查看图片
         handlePictureCardPreview(item) {
+            console.log('imgInfo--------', item);
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
         },
         // 搜索图片
-        searchPic(initData) {
+        searchPic() {
             if (
                 !this.select &&
                 !this.keyword &&
@@ -821,20 +854,19 @@ export default {
             ) {
                 Message.warning("请先输入搜索条件");
             } else {
-                if (this.activeName == "first") {
+                let initData = [];
+                if(this.activeName == 'first'){
                     initData = this.upImgArr;
-                } else if (this.activeName == "second") {
+                }else if(this.activeName == 'second'){
                     initData = this.downImgArr;
+                }else if(this.activeName == 'third'){
+                    initData = this.installArr;
+                }else if(this.activeName == 'fourth'){
+                    initData = this.searchAreaArr;
                 }
 
                 // 搜索
-                console.log(
-                    this.select,
-                    this.keyword,
-                    this.LabSelect,
-                    this.date,
-                    this.citySelect
-                );
+                console.log(this.select,this.keyword,this.LabSelect,this.date,this.citySelect);
                 let arr = [];
                 let range = this.date;
                 let select = this.select;
@@ -906,103 +938,108 @@ export default {
                                         arr.push(data);
                                     }
                                 } else if (city.length) {
-                                    if (
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
-                        } else if (keyword) {
-                            if (select == "1" && alt.plan.includes(keyword)) {
+                        }else if(keyword){
+                            if (
+                                select == "1" &&
+                                alt.plan.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "2" && alt.media.includes(keyword)) {
+                            if (
+                                select == "2" &&
+                                alt.media.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "3" && alt.res.includes(keyword)) {
+                            if (
+                                select == "3" &&
+                                alt.res.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (lab) {
-                            if (alt.asLab == lab) {
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if(lab){
+                            if(alt.asLab == lab){
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1021,28 +1058,30 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if(city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (city.length) {
-                            if (alt.city == city[0] && alt.area == city[1]) {
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if (city.length){
+                            if(
+                                alt.city == city[0] &&
+                                alt.area == city[1]
+                            ){
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1061,35 +1100,41 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (lab) {
-                                    if (alt.asLab == lab) {
+                                }else if(lab){
+                                    if(alt.asLab == lab){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
                         }
                     }
 
-                    if (arr.length) {
+                    if(arr.length){
                         this.showPic = 3;
                         // 上刊
-                        if (this.activeName == "first") {
+                        if(this.activeName =='first'){
                             this.currUpImgArr = arr;
+                            // this.currUpPage = 1;
                         }
                         // 下刊
-                        if (this.activeName == "second") {
+                        if(this.activeName == 'second'){
                             this.currDownImgArr = arr;
+                            // this.currDownPage = 1;
                         }
                         // 安装
-                        if (this.activeName == "third") {
+                        if(this.activeName == 'third'){
+                            this.currInstallImgArr = arr;
+                            // this.currInstallPage = 1;
                         }
                         // 巡点
-                        if (this.activeName == "fourth") {
+                        if(this.activeName == 'fourth'){
+                            this.currSearchImgArr = arr;
+                            // this.currSearchPage = 1;
                         }
+                        this.changePage(1);
                     }
-                    //  this.currentOrder = arr;
                     if (!arr.length) {
                         this.showPic = 2;
                         Message.warning("查询数据为空");
@@ -1098,6 +1143,7 @@ export default {
                 }
             }
         },
+        
 
         //筛选
         filterCaseType(value, row) {
@@ -1108,29 +1154,6 @@ export default {
         }
     },
 
-    mounted: function() {
-        /* $(function () {
-      $(".smallImg").mouseenter(function () {
-        $(this)
-          .siblings(".mask-btn")
-          .show();
-      });
-      $(".mask-btn").mouseleave(function () {
-        $(this).hide();
-      });
-      $(".photoCard").hover(
-        function () {
-          $(this).css(
-            "box-shadow",
-            "0px 0px 20px rgba(0, 0, 0, 0.20)"
-          );
-        },
-        function () {
-          $(this).css("box-shadow", "none");
-        }
-      );
-    });*/
-    }
 };
 </script>
 
@@ -1497,6 +1520,10 @@ export default {
     top: 50px;
 } */
 
+.pager{
+    width: 100%;
+    margin-top: 20px;
+}
 /deep/ .el-pagination.is-background .el-pager li {
     font-weight: normal;
     font-size: 13px;

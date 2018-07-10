@@ -1,198 +1,198 @@
 <template>
-	<div>
-		<div class="ad_mediaMana_wrap">
-			<div class="ad_mediaMana_nav clearfix">
-				<p>
-					<a href="#">媒体管理</a>
-					<em> / </em>
-					<a href="#">录入媒体</a>
-				</p>
-			</div>
-			<!--资源信息-->
-			<div class="mediaMana_content_top">
-				<div class="content_top_wrap">
-					<div class="content_top_head">
-						<h2>资源信息</h2>
-					</div>
-					<div class="content_top_form_wrap">
-						<el-form :model="recForm" status-icon :rules="recRules" ref="recForm" label-width="100px" class="demo-ruleForm">
-							<el-form-item label="资源类型:" prop="rt">
-								<div class="select_wrap">
-									<el-select v-model="recForm.rt" @change="selectRec" placeholder="请选择资源类型" :disabled="PathHaveEdit">
-										<el-option label="写字楼" value="2"></el-option>
-										<el-option label="社区" value="1"></el-option>
-									</el-select>
-								</div>
-							</el-form-item>
-							<el-form-item label="资源名称:" prop="resname">
-								<el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
-							</el-form-item>
-							<el-form-item label="所属城市:" prop="city">
-								<el-cascader v-if="cityOther" :options="cityOptions" v-model="recForm.city" separator="-" :show-all-levels="false" @change="handleChange">
-								</el-cascader>
-								<el-select v-else v-model="recForm.city" placeholder="请选择" @change="recFormCity">
-									<el-option v-for="item in throwCity" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="所属区域:" prop="region">
-								<el-select v-model="recForm.region" placeholder="请选择所属区域" :clearable="true">
-									<el-option v-for="item in regionOpt" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="所属商圈:" prop="business">
-								<el-input v-model="recForm.business" placeholder="例：三里屯"></el-input>
-							</el-form-item>
-							<el-form-item label="具体地址:" prop="resaddr">
-								<el-input v-model="recForm.resaddr" placeholder="例：工业大道53号"></el-input>
-							</el-form-item>
-							<el-form-item :label="rt_village?'楼盘类型:':'写字楼类型:'" prop="buildingType">
-								<el-select v-model="recForm.buildingType" placeholder="请选择楼盘类型">
-									<el-option v-for="item in buildingType" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="出入口数:" prop="doorway">
-								<el-input-number v-model="recForm.doorwayNum" controls-position="right" :min="1" :max="9999999"></el-input-number>
-							</el-form-item>
-							<el-form-item label="楼栋数量:" prop="buildingNum">
-								<el-input-number v-model="recForm.buildingNum" controls-position="right" :min="1" :max="9999999"></el-input-number>
-							</el-form-item>
-							<el-form-item :label="rt_village?'住户数量:':'办公室数量:'" prop="households">
-								<el-input-number v-model="recForm.households" controls-position="right" :min="1" :max="9999999"></el-input-number>
-							</el-form-item>
-							<el-form-item label="楼盘价格:" prop="buildingPrice" class="rmb">
-								<div class="mm">
-									<el-input v-model.number="recForm.buildingPrice" placeholder=""></el-input>
-									<span style="left: 15px">￥</span>
-								</div>
-							</el-form-item>
-							<el-form-item :label="rt_village?'入住年份:':'建成年份:'" prop="liveTime">
-								<!-- v-model="recForm.liveTime"-->
-								<el-date-picker v-model="recForm.liveTime" type="year" @change="getTime" value-format="yyyy" format="yyyy 年" :editable="false" placeholder="选择年">
-								</el-date-picker>
-							</el-form-item>
-							<el-form-item label="经纬度:" prop="lat" class="lngNlat">
-								<el-input v-model.number.trim="recForm.lat" placeholder="经度"></el-input>
-							</el-form-item>
-							<el-form-item prop="lng" class="lngNlat RlngNlat">
-								<el-input v-model.number.trim="recForm.lng" placeholder="纬度"></el-input>
-							</el-form-item>
-							<el-form-item label="所属物业:" prop="pmc">
-								<el-input v-model="recForm.pmc" placeholder="所属物业"></el-input>
-							</el-form-item>
-							<el-form-item label="小区全貌:" prop="mImg">
-								<div class="upload_img_wrap" style="width: 120px;">
-									<!--:auto-upload = 'false'-->
-									<el-upload :action="doUpload" list-type="picture-card" :file-list="resUpdata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview_res" :on-remove="handleRemoveR">
-										<i class="el-icon-plus"></i>
-									</el-upload>
-									<el-dialog :visible.sync="resImgDialog">
-										<img width="100%" :src="resImgUrl" alt="">
-									</el-dialog>
-								</div>
-							</el-form-item>
-						</el-form>
-					</div>
-				</div>
-			</div>
-			<!--媒体一-->
-			<div class="mediaMana_content_bottom clearfix">
-				<div class="content_bottom_wrap" v-for="(item,key) in arrMedia" :key="key">
-					<div class="content_bottom_head">
-						<h2>{{item.text}}</h2>
-						<el-button type="danger" size="small" class="media_deleBtn" @click="mediaDelBtnFun(key)" :disabled="(key + 1) <= editMediaLength">删除</el-button>
-					</div>
-					<div class="content_bottom_form_wrap">
-						<el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px" class="demo-ruleForm">
-							<el-form-item label=" 媒介载体:" prop="mediaType">
-								<el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体" :disabled="(PathHaveEdit && key <= editMediaLength - 1)">
-									<el-option label="" value="广告门"></el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="媒体名称:" prop="mediaName">
-								<el-input v-model="item.mediaForm.mediaName" placeholder="例：东门"></el-input>
-							</el-form-item>
-							<el-form-item label="可投面数:" prop="usableNum">
-								<el-input-number v-model.number="item.mediaForm.usableNum" controls-position="right" :disabled="(PathHaveEdit && key <= editMediaLength - 1)"></el-input-number>
-							</el-form-item>
-							<el-form-item label="媒体状态:" prop="mstate">
-								<el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态" @change="selectMstate">
-									<el-option label="禁用" :value="'0' + key"></el-option>
-									<el-option label="正常" :value="'1' + key"></el-option>
-									<el-option label="待安装" :value="'2' + key"></el-option>
-									<el-option label="待维修" :value="'3' + key"></el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="资产编号:" prop="assetId" ref="ResAssetId" :rules="item.mediaForm.assetIdBolean ? assetIdRules: mediaRules.assetId">
-								<el-input v-model="item.mediaForm.assetId" placeholder="例:0034FASF342-X21" :disabled="item.mediaForm.assetIdBolean"></el-input>
-							</el-form-item>
-							<el-form-item label=" 媒体类型:" prop="doorType">
-								<el-input v-model="item.mediaForm.doorType" placeholder="例:消防门"></el-input>
-							</el-form-item>
-							<el-form-item label="广告尺寸:" prop="adSizeW" class="lngNlat">
-								<div class="mm">
-									<el-input v-model.number="item.mediaForm.adSizeW" placeholder="宽度">
-									</el-input>
-									<span>mm</span>
-								</div>
-							</el-form-item>
-							<el-form-item prop="adSizeH" class="lngNlat  RlngNlat">
-								<div class="mm">
-									<div>
-										<el-input v-model.number="item.mediaForm.adSizeH" placeholder="高度">
-										</el-input>
-										<span>mm</span>
-									</div>
-								</div>
-							</el-form-item>
-							<el-form-item label="可视画面:" prop="visualW" class="lngNlat">
-								<div class="mm">
-									<el-input v-model.number="item.mediaForm.visualW" placeholder="宽度">
-									</el-input>
-									<span>mm</span>
-								</div>
-							</el-form-item>
-							<el-form-item prop="visualH" class="lngNlat RlngNlat largeW">
-								<div class="mm">
-									<div>
-										<el-input v-model.number="item.mediaForm.visualH" placeholder="高度">
-										</el-input>
-										<span>mm</span>
-									</div>
-								</div>
-							</el-form-item>
-							<el-form-item label="广告限制:" prop="adLimit">
-								<el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制" @focus="adLimitFocus(key)" @change="changeAdLimit">
-									<el-option v-for="(limit, index) in adLimit" :key="index" :label="limit.label" :value="limit.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="备注:" prop="mediaRemark">
-								<el-input type="textarea" v-model="item.mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
-							</el-form-item>
-							<el-form-item label="门禁照片:" prop="mImg">
-								<div class="upload_img_wrap" style="width: 120px;">
-									<el-upload :action="doUpload" list-type="picture-card" :limit='1' :file-list="updataMedia" :on-success="mediaUploadSuccess" :on-change="mediaUploadChange" :on-preview="handlePictureCardPreview">
-										<i class="el-icon-plus" @click="saveImgInfo(item.text)"></i>
-									</el-upload>
-								</div>
-							</el-form-item>
-						</el-form>
-					</div>
-				</div>
-				<div class="addMedia">
-					<div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
-				</div>
-				<div class="content_bottom_btn">
-					<el-button type="primary" class="create" @click="submitForm('recForm','mediaForm')">{{PathHaveEdit?'保存':'创建'}}</el-button>
-					<!--<button v-if='PathHaveEdit' @click="editReturn">返回</button>-->
-					<button class="cancel" @click="clearData">取消</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div>
+        <div class="ad_mediaMana_wrap">
+            <div class="ad_mediaMana_nav clearfix">
+                <p>
+                    <a href="#">媒体管理</a>
+                    <em> / </em>
+                    <a href="#">录入媒体</a>
+                </p>
+            </div>
+            <!--资源信息-->
+            <div class="mediaMana_content_top">
+                <div class="content_top_wrap">
+                    <div class="content_top_head">
+                        <h2>资源信息</h2>
+                    </div>
+                    <div class="content_top_form_wrap">
+                        <el-form :model="recForm" status-icon :rules="recRules" ref="recForm" label-width="100px" class="demo-ruleForm">
+                            <el-form-item label="资源类型:" prop="rt">
+                                <div class="select_wrap">
+                                    <el-select v-model="recForm.rt" @change="selectRec" placeholder="请选择资源类型" :disabled="PathHaveEdit">
+                                        <el-option label="写字楼" value="2"></el-option>
+                                        <el-option label="社区" value="1"></el-option>
+                                    </el-select>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="资源名称:" prop="resname">
+                                <el-input v-model="recForm.resname" placeholder="例：尚东峰景"></el-input>
+                            </el-form-item>
+                            <el-form-item label="所属城市:" prop="city">
+                                <el-cascader v-if="cityOther" :options="cityOptions" v-model="recForm.city" separator="-" :show-all-levels="false" @change="handleChange">
+                                </el-cascader>
+                                <el-select v-else v-model="recForm.city" placeholder="请选择" @change="recFormCity">
+                                    <el-option v-for="item in throwCity" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="所属区域:" prop="region">
+                                <el-select v-model="recForm.region" placeholder="请选择所属区域" :clearable="true">
+                                    <el-option v-for="item in regionOpt" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="所属商圈:" prop="business">
+                                <el-input v-model.trim="recForm.business" placeholder="例：三里屯"></el-input>
+                            </el-form-item>
+                            <el-form-item label="具体地址:" prop="resaddr">
+                                <el-input v-model="recForm.resaddr" placeholder="例：工业大道53号"></el-input>
+                            </el-form-item>
+                            <el-form-item :label="rt_village?'楼盘类型:':'写字楼类型:'" prop="buildingType">
+                                <el-select v-model="recForm.buildingType" placeholder="请选择楼盘类型">
+                                    <el-option v-for="item in buildingType" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="出入口数:" prop="doorway">
+                                <el-input-number v-model="recForm.doorwayNum" controls-position="right" :min="1" :max="9999999"></el-input-number>
+                            </el-form-item>
+                            <el-form-item label="楼栋数量:" prop="buildingNum">
+                                <el-input-number v-model="recForm.buildingNum" controls-position="right" :min="1" :max="9999999"></el-input-number>
+                            </el-form-item>
+                            <el-form-item :label="rt_village?'住户数量:':'办公室数量:'" prop="households">
+                                <el-input-number v-model="recForm.households" controls-position="right" :min="1" :max="9999999"></el-input-number>
+                            </el-form-item>
+                            <el-form-item label="楼盘价格:" prop="buildingPrice" class="rmb">
+                                <div class="mm">
+                                    <el-input v-model.number="recForm.buildingPrice" placeholder=""></el-input>
+                                    <span style="left: 15px">￥</span>
+                                </div>
+                            </el-form-item>
+                            <el-form-item :label="rt_village?'入住年份:':'建成年份:'" prop="liveTime">
+                                <!-- v-model="recForm.liveTime"-->
+                                <el-date-picker v-model="recForm.liveTime" type="year" @change="getTime" value-format="yyyy" format="yyyy 年" :editable="false" placeholder="选择年">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="经纬度:" prop="lat" class="lngNlat">
+                                <el-input v-model.number.trim="recForm.lat" placeholder="经度"></el-input>
+                            </el-form-item>
+                            <el-form-item prop="lng" class="lngNlat RlngNlat">
+                                <el-input v-model.number.trim="recForm.lng" placeholder="纬度"></el-input>
+                            </el-form-item>
+                            <el-form-item label="所属物业:" prop="pmc">
+                                <el-input v-model.trim="recForm.pmc" placeholder="所属物业"></el-input>
+                            </el-form-item>
+                            <el-form-item label="小区全貌:" prop="mImg">
+                                <div class="upload_img_wrap" style="width: 120px;">
+                                    <!--:auto-upload = 'false'-->
+                                    <el-upload :action="doUpload" list-type="picture-card" :file-list="resUpdata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview_res" :on-remove="handleRemoveR">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="resImgDialog">
+                                        <img width="100%" :src="resImgUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </div>
+            </div>
+            <!--媒体一-->
+            <div class="mediaMana_content_bottom clearfix">
+                <div class="content_bottom_wrap" v-for="(item,key) in arrMedia" :key="key">
+                    <div class="content_bottom_head">
+                        <h2>{{item.text}}</h2>
+                        <el-button type="danger" size="small" class="media_deleBtn" @click="mediaDelBtnFun(key)" :disabled="(key + 1) <= editMediaLength">删除</el-button>
+                    </div>
+                    <div class="content_bottom_form_wrap">
+                        <el-form :model="item.mediaForm" status-icon :rules="mediaRules" ref="mediaForm" label-width="100px" class="demo-ruleForm">
+                            <el-form-item label=" 媒介载体:" prop="mediaType">
+                                <el-select v-model="item.mediaForm.mediaType" placeholder="请选择媒介载体" :disabled="(PathHaveEdit && key <= editMediaLength - 1)">
+                                    <el-option label="" value="广告门"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="媒体名称:" prop="mediaName">
+                                <el-input v-model="item.mediaForm.mediaName" placeholder="例：东门"></el-input>
+                            </el-form-item>
+                            <el-form-item label="可投面数:" prop="usableNum">
+                                <el-input-number v-model.number="item.mediaForm.usableNum" controls-position="right" :disabled="(PathHaveEdit && key <= editMediaLength - 1)"></el-input-number>
+                            </el-form-item>
+                            <el-form-item label="媒体状态:" prop="mstate">
+                                <el-select v-model="item.mediaForm.mstate" placeholder="请选择媒体状态" @change="selectMstate">
+                                    <el-option label="禁用" :value="'0' + key"></el-option>
+                                    <el-option label="正常" :value="'1' + key"></el-option>
+                                    <el-option label="待安装" :value="'2' + key"></el-option>
+                                    <el-option label="待维修" :value="'3' + key"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="资产编号:" prop="assetId" ref="ResAssetId" :rules="item.mediaForm.assetIdBolean ? assetIdRules: mediaRules.assetId">
+                                <el-input v-model.trim="item.mediaForm.assetId" placeholder="例:0034FASF342-X21" :disabled="item.mediaForm.assetIdBolean"></el-input>
+                            </el-form-item>
+                            <el-form-item label=" 媒体类型:" prop="doorType">
+                                <el-input v-model="item.mediaForm.doorType" placeholder="例:消防门"></el-input>
+                            </el-form-item>
+                            <el-form-item label="广告尺寸:" prop="adSizeW" class="lngNlat">
+                                <div class="mm">
+                                    <el-input v-model.number="item.mediaForm.adSizeW" placeholder="宽度">
+                                    </el-input>
+                                    <span>mm</span>
+                                </div>
+                            </el-form-item>
+                            <el-form-item prop="adSizeH" class="lngNlat  RlngNlat">
+                                <div class="mm">
+                                    <div>
+                                        <el-input v-model.number="item.mediaForm.adSizeH" placeholder="高度">
+                                        </el-input>
+                                        <span>mm</span>
+                                    </div>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="可视画面:" prop="visualW" class="lngNlat">
+                                <div class="mm">
+                                    <el-input v-model.number="item.mediaForm.visualW" placeholder="宽度">
+                                    </el-input>
+                                    <span>mm</span>
+                                </div>
+                            </el-form-item>
+                            <el-form-item prop="visualH" class="lngNlat RlngNlat largeW">
+                                <div class="mm">
+                                    <div>
+                                        <el-input v-model.number="item.mediaForm.visualH" placeholder="高度">
+                                        </el-input>
+                                        <span>mm</span>
+                                    </div>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="广告限制:" prop="adLimit">
+                                <el-select v-model="item.mediaForm.adLimit" multiple placeholder="请选择广告限制" @focus="adLimitFocus(key)" @change="changeAdLimit">
+                                    <el-option v-for="(limit, index) in adLimit" :key="index" :label="limit.label" :value="limit.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="备注:" prop="mediaRemark">
+                                <el-input type="textarea" v-model.trim="item.mediaForm.mediaRemark" placeholder="请填写备注信息"></el-input>
+                            </el-form-item>
+                            <el-form-item label="门禁照片:" prop="mImg">
+                                <div class="upload_img_wrap" style="width: 120px;" @click="saveImgInfo(item.text)">
+                                    <el-upload :action="doUpload" list-type="picture-card" :limit='1' :file-list="updataMedia" :on-success="mediaUploadSuccess" :on-change="mediaUploadChange" :on-preview="handlePictureCardPreview">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                </div>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </div>
+                <div class="addMedia">
+                    <div class="addMediaBtn" @click="mediaAddFun()">+ 新增媒体</div>
+                </div>
+                <div class="content_bottom_btn">
+                    <el-button type="primary" class="create" @click="submitForm('recForm','mediaForm')">{{PathHaveEdit?'保存':'创建'}}</el-button>
+                    <!--<button v-if='PathHaveEdit' @click="editReturn">返回</button>-->
+                    <button class="cancel" @click="clearData">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -687,7 +687,8 @@ export default {
             cityOther: true, // 默认显示全国省份城市
             beforeResPID: "", // 编辑资源前资源图片的pid
             resImgDialog: false, // 资源图片，大图
-            resImgUrl: "" // 上传成功后的url地址，用于显示大图
+            resImgUrl: "", // 上传成功后的url地址，用于显示大图
+            resData: "" // 创建资源成功，保存返回来的数据
         };
     },
     mounted: function() {
@@ -818,34 +819,6 @@ export default {
                     }
                 }
             }
-        },
-        // 城市地区联动，选择省级后去获取市级和区、县级
-        handleItemChange(val) {
-            //    console.log('active item:', val);
-            /*   let region = []
-        api.getApi('/ShowRegion', {rid: val[0]}).then(res => {
-          let city = res.data
-          console.log('city：', city)
-          for (let j = 0; j < this.cityOptions.length; j++) {
-            if (this.cityOptions[j].value == val[0]) {
-              this.cityOptions[j].children = []
-              for (let i = 0; i < city.length; i++) {
-                let obj = {label: '', value: ''}
-                obj.label = city[i].rName
-                obj.value = city[i].rID
-                if (city[i].rID.toString().substring(4, 6) == '00') {  // 二级，判断是否为地级市- 明确了省份过滤掉后面两位不是00的就剩下城市
-                  //            console.log(city[i].rID.toString().substring(4,6))
-                  this.cityOptions[j].children.push(obj)
-                } else {
-                  region.push(obj)              // 三级，所属区域
-                }
-              }
-              //        console.log('region',region)
-              this.regionOpt = region
-              break
-            }
-          }
-        })*/
         },
         // uWho为全国时，根据市级城市rid，获取它的下属区、县
         handleChange(value) {
@@ -997,7 +970,7 @@ export default {
                 latlng: this.recForm.latlng, // 经纬度 重庆:9.61;106.47  北京:116.46;39.92 广州: 113.27;23.13  上海:121.29;31.11 深圳:113.46;22.27
                 ct: this.recForm.buildingType, //楼盘类型
                 cd: this.recForm.liveTime, // 入住时间 '2017'
-                hp: this.recForm.buildingPrice * 100, // 楼盘价格
+                hp: (this.recForm.buildingPrice * 100).toFixed(0), // 楼盘价格
                 fn: this.recForm.buildingNum, // 楼栋数量
                 dn: this.recForm.doorwayNum, // 出入口数量
                 hn: this.recForm.households, // 小区户数
@@ -1031,6 +1004,7 @@ export default {
                     .then(res => {
                         console.log("资源数据：", res.data);
                         let recData = res.data;
+                        this.resData = recData;
                         if (
                             recData !== "" &&
                             recData !== null &&
@@ -1042,39 +1016,38 @@ export default {
                                 this.upLoadData.palt =
                                     this.recForm.resname + "-" + recData.rID;
                                 this.setImg();
+                                Message({
+                                    message: "资源媒体创建成功！",
+                                    type: "success"
+                                });
+                                this.iteratorCreateMeida(0);
                                 // 设置媒体信息
-                                let mediaArr = this.arrMedia; //[0].mediaForm
-                                for (let j = 0; j < mediaArr.length; j++) {
-                                    let arr_media = mediaArr[j].mediaForm;
-                                    let adsize =
-                                        arr_media.adSizeW +
-                                        "*" +
-                                        arr_media.adSizeH;
-                                    let adviewsize =
-                                        arr_media.visualW +
-                                        "*" +
-                                        arr_media.visualH;
-                                    let mediaObj = {
-                                        rid: recData.rID,
-                                        resid: recData.resID,
-                                        uid: this.recForm.uid,
-                                        mtitle: arr_media.mediaName,
-                                        pnum: arr_media.usableNum,
-                                        adsize: adsize,
-                                        adviewsize: adviewsize,
-                                        notpush: arr_media.adLimit.join("、"),
-                                        assettag: arr_media.assetId,
-                                        mtype: arr_media.doorType,
-                                        mimg: "",
-                                        mvc: arr_media.mediaType,
-                                        mrk: arr_media.mediaRemark,
-                                        mstate: arr_media.mstate.split("")[0]
-                                    };
-                                    /*        let mediaImg = arr_media.mImg
-                          mediaImg.palt = arr_media.mediaName + '门禁'*/
-                                    console.log("mediaObj", mediaObj);
-                                    this.createMedia(mediaObj, j);
-                                }
+                                // let mediaArr = this.arrMedia//[0].mediaForm
+                                // for (let j = 0; j < mediaArr.length; j++) {
+                                //   let arr_media = mediaArr[j].mediaForm
+                                //   let adsize = arr_media.adSizeW + '*' + arr_media.adSizeH
+                                //   let adviewsize = arr_media.visualW + '*' + arr_media.visualH
+                                //   let mediaObj = {
+                                //     rid: recData.rID,
+                                //     resid: recData.resID,
+                                //     uid: this.recForm.uid,
+                                //     mtitle: arr_media.mediaName,
+                                //     pnum: arr_media.usableNum,
+                                //     adsize: adsize,
+                                //     adviewsize: adviewsize,
+                                //     notpush: arr_media.adLimit.join('、'),
+                                //     assettag: arr_media.assetId,
+                                //     mtype: arr_media.doorType,
+                                //     mimg: '',
+                                //     mvc: arr_media.mediaType,
+                                //     mrk: arr_media.mediaRemark,
+                                //     mstate: (arr_media.mstate).split('')[0]
+                                //   }
+                                //   /*        let mediaImg = arr_media.mImg
+                                //           mediaImg.palt = arr_media.mediaName + '门禁'*/
+                                //   console.log('mediaObj', mediaObj)
+                                //   this.createMedia(mediaObj,j)
+                                // }
                             } else {
                                 this.$alert(
                                     "登录超时或权限异常，请重新登录",
@@ -1104,38 +1077,121 @@ export default {
                     });
             }
         },
-        // 创建媒体
-        createMedia(mediaObj, n, mediaImg) {
-            let temp = mediaObj;
-            api.postApi("/CreateMedia", temp).then(res => {
+        // 递归创建媒体
+        iteratorCreateMeida(i) {
+            // console.log('递归创建媒体',i)
+            if (i >= this.arrMedia.length) {
+                if (this.PathHaveEdit) {
+                    this.resetForm(); // 请求成功后重置表单
+                    this.resUpdata = [];
+                    Message({
+                        message: "保存成功！",
+                        type: "success"
+                    });
+                    this.$router.push("./mediaDetail");
+                } else {
+                    this.$confirm("资源媒体创建成功!", "提示", {
+                        confirmButtonText: "继续创建",
+                        cancelButtonText: "前往列表",
+                        showClose: false,
+                        type: "success "
+                    })
+                        .then(() => {
+                            this.resetForm(); // 请求成功后重置表单
+                            this.resUpdata = [];
+                        })
+                        .catch(() => {
+                            this.$router.push("./mediaList");
+                        });
+                }
+                return;
+            }
+            let rid = "";
+            let resID = "";
+            if (this.PathHaveEdit) {
+                rid = this.recForm.region;
+                resID = sessionStorage.getItem("resID");
+            } else {
+                rid = this.resData.rID;
+                resID = this.resData.resID;
+            }
+            let arr_media = this.arrMedia[i].mediaForm;
+            let adsize = arr_media.adSizeW + "*" + arr_media.adSizeH;
+            let adviewsize = arr_media.visualW + "*" + arr_media.visualH;
+            let mediaObj = {
+                rid: rid,
+                resid: resID,
+                uid: this.recForm.uid,
+                mtitle: arr_media.mediaName,
+                pnum: arr_media.usableNum,
+                adsize: adsize,
+                adviewsize: adviewsize,
+                notpush: arr_media.adLimit.join("、"),
+                assettag: arr_media.assetId,
+                mtype: arr_media.doorType,
+                mimg: "",
+                mvc: arr_media.mediaType,
+                mrk: arr_media.mediaRemark,
+                mstate: arr_media.mstate.split("")[0]
+            };
+            console.log("mediaObj", mediaObj);
+            api.postApi("/CreateMedia", mediaObj).then(res => {
                 console.log("创建媒体返回信息", res);
-                let mData = res.data;
-                if (!res.SysCode) {
-                    // mediaImg.ptid = mData.mid
-                    // mediaImg.ptp = ''
-                    // this.setImg(mediaImg)
-                    if (n >= this.arrMedia.length - 1) {
-                        // this.resetForm()  // 请求成功后重置表单
+                if (!res.data.SysCode) {
+                    if (res.data === "" || res.data === null) {
                         Message({
-                            message: "资源媒体创建成功！",
+                            message: arr_media.mediaName + "媒体创建失败",
+                            type: "warning"
+                        });
+                        this.iteratorCreateMeida(i + 1);
+                    } else {
+                        Message({
+                            message: arr_media.mediaName + "媒体创建成功",
                             type: "success"
                         });
-                        this.$confirm("资源媒体创建成功!", "提示", {
-                            confirmButtonText: "继续创建",
-                            cancelButtonText: "前往列表",
-                            showClose: false,
-                            type: "success "
-                        })
-                            .then(() => {
-                                this.resetForm(); // 请求成功后重置表单
-                                this.resUpdata = [];
-                            })
-                            .catch(() => {
-                                this.$router.push("./mediaList");
-                            });
+                        this.iteratorCreateMeida(i + 1);
                     }
+                } else {
+                    Message({
+                        message: arr_media.mediaName + "媒体创建失败",
+                        type: "warning"
+                    });
+                    // console.log(arr_media.mediaName,'媒体创建失败')
+                    this.iteratorCreateMeida(i + 1);
+                    // return
                 }
             });
+        },
+        // 创建媒体
+        createMedia(mediaObj, n, mediaImg) {
+            // let temp = mediaObj
+            // api.postApi('/CreateMedia', temp).then(res => {
+            //   console.log('创建媒体返回信息',res)
+            //   let mData = res.data
+            //   if(!res.data.SysCode){
+            //     // mediaImg.ptid = mData.mid
+            //     // mediaImg.ptp = ''
+            //     // this.setImg(mediaImg)
+            //     if (n >= this.arrMedia.length-1) {
+            //       // this.resetForm()  // 请求成功后重置表单
+            //       Message({
+            //         message: '资源媒体创建成功！',
+            //         type: 'success'
+            //       })
+            //       this.$confirm('资源媒体创建成功!', '提示', {
+            //         confirmButtonText: '继续创建',
+            //         cancelButtonText: '前往列表',
+            //         showClose: false,
+            //         type: 'success '
+            //       }).then(() => {
+            //         this.resetForm()  // 请求成功后重置表单
+            //         this.resUpdata = []
+            //       }).catch(() => {
+            //         this.$router.push('./mediaList');
+            //       })
+            //     }
+            //   }
+            // })
         },
 
         // 上传图片
@@ -1594,60 +1650,48 @@ export default {
                                             }
                                         });
                                 } else {
-                                    let mediaObj = {
-                                        rid: SetResCTObj.rid,
-                                        resid: rID,
-                                        uid: this.recForm.uid,
-                                        mtitle: tempObj.mediaName,
-                                        pnum: tempObj.usableNum,
-                                        adsize:
-                                            tempObj.adSizeW +
-                                            "*" +
-                                            tempObj.adSizeH,
-                                        adviewsize:
-                                            tempObj.visualW +
-                                            "*" +
-                                            tempObj.visualH,
-                                        notpush: tempObj.adLimit.join("、"),
-                                        assettag: tempObj.assetId,
-                                        mtype: tempObj.doorType,
-                                        mimg: "",
-                                        mvc: tempObj.mediaType,
-                                        mrk: tempObj.mediaRemark,
-                                        mstate: tempObj.mstate.split("")[0]
-                                    };
-                                    console.log("更新媒体时新增的", mediaObj);
-                                    api
-                                        .postApi("/CreateMedia", mediaObj)
-                                        .then(res => {
-                                            console.log(
-                                                "更新时创建新媒体返回data",
-                                                res
-                                            );
-                                            let mData = res.data;
-                                            if (!res.SysCode) {
-                                                // mediaImg.ptid = mData.mid
-                                                // mediaImg.ptp = ''
-                                                // this.setImg(mediaImg)
-                                                if (i >= mediaArr.length - 1) {
-                                                    this.resetForm(); // 请求成功后重置表单
-                                                    Message({
-                                                        message: "保存成功！",
-                                                        type: "success"
-                                                    });
-                                                    this.$router.push(
-                                                        "./mediaDetail"
-                                                    );
-                                                }
-                                            } else {
-                                                Message({
-                                                    message:
-                                                        tempObj.mediaName +
-                                                        "媒体保存失败！",
-                                                    type: "warning"
-                                                });
-                                            }
-                                        });
+                                    console.log("编辑时创建媒体的下标", i);
+                                    this.iteratorCreateMeida(i);
+                                    break;
+                                    /* let mediaObj = {
+                    rid: SetResCTObj.rid ,
+                    resid: rID,
+                    uid: this.recForm.uid,
+                    mtitle: tempObj.mediaName,
+                    pnum: tempObj.usableNum,
+                    adsize: tempObj.adSizeW + '*' + tempObj.adSizeH,
+                    adviewsize:  tempObj.visualW + '*' + tempObj.visualH,
+                    notpush: tempObj.adLimit.join('、'),
+                    assettag: tempObj.assetId,
+                    mtype: tempObj.doorType,
+                    mimg: '',
+                    mvc: tempObj.mediaType,
+                    mrk: tempObj.mediaRemark,
+                    mstate: (tempObj.mstate).split('')[0]
+                  }
+                  console.log('更新媒体时新增的', mediaObj)
+                  api.postApi('/CreateMedia', mediaObj).then(res => {
+                    console.log('更新时创建新媒体返回data',res)
+                    let mData = res.data
+                    if(!res.SysCode){
+                      // mediaImg.ptid = mData.mid
+                      // mediaImg.ptp = ''
+                      // this.setImg(mediaImg)
+                      if (i >= mediaArr.length-1) {
+                        this.resetForm()  // 请求成功后重置表单
+                        Message({
+                          message: '保存成功！',
+                          type: 'success'
+                        })
+                        this.$router.push('./mediaDetail');
+                      }
+                    }else{
+                      Message({
+                        message: tempObj.mediaName + '媒体保存失败！',
+                        type: 'warning'
+                      })
+                    }
+                  })*/
                                 }
                             }
                         } else {

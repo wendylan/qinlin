@@ -86,7 +86,7 @@
                                 {text: '进行中', value: 1},
                                 {text: '未投放', value: 2},
                                 {text: '投放中', value: 3},
-                                {text: '强行结束', value: 5}
+                                {text: '强制结束', value: 5}
 							]" :filter-method="filterStatus" :filter-multiple="false">
                             <template slot-scope="scope">
                                 <span>{{ stateToText(scope.row.apState) }}</span>
@@ -235,10 +235,7 @@ export default {
                                 let arr = item.rIDs.split(",");
                                 let resultArr = [];
                                 for (let data of arr) {
-                                    let text = data.substr(
-                                        0,
-                                        data.indexOf(")") + 1
-                                    );
+                                    let text = data.substr(0, data.indexOf(")") + 1);
                                     resultArr.push(text);
                                 }
                                 item.cityArea = resultArr;
@@ -276,7 +273,7 @@ export default {
                 { text: "进行中", value: 1 },
                 { text: "未投放", value: 2 },
                 { text: "投放中", value: 3 },
-                { text: "强行结束", value: 5 }
+                { text: "强制结束", value: 5 }
             ];
             for (let data of state) {
                 if (val == data.value) {

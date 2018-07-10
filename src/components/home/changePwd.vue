@@ -110,21 +110,17 @@ export default {
                             console.log(res);
                             let result = res.data;
                             if (res.data.SysCode == 100200) {
-                                MessageBox.confirm(
+                                MessageBox.alert(
                                     "修改成功，请重新登录",
                                     "提示",
                                     {
                                         confirmButtonText: "确定",
-                                        cancelButtonText: "取消",
-                                        type: "warning"
+                                        showClose: false,
+                                        callback: action => {
+                                            this.$router.push("/login");
+                                        }
                                     }
-                                )
-                                    .then(() => {
-                                        this.$router.push("/login");
-                                    })
-                                    .catch(() => {
-                                        console.log("cancel");
-                                    });
+                                );
                             } else if (result.SysCode == 100302) {
                                 Message.warning("登录超时,请重新登录");
                                 this.$router.push("/login");

@@ -1248,7 +1248,7 @@ export default {
         ToDetail() {
             this.$router.push("./planDetail");
         },
-        // 提交方案选点信息
+        // 获取方案投放城市的pdid信息
         getPDIDFun(apID) {
             /*   uid         int【必填】         当前账户UserID
             pdid        int【必填】         选择方案投放pdID
@@ -1260,72 +1260,48 @@ export default {
             console.log("shopingArr", shopingArr);
             console.log("csmArr", csmArr);
             console.log("cityOptions", this.cityOptions);
-            let uid = this.sessionData.uID;
+            let uid = this.sessionData.uID; // apID
             api.getApi("/GetAPD", { uid: uid, apid: apID }).then(res => {
                 console.log("获取pdid", res);
                 let APDData = res.data;
                 if (APDData.length !== 0) {
-                    for (let j = 0; j < APDData.length; j++) {
-                        for (let t = 0; t < this.city.length; t++) {
-                            if (this.city[t].rid == APDData[j].rID) {
-                                let city = this.city[t].rName;
-                                for (let n = 0; n < csmArr.length; n++) {
-                                    let asIDs = "";
-                                    for (
-                                        let i = 0;
-                                        i < shopingArr.length;
-                                        i++
-                                    ) {
-                                        if (
-                                            csmArr[n].city ===
-                                                shopingArr[i].city &&
-                                            csmArr[n].schedules ===
-                                                shopingArr[i].schedules
-                                        ) {
-                                            if (asIDs === "") {
-                                                asIDs = shopingArr[i].asIDs;
-                                            } else {
-                                                asIDs =
-                                                    asIDs +
-                                                    "," +
-                                                    shopingArr[i].asIDs;
-                                            }
-                                        }
-                                    }
-                                    console.log("+++++++++++++", asIDs);
-                                    if (csmArr[n].city === city) {
-                                        let pointParams = {
-                                            uid: uid,
-                                            pdid: APDData[j].pdID,
-                                            pbs: csmArr[n].schedules.split(
-                                                "-"
-                                            )[0],
-                                            pbe: csmArr[n].schedules.split(
-                                                "-"
-                                            )[1],
-                                            asids: asIDs
-                                        };
-                                        console.log(
-                                            "提交选点的信息",
-                                            csmArr[n].city,
-                                            pointParams
-                                        );
-                                        api
-                                            .postApi("/SendAdBase", pointParams)
-                                            .then(res => {
-                                                console.log(
-                                                    "提交选点后返回的data",
-                                                    res
-                                                );
-                                                if (n >= csmArr.length - 1) {
-                                                    this.CreateAPDFun();
-                                                }
-                                            });
-                                    }
-                                }
-                            }
+                    this.PushADBFun(APDData);
+                    /*for (let j = 0; j < APDData.length; j++){
+              for(let t=0;t<this.city.length;t++){
+                if(this.city[t].rid == APDData[j].rID){
+                  let city = this.city[t].rName
+                  for (let n = 0; n < csmArr.length; n++) {
+                    let asIDs = ''
+                    for (let i = 0; i < shopingArr.length; i++) {
+                      if (csmArr[n].city === shopingArr[i].city && csmArr[n].schedules === shopingArr[i].schedules) {
+                        if (asIDs === '') {
+                          asIDs = shopingArr[i].asIDs
+                        } else {
+                          asIDs = asIDs + ',' + shopingArr[i].asIDs
                         }
+                      }
                     }
+                    console.log('+++++++++++++', asIDs)
+                    if (csmArr[n].city === city) {
+                      let pointParams = {
+                        uid: uid,
+                        pdid: APDData[j].pdID,
+                        pbs: csmArr[n].schedules.split('-')[0],
+                        pbe: csmArr[n].schedules.split('-')[1],
+                        asids: asIDs,
+                      }
+                      console.log('提交选点的信息', csmArr[n].city, pointParams)
+                      api.postApi('/SendAdBase', pointParams).then(res => {
+                        console.log('提交选点后返回的data', res)
+                        if (n >= csmArr.length - 1) {
+                          this.CreateAPDFun()
+                        }
+                      })
+                    }
+                  }
+                }
+              }
+            }*/
                 } else {
                     console.log("获取的pdid为空");
                     this.$message({
@@ -1335,6 +1311,69 @@ export default {
                 }
             });
             // this.CreateAPDFun()
+        },
+        // 提交方案选点信息
+        PushADBFun(data) {
+            let ADBData = data;
+            let shopingArr = this.shopingList;
+            console.log("shopingArr", shopingArr);
+            console.log("this.city", this.city);
+            let cityArr = [];
+            for (let j = 0; j < ADBData.length; j++) {
+                for (let t = 0; t < this.city.length; t++) {
+                    if (this.city[t].rid == ADBData[j].rID) {
+                        // let city = this.city[t].rName
+                        let cityObj = {
+                            city: this.city[t].rName,
+                            pdID: ADBData[j].pdID
+                        };
+                        cityArr.push(cityObj);
+                    }
+                }
+            }
+            console.log("cityArr", cityArr);
+            let pbSetTime = this.timestampToTime(Date.parse(new Date())); //
+            console.log("当前日期时间", pbSetTime);
+            let uid = this.sessionData.uID;
+            let arr = [];
+            for (let i = 0; i < shopingArr.length; i++) {
+                let ADobj = {
+                    asID: shopingArr[i].asIDs,
+                    pdID: 0,
+                    pbStar: shopingArr[i].schedules.split("-")[0],
+                    pbEnd: shopingArr[i].schedules.split("-")[1],
+                    uID: uid,
+                    pbSetTime: pbSetTime
+                };
+                for (let n = 0; n < cityArr.length; n++) {
+                    if (shopingArr[i].city == cityArr[n].city) {
+                        ADobj.pdID = cityArr[n].pdID;
+                    }
+                }
+                arr.push(ADobj);
+            }
+            console.log("PushADBFun的arr", arr);
+            let postData = { uid: uid, abList: arr };
+            console.log(JSON.stringify(postData));
+            api.postApi_new("/PushADB", JSON.stringify(postData)).then(res => {
+                console.log("PushADB提交选点", res);
+                if (
+                    res.data.SysCode === 100302 ||
+                    res.data.MSG === "登陆超时"
+                ) {
+                    this.ADloading.close();
+                    this.loginTimeout();
+                } else {
+                    if (res.data === "" || res.data === null) {
+                        this.$message({
+                            message: "提交选点失败",
+                            type: "warning"
+                        });
+                    } else {
+                        this.CreateAPDFun();
+                    }
+                }
+            });
         },
         // 创建方案投放城市详情(报价单数据提交)CreateAPD
         CreateAPDFun() {
@@ -2425,6 +2464,7 @@ export default {
                 });
                 // setTimeout(() => {
                 this.creatAdPlan(); // 创建方案
+                // this.getPDIDFun()
                 // }, 1000);
             }
             if (this.active > 3) {
@@ -2496,10 +2536,10 @@ export default {
             } else if (letter === "TP") {
                 this.changeBill = true;
                 this.totalChange.rid = info.rid;
-                this.totalChange.cash = info.cash.toFixed(2);
-                this.totalChange.zyzh = info.zyzh.toFixed(2);
-                this.totalChange.other = info.other.toFixed(2);
-                this.totalChange.total = info.total.toFixed(2);
+                this.totalChange.cash = commaFormat.noComma(info.cash); //(info.cash).toFixed(2)
+                this.totalChange.zyzh = commaFormat.noComma(info.zyzh); //(info.zyzh).toFixed(2)
+                this.totalChange.other = commaFormat.noComma(info.other); //(info.other).toFixed(2)
+                this.totalChange.total = commaFormat.noComma(info.total); //(info.total).toFixed(2)
                 this.totalChange.remark = info.remark;
             }
         },
@@ -3010,12 +3050,12 @@ export default {
                                     );
                                     // 广告费计算
                                     quotationObj.ADPrice =
-                                        ADPriceList[i].adPrice / (100 * 2); //(ADPriceList[i].adPrice / (100 * 2)).toFixed(2)                     // 刊例价(面/周)
+                                        ADPriceList[i].adPrice / (100 * 2); //(ADPriceList[i].adPrice / (100 * 2)).toFixed(2)// 刊例价(面/周)
                                     console.log(
                                         "刊例价(面/周)",
                                         quotationObj.ADPrice
                                     );
-                                    quotationObj.tfl = mDate; //this.badgeNumber * 14                                         // 投放量(面·天)
+                                    quotationObj.tfl = mDate; //this.badgeNumber * 14           // 投放量(面·天)
                                     console.log(
                                         "(quotationObj.tfl * (quotationObj.ADPrice / 7))",
                                         quotationObj.tfl *
@@ -3049,11 +3089,11 @@ export default {
 
                                     // 制作费计算
                                     quotationObj.ADNumber = mNUm; //this.badgeNumber                                           // 广告画数量
-                                    quotationObj.makePrice =
+                                    quotationObj.MReaPrice =
                                         quotationObj.ADNumber *
                                         quotationObj.MPrice; //(quotationObj.ADNumber * quotationObj.MPrice).toFixed(2)       // 制作费 = 广告画数量 * 制作费单价
-                                    quotationObj.MReaPrice =
-                                        quotationObj.makePrice;
+                                    quotationObj.makePrice =
+                                        quotationObj.MReaPrice;
                                     quotationObj.makeDiscount =
                                         Math.round(
                                             quotationObj.makePrice /
@@ -4121,6 +4161,20 @@ export default {
                     this.totalChangeOther = true;
                 }
             }
+        },
+        // 时间戳转换成日期格式 2018-06-18 10:33:24
+        timestampToTime(timestamp) {
+            let date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            let Y = date.getFullYear() + "-";
+            let M =
+                (date.getMonth() + 1 < 10
+                    ? "0" + (date.getMonth() + 1)
+                    : date.getMonth() + 1) + "-";
+            let D = date.getDate() + " ";
+            let h = date.getHours() + ":";
+            let m = date.getMinutes() + ":";
+            let s = date.getSeconds();
+            return Y + M + D + h + m + s;
         },
         // 登录超时
         loginTimeout() {

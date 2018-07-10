@@ -386,10 +386,8 @@ export default {
         this.getAreaData();
     },
     methods: {
-        getSession() {
-            this.sessionData = JSON.parse(
-                sessionStorage.getItem("session_data")
-            );
+        getSession(){
+            this.sessionData = JSON.parse(sessionStorage.getItem('session_data'));
         },
         handle(item) {
             console.log(item);
@@ -411,10 +409,10 @@ export default {
                         this.timeout = setTimeout(() => {
                             callback(results);
                         }, 3000 * Math.random());
-                    } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
+                    } else if(res.data.SysCode ==100302){
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
+                    }else {
                         Message.warning("该账号已经被占用");
                     }
                 });
@@ -490,23 +488,24 @@ export default {
                             // this.allCompany = res.data;
                             // var results = this.allCompany;
                             var results = res.data;
-                            this.companyForm.cID = "";
+                            this.companyForm.cID = '';
                             clearTimeout(this.timeout);
                             this.timeout = setTimeout(() => {
                                 callback(results);
                             }, 3000 * Math.random());
                         }
                     });
-            } else {
+            }else{
                 this.oldBrandTags = [];
                 this.companyTags = [];
                 this.companyForm.industryIdArr = [];
                 this.companyForm.cityArr = [];
-                this.companyForm.cRemark = "";
-                this.companyForm.cAddress = "";
+                this.companyForm.cRemark = '';
+                this.companyForm.cAddress = '';
             }
         },
         handleSelect(item) {
+
             this.companyTags = [];
             console.log(item);
             console.log(item.rID);
@@ -548,7 +547,7 @@ export default {
             this.oldcompanyInfo = JSON.parse(JSON.stringify(item));
             // this.$refs["companyForm"].clearValidate();
             // this.isFill = true;
-            Message.warning("该公司已有销售相关联");
+            // Message.warning('该公司已有销售相关联');
         },
         selectAnother() {
             // this.isFill = false;
@@ -633,7 +632,7 @@ export default {
                     return false;
                 }
             });
-            if (client_bool && company_bool) {
+            if(client_bool && company_bool){
                 // 邮箱变成小写
                 this.clientForm.email = this.clientForm.email.toLowerCase();
                 console.log(this.companyForm.cID);
@@ -647,12 +646,14 @@ export default {
                     // 修改公司信息
                     this.updateCompany();
                     // this.isAdd = true;
+
                 } else {
                     console.log("nocom", company_bool, client_bool);
                     // this.isAdd = true;
                     // 创建公司和用户
                     this.createCompany();
                 }
+
             }
         },
         // 判断公司信息是否修改
@@ -705,7 +706,7 @@ export default {
                 cremark: cForm.cRemark ? cForm.cRemark : ""
             };
             console.log("companyInfo-------", companyInfo);
-            if (this.isChangeCom()) {
+            if(this.isChangeCom()){
                 // 修改公司信息
                 api
                     .postApi("/SetMyCom", companyInfo)
@@ -717,24 +718,24 @@ export default {
                             let puid = this.sessionData.uID;
                             let cid = this.companyForm.cID;
                             this.regUser(puid, cid, mes.SysCode);
-                        } else if (mes.SysCode == 100403) {
+                        } else if(mes.SysCode == 100403) {
                             // Message.warning(mes.MSG);
                             // 注册用户
                             let puid = this.sessionData.uID;
                             let cid = this.companyForm.cID;
                             this.regUser(puid, cid, mes.SysCode);
-                        } else {
+                        }else{
                             Message.warning(mes.MSG);
                         }
                     })
                     .catch(res => {
                         console.log(res);
                     });
-            } else {
+            }else{
                 // 注册客户
                 let puid = this.sessionData.uID;
                 let cid = this.companyForm.cID;
-                this.regUser(puid, cid, "client");
+                this.regUser(puid, cid, 'client');
             }
         },
         // 创建公司
@@ -780,11 +781,11 @@ export default {
                         // 注册客户
                         let puid = this.sessionData.uID;
                         let cid = res.data.cID;
-                        this.regUser(puid, cid, "new");
-                    } else if (userMsg.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
+                        this.regUser(puid, cid, 'new');
+                    }else if(userMsg.SysCode == 100302){
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
+                    }else{
                         Message.warning(userMsg.MSG);
                     }
                 })
@@ -835,24 +836,21 @@ export default {
                     let userMsg = res.data;
                     if (!userMsg.SysCode) {
                         this.resetForm();
-                        let str = "";
-                        if (code == "new") {
-                            str =
-                                "成功创建客户,成功创建公司,是否跳转到列表页面";
-                        } else if (code == "client") {
-                            str = "成功创建客户,是否跳转到列表页面";
-                        } else if (code == 300200) {
-                            str =
-                                "成功创建客户,成功修改公司信息,是否跳转到列表页面";
-                        } else {
-                            str =
-                                "成功创建客户,没有权限修改公司信息,是否跳转到列表页面";
+                        let str = '';
+                        if(code =="new"){
+                            str = '成功创建客户,成功创建公司,是否跳转到列表页面';
+                        }else if(code =='client'){
+                            str = '成功创建客户,是否跳转到列表页面';
+                        }else if(code ==300200){
+                            str = '成功创建客户,成功修改公司信息,是否跳转到列表页面';
+                        }else{
+                            str = '成功创建客户,没有权限修改公司信息,是否跳转到列表页面';
                         }
                         this.changRoute(str);
-                    } else if (userMsg.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
-                    } else {
+                    }else if(userMsg.SysCode == 100302){
+                        Message.warning('登录超时,请重新登录');
+                        this.$router.push('/login');
+                    }else{
                         Message.warning(userMsg.MSG);
                     }
                 })
@@ -864,12 +862,16 @@ export default {
                 });
         },
         // 新建之后进行跳转
-        changRoute(str) {
-            MessageBox.confirm(`${str}`, "提示", {
-                showClose: false,
-                confirmButtonText: "确定",
-                type: "warning"
-            })
+        changRoute(str){
+            MessageBox.confirm(
+                `${str}`,
+                "提示",
+                {
+                    showClose: false,
+                    confirmButtonText: "确定",
+                    type: "warning"
+                }
+            )
                 .then(() => {
                     this.$router.push("./clientList");
                 })
@@ -1030,6 +1032,8 @@ export default {
     outline: none;
     cursor: pointer;
 }
+
+
 
 /*tags样式*/
 .el-tag {

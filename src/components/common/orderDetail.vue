@@ -1825,7 +1825,7 @@ export default {
                 { text: "进行中", state: 1 },
                 { text: "未投放", state: 2 },
                 { text: "投放中", state: 3 },
-                { text: "强行结束", state: 5 }
+                { text: "强制结束", state: 5 }
             ];
             for (let data of state) {
                 if (val == data.state) {
