@@ -423,8 +423,7 @@ export default {
                                 console.log(res);
                             });
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -690,8 +689,7 @@ export default {
                                 console.log(res);
                             });
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -842,17 +840,21 @@ export default {
         filterRName(value, row) {
             return row.rName === value;
         },
-
         changeImgType() {
             this.isActive = !this.isActive;
         },
-        //页码
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
         }
+
+        //页码
+        // handleSizeChange(val) {
+        //     console.log(`每页 ${val} 条`);
+        // },
+        // handleCurrentChange(val) {
+        //     console.log(`当前页: ${val}`);
+        // }
     },
     mounted() {
         $(function() {

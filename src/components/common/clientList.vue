@@ -108,8 +108,7 @@ import {
     DatePicker,
     Select,
     Option,
-    Message,
-    Loading
+    Message
 } from "element-ui";
 // 区域转换为中文
 import areaToText from "../../commonFun/areaToText_new.js";
@@ -129,8 +128,8 @@ export default {
     data() {
         return {
             //加载中
-            loading: true,
-            // loading: false,
+            // loading: true,
+            loading: false,
             showNewBtn: true,
             keyword: "",
             date: "",
@@ -138,30 +137,7 @@ export default {
             filtCity: [],
             //表格
             planList: [],
-            currentPlan: [
-                // {
-                //     cAddress: "北京市海淀区",
-                //     cBrand: "管家帮,Microsoft",
-                //     cID: 1,
-                //     cName: "北京易盟天地信息技术股份有限公司",
-                //     cRemark: "备注test",
-                //     clientRName: "北京市",
-                //     crID: 110100,
-                //     division: " 营销部",
-                //     email: "cus@qinlin.com",
-                //     iID: 125,
-                //     joinTime: "2018-05-08 18:17:07.0",
-                //     phone: "18623196913",
-                //     position: "市场部总监",
-                //     puName: "周昭杰",
-                //     rID: 110100,
-                //     rName: "北京市",
-                //     realName: "钱姣",
-                //     sName: "18623196913",
-                //     telephone: "020-",
-                //     uID: 6
-                // }
-            ]
+            currentPlan: []
         };
     },
     mounted: function() {
@@ -343,8 +319,7 @@ export default {
                                 "rName"
                             );
                         } else if (res.data.SysCode == 100302) {
-                            Message.warning("登录超时,请重新登录");
-                            this.$router.push("/login");
+                            this.loginTimeout();
                         } else {
                             Message.warning(res.data.MSG);
                         }
@@ -373,8 +348,7 @@ export default {
                                 "rName"
                             );
                         } else if (res.data.SysCode == 100302) {
-                            Message.warning("登录超时,请重新登录");
-                            this.$router.push("/login");
+                            this.loginTimeout();
                         } else {
                             Message.warning(res.data.MSG);
                         }
@@ -383,6 +357,10 @@ export default {
                         console.log(res);
                     });
             }
+        },
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
         }
     }
 };

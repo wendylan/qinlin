@@ -119,85 +119,14 @@ export default {
     data() {
         return {
             //加载中
-            // loading: true,
-            loading: false,
+            loading: true,
             keyword: "",
             select: "1",
             showNewBtn: true,
             filterUWhoData: [],
             //表格
-            accountList: [
-                // {
-                //     division: "产品研发部",
-                //     email: "kacent@qq.com",
-                //     joinTime: "2018-04-09 15:46:00.0",
-                //     phone: "13924447488",
-                //     position: "开发经理",
-                //     puID: 1,
-                //     puName: "梁晓君",
-                //     rID: 440100,
-                //     rName: "广州市",
-                //     realName: "林郑伟",
-                //     sName: "Kacent",
-                //     uID: 2,
-                //     uState: 1,
-                //     uType: "SA",
-                //     uWho: "440100"
-                // },
-                // {
-                //     division: "产品研发部",
-                //     email: "kacent@qq.com",
-                //     joinTime: "2018-04-09 15:46:00.0",
-                //     phone: "13924447488",
-                //     position: "开发经理",
-                //     puID: 1,
-                //     puName: "梁晓君",
-                //     rID: 440100,
-                //     rName: "广州市",
-                //     realName: "林郑伟",
-                //     sName: "Kacent2",
-                //     uID: 3,
-                //     uState: 1,
-                //     uType: "SA",
-                //     uWho: "440000,440200"
-                // }
-            ],
-            currAccount: [
-                // {
-                //     division: "产品研发部",
-                //     email: "kacent@qq.com",
-                //     joinTime: "2018-04-09 15:46:00.0",
-                //     phone: "13924447488",
-                //     position: "开发经理",
-                //     puID: 1,
-                //     puName: "梁晓君",
-                //     rID: 440100,
-                //     rName: "广州市",
-                //     realName: "林郑伟",
-                //     sName: "Kacent",
-                //     uID: 2,
-                //     uState: 1,
-                //     uType: "SA",
-                //     uWho: "440100"
-                // },
-                // {
-                //     division: "产品研发部",
-                //     email: "kacent@qq.com",
-                //     joinTime: "2018-04-09 15:46:00.0",
-                //     phone: "13924447488",
-                //     position: "开发经理",
-                //     puID: 1,
-                //     puName: "梁晓君",
-                //     rID: 440100,
-                //     rName: "广州市",
-                //     realName: "林郑伟",
-                //     sName: "Kacent2",
-                //     uID: 3,
-                //     uState: 1,
-                //     uType: "SA",
-                //     uWho: "440000,440200"
-                // }
-            ]
+            accountList: [],
+            currAccount: []
         };
     },
     created() {
@@ -278,8 +207,7 @@ export default {
 
                         this.currAccount = this.accountList;
                     } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -429,8 +357,7 @@ export default {
                                 Message.success("操作成功");
                                 row.uState = row.uState ? 0 : 1;
                             } else if(res.data.SysCode == 100302){
-                                Message.warning("登录超时,请重新登录");
-                                this.$router.push("/login");
+                                this.loginTimeout();
                             }else{
                                 Message.warning(res.data.MSG);
                             }
@@ -455,7 +382,11 @@ export default {
             if (role != "SA" && role != "SM") {
                 this.showNewBtn = false;
             }
-        }
+        },
+        loginTimeout(){
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
+        },
     }
 };
 </script>

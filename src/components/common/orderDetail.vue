@@ -1,686 +1,674 @@
 <template>
-	<div>
-		<div class="ad_mediaMana_wrap">
-			<div class="ad_mediaMana_nav clearfix">
-				<p>
-					<a href="#">订单管理</a>
-					<em> / </em>
-					<a href="#">订单详情</a>
-				</p>
-			</div>
-			<!--资源信息-->
-			<div class="mediaMana_content_top">
-				<div class="content_top_wrap" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-					<div class="plan-title">
-						<h4>
-							<img src="../../assets/images/planlogo.png" alt="">{{orderDetail.apName}}
-							<p>{{orderDetail.apQC}}
-								<i class="el-icon-edit" v-if="(role=='MD')" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i>
-							</p>
-						</h4>
-						<!--修改合同号对话框-->
-						<el-dialog title="修改合同编号" :visible.sync="changeCID" width="30%">
-							<!-- <el-input v-model="apQC" @change="setApQC()"></el-input> -->
-							<el-input v-model="apQC"></el-input>
-							<span slot="footer" class="dialog-footer">
-								<el-button @click="cancelChangeID">取 消</el-button>
-								<el-button type="primary" @click="confirmChangeID">确 定</el-button>
-							</span>
-						</el-dialog>
-						<div class="handleBtn">
-							<!-- <el-button plain @click="changeRemark = true" :disabled="usableBtn">监播备注</el-button> -->
-							<el-button type="primary" :disabled="usableBtn" @click="changePoint">换点</el-button>
-							<!--监播备注对话框-->
-							<el-dialog title="监播备注" :visible.sync="changeRemark" width="30%">
-								<el-input type="textarea" v-model="remark" :rows="2"></el-input>
-								<span slot="footer" class="dialog-footer">
-									<el-button @click="cancelChangeRemark">取 消</el-button>
-									<el-button type="primary" @click="confirmChangeRemark">确 定</el-button>
-								</span>
-							</el-dialog>
-						</div>
-					</div>
-					<div>
-						<div class="plan-detail">
-							<div class="plan-detail-left">
-								<ul>
-									<li>
-										<span>公司名称：</span>
-										<em>{{orderDetail.cName}}</em>
-									</li>
-									<li>
-										<span>所属销售：</span>
-										<em>{{orderDetail.realName}}</em>
-									</li>
-									<li>
-										<span>现金结算：</span>
-										<em>¥ {{orderDetail.pdTotal}}</em>
-									</li>
-									<li>
-										<span>公司品牌：</span>
-										<em>{{orderDetail.bTitle}}</em>
-									</li>
-									<li>
-										<span>投放城市：</span>
-										<em>{{filter(orderDetail.rIDs)}}</em>
-									</li>
-									<li>
-										<span>资源置换：</span>
-										<em>¥ {{orderDetail.pdSendFee}}</em>
-									</li>
-									<li>
-										<span>联系人：</span>
-										<em>{{orderDetail.cuName}}</em>
-									</li>
-									<!-- <li>
+    <div>
+        <div class="ad_mediaMana_wrap">
+            <div class="ad_mediaMana_nav clearfix">
+                <p>
+                    <a href="#">订单管理</a>
+                    <em> / </em>
+                    <a href="#">订单详情</a>
+                </p>
+            </div>
+            <!--资源信息-->
+            <div class="mediaMana_content_top">
+                <div class="content_top_wrap" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                    <div class="plan-title">
+                        <h4>
+                            <img src="../../assets/images/planlogo.png" alt="">{{orderDetail.apName}}
+                            <p>{{orderDetail.apQC}}
+                                <i class="el-icon-edit" v-if="(role=='MD')" @click="changeCID = true" :class="{changeCID:!usableBtn}"></i>
+                            </p>
+                        </h4>
+                        <!--修改合同号对话框-->
+                        <el-dialog title="修改合同编号" :visible.sync="changeCID" width="30%">
+                            <!-- <el-input v-model="apQC" @change="setApQC()"></el-input> -->
+                            <el-input v-model="apQC"></el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="cancelChangeID">取 消</el-button>
+                                <el-button type="primary" @click="confirmChangeID">确 定</el-button>
+                            </span>
+                        </el-dialog>
+                        <div class="handleBtn">
+                            <!-- <el-button plain @click="changeRemark = true" :disabled="usableBtn">监播备注</el-button> -->
+                            <el-button type="primary" :disabled="usableBtn" @click="changePoint">换点</el-button>
+                            <!--监播备注对话框-->
+                            <el-dialog title="监播备注" :visible.sync="changeRemark" width="30%">
+                                <el-input type="textarea" v-model="remark" :rows="2"></el-input>
+                                <span slot="footer" class="dialog-footer">
+                                    <el-button @click="cancelChangeRemark">取 消</el-button>
+                                    <el-button type="primary" @click="confirmChangeRemark">确 定</el-button>
+                                </span>
+                            </el-dialog>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="plan-detail">
+                            <div class="plan-detail-left">
+                                <ul>
+                                    <li>
+                                        <span>公司名称：</span>
+                                        <em>{{orderDetail.cName}}</em>
+                                    </li>
+                                    <li>
+                                        <span>所属销售：</span>
+                                        <em>{{orderDetail.realName}}</em>
+                                    </li>
+                                    <li>
+                                        <span>现金结算：</span>
+                                        <em>¥ {{orderDetail.pdTotal}}</em>
+                                    </li>
+                                    <li>
+                                        <span>公司品牌：</span>
+                                        <em>{{orderDetail.bTitle}}</em>
+                                    </li>
+                                    <li>
+                                        <span>投放城市：</span>
+                                        <em>{{filter(orderDetail.rIDs)}}</em>
+                                    </li>
+                                    <li>
+                                        <span>资源置换：</span>
+                                        <em>¥ {{orderDetail.pdSendFee}}</em>
+                                    </li>
+                                    <li>
+                                        <span>联系人：</span>
+                                        <em>{{orderDetail.cuName}}</em>
+                                    </li>
+                                    <!-- <li>
                                         <span>方案备注：</span>
                                         <em>{{orderDetail.remark||"无"}}</em>
                                     </li> -->
-									<li>
-										<span>其他费用：</span>
-										<em>¥ {{orderDetail.pdOtherFee}}</em>
-									</li>
-								</ul>
-							</div>
-							<div class="plan-detail-right">
-								<dl>
-									<dt>状态</dt>
-									<dd>{{stateToText(orderDetail.apState)}}</dd>
-								</dl>
-								<dl>
-									<dt>方案金额</dt>
-									<dd>¥ {{orderDetail.Total}}</dd>
-								</dl>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="plan-panel">
-				<el-tabs v-model="planPanel" @tab-click="handleClick()">
-					<el-tab-pane label="选点排期" name="first">
-						<div class="first-wrap box-wrap">
-							<h4 v-if="!showTitle">选点排期</h4>
-							<h4 v-if="showTitle">更换点位
-								<el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位
-								</el-button>
-								<span>原投放面数:40&nbsp;&nbsp; 种植投放面数:1&nbsp;&nbsp; 新增面数:1&nbsp;&nbsp; 现投放面数:40</span>
-							</h4>
-							<div style="display:inline-block;margin-left: 30px;margin-top: 20px;" class="search-wrap">
-								<span>
-									<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="init()">
-										<el-select v-model="selectRecName" slot="prepend" placeholder="请选择">
-											<el-option label="资源名称" value="1"></el-option>
-										</el-select>
-									</el-input>
-								</span>
-								<span>
-									<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
-								</span>
-							</div>
+                                    <li>
+                                        <span>其他费用：</span>
+                                        <em>¥ {{orderDetail.pdOtherFee}}</em>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="plan-detail-right">
+                                <dl>
+                                    <dt>状态</dt>
+                                    <dd>{{stateToText(orderDetail.apState)}}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>方案金额</dt>
+                                    <dd>¥ {{orderDetail.Total}}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="plan-panel">
+                <el-tabs v-model="planPanel" @tab-click="handleClick()">
+                    <el-tab-pane label="选点排期" name="first">
+                        <div class="first-wrap box-wrap">
+                            <h4 v-if="!showTitle">选点排期</h4>
+                            <h4 v-if="showTitle">更换点位
+                                <el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位
+                                </el-button>
+                                <span>原投放面数:40&nbsp;&nbsp; 种植投放面数:1&nbsp;&nbsp; 新增面数:1&nbsp;&nbsp; 现投放面数:40</span>
+                            </h4>
+                            <div style="display:inline-block;margin-left: 30px;margin-top: 20px;" class="search-wrap">
+                                <span>
+                                    <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="init()">
+                                        <el-select v-model="selectRecName" slot="prepend" placeholder="请选择">
+                                            <el-option label="资源名称" value="1"></el-option>
+                                        </el-select>
+                                    </el-input>
+                                </span>
+                                <span>
+                                    <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
+                                </span>
+                            </div>
 
-							<div class="table_wrap">
-								<el-table border :data="currentSetpoint" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-									<el-table-column type="expand">
-										<template slot-scope="props">
-											<el-form label-position="left" inline class="demo-table-expand">
-												<el-form-item label="商圈：">
-													<span>{{ props.row.tradingArea}}</span>
-												</el-form-item>
-												<el-form-item label="楼栋数量：">
-													<span>{{ props.row.fNum }}</span>
-												</el-form-item>
-												<el-form-item label="资产编号：">
-													<span>{{ props.row.assetTag }}</span>
-												</el-form-item>
-												<el-form-item label="入住年份：">
-													<span>{{ props.row.chDay }}</span>
-												</el-form-item>
-												<el-form-item label="广告限制：">
-													<span>{{ props.row.notPush }}</span>
-												</el-form-item>
-											</el-form>
-										</template>
-									</el-table-column>
+                            <div class="table_wrap">
+                                <el-table border :data="currentSetpoint" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                    <el-table-column type="expand">
+                                        <template slot-scope="props">
+                                            <el-form label-position="left" inline class="demo-table-expand">
+                                                <el-form-item label="商圈：">
+                                                    <span>{{ props.row.tradingArea}}</span>
+                                                </el-form-item>
+                                                <el-form-item label="楼栋数量：">
+                                                    <span>{{ props.row.fNum }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="资产编号：">
+                                                    <span>{{ props.row.assetTag }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="入住年份：">
+                                                    <span>{{ props.row.chDay }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="广告限制：">
+                                                    <span>{{ props.row.notPush }}</span>
+                                                </el-form-item>
+                                            </el-form>
+                                        </template>
+                                    </el-table-column>
 
-									<el-table-column label="资源名称" min-width="16.1%" prop="resName">
-									</el-table-column>
-									<el-table-column prop="mTitle" label="媒体名称" min-width="10.3%" class="tar">
-									</el-table-column>
-									<el-table-column prop="asLab" label="投放面" min-width="8.8%">
-									</el-table-column>
-									<el-table-column prop="city" label="城市" min-width="6%" :filters="filterCityData" :filter-method="filterCity">
-									</el-table-column>
-									<el-table-column prop="rName" label="区域" min-width="7.4%" :filters="filtersArea" :filter-method="filterRName">
-									</el-table-column>
-									<el-table-column prop="cType" label="楼盘类型" min-width="8.8%">
-									</el-table-column>
-									<el-table-column prop="hNum" label="小区户数" min-width="7.3%" class="tar">
-									</el-table-column>
-									<el-table-column label="楼盘价格" min-width="7.3%">
-										<template slot-scope="scope">
-											<span>&yen;{{(scope.row.hPrice)?priceFormat(scope.row.hPrice/100): 0 }}</span>
-										</template>
-									</el-table-column>
-									<el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
-									</el-table-column>
-								</el-table>
-							</div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="报价单" name="second">
-						<div class="second-wrap box-wrap">
-							<h4>报价单</h4>
-							<div class="panel">
-								<el-tabs type="border-card" class="baojiadan">
-									<el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
-										<div class="tab-info">
-											<div class="pqxx">
-												<h4>排期信息</h4>
-												<p>{{item.schedules}}</p>
-												<!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
-												<!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
-											</div>
-											<div class="price">
-												<div class="price-left">
-													<h4>广告费</h4>
-													<ul>
-														<li>刊例价(面/周)
-															<span>¥ {{priceFormat(item.adPrice)}}</span>
-														</li>
-														<li>投放量(面·天)
-															<span>{{item.pdDays}}</span>
-														</li>
-														<li>赠送(面·天)
-															<span>{{item.pdFreeNum}}</span>
-														</li>
-														<li>广告费折扣
-															<span>{{item.discount}}%</span>
-														</li>
-														<li>¥ {{priceFormat(item.pdAdFee)}}</li>
-													</ul>
-												</div>
-												<div class="price-right">
-													<h4>制作费</h4>
-													<ul>
-														<li>制作费单价
-															<span>¥ 100</span>
-														</li>
-														<li>广告画数量(张)
-															<span>{{item.pdNum}}</span>
-														</li>
-														<li></li>
-														<li>制作费折扣
-															<span>{{item.ADMakeDiscount}}%</span>
-														</li>
-														<li>¥ {{priceFormat(item.pdAdMake)}}</li>
-													</ul>
-												</div>
-											</div>
-											<div class="bottom">
-												<div class="bottom-detail">
-													<div class="remark">
-														<p>备注：{{item.pdRemark}}</p>
-													</div>
-													<div class="bill-title-right">
-														<ul>
-															<li>
-																<p>
-																	<em>现金结算：</em>
-																	<span>¥ {{priceFormat(item.pdTotal)}}</span>
-																</p>
-															</li>
-															<li>
-																<p>
-																	<em>资源置换：</em>
-																	<span>¥ {{priceFormat(item.pdSendFee)}}</span>
-																</p>
-															</li>
-															<li>
-																<p>
-																	<em>其他费用：</em>
-																	<span>¥ {{priceFormat(item.pdOtherFee)}}</span>
-																</p>
-															</li>
-														</ul>
-													</div>
-												</div>
-												<div class="bottom-fin">
-													<p>
-														<em style="top: 5px">总计：</em>
-														<span class="totalPrice">¥ {{priceFormat(item.allprice)}}</span>
-													</p>
-												</div>
-											</div>
-										</div>
-									</el-tab-pane>
-								</el-tabs>
-							</div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="物料信息" name="third" :disabled="usableBtn">
-						<div class="third-wrap box-wrap">
-							<h4>物料信息</h4>
-							<div class="table_wrap">
-								<el-table :data="materialInfo" border style="width: 100%">
-									<el-table-column label="序号" min-width="5.9%">
-										<template slot-scope="scope">
-											<span>{{scope.$index+1}}</span>
-										</template>
-									</el-table-column>
-									<el-table-column prop="adSize" label="广告尺寸" min-width="12.4%">
-									</el-table-column>
-									<el-table-column prop="adViewSize" label="可视画面" min-width="12.4%">
-									</el-table-column>
-									<el-table-column prop="resolution" label="分辨率" min-width="12.4%">
-									</el-table-column>
-									<el-table-column prop="colorMode" label="颜色模式" min-width="12.4%">
-									</el-table-column>
-									<el-table-column prop="photoFormat" label="文件格式" min-width="17.6%">
-									</el-table-column>
-									<el-table-column prop="pointNum" label="点位面数" min-width="12.7%">
-									</el-table-column>
-								</el-table>
-							</div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="上刊报告" name="forth" :disabled="usableBtn||role =='OP'">
-						<div class="forth-wrap box-wrap">
-							<h4>上刊报告</h4>
-							<div class="panel" v-loading="UpReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-								<div class="up-report">
-									<div class="up-loader-header">
-										<!-- <el-cascader :options="citys" v-model="citySelect" @change="searchImg(upReportArr, 'upImgArr')"> -->
-										<el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
-										</el-cascader>
-										<!-- <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(upReportArr, 'upImgArr')"> -->
-										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
-											<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
-										</el-select>
-										<!-- <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(upReportArr, 'upImgArr')"> -->
-										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
-											<el-option label="全部监播图" value="1"></el-option>
-											<el-option label="已上传" value="2"></el-option>
-											<el-option label="未上传" value="3"></el-option>
-										</el-select>
-										<!--进度条-->
-										<div class="progress">
-											<el-progress :percentage="upImgPercent"></el-progress>
-											<span>{{ currUpNum }} / {{upReportArr.length}}</span>
-										</div>
-									</div>
+                                    <el-table-column label="资源名称" min-width="16.1%" prop="resName">
+                                    </el-table-column>
+                                    <el-table-column prop="mTitle" label="媒体名称" min-width="10.3%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column prop="asLab" label="投放面" min-width="8.8%">
+                                    </el-table-column>
+                                    <el-table-column prop="city" label="城市" min-width="6%" :filters="filterCityData" :filter-method="filterCity">
+                                    </el-table-column>
+                                    <el-table-column prop="rName" label="区域" min-width="7.4%" :filters="filtersArea" :filter-method="filterRName">
+                                    </el-table-column>
+                                    <el-table-column prop="cType" label="楼盘类型" min-width="8.8%">
+                                    </el-table-column>
+                                    <el-table-column prop="hNum" label="小区户数" min-width="7.3%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column label="楼盘价格" min-width="7.3%">
+                                        <template slot-scope="scope">
+                                            <span>&yen;{{(scope.row.hPrice)?priceFormat(scope.row.hPrice/100): 0 }}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="报价单" name="second">
+                        <div class="second-wrap box-wrap">
+                            <h4>报价单</h4>
+                            <div class="panel">
+                                <el-tabs type="border-card" class="baojiadan">
+                                    <el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
+                                        <div class="tab-info">
+                                            <div class="pqxx">
+                                                <h4>排期信息</h4>
+                                                <p>{{item.schedules}}</p>
+                                                <!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
+                                                <!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
+                                            </div>
+                                            <div class="price">
+                                                <div class="price-left">
+                                                    <h4>广告费</h4>
+                                                    <ul>
+                                                        <li>刊例价(面/周)
+                                                            <span>¥ {{priceFormat(item.adPrice)}}</span>
+                                                        </li>
+                                                        <li>投放量(面·天)
+                                                            <span>{{item.pdDays}}</span>
+                                                        </li>
+                                                        <li>赠送(面·天)
+                                                            <span>{{item.pdFreeNum}}</span>
+                                                        </li>
+                                                        <li>广告费折扣
+                                                            <span>{{item.discount}}%</span>
+                                                        </li>
+                                                        <li>¥ {{priceFormat(item.pdAdFee)}}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="price-right">
+                                                    <h4>制作费</h4>
+                                                    <ul>
+                                                        <li>制作费单价
+                                                            <span>¥ 100</span>
+                                                        </li>
+                                                        <li>广告画数量(张)
+                                                            <span>{{item.pdNum}}</span>
+                                                        </li>
+                                                        <li></li>
+                                                        <li>制作费折扣
+                                                            <span>{{item.ADMakeDiscount}}%</span>
+                                                        </li>
+                                                        <li>¥ {{priceFormat(item.pdAdMake)}}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="bottom">
+                                                <div class="bottom-detail">
+                                                    <div class="remark">
+                                                        <p>备注：{{item.pdRemark}}</p>
+                                                    </div>
+                                                    <div class="bill-title-right">
+                                                        <ul>
+                                                            <li>
+                                                                <p>
+                                                                    <em>现金结算：</em>
+                                                                    <span>¥ {{priceFormat(item.pdTotal)}}</span>
+                                                                </p>
+                                                            </li>
+                                                            <li>
+                                                                <p>
+                                                                    <em>资源置换：</em>
+                                                                    <span>¥ {{priceFormat(item.pdSendFee)}}</span>
+                                                                </p>
+                                                            </li>
+                                                            <li>
+                                                                <p>
+                                                                    <em>其他费用：</em>
+                                                                    <span>¥ {{priceFormat(item.pdOtherFee)}}</span>
+                                                                </p>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="bottom-fin">
+                                                    <p>
+                                                        <em style="top: 5px">总计：</em>
+                                                        <span class="totalPrice">¥ {{priceFormat(item.allprice)}}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </el-tab-pane>
+                                </el-tabs>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="物料信息" name="third" :disabled="usableBtn">
+                        <div class="third-wrap box-wrap">
+                            <h4>物料信息</h4>
+                            <div class="table_wrap">
+                                <el-table :data="materialInfo" border style="width: 100%">
+                                    <el-table-column label="序号" min-width="5.9%">
+                                        <template slot-scope="scope">
+                                            <span>{{scope.$index+1}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="adSize" label="广告尺寸" min-width="12.4%">
+                                    </el-table-column>
+                                    <el-table-column prop="adViewSize" label="可视画面" min-width="12.4%">
+                                    </el-table-column>
+                                    <el-table-column prop="resolution" label="分辨率" min-width="12.4%">
+                                    </el-table-column>
+                                    <el-table-column prop="colorMode" label="颜色模式" min-width="12.4%">
+                                    </el-table-column>
+                                    <el-table-column prop="photoFormat" label="文件格式" min-width="17.6%">
+                                    </el-table-column>
+                                    <el-table-column prop="pointNum" label="点位面数" min-width="12.7%">
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="上刊报告" name="forth" :disabled="usableBtn||role =='OP'">
+                        <div class="forth-wrap box-wrap">
+                            <h4>上刊报告</h4>
+                            <div class="panel" v-loading="UpReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                <div class="up-report">
+                                    <div class="up-loader-header">
+                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
+                                        </el-cascader>
+                                        <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
+                                            <el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
+                                        </el-select>
+                                        <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
+                                            <el-option label="全部监播图" value="1"></el-option>
+                                            <el-option label="已上传" value="2"></el-option>
+                                            <el-option label="未上传" value="3"></el-option>
+                                        </el-select>
+                                        <!--进度条-->
+                                        <div class="progress">
+                                            <el-progress :percentage="upImgPercent"></el-progress>
+                                            <span>{{ currUpNum }} / {{upReportArr.length}}</span>
+                                        </div>
+                                    </div>
 
-									<div class="imgs-box">
-										<!-- <div class="up-loader-Imgpanel" v-for="(updata,index) in currUpReportArr" :key="index"> -->
-										<div class="up-loader-Imgpanel" v-for="(updata,index) in pageUpReportArr" :key="index">
-											<el-card class="box-card" shadow="never">
-												<div slot="header" class="clearfix img-car">
-													<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
-													<span>{{updata.city+"-"+updata.rName+"-"+updata.resName+"-"+updata.mTitle+"-"+updata.asLab}}</span>
-													<el-popover placement="top-start" width="200" trigger="hover">
-														<ol slot-scope="scope" style="text-align:center">
-															<li>{{updata.timeRange}}</li>
-															<!-- <li>2017.10.10-2018.10.10</li>
+                                    <div class="imgs-box">
+                                        <div class="up-loader-Imgpanel" v-for="(updata,index) in pageUpReportArr" :key="index">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
+                                                    <span>{{updata.city+"-"+updata.rName+"-"+updata.resName+"-"+updata.mTitle+"-"+updata.asLab}}</span>
+                                                    <el-popover placement="top-start" width="200" trigger="hover">
+                                                        <ol slot-scope="scope" style="text-align:center">
+                                                            <li>{{updata.timeRange}}</li>
+                                                            <!-- <li>2017.10.10-2018.10.10</li>
                                                             <li>2017.10.10-2018.10.10</li> -->
-														</ol>
-														<i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
-													</el-popover>
-												</div>
-												<div class="upload-img">
-													<el-upload @click.native="saveId(updata, 'one')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.one" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-														<i class="el-icon-plus"></i>
-														<span>点击上传照片</span>
-													</el-upload>
-												</div>
-												<div class="upload-img">
-													<el-upload @click.native="saveId(updata, 'two')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.two" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-														<i class="el-icon-plus"></i>
-														<span>点击上传照片</span>
-													</el-upload>
-												</div>
-												<!-- 是否显示更多的图片上传框打开 -->
-												<div class="showimgbox" @click="isShow=index" v-if="!(isShow == index)">
-													<i class="fa fa-angle-double-down"></i>
-												</div>
-												<div v-show="isShow == index" class="moreimgs">
-													<div class="upload-img">
-														<el-upload @click.native="saveId(updata, 'three')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-															<i class="el-icon-plus"></i>
-															<span>点击上传照片</span>
-														</el-upload>
-													</div>
-													<div class="upload-img">
-														<el-upload @click.native="saveId(updata, 'four')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.four" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-															<i class="el-icon-plus"></i>
-															<span>点击上传照片</span>
-														</el-upload>
-													</div>
-													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow=null">
-														<i class="fa fa-angle-double-up"></i>
-													</div>
-												</div>
-											</el-card>
-										</div>
-									</div>
-									<div class="pager">
-										<!-- <el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
-										</el-pagination> -->
-										<el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
-										</el-pagination>
-									</div>
-									<div class="up-report-bottom">
-										<div class="up-report-bottom-checkbox">
-											<!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
-											<!--<el-button type="text">修改</el-button>-->
-											<!--</el-checkbox>-->
-										</div>
-										<div class="up-report-bottom-btns">
-											<!--<el-button type="primary">生成报告</el-button>-->
-											<el-button plain>下载PDF</el-button>
-											<el-button plain @click="showH5Up">查看H5</el-button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn||role =='OP'">
-						<div class="forth-wrap box-wrap">
-							<h4>下刊报告</h4>
-							<div class="panel" v-loading="DownReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-								<div class="up-report">
-									<div class="up-loader-header">
-										<!-- <el-cascader :options="citys" v-model="citySelect" @change="searchImg(downReportArr, 'downImgArr')"> -->
-										<el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
-										</el-cascader>
-										<!-- <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(downReportArr, 'downImgArr')"> -->
-										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
-											<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
-										</el-select>
-										<!-- <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(downReportArr, 'downImgArr')"> -->
-										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
-											<el-option label="全部监播图" value="1"></el-option>
-											<el-option label="已上传" value="2"></el-option>
-											<el-option label="未上传" value="3"></el-option>
-										</el-select>
-										<!--进度条-->
-										<div class="progress">
-											<el-progress :percentage="downImgPercent"></el-progress>
-											<span>{{ currDownNum }} / {{downReportArr.length}}</span>
-										</div>
-									</div>
-									<div class="imgs-box">
-										<!-- <div class="up-loader-Imgpanel" v-for="(downData,index) in currDownReportArr" :key="index"> -->
-										<div class="up-loader-Imgpanel" v-for="(downData,index) in pageDownReportArr" :key="index">
-											<el-card class="box-card" shadow="never">
-												<div slot="header" class="clearfix img-car">
-													<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
-													<span>{{downData.city+"-"+downData.rName+"-"+downData.resName+"-"+downData.mTitle+"-"+downData.asLab}}</span>
-													<i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
-												</div>
-												<div class="upload-img">
-													<el-upload @click.native="saveId(downData, 'one')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.one" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-														<i class="el-icon-plus"></i>
-														<span>点击上传照片</span>
-													</el-upload>
-												</div>
-												<div class="upload-img">
-													<el-upload @click.native="saveId(downData, 'two')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.two" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-														<i class="el-icon-plus"></i>
-														<span>点击上传照片</span>
-													</el-upload>
-												</div>
-												<!-- 是否显示更多的图片上传框打开 -->
-												<div class="showimgbox" @click="isShow2 = index" v-if="!(isShow2 == index)">
-													<i class="fa fa-angle-double-down"></i>
-												</div>
-												<div v-show="isShow2 == index" class="moreimgs">
-													<div class="upload-img">
-														<el-upload @click.native="saveId(downData, 'three')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-															<i class="el-icon-plus"></i>
-															<span>点击上传照片</span>
-														</el-upload>
-													</div>
-													<div class="upload-img">
-														<el-upload @click.native="saveId(downData, 'four')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.four" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-															<i class="el-icon-plus"></i>
-															<span>点击上传照片</span>
-														</el-upload>
-													</div>
-													<!-- 是否显示更多的图片上传框关闭 -->
-													<div class="showimgbox" @click="isShow2= null">
-														<i class="fa fa-angle-double-up"></i>
-													</div>
-												</div>
-											</el-card>
-										</div>
-									</div>
-									<div class="pager">
-										<!-- <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
-										</el-pagination> -->
+                                                        </ol>
+                                                        <i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
+                                                    </el-popover>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload @click.native="saveId(updata, 'one')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.one" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>点击上传照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload @click.native="saveId(updata, 'two')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.two" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>点击上传照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow=index" v-if="!(isShow == index)">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-show="isShow == index" class="moreimgs">
+                                                    <div class="upload-img">
+                                                        <el-upload @click.native="saveId(updata, 'three')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.three" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>点击上传照片</span>
+                                                        </el-upload>
+                                                    </div>
+                                                    <div class="upload-img">
+                                                        <el-upload @click.native="saveId(updata, 'four')" :action="doUpload" list-type="picture-card" :file-list="updata.upImg.four" :before-upload="beforeAvatarUpload" :on-success="handleUpSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>点击上传照片</span>
+                                                        </el-upload>
+                                                    </div>
+                                                    <!-- 是否显示更多的图片上传框关闭 -->
+                                                    <div class="showimgbox" @click="isShow=null">
+                                                        <i class="fa fa-angle-double-up"></i>
+                                                    </div>
+                                                </div>
+                                            </el-card>
+                                        </div>
+                                    </div>
+                                    <div class="pager">
+                                        <el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                        </el-pagination>
+                                    </div>
+                                    <div class="up-report-bottom">
+                                        <div class="up-report-bottom-checkbox">
+                                            <!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
+                                            <!--<el-button type="text">修改</el-button>-->
+                                            <!--</el-checkbox>-->
+                                        </div>
+                                        <div class="up-report-bottom-btns">
+                                            <!--<el-button type="primary">生成报告</el-button>-->
+                                            <el-button plain>下载PDF</el-button>
+                                            <el-button plain @click="showH5Up">查看H5</el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="下刊报告" name="fifth" :disabled="usableBtn||role =='OP'">
+                        <div class="forth-wrap box-wrap">
+                            <h4>下刊报告</h4>
+                            <div class="panel" v-loading="DownReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                <div class="up-report">
+                                    <div class="up-loader-header">
+                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
+                                        </el-cascader>
+                                        <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
+                                            <el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
+                                        </el-select>
+                                        <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
+                                            <el-option label="全部监播图" value="1"></el-option>
+                                            <el-option label="已上传" value="2"></el-option>
+                                            <el-option label="未上传" value="3"></el-option>
+                                        </el-select>
+                                        <!--进度条-->
+                                        <div class="progress">
+                                            <el-progress :percentage="downImgPercent"></el-progress>
+                                            <span>{{ currDownNum }} / {{downReportArr.length}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="imgs-box">
+                                        <div class="up-loader-Imgpanel" v-for="(downData,index) in pageDownReportArr" :key="index">
+                                            <el-card class="box-card" shadow="never">
+                                                <div slot="header" class="clearfix img-car">
+                                                    <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
+                                                    <span>{{downData.city+"-"+downData.rName+"-"+downData.resName+"-"+downData.mTitle+"-"+downData.asLab}}</span>
+                                                    <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload @click.native="saveId(downData, 'one')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.one" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>点击上传照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <div class="upload-img">
+                                                    <el-upload @click.native="saveId(downData, 'two')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.two" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                        <i class="el-icon-plus"></i>
+                                                        <span>点击上传照片</span>
+                                                    </el-upload>
+                                                </div>
+                                                <!-- 是否显示更多的图片上传框打开 -->
+                                                <div class="showimgbox" @click="isShow2 = index" v-if="!(isShow2 == index)">
+                                                    <i class="fa fa-angle-double-down"></i>
+                                                </div>
+                                                <div v-show="isShow2 == index" class="moreimgs">
+                                                    <div class="upload-img">
+                                                        <el-upload @click.native="saveId(downData, 'three')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.three" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>点击上传照片</span>
+                                                        </el-upload>
+                                                    </div>
+                                                    <div class="upload-img">
+                                                        <el-upload @click.native="saveId(downData, 'four')" :action="doUpload" list-type="picture-card" :file-list="downData.downImg.four" :before-upload="beforeAvatarUpload" :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                                            <i class="el-icon-plus"></i>
+                                                            <span>点击上传照片</span>
+                                                        </el-upload>
+                                                    </div>
+                                                    <!-- 是否显示更多的图片上传框关闭 -->
+                                                    <div class="showimgbox" @click="isShow2= null">
+                                                        <i class="fa fa-angle-double-up"></i>
+                                                    </div>
+                                                </div>
+                                            </el-card>
+                                        </div>
+                                    </div>
+                                    <div class="pager">
                                         <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
-										</el-pagination>
-									</div>
-									<div class="up-report-bottom">
-										<div class="up-report-bottom-checkbox">
-											<!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
-											<!--<el-button type="text">修改</el-button>-->
-											<!--</el-checkbox>-->
-										</div>
-										<div class="up-report-bottom-btns">
-											<!--<el-button type="primary">生成报告</el-button>-->
-											<el-button plain>下载PDF</el-button>
-											<el-button plain @click="showH5Down">查看H5</el-button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</el-tab-pane>
-				</el-tabs>
+                                        </el-pagination>
+                                    </div>
+                                    <div class="up-report-bottom">
+                                        <div class="up-report-bottom-checkbox">
+                                            <!--<el-checkbox v-model="sendReportchecked">生成报告同时发送至客户邮箱：444094173@qq.com-->
+                                            <!--<el-button type="text">修改</el-button>-->
+                                            <!--</el-checkbox>-->
+                                        </div>
+                                        <div class="up-report-bottom-btns">
+                                            <!--<el-button type="primary">生成报告</el-button>-->
+                                            <el-button plain>下载PDF</el-button>
+                                            <el-button plain @click="showH5Down">查看H5</el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
 
-				<!--添加点位对话框-->
-				<el-dialog title="添加点位" :visible.sync="dialogAddPoint" width="30%">
-					<div class="step2">
-						<div>
-							<div class="search-nav">
-								<div class="search-wrap">
-									<span>
-										<el-select v-model="value" placeholder="请选择" class="type-select">
-											<el-option v-for="item in typeSelect" :key="item.value" :label="item.value" :value="item.value"></el-option>
-											<el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
-										</el-select>
-									</span>
-									<span>
-										<el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select">
-											<el-option label="区域一" value="shanghai"></el-option>
-											<el-option label="区域二" value="beijing"></el-option>
-										</el-select>
-									</span>
-									<span>
-										<el-date-picker v-model="dateInput" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" class="date-select">
-										</el-date-picker>
-									</span>
-									<span>
-										<el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
-									</span>
-								</div>
-							</div>
-							<!--类型区域选择面板-->
-							<div class="dw-panel">
-								<dl style="position: relative">
-									<dt>资源类型：</dt>
-									<dd class="active">社区</dd>
-									<dd>写字楼</dd>
-									<el-button type="text" style="position: absolute; right: 10px; top:2px;">重置选项</el-button>
-								</dl>
-								<dl>
-									<dt>媒体类型：</dt>
-									<dd class="active">社区广告门</dd>
-									<dd>电梯广告</dd>
-								</dl>
-								<dl style="border: none">
-									<dt>城市区域：</dt>
-									<dd class="active">广州</dd>
-									<dd>深圳</dd>
-								</dl>
-								<dl class="city-proper">
-									<dd class="active">全市</dd>
-									<dd>天河区</dd>
-									<dd>越秀区</dd>
-									<dd>海珠区</dd>
-									<dd>荔湾区</dd>
-									<dd>黄浦区</dd>
-									<dd>白云区</dd>
-									<dd>番禺区</dd>
-									<dd>花都区</dd>
-									<dd>南沙区</dd>
-									<dd>从化区</dd>
-									<dd>增城区</dd>
-								</dl>
-								<dl style="border: none">
-									<dt>广告限制：</dt>
-									<dd>医学</dd>
-									<dd>汽车</dd>
-									<dd>地产</dd>
-								</dl>
-							</div>
-							<!--数量价格年份输入筛选框-->
-							<div class="filter-input">
-								<ul>
-									<li style="margin-left: 0">
-										<span>住户数量:</span>
-										<div class="input-wrap">
-											<input type="text" class="input"> -
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-									</li>
-									<li>
-										<span>楼栋数量:</span>
-										<div class="input-wrap">
-											<input type="text" class="input"> -
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-									</li>
-									<li>
-										<span>楼盘价格:</span>
-										<div class="input-wrap">
-											<input type="text" class="input"> -
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-									</li>
-									<li>
-										<span>入住年份:</span>
-										<div class="input-wrap">
-											<input type="text" class="input"> -
-											<input type="text" class="input">
-											<el-button size="mini">清除</el-button>
-											<el-button size="mini" type="primary">确定</el-button>
-										</div>
-									</li>
-									<li>
-										<span>楼盘类型:</span>
-										<el-select v-model="buildValue" placeholder="请选择" class="buildType">
-											<el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue" :value="item.buildValue"></el-option>
-										</el-select>
-									</li>
-								</ul>
-							</div>
-							<!--表格-->
-							<div class="table_wrap">
-								<el-table border :data="planList" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
-									<el-table-column type="expand">
-										<template slot-scope="props">
-											<el-form label-position="left" inline class="demo-table-expand">
-												<el-form-item label="商圈：">
-													<span>{{ props.row.businessOrigin}}</span>
-												</el-form-item>
-												<el-form-item label="楼栋数量：">
-													<span>{{ props.row.buildNum }}</span>
-												</el-form-item>
-												<el-form-item label="资产编号：">
-													<span>{{ props.row.assetID }}</span>
-												</el-form-item>
-												<el-form-item label="入住年份：">
-													<span>{{ props.row.liveYear }}</span>
-												</el-form-item>
-												<el-form-item label="广告限制：">
-													<span>{{ props.row.adLimit }}</span>
-												</el-form-item>
-											</el-form>
-										</template>
-									</el-table-column>
-									<el-table-column type="selection" width="41px">
-									</el-table-column>
+                <!--添加点位对话框-->
+                <el-dialog title="添加点位" :visible.sync="dialogAddPoint" width="30%">
+                    <div class="step2">
+                        <div>
+                            <div class="search-nav">
+                                <div class="search-wrap">
+                                    <span>
+                                        <el-select v-model="value" placeholder="请选择" class="type-select">
+                                            <el-option v-for="item in typeSelect" :key="item.value" :label="item.value" :value="item.value"></el-option>
+                                            <el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput"></el-input>
+                                        </el-select>
+                                    </span>
+                                    <span>
+                                        <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>
+                                    </span>
+                                    <span>
+                                        <el-date-picker v-model="dateInput" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" class="date-select">
+                                        </el-date-picker>
+                                    </span>
+                                    <span>
+                                        <el-button type="primary" icon="el-icon-search" class="searchBtn">搜索</el-button>
+                                    </span>
+                                </div>
+                            </div>
+                            <!--类型区域选择面板-->
+                            <div class="dw-panel">
+                                <dl style="position: relative">
+                                    <dt>资源类型：</dt>
+                                    <dd class="active">社区</dd>
+                                    <dd>写字楼</dd>
+                                    <el-button type="text" style="position: absolute; right: 10px; top:2px;">重置选项</el-button>
+                                </dl>
+                                <dl>
+                                    <dt>媒体类型：</dt>
+                                    <dd class="active">社区广告门</dd>
+                                    <dd>电梯广告</dd>
+                                </dl>
+                                <dl style="border: none">
+                                    <dt>城市区域：</dt>
+                                    <dd class="active">广州</dd>
+                                    <dd>深圳</dd>
+                                </dl>
+                                <dl class="city-proper">
+                                    <dd class="active">全市</dd>
+                                    <dd>天河区</dd>
+                                    <dd>越秀区</dd>
+                                    <dd>海珠区</dd>
+                                    <dd>荔湾区</dd>
+                                    <dd>黄浦区</dd>
+                                    <dd>白云区</dd>
+                                    <dd>番禺区</dd>
+                                    <dd>花都区</dd>
+                                    <dd>南沙区</dd>
+                                    <dd>从化区</dd>
+                                    <dd>增城区</dd>
+                                </dl>
+                                <dl style="border: none">
+                                    <dt>广告限制：</dt>
+                                    <dd>医学</dd>
+                                    <dd>汽车</dd>
+                                    <dd>地产</dd>
+                                </dl>
+                            </div>
+                            <!--数量价格年份输入筛选框-->
+                            <div class="filter-input">
+                                <ul>
+                                    <li style="margin-left: 0">
+                                        <span>住户数量:</span>
+                                        <div class="input-wrap">
+                                            <input type="text" class="input"> -
+                                            <input type="text" class="input">
+                                            <el-button size="mini">清除</el-button>
+                                            <el-button size="mini" type="primary">确定</el-button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>楼栋数量:</span>
+                                        <div class="input-wrap">
+                                            <input type="text" class="input"> -
+                                            <input type="text" class="input">
+                                            <el-button size="mini">清除</el-button>
+                                            <el-button size="mini" type="primary">确定</el-button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>楼盘价格:</span>
+                                        <div class="input-wrap">
+                                            <input type="text" class="input"> -
+                                            <input type="text" class="input">
+                                            <el-button size="mini">清除</el-button>
+                                            <el-button size="mini" type="primary">确定</el-button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>入住年份:</span>
+                                        <div class="input-wrap">
+                                            <input type="text" class="input"> -
+                                            <input type="text" class="input">
+                                            <el-button size="mini">清除</el-button>
+                                            <el-button size="mini" type="primary">确定</el-button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>楼盘类型:</span>
+                                        <el-select v-model="buildValue" placeholder="请选择" class="buildType">
+                                            <el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue" :value="item.buildValue"></el-option>
+                                        </el-select>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--表格-->
+                            <div class="table_wrap">
+                                <el-table border :data="planList" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+                                    <el-table-column type="expand">
+                                        <template slot-scope="props">
+                                            <el-form label-position="left" inline class="demo-table-expand">
+                                                <el-form-item label="商圈：">
+                                                    <span>{{ props.row.businessOrigin}}</span>
+                                                </el-form-item>
+                                                <el-form-item label="楼栋数量：">
+                                                    <span>{{ props.row.buildNum }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="资产编号：">
+                                                    <span>{{ props.row.assetID }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="入住年份：">
+                                                    <span>{{ props.row.liveYear }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="广告限制：">
+                                                    <span>{{ props.row.adLimit }}</span>
+                                                </el-form-item>
+                                            </el-form>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column type="selection" width="41px">
+                                    </el-table-column>
 
-									<el-table-column label="资源名称" min-width="16.1%" prop="recName">
-									</el-table-column>
-									<el-table-column label="媒体名称" min-width="10.3%" class="tar">
-										<template slot-scope="scope">
-											<el-tooltip class="item" effect="dark" :content="scope.row.mediaName" placement="bottom">
-												<span>{{scope.row.mediaName}}</span>
-											</el-tooltip>
-										</template>
-									</el-table-column>
-									<el-table-column prop="city" label="城市" min-width="6%">
-									</el-table-column>
-									<el-table-column prop="origin" label="区域" min-width="7.4%">
-									</el-table-column>
-									<el-table-column label="楼盘类型" min-width="8.8%">
-										<template slot-scope="scope">
-											<el-tooltip class="item" effect="dark" :content="scope.row.buildType" placement="bottom">
-												<span>{{scope.row.buildType}}</span>
-											</el-tooltip>
-										</template>
-									</el-table-column>
-									<el-table-column prop="houseNum" label="小区户数" min-width="7.3%" class="tar">
-									</el-table-column>
-									<el-table-column label="楼盘价格" min-width="7.3%">
-										<template slot-scope="scope">
-											<span>&yen;{{scope.row.buildPrice}}</span>
-										</template>
-									</el-table-column>
-									<el-table-column prop="schedules" label="排期" min-width="14.2%">
-										<template slot-scope="scope">
-											<el-tooltip class="item" effect="dark" :content="scope.row.schedules" placement="bottom">
-												<span>{{scope.row.schedules}}</span>
-											</el-tooltip>
-										</template>
-									</el-table-column>
-									<el-table-column width="132px">
-										<template slot-scope="scope">
-											<el-checkbox>A面</el-checkbox>
-											<el-checkbox>B面</el-checkbox>
-										</template>
-									</el-table-column>
-								</el-table>
-							</div>
-						</div>
-					</div>
-					<span slot="footer" class="dialog-footer">
-						<el-button @click="cancelAddPoint">取 消</el-button>
-						<el-button type="primary" @click="confirmAddPoint">确 定</el-button>
-					</span>
-				</el-dialog>
+                                    <el-table-column label="资源名称" min-width="16.1%" prop="recName">
+                                    </el-table-column>
+                                    <el-table-column label="媒体名称" min-width="10.3%" class="tar">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" :content="scope.row.mediaName" placement="bottom">
+                                                <span>{{scope.row.mediaName}}</span>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="city" label="城市" min-width="6%">
+                                    </el-table-column>
+                                    <el-table-column prop="origin" label="区域" min-width="7.4%">
+                                    </el-table-column>
+                                    <el-table-column label="楼盘类型" min-width="8.8%">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" :content="scope.row.buildType" placement="bottom">
+                                                <span>{{scope.row.buildType}}</span>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="houseNum" label="小区户数" min-width="7.3%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column label="楼盘价格" min-width="7.3%">
+                                        <template slot-scope="scope">
+                                            <span>&yen;{{scope.row.buildPrice}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="schedules" label="排期" min-width="14.2%">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" :content="scope.row.schedules" placement="bottom">
+                                                <span>{{scope.row.schedules}}</span>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column width="132px">
+                                        <template slot-scope="scope">
+                                            <el-checkbox>A面</el-checkbox>
+                                            <el-checkbox>B面</el-checkbox>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="cancelAddPoint">取 消</el-button>
+                        <el-button type="primary" @click="confirmAddPoint">确 定</el-button>
+                    </span>
+                </el-dialog>
 
-				<!-- 图片查看显示 -->
-				<el-dialog :visible.sync="dialogVisible">
-					<img width="100%" :src="dialogImageUrl" alt="">
-				</el-dialog>
-				<!-- 返回框 -->
-				<div class="content_bottom_btn">
-					<el-button type="default" @click="goBack">返回</el-button>
-				</div>
-			</div>
-		</div>
-	</div>
+                <!-- 图片查看显示 -->
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+                <!-- 返回框 -->
+                <div class="content_bottom_btn">
+                    <el-button type="default" @click="goBack">返回</el-button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -752,22 +740,7 @@ export default {
             pageUpSize: 6,
             pageDownSize: 6,
             // 订单详情头部
-            orderDetail: {
-                // realName: "黄启炜",
-                // apState: 1,
-                // rIDs: "广州市,北京市,重庆市",
-                // cName: "新光百货",
-                // apID: 1,
-                // apcTime: "May 9, 2018 6:29:47 PM",
-                // cuName: "赵爽",
-                // bTitle: "新光百货",
-                // apTotal: 465200,
-                // apName: "第一个投放方案",
-                // apQC: "QC201803284401001",
-                // pdTotal: 0,
-                // pdSendFee: 0,
-                // pdOtherFee: 0
-            },
+            orderDetail: {},
             //修改合同号
             changeCID: false,
             planPanel: "first",
@@ -1165,92 +1138,45 @@ export default {
                 sessionStorage.getItem("session_data")
             ).uType;
         },
-         // 页数大小改变
+        // 页数大小改变
         sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            if(this.planPanel == 'forth'){
+            if (this.planPanel == "forth") {
                 this.pageUpSize = pageVal;
-            }else if(this.planPanel == 'fifth'){
+            } else if (this.planPanel == "fifth") {
                 this.pageDownSize = pageVal;
             }
             this.changePage(1);
         },
         // 分页功能
         changePage(page) {
-            console.log('page-------', page);
-            let pageSize = '';
+            console.log("page-------", page);
+            let pageSize = "";
             let arr = [];
             let resultArr = [];
 
-            if(this.planPanel == 'forth'){
+            if (this.planPanel == "forth") {
                 pageSize = this.pageUpSize;
-                // arr = this.upImgArr;
-                // this.currUpPage = page;
                 arr = this.currUpReportArr;
-            }else if(this.planPanel == 'fifth'){
+            } else if (this.planPanel == "fifth") {
                 pageSize = this.pageDownSize;
-                // this.currDownPage = page;
-                // arr = this.downImgArr;
                 arr = this.currDownReportArr;
             }
-            
+
             let total = arr.length;
-            for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
-            if(this.planPanel == 'forth'){
+            if (this.planPanel == "forth") {
                 this.pageUpReportArr = resultArr;
-            }else if(this.planPanel == 'fifth'){
+            } else if (this.planPanel == "fifth") {
                 this.pageDownReportArr = resultArr;
             }
         },
-
-        // handleUpSizeChange(pageVal) {
-        //     console.log("pageVal", pageVal);
-        //     this.pageUpSize = pageVal;
-        //     this.changeUpPage(1);
-        // },
-        // handleDownSizeChange(pageVal) {
-        //     console.log("pageVal", pageVal);
-        //     this.pageDownSize = pageVal;
-        //     this.changeDownPage(1);
-        // },
-        // // 分页功能
-        // changeUpPage(page) {
-        //     let pageSize = this.pageUpSize;
-        //     let arr = this.upReportArr;
-        //     let total = arr.length;
-        //     let resultArr = [];
-        //     for (
-        //         let i = (page - 1) * pageSize;
-        //         i < (page * pageSize < total ? page * pageSize : total);
-        //         i++
-        //     ) {
-        //         resultArr.push(arr[i]);
-        //     }
-        //     this.currUpReportArr = [];
-        //     this.currUpReportArr = resultArr;
-        //     console.log("currUpReportArr", this.currUpReportArr);
-        //     console.log("page", page, "pageSize", pageSize);
-        // },
-        // // 分页功能
-        // changeDownPage(page) {
-        //     let pageSize = this.pageDownSize;
-        //     let arr = this.downReportArr;
-        //     let total = arr.length;
-        //     let resultArr = [];
-        //     for (
-        //         let i = (page - 1) * pageSize;
-        //         i < (page * pageSize < total ? page * pageSize : total);
-        //         i++
-        //     ) {
-        //         resultArr.push(arr[i]);
-        //     }
-        //     this.currDownReportArr = [];
-        //     this.currDownReportArr = resultArr;
-        //     console.log("currDownReportArr", this.currDownReportArr);
-        //     console.log("page", page, "pageSize", pageSize);
-        // },
         // tab点击
         handleClick() {
             if (this.planPanel == "first") {
@@ -1315,8 +1241,7 @@ export default {
                             ? this.orderDetail.apQC
                             : this.getContractNo(this.orderDetail.rID);
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -1369,8 +1294,7 @@ export default {
                         this.allResource = filterFormat(result, "resName");
                         this.loading = false;
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -1427,8 +1351,7 @@ export default {
                         });
                         this.UpReportLoading = false;
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -1462,7 +1385,9 @@ export default {
                         // 下刊数据(组合图片)
                         result = this.constructImg(result, this.downImg, "XK");
                         this.downReportArr = result;
-                        this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                        this.currDownReportArr = JSON.parse(
+                            JSON.stringify(this.downReportArr)
+                        );
                         this.citySelect[0] = "全部";
                         this.currDownPage = 1;
                         this.searchImg();
@@ -1477,8 +1402,7 @@ export default {
                         });
                         this.DownReportLoading = false;
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -1766,8 +1690,7 @@ export default {
                                 );
                                 // this.loading = false;
                             } else if (res.data.SysCode == 100302) {
-                                Message.warning("登录超时,请重新登录");
-                                this.$router.push("/login");
+                                this.loginTimeout();
                             } else {
                                 Message.warning(res.data.MSG);
                             }
@@ -1794,7 +1717,15 @@ export default {
                         if (schedules == "") {
                             schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules = schedules +" " + ds + "-" + de +"(" + asid.mNum +"面)";
+                            schedules =
+                                schedules +
+                                " " +
+                                ds +
+                                "-" +
+                                de +
+                                "(" +
+                                asid.mNum +
+                                "面)";
                         }
                     }
                 }
@@ -1868,10 +1799,6 @@ export default {
             console.log("result-------------", result);
             return result;
         },
-        // 城市转换为中文
-        // cityToText(rid) {
-        //     return areaToText.toTextCity(rid);
-        // },
         // 状态转换成文本
         stateToText(val) {
             let state = [
@@ -1947,11 +1874,11 @@ export default {
             let allPic = this.allPic;
             let arr = [];
             let imgArr = [];
-            let type = '';
+            let type = "";
             if (citySelect[0] == "全部") {
                 this.allhouse = "";
                 this.allPic = "";
-                if (this.planPanel == 'forth') {
+                if (this.planPanel == "forth") {
                     // arr = JSON.parse(JSON.stringify(this.upReportArr));
                     arr = this.upReportArr;
                     this.currUpReportArr = arr;
@@ -1966,12 +1893,12 @@ export default {
                 }
                 return;
             }
-            if(this.planPanel == 'forth'){
+            if (this.planPanel == "forth") {
                 imgArr = this.upReportArr;
-                type = 'upImgArr';
-            }else{
+                type = "upImgArr";
+            } else {
                 imgArr = this.downReportArr;
-                type = 'downImgArr';
+                type = "downImgArr";
             }
             for (let data of imgArr) {
                 if (citySelect.length && allhouse && allPic) {
@@ -2085,7 +2012,7 @@ export default {
                 }
             }
             console.log("searchImg", arr);
-            if (this.planPanel =='forth') {
+            if (this.planPanel == "forth") {
                 this.currUpReportArr = arr;
                 this.changePage(1);
             } else {
@@ -2096,153 +2023,6 @@ export default {
                 Message.warning("查询数据为空");
             }
         },
-        // searchImg(imgArr, type) {
-        //     console.log("citySelect", this.citySelect);
-        //     console.log("allhouse", this.allhouse);
-        //     console.log("allPic", this.allPic);
-        //     let citySelect = this.citySelect;
-        //     let allhouse = this.allhouse;
-        //     let allPic = this.allPic;
-        //     let arr = [];
-        //     if (citySelect[0] == "全部") {
-        //         this.allhouse = "";
-        //         this.allPic = "";
-        //         if (type == "upImgArr") {
-        //             arr = JSON.parse(JSON.stringify(this.upReportArr));
-        //             this.currUpReportArr = arr;
-        //             // this.changeUpPage(1);
-        //         } else {
-        //             arr = JSON.parse(JSON.stringify(this.downReportArr));
-        //             this.currDownReportArr = arr;
-        //             // this.changeDownPage(1);
-        //         }
-        //         return;
-        //     }
-        //     for (let data of imgArr) {
-        //         if (citySelect.length && allhouse && allPic) {
-        //             if (
-        //                 data.city == citySelect[0] &&
-        //                 data.rName == citySelect[1] &&
-        //                 data.resName == allhouse
-        //             ) {
-        //                 if (allPic == "1") {
-        //                     arr.push(data);
-        //                 }
-        //                 if (allPic == "2" && data[type].length) {
-        //                     arr.push(data);
-        //                 }
-        //                 if (allPic == "3" && !data[type].length) {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //         } else if (citySelect.length) {
-        //             if (
-        //                 data.city == citySelect[0] &&
-        //                 data.rName == citySelect[1]
-        //             ) {
-        //                 if (allhouse) {
-        //                     if (data.resName == allhouse) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else if (allPic) {
-        //                     if (allPic == "1") {
-        //                         arr.push(data);
-        //                     }
-        //                     if (allPic == "2" && data[type].length) {
-        //                         arr.push(data);
-        //                     }
-        //                     if (allPic == "3" && !data[type].length) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //         } else if (allhouse) {
-        //             if (data.resName == allhouse) {
-        //                 if (citySelect.length) {
-        //                     if (
-        //                         data.city == citySelect[0] &&
-        //                         data.rName == citySelect[1]
-        //                     ) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else if (allPic) {
-        //                     if (allPic == "1") {
-        //                         arr.push(data);
-        //                     }
-        //                     if (allPic == "2" && data[type].length) {
-        //                         arr.push(data);
-        //                     }
-        //                     if (allPic == "3" && !data[type].length) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //         } else if (allPic) {
-        //             if (allPic == "1") {
-        //                 if (
-        //                     citySelect.length &&
-        //                     data.city == citySelect[0] &&
-        //                     data.rName == citySelect[1]
-        //                 ) {
-        //                     arr.push(data);
-        //                 } else if (allhouse) {
-        //                     if (data.resName == allhouse) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //             if (allPic == "2" && data[type].length) {
-        //                 if (
-        //                     citySelect.length &&
-        //                     data.city == citySelect[0] &&
-        //                     data.rName == citySelect[1]
-        //                 ) {
-        //                     arr.push(data);
-        //                 } else if (allhouse) {
-        //                     if (data.resName == allhouse) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //             if (allPic == "3" && !data[type].length) {
-        //                 if (
-        //                     citySelect.length &&
-        //                     data.city == citySelect[0] &&
-        //                     data.rName == citySelect[1]
-        //                 ) {
-        //                     arr.push(data);
-        //                 } else if (allhouse) {
-        //                     if (data.resName == allhouse) {
-        //                         arr.push(data);
-        //                     }
-        //                 } else {
-        //                     arr.push(data);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     console.log("searchImg", arr);
-        //     if (type == "upImgArr") {
-        //         this.currUpReportArr = arr;
-        //         // this.changeUpPage(1);
-        //         // this.changePage(1);
-        //     } else {
-        //         this.currDownReportArr = arr;
-        //         // this.changePage(1);
-        //         // this.changeDownPage(1);
-        //     }
-        //     if (!arr.length) {
-        //         Message.warning("查询数据为空");
-        //     }
-        // },
         // 城市筛选
         filterCity(value, row) {
             return row.city === value;
@@ -2336,10 +2116,8 @@ export default {
                         }
                         this.upReportArr.push();
                         // this.changePage(this.currUpPage);
-                        // this.changeUpPage(this.currUpPage);
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -2387,11 +2165,9 @@ export default {
                             }
                         }
                         this.downReportArr.push();
-                        this.changePage(this.currDownPage);
-                        // this.changeUpPage(this.currDownPage);
+                        // this.changePage(this.currDownPage);
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -2458,8 +2234,7 @@ export default {
                             }
                         }
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -2516,8 +2291,7 @@ export default {
                         this.$set(this.orderDetail, "apQC", qc);
                         Message.success(res.data.MSG);
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -2526,6 +2300,10 @@ export default {
                     console.log(res);
                 });
             this.changeCID = false;
+        },
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
         },
 
         cancelChangeRemark() {

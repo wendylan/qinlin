@@ -32,7 +32,7 @@
                             <div>
                                 <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
                                     <el-carousel :autoplay="false" trigger="click">
-                                        <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index" >
+                                        <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index">
                                             <img :src="item.url" alt="">
                                             <!--缩略图-->
                                             <div class="mask-btn" v-if="showPreImg == downIndex ">
@@ -138,21 +138,14 @@ export default {
         elCarousel: Carousel,
         elCarouselItem: CarouselItem
     },
-    created(){
+    created() {
         this.getCompanyInfo();
         this.getInitData();
     },
     data() {
         return {
             // 报告头部公司信息
-            Report: {
-                apName: "第一个投放方案",
-                bTitle: "新光百货",
-                cName: "新光百货",
-                rIDs: "广州市,北京市,重庆市",
-                apcTime: "May 9, 2018 6:29:47 PM",
-                totalNum: "200"
-            },
+            Report: {},
             // 分页信息
             currUpPage: 1,
             currDownPage: 1,
@@ -188,7 +181,11 @@ export default {
             let arr = this.downReportArr;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currDownReportArr = [];
@@ -202,7 +199,11 @@ export default {
             let arr = this.imgInfo;
             let total = arr.length;
             let resultArr = [];
-            for(let i = (page-1)*pageSize; i < (page*pageSize<total ? page*pageSize : total); i++){
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
             this.currImgInfo = [];
@@ -228,9 +229,8 @@ export default {
                     if (!res.data.SysCode) {
                         let result = res.data;
                         this.Report = result;
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -261,7 +261,9 @@ export default {
                         // ptid        int                 关联类型对应唯一ID
                         // ptp         String              关联类型区分属性
                         let imginfo = {
-                            uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
+                            uid: JSON.parse(
+                                sessionStorage.getItem("session_data")
+                            ).uID,
                             // ptype: "XK",
                             ptype: this.Report.ptype,
                             ptp: sessionStorage.getItem("order_apid")
@@ -270,25 +272,37 @@ export default {
                             .postApi("/GetImg", imginfo)
                             .then(res => {
                                 console.log(res.data);
-                                if(!res.data.SysCode){
+                                if (!res.data.SysCode) {
                                     let downImginfo = res.data;
                                     // 下刊数据(组合图片)
-                                    resArr = this.constructImg(resArr, downImginfo);
+                                    resArr = this.constructImg(
+                                        resArr,
+                                        downImginfo
+                                    );
                                     this.downReportArr = resArr;
-                                    this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                                    this.currDownReportArr = JSON.parse(
+                                        JSON.stringify(this.downReportArr)
+                                    );
                                     this.changeUpPage(1);
-                                    console.log("downimginfo", this.downReportArr);
+                                    console.log(
+                                        "downimginfo",
+                                        this.downReportArr
+                                    );
                                     // 下刊数据(组合图片按图片分)
                                     this.imgInfo = this.initImg(
                                         resArr,
                                         downImginfo
                                     );
-                                    this.currImgInfo = JSON.parse(JSON.stringify(this.imgInfo));
+                                    this.currImgInfo = JSON.parse(
+                                        JSON.stringify(this.imgInfo)
+                                    );
                                     this.changeDownPage(1);
-                                    console.log('downImgInfo--------', this.imgInfo);
-                                } else if(res.data.SysCode == 100302){
-                                    Message.warning("登录超时,请重新登录");
-                                    this.$router.push("/login");
+                                    console.log(
+                                        "downImgInfo--------",
+                                        this.imgInfo
+                                    );
+                                } else if (res.data.SysCode == 100302) {
+                                    this.loginTimeout();
                                 } else {
                                     Message.warning(res.data.MSG);
                                 }
@@ -355,6 +369,10 @@ export default {
             this.dialogImageUrl = url;
             this.dialogVisible = true;
         },
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
+        }
     },
     mounted() {
         $(function() {
@@ -378,7 +396,7 @@ export default {
             //             .hide();
             //     });
         });
-    },
+    }
 };
 </script>
 

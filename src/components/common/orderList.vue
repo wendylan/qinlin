@@ -168,34 +168,8 @@ export default {
             keyword: "",
             select: "1",
             //表格
-            orderList: [
-                // {
-                //     apID: 1,
-                //     apName: "第一个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 1
-                // }
-            ],
-            currentOrder: [
-                // {
-                //     apID: 1,
-                //     apName: "第一个投放方案",
-                //     cName: "新光百货",
-                //     bTitle: "新光百货",
-                //     apTotal: 465200,
-                //     realName: "黄启炜",
-                //     rIDs:
-                //         "重庆市(6面2018-05-19至2018-05-25),广州市(4面2018-05-19至2018-05-25),北京市(6面2018-05-19至2018-05-25)",
-                //     apcTime: "2018-05-09 18:29:47.0",
-                //     apState: 1
-                // }
-            ]
+            orderList: [],
+            currentOrder: []
         };
     },
     mounted() {
@@ -235,7 +209,10 @@ export default {
                                 let arr = item.rIDs.split(",");
                                 let resultArr = [];
                                 for (let data of arr) {
-                                    let text = data.substr(0, data.indexOf(")") + 1);
+                                    let text = data.substr(
+                                        0,
+                                        data.indexOf(")") + 1
+                                    );
                                     resultArr.push(text);
                                 }
                                 item.cityArea = resultArr;
@@ -244,8 +221,7 @@ export default {
                         }
                         this.currentOrder = this.orderList;
                     } else if (res.data.SysCode == 100302) {
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -325,8 +301,7 @@ export default {
                                 Message.success(res.data.MSG);
                                 this.$set(row, "apState", 5);
                             } else if (res.data.SysCode == 100302) {
-                                Message.warning("登录超时,请重新登录");
-                                this.$router.push("/login");
+                                this.loginTimeout();
                             } else {
                                 Message.warning(res.data.MSG);
                             }
@@ -440,6 +415,10 @@ export default {
                 return;
             }
             this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
+        },
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
         },
 
         //提示框

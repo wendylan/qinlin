@@ -349,8 +349,8 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import LazyLoad from '../../commonFun/lazyLoad.js'
+import Vue from "vue";
+import LazyLoad from "../../commonFun/lazyLoad.js";
 Vue.use(LazyLoad);
 import { api } from "../../api/api.js";
 // 时间格式化
@@ -427,7 +427,7 @@ export default {
             select: "1",
             keyword: "",
             LabSelect: "",
-            date: '',
+            date: "",
             // tab默认选择第一项
             activeName: "first",
 
@@ -580,57 +580,61 @@ export default {
         // 页数大小改变
         sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            if(this.activeName == 'first'){
+            if (this.activeName == "first") {
                 this.pageUpSize = pageVal;
-            }else if(this.activeName == 'second'){
+            } else if (this.activeName == "second") {
                 this.pageDownSize = pageVal;
-            }else if(this.activeName == 'third'){
+            } else if (this.activeName == "third") {
                 this.pageInstallSize = pageVal;
-            }else{
+            } else {
                 this.pageSearchSize = pageVal;
             }
             this.changePage(1);
         },
         // 分页功能
         changePage(page) {
-            console.log('page-------', page);
-            let pageSize = '';
+            console.log("page-------", page);
+            let pageSize = "";
             let arr = [];
             let resultArr = [];
 
-            if(this.activeName == 'first'){
+            if (this.activeName == "first") {
                 pageSize = this.pageUpSize;
                 // arr = this.upImgArr;
                 // this.currUpPage = page;
                 arr = this.currUpImgArr;
-            }else if(this.activeName == 'second'){
+            } else if (this.activeName == "second") {
                 pageSize = this.pageDownSize;
                 // this.currDownPage = page;
                 // arr = this.downImgArr;
                 arr = this.currDownImgArr;
-            }else if(this.activeName == 'third'){
+            } else if (this.activeName == "third") {
                 pageSize = this.pageInstallSize;
                 // this.currInstallPage = page;
                 // arr = this.installArr;
                 arr = this.currInstallImgArr;
-            }else{
+            } else {
                 pageSize = this.pageSearchSize;
                 // this.currSearchPage = page;
                 // arr = this.searchAreaArr;
                 arr = this.currSearchImgArr;
             }
-            
+
             let total = arr.length;
-            for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
+            for (
+                let i = (page - 1) * pageSize;
+                i < (page * pageSize < total ? page * pageSize : total);
+                i++
+            ) {
                 resultArr.push(arr[i]);
             }
-            if(this.activeName == 'first'){
+            if (this.activeName == "first") {
                 this.pageUpImgArr = resultArr;
-            }else if(this.activeName == 'second'){
+            } else if (this.activeName == "second") {
                 this.pageDownImgArr = resultArr;
-            }else if(this.activeName == 'third'){
+            } else if (this.activeName == "third") {
                 this.pageInstallImgArr = resultArr;
-            }else{
+            } else {
                 this.pageSearchImgArr = resultArr;
             }
         },
@@ -671,17 +675,18 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    if(!res.data.SysCode){
+                    if (!res.data.SysCode) {
                         console.log(res.data);
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.upImgArr = result;
-                        this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                        this.currUpImgArr = JSON.parse(
+                            JSON.stringify(this.upImgArr)
+                        );
                         this.searchPic();
                         console.log("upimginfo", this.upImgArr);
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -709,12 +714,13 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.downImgArr = result;
-                        this.currDownImgArr = JSON.parse(JSON.stringify(this.downImgArr));
+                        this.currDownImgArr = JSON.parse(
+                            JSON.stringify(this.downImgArr)
+                        );
                         this.searchPic();
                         console.log("upimginfo", this.downImgArr);
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -724,7 +730,7 @@ export default {
                 });
         },
         // 获取安装图片
-        getInstallImg(){
+        getInstallImg() {
             // 真实数据
             if (this.installArr.length) {
                 this.searchPic();
@@ -743,12 +749,13 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.installArr = result;
-                        this.currInstallImgArr = JSON.parse(JSON.stringify(this.installArr));
+                        this.currInstallImgArr = JSON.parse(
+                            JSON.stringify(this.installArr)
+                        );
                         this.searchPic();
                         console.log("upimginfo", this.installArr);
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -758,7 +765,7 @@ export default {
                 });
         },
         // 获取巡点图片
-        getSearchImg(){
+        getSearchImg() {
             // 真实数据
             if (this.searchAreaArr.length) {
                 this.searchPic();
@@ -777,12 +784,13 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.searchAreaArr = result;
-                        this.currSearchImgArr = JSON.parse(JSON.stringify(this.searchAreaArr));
+                        this.currSearchImgArr = JSON.parse(
+                            JSON.stringify(this.searchAreaArr)
+                        );
                         this.searchPic();
                         console.log("upimginfo", this.searchAreaArr);
-                    } else if(res.data.SysCode == 100302){
-                        Message.warning("登录超时,请重新登录");
-                        this.$router.push("/login");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
                     }
@@ -791,7 +799,7 @@ export default {
                     console.log(res);
                 });
         },
-         // 区域二级联动
+        // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
@@ -839,7 +847,7 @@ export default {
         },
         // 查看图片
         handlePictureCardPreview(item) {
-            console.log('imgInfo--------', item);
+            console.log("imgInfo--------", item);
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
         },
@@ -855,18 +863,24 @@ export default {
                 Message.warning("请先输入搜索条件");
             } else {
                 let initData = [];
-                if(this.activeName == 'first'){
+                if (this.activeName == "first") {
                     initData = this.upImgArr;
-                }else if(this.activeName == 'second'){
+                } else if (this.activeName == "second") {
                     initData = this.downImgArr;
-                }else if(this.activeName == 'third'){
+                } else if (this.activeName == "third") {
                     initData = this.installArr;
-                }else if(this.activeName == 'fourth'){
+                } else if (this.activeName == "fourth") {
                     initData = this.searchAreaArr;
                 }
 
                 // 搜索
-                console.log(this.select,this.keyword,this.LabSelect,this.date,this.citySelect);
+                console.log(
+                    this.select,
+                    this.keyword,
+                    this.LabSelect,
+                    this.date,
+                    this.citySelect
+                );
                 let arr = [];
                 let range = this.date;
                 let select = this.select;
@@ -938,108 +952,103 @@ export default {
                                         arr.push(data);
                                     }
                                 } else if (city.length) {
-                                    if(
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if(keyword){
-                            if (
-                                select == "1" &&
-                                alt.plan.includes(keyword)
-                            ) {
+                        } else if (keyword) {
+                            if (select == "1" && alt.plan.includes(keyword)) {
                                 // arr.push(data);
-                                if(range){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                            if (
-                                select == "2" &&
-                                alt.media.includes(keyword)
-                            ) {
+                            if (select == "2" && alt.media.includes(keyword)) {
                                 // arr.push(data);
-                                if(range){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                            if (
-                                select == "3" &&
-                                alt.res.includes(keyword)
-                            ) {
+                            if (select == "3" && alt.res.includes(keyword)) {
                                 // arr.push(data);
-                                if(range){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if (lab){
+                                } else if (lab) {
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else if (city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if(lab){
-                            if(alt.asLab == lab){
-                                if(range){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
+                        } else if (lab) {
+                            if (alt.asLab == lab) {
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if(keyword){
+                                } else if (keyword) {
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1058,30 +1067,28 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                }else if(city.length){
-                                    if(
+                                } else if (city.length) {
+                                    if (
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
-                        }else if (city.length){
-                            if(
-                                alt.city == city[0] &&
-                                alt.area == city[1]
-                            ){
-                                if(range){
-                                    if(
-                                        dateFormat.toDate(alt.lstart) >= range[0] &&
+                        } else if (city.length) {
+                            if (alt.city == city[0] && alt.area == city[1]) {
+                                if (range) {
+                                    if (
+                                        dateFormat.toDate(alt.lstart) >=
+                                            range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ){
+                                    ) {
                                         arr.push(data);
                                     }
-                                }else if(keyword){
+                                } else if (keyword) {
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1100,36 +1107,36 @@ export default {
                                     ) {
                                         arr.push(data);
                                     }
-                                }else if(lab){
-                                    if(alt.asLab == lab){
+                                } else if (lab) {
+                                    if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                }else{
+                                } else {
                                     arr.push(data);
                                 }
                             }
                         }
                     }
 
-                    if(arr.length){
+                    if (arr.length) {
                         this.showPic = 3;
                         // 上刊
-                        if(this.activeName =='first'){
+                        if (this.activeName == "first") {
                             this.currUpImgArr = arr;
                             // this.currUpPage = 1;
                         }
                         // 下刊
-                        if(this.activeName == 'second'){
+                        if (this.activeName == "second") {
                             this.currDownImgArr = arr;
                             // this.currDownPage = 1;
                         }
                         // 安装
-                        if(this.activeName == 'third'){
+                        if (this.activeName == "third") {
                             this.currInstallImgArr = arr;
                             // this.currInstallPage = 1;
                         }
                         // 巡点
-                        if(this.activeName == 'fourth'){
+                        if (this.activeName == "fourth") {
                             this.currSearchImgArr = arr;
                             // this.currSearchPage = 1;
                         }
@@ -1143,7 +1150,10 @@ export default {
                 }
             }
         },
-        
+        loginTimeout() {
+            Message.warning("登录超时,请重新登录");
+            this.$router.push("/login");
+        },
 
         //筛选
         filterCaseType(value, row) {
@@ -1152,8 +1162,7 @@ export default {
         newPath() {
             this.$router.push("./ludanReport");
         }
-    },
-
+    }
 };
 </script>
 
@@ -1520,7 +1529,7 @@ export default {
     top: 50px;
 } */
 
-.pager{
+.pager {
     width: 100%;
     margin-top: 20px;
 }
