@@ -108,7 +108,8 @@ import {
     DatePicker,
     Select,
     Option,
-    Message
+    Message,
+    Loading
 } from "element-ui";
 // 区域转换为中文
 import areaToText from "../../commonFun/areaToText_new.js";
@@ -128,8 +129,8 @@ export default {
     data() {
         return {
             //加载中
-            // loading: true,
-            loading: false,
+            loading: true,
+            // loading: false,
             showNewBtn: true,
             keyword: "",
             date: "",
