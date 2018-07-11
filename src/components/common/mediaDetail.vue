@@ -1,129 +1,129 @@
 <template>
-    <div class="mediaDetail">
-        <div class="ad_mediaDetail_wrap clearfix">
-            <div class="ad_mediaDetail_nav clearfix">
-                <p>
-                    <a href="#">媒体管理</a>
-                    <em> / </em>
-                    <a href="#">媒体详情</a>
-                </p>
-            </div>
+	<div class="mediaDetail">
+		<div class="ad_mediaDetail_wrap clearfix">
+			<div class="ad_mediaDetail_nav clearfix">
+				<p>
+					<a href="#">媒体管理</a>
+					<em> / </em>
+					<a href="#">媒体详情</a>
+				</p>
+			</div>
 
-            <!--媒体信息-->
-            <div class="ad_mediaInfo">
-                <div class="ad_mediaInfo_head">
-                    <h2>媒体信息</h2>
-                </div>
-                <div class="ad_mediaInfoPanel" v-model="obj">
-                    <el-row type="flex" class="row-bg">
-                        <el-col :span="8">
-                            <ul>
-                                <li>资源名称：
-                                    <span>{{obj.resName}}</span>
-                                </li>
-                                <li>资源类型：
-                                    <span>{{obj.cType}}</span>
-                                </li>
-                                <li>所属城市：
-                                    <span>{{obj.city}}</span>
-                                </li>
-                                <li>所属区域：
-                                    <span>{{obj.cityArea}}</span>
-                                </li>
-                                <li>所属商圈：
-                                    <span>{{obj.tradingArea}}</span>
-                                </li>
-                            </ul>
-                        </el-col>
-                        <el-col :span="8">
-                            <ul class="">
-                                <li>{{res_village.hType}}：
-                                    <span>{{obj.houseType}}</span>
-                                </li>
-                                <li>出入口数：
-                                    <span>{{obj.EntryExitNum}}</span>
-                                </li>
-                                <li>{{res_village.hNum}}：
-                                    <span>{{obj.HouseNum}}</span>
-                                </li>
-                                <li>楼盘价格：
-                                    <span>{{obj.housePrice}}</span>
-                                </li>
-                                <li>{{res_village.joinTime}}：
-                                    <span>{{obj.joinTime}}</span>
-                                </li>
-                            </ul>
-                        </el-col>
-                        <el-col :span="8">
-                            <ul class="">
-                                <li> 具体地址：
-                                    <span>{{obj.resAddress}}</span>
-                                </li>
-                                <li>经纬度：
-                                    <span>{{obj.latLng}}</span>
-                                </li>
-                                <li> 所属物业：
-                                    <span>{{obj.pmc}}</span>
-                                </li>
-                                <li> 小区全貌：
-                                    <span @click="showResImg" style="color: #108EE9;cursor: pointer">查看</span>
-                                </li>
-                                <!--<li> 小区全貌：<a href="#" style="color: #108EE9">查看</a></li>-->
-                            </ul>
-                        </el-col>
-                    </el-row>
-                </div>
-            </div>
+			<!--媒体信息-->
+			<div class="ad_mediaInfo">
+				<div class="ad_mediaInfo_head">
+					<h2>媒体信息</h2>
+				</div>
+				<div class="ad_mediaInfoPanel" v-model="obj">
+					<el-row type="flex" class="row-bg">
+						<el-col :span="8">
+							<ul>
+								<li>资源名称：
+									<span>{{obj.resName}}</span>
+								</li>
+								<li>资源类型：
+									<span>{{obj.cType}}</span>
+								</li>
+								<li>所属城市：
+									<span>{{obj.city}}</span>
+								</li>
+								<li>所属区域：
+									<span>{{obj.cityArea}}</span>
+								</li>
+								<li>所属商圈：
+									<span>{{obj.tradingArea}}</span>
+								</li>
+							</ul>
+						</el-col>
+						<el-col :span="8">
+							<ul class="">
+								<li>{{res_village.hType}}：
+									<span>{{obj.houseType}}</span>
+								</li>
+								<li>出入口数：
+									<span>{{obj.EntryExitNum}}</span>
+								</li>
+								<li>{{res_village.hNum}}：
+									<span>{{obj.HouseNum}}</span>
+								</li>
+								<li>楼盘价格：
+									<span>{{obj.housePrice}}</span>
+								</li>
+								<li>{{res_village.joinTime}}：
+									<span>{{obj.joinTime}}</span>
+								</li>
+							</ul>
+						</el-col>
+						<el-col :span="8">
+							<ul class="">
+								<li> 具体地址：
+									<span>{{obj.resAddress}}</span>
+								</li>
+								<li>经纬度：
+									<span>{{obj.latLng}}</span>
+								</li>
+								<li> 所属物业：
+									<span>{{obj.pmc}}</span>
+								</li>
+								<li> 小区全貌：
+									<span @click="showResImg" style="color: #108EE9;cursor: pointer">查看</span>
+								</li>
+								<!--<li> 小区全貌：<a href="#" style="color: #108EE9">查看</a></li>-->
+							</ul>
+						</el-col>
+					</el-row>
+				</div>
+			</div>
 
-            <!--社区广告门-->
-            <div class="ad_ad">
-                <div class="ad_adHeader">
-                    <ul class="ad_tab">
-                        <li class="curr_ad">社区广告门</li>
-                        <!--<li style="margin-left: 36px">电梯广告</li>-->
-                    </ul>
-                </div>
-                <div class="ad_adPanel">
-                    <div class="table_wrap">
-                        <el-table border :data="mediaList" style="width: 100%">
-                            <el-table-column prop="mTitle" label="媒体名称" min-width="8%">
-                            </el-table-column>
-                            <el-table-column prop="mType" label="媒体类型" min-width="7%">
-                            </el-table-column>
-                            <el-table-column prop="mState" label="状态" min-width="7%">
-                            </el-table-column>
-                            <el-table-column prop="assetTag" label="资产编号" min-width="10.2%">
-                            </el-table-column>
-                            <el-table-column prop="adSize" label="广告尺寸" min-width="7%">
-                            </el-table-column>
-                            <el-table-column prop="adViewSize" label="可视画面" min-width="7%">
-                            </el-table-column>
-                            <el-table-column prop="notPush" label="广告限制" min-width="10%" class="tar">
-                            </el-table-column>
-                            <el-table-column prop="mrk" label="备注" min-width="12%">
-                            </el-table-column>
-                            <el-table-column label="门禁图片" min-width="6%">
-                                <template slot-scope="scope">
-                                    <div style="color: #108EE9;cursor: pointer;">查看</div>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-            </div>
+			<!--社区广告门-->
+			<div class="ad_ad">
+				<div class="ad_adHeader">
+					<ul class="ad_tab">
+						<li class="curr_ad">社区广告门</li>
+						<!--<li style="margin-left: 36px">电梯广告</li>-->
+					</ul>
+				</div>
+				<div class="ad_adPanel">
+					<div class="table_wrap">
+						<el-table border :data="mediaList" style="width: 100%">
+							<el-table-column prop="mTitle" label="媒体名称" min-width="8%">
+							</el-table-column>
+							<el-table-column prop="mType" label="媒体类型" min-width="7%">
+							</el-table-column>
+							<el-table-column prop="mState" label="状态" min-width="7%">
+							</el-table-column>
+							<el-table-column prop="assetTag" label="资产编号" min-width="10.2%">
+							</el-table-column>
+							<el-table-column prop="adSize" label="广告尺寸" min-width="7%">
+							</el-table-column>
+							<el-table-column prop="adViewSize" label="可视画面" min-width="7%">
+							</el-table-column>
+							<el-table-column prop="notPush" label="广告限制" min-width="10%" class="tar">
+							</el-table-column>
+							<el-table-column prop="mrk" label="备注" min-width="12%">
+							</el-table-column>
+							<el-table-column label="门禁图片" min-width="6%">
+								<template slot-scope="scope">
+									<div style="color: #108EE9;cursor: pointer;">查看</div>
+								</template>
+							</el-table-column>
+						</el-table>
+					</div>
+				</div>
+			</div>
 
-            <div class="content_bottom_btn">
-                <el-button type="primary" @click="edit" v-if="haveEdit">编辑</el-button>
-                <el-button type="default" @click="goBack">
-                    <!-- <router-link :to="{path:'/superOperate/mediaList'}" >返回</router-link>-->
-                    返回
-                </el-button>
-            </div>
-        </div>
-        <el-dialog :visible.sync="ResImgDialogVisible">
-            <img class="resImg" :src='ResImgSrc' alt="资源图片">
-        </el-dialog>
-    </div>
+			<div class="content_bottom_btn">
+				<el-button type="primary" @click="edit" v-if="haveEdit">编辑</el-button>
+				<el-button type="default" @click="goBack">
+					<!-- <router-link :to="{path:'/superOperate/mediaList'}" >返回</router-link>-->
+					返回
+				</el-button>
+			</div>
+		</div>
+		<el-dialog :visible.sync="ResImgDialogVisible">
+			<img class="resImg" :src='ResImgSrc' alt="资源图片">
+		</el-dialog>
+	</div>
 </template>
 
 <script>

@@ -290,12 +290,15 @@
 							<div class="panel" v-loading="UpReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
 								<div class="up-report">
 									<div class="up-loader-header">
-										<el-cascader :options="citys" v-model="citySelect" @change="searchImg(upReportArr, 'upImgArr')">
+										<!-- <el-cascader :options="citys" v-model="citySelect" @change="searchImg(upReportArr, 'upImgArr')"> -->
+										<el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
 										</el-cascader>
-										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(upReportArr, 'upImgArr')">
+										<!-- <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(upReportArr, 'upImgArr')"> -->
+										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
 											<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
 										</el-select>
-										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(upReportArr, 'upImgArr')">
+										<!-- <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(upReportArr, 'upImgArr')"> -->
+										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
 											<el-option label="全部监播图" value="1"></el-option>
 											<el-option label="已上传" value="2"></el-option>
 											<el-option label="未上传" value="3"></el-option>
@@ -308,7 +311,8 @@
 									</div>
 
 									<div class="imgs-box">
-										<div class="up-loader-Imgpanel" v-for="(updata,index) in currUpReportArr" :key="index">
+										<!-- <div class="up-loader-Imgpanel" v-for="(updata,index) in currUpReportArr" :key="index"> -->
+										<div class="up-loader-Imgpanel" v-for="(updata,index) in pageUpReportArr" :key="index">
 											<el-card class="box-card" shadow="never">
 												<div slot="header" class="clearfix img-car">
 													<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
@@ -360,7 +364,9 @@
 										</div>
 									</div>
 									<div class="pager">
-										<el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
+										<!-- <el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="upReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
+										</el-pagination> -->
+										<el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
 										</el-pagination>
 									</div>
 									<div class="up-report-bottom">
@@ -385,12 +391,15 @@
 							<div class="panel" v-loading="DownReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
 								<div class="up-report">
 									<div class="up-loader-header">
-										<el-cascader :options="citys" v-model="citySelect" @change="searchImg(downReportArr, 'downImgArr')">
+										<!-- <el-cascader :options="citys" v-model="citySelect" @change="searchImg(downReportArr, 'downImgArr')"> -->
+										<el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
 										</el-cascader>
-										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(downReportArr, 'downImgArr')">
+										<!-- <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg(downReportArr, 'downImgArr')"> -->
+										<el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
 											<el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
 										</el-select>
-										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(downReportArr, 'downImgArr')">
+										<!-- <el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg(downReportArr, 'downImgArr')"> -->
+										<el-select placeholder="请选择监播图" v-model="allPic" @change="searchImg()">
 											<el-option label="全部监播图" value="1"></el-option>
 											<el-option label="已上传" value="2"></el-option>
 											<el-option label="未上传" value="3"></el-option>
@@ -402,7 +411,8 @@
 										</div>
 									</div>
 									<div class="imgs-box">
-										<div class="up-loader-Imgpanel" v-for="(downData,index) in currDownReportArr" :key="index">
+										<!-- <div class="up-loader-Imgpanel" v-for="(downData,index) in currDownReportArr" :key="index"> -->
+										<div class="up-loader-Imgpanel" v-for="(downData,index) in pageDownReportArr" :key="index">
 											<el-card class="box-card" shadow="never">
 												<div slot="header" class="clearfix img-car">
 													<!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
@@ -447,7 +457,9 @@
 										</div>
 									</div>
 									<div class="pager">
-										<el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
+										<!-- <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
+										</el-pagination> -->
+                                        <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
 										</el-pagination>
 									</div>
 									<div class="up-report-bottom">
@@ -1153,52 +1165,92 @@ export default {
                 sessionStorage.getItem("session_data")
             ).uType;
         },
-        handleUpSizeChange(pageVal) {
+         // 页数大小改变
+        sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            this.pageUpSize = pageVal;
-            this.changeUpPage(1);
-        },
-        handleDownSizeChange(pageVal) {
-            console.log("pageVal", pageVal);
-            this.pageDownSize = pageVal;
-            this.changeDownPage(1);
+            if(this.planPanel == 'forth'){
+                this.pageUpSize = pageVal;
+            }else if(this.planPanel == 'fifth'){
+                this.pageDownSize = pageVal;
+            }
+            this.changePage(1);
         },
         // 分页功能
-        changeUpPage(page) {
-            let pageSize = this.pageUpSize;
-            let arr = this.upReportArr;
-            let total = arr.length;
+        changePage(page) {
+            console.log('page-------', page);
+            let pageSize = '';
+            let arr = [];
             let resultArr = [];
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
+
+            if(this.planPanel == 'forth'){
+                pageSize = this.pageUpSize;
+                // arr = this.upImgArr;
+                // this.currUpPage = page;
+                arr = this.currUpReportArr;
+            }else if(this.planPanel == 'fifth'){
+                pageSize = this.pageDownSize;
+                // this.currDownPage = page;
+                // arr = this.downImgArr;
+                arr = this.currDownReportArr;
+            }
+            
+            let total = arr.length;
+            for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
                 resultArr.push(arr[i]);
             }
-            this.currUpReportArr = [];
-            this.currUpReportArr = resultArr;
-            console.log("currUpReportArr", this.currUpReportArr);
-            console.log("page", page, "pageSize", pageSize);
-        },
-        // 分页功能
-        changeDownPage(page) {
-            let pageSize = this.pageDownSize;
-            let arr = this.downReportArr;
-            let total = arr.length;
-            let resultArr = [];
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
-                resultArr.push(arr[i]);
+            if(this.planPanel == 'forth'){
+                this.pageUpReportArr = resultArr;
+            }else if(this.planPanel == 'fifth'){
+                this.pageDownReportArr = resultArr;
             }
-            this.currDownReportArr = [];
-            this.currDownReportArr = resultArr;
-            console.log("currDownReportArr", this.currDownReportArr);
-            console.log("page", page, "pageSize", pageSize);
         },
+
+        // handleUpSizeChange(pageVal) {
+        //     console.log("pageVal", pageVal);
+        //     this.pageUpSize = pageVal;
+        //     this.changeUpPage(1);
+        // },
+        // handleDownSizeChange(pageVal) {
+        //     console.log("pageVal", pageVal);
+        //     this.pageDownSize = pageVal;
+        //     this.changeDownPage(1);
+        // },
+        // // 分页功能
+        // changeUpPage(page) {
+        //     let pageSize = this.pageUpSize;
+        //     let arr = this.upReportArr;
+        //     let total = arr.length;
+        //     let resultArr = [];
+        //     for (
+        //         let i = (page - 1) * pageSize;
+        //         i < (page * pageSize < total ? page * pageSize : total);
+        //         i++
+        //     ) {
+        //         resultArr.push(arr[i]);
+        //     }
+        //     this.currUpReportArr = [];
+        //     this.currUpReportArr = resultArr;
+        //     console.log("currUpReportArr", this.currUpReportArr);
+        //     console.log("page", page, "pageSize", pageSize);
+        // },
+        // // 分页功能
+        // changeDownPage(page) {
+        //     let pageSize = this.pageDownSize;
+        //     let arr = this.downReportArr;
+        //     let total = arr.length;
+        //     let resultArr = [];
+        //     for (
+        //         let i = (page - 1) * pageSize;
+        //         i < (page * pageSize < total ? page * pageSize : total);
+        //         i++
+        //     ) {
+        //         resultArr.push(arr[i]);
+        //     }
+        //     this.currDownReportArr = [];
+        //     this.currDownReportArr = resultArr;
+        //     console.log("currDownReportArr", this.currDownReportArr);
+        //     console.log("page", page, "pageSize", pageSize);
+        // },
         // tab点击
         handleClick() {
             if (this.planPanel == "first") {
@@ -1331,6 +1383,9 @@ export default {
         // 获取上刊图片数据
         getUpImgInfo() {
             if (this.upLoadImg.length) {
+                this.citySelect[0] = "全部";
+                this.currUpPage = 1;
+                this.searchImg();
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -1358,7 +1413,10 @@ export default {
                         this.currUpReportArr = JSON.parse(
                             JSON.stringify(this.upReportArr)
                         );
-                        this.changeUpPage(1);
+                        this.citySelect[0] = "全部";
+                        this.currUpPage = 1;
+                        this.searchImg();
+                        // this.changeUpPage(1);
                         console.log("upimginfo", this.upReportArr);
 
                         // 区域二级联动
@@ -1383,6 +1441,9 @@ export default {
         // 获取下刊图片数据
         getDownImgInfo() {
             if (this.downImg.length) {
+                this.citySelect[0] = "全部";
+                this.currDownPage = 1;
+                this.searchImg();
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -1401,10 +1462,11 @@ export default {
                         // 下刊数据(组合图片)
                         result = this.constructImg(result, this.downImg, "XK");
                         this.downReportArr = result;
-                        this.currDownReportArr = JSON.parse(
-                            JSON.stringify(this.downReportArr)
-                        );
-                        this.changeDownPage(1);
+                        this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
+                        this.citySelect[0] = "全部";
+                        this.currDownPage = 1;
+                        this.searchImg();
+                        // this.changeDownPage(1);
                         console.log("downimginfo", this.downReportArr);
 
                         // 区域二级联动
@@ -1732,15 +1794,7 @@ export default {
                         if (schedules == "") {
                             schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules =
-                                schedules +
-                                " " +
-                                ds +
-                                "-" +
-                                de +
-                                "(" +
-                                asid.mNum +
-                                "面)";
+                            schedules = schedules +" " + ds + "-" + de +"(" + asid.mNum +"面)";
                         }
                     }
                 }
@@ -1815,9 +1869,9 @@ export default {
             return result;
         },
         // 城市转换为中文
-        cityToText(rid) {
-            return areaToText.toTextCity(rid);
-        },
+        // cityToText(rid) {
+        //     return areaToText.toTextCity(rid);
+        // },
         // 状态转换成文本
         stateToText(val) {
             let state = [
@@ -1884,7 +1938,7 @@ export default {
             this.currentSetpoint = this.setpointArr;
         },
         // 上下刊搜索图片
-        searchImg(imgArr, type) {
+        searchImg() {
             console.log("citySelect", this.citySelect);
             console.log("allhouse", this.allhouse);
             console.log("allPic", this.allPic);
@@ -1892,19 +1946,32 @@ export default {
             let allhouse = this.allhouse;
             let allPic = this.allPic;
             let arr = [];
+            let imgArr = [];
+            let type = '';
             if (citySelect[0] == "全部") {
                 this.allhouse = "";
                 this.allPic = "";
-                if (type == "upImgArr") {
-                    arr = JSON.parse(JSON.stringify(this.upReportArr));
+                if (this.planPanel == 'forth') {
+                    // arr = JSON.parse(JSON.stringify(this.upReportArr));
+                    arr = this.upReportArr;
                     this.currUpReportArr = arr;
+                    this.changePage(1);
                     // this.changeUpPage(1);
                 } else {
-                    arr = JSON.parse(JSON.stringify(this.downReportArr));
+                    // arr = JSON.parse(JSON.stringify(this.downReportArr));
+                    arr = this.downReportArr;
                     this.currDownReportArr = arr;
+                    this.changePage(1);
                     // this.changeDownPage(1);
                 }
                 return;
+            }
+            if(this.planPanel == 'forth'){
+                imgArr = this.upReportArr;
+                type = 'upImgArr';
+            }else{
+                imgArr = this.downReportArr;
+                type = 'downImgArr';
             }
             for (let data of imgArr) {
                 if (citySelect.length && allhouse && allPic) {
@@ -2018,17 +2085,164 @@ export default {
                 }
             }
             console.log("searchImg", arr);
-            if (type == "upImgArr") {
+            if (this.planPanel =='forth') {
                 this.currUpReportArr = arr;
-                // this.changeUpPage(1);
+                this.changePage(1);
             } else {
                 this.currDownReportArr = arr;
-                // this.changeDownPage(1);
+                this.changePage(1);
             }
             if (!arr.length) {
                 Message.warning("查询数据为空");
             }
         },
+        // searchImg(imgArr, type) {
+        //     console.log("citySelect", this.citySelect);
+        //     console.log("allhouse", this.allhouse);
+        //     console.log("allPic", this.allPic);
+        //     let citySelect = this.citySelect;
+        //     let allhouse = this.allhouse;
+        //     let allPic = this.allPic;
+        //     let arr = [];
+        //     if (citySelect[0] == "全部") {
+        //         this.allhouse = "";
+        //         this.allPic = "";
+        //         if (type == "upImgArr") {
+        //             arr = JSON.parse(JSON.stringify(this.upReportArr));
+        //             this.currUpReportArr = arr;
+        //             // this.changeUpPage(1);
+        //         } else {
+        //             arr = JSON.parse(JSON.stringify(this.downReportArr));
+        //             this.currDownReportArr = arr;
+        //             // this.changeDownPage(1);
+        //         }
+        //         return;
+        //     }
+        //     for (let data of imgArr) {
+        //         if (citySelect.length && allhouse && allPic) {
+        //             if (
+        //                 data.city == citySelect[0] &&
+        //                 data.rName == citySelect[1] &&
+        //                 data.resName == allhouse
+        //             ) {
+        //                 if (allPic == "1") {
+        //                     arr.push(data);
+        //                 }
+        //                 if (allPic == "2" && data[type].length) {
+        //                     arr.push(data);
+        //                 }
+        //                 if (allPic == "3" && !data[type].length) {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //         } else if (citySelect.length) {
+        //             if (
+        //                 data.city == citySelect[0] &&
+        //                 data.rName == citySelect[1]
+        //             ) {
+        //                 if (allhouse) {
+        //                     if (data.resName == allhouse) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else if (allPic) {
+        //                     if (allPic == "1") {
+        //                         arr.push(data);
+        //                     }
+        //                     if (allPic == "2" && data[type].length) {
+        //                         arr.push(data);
+        //                     }
+        //                     if (allPic == "3" && !data[type].length) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //         } else if (allhouse) {
+        //             if (data.resName == allhouse) {
+        //                 if (citySelect.length) {
+        //                     if (
+        //                         data.city == citySelect[0] &&
+        //                         data.rName == citySelect[1]
+        //                     ) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else if (allPic) {
+        //                     if (allPic == "1") {
+        //                         arr.push(data);
+        //                     }
+        //                     if (allPic == "2" && data[type].length) {
+        //                         arr.push(data);
+        //                     }
+        //                     if (allPic == "3" && !data[type].length) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //         } else if (allPic) {
+        //             if (allPic == "1") {
+        //                 if (
+        //                     citySelect.length &&
+        //                     data.city == citySelect[0] &&
+        //                     data.rName == citySelect[1]
+        //                 ) {
+        //                     arr.push(data);
+        //                 } else if (allhouse) {
+        //                     if (data.resName == allhouse) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //             if (allPic == "2" && data[type].length) {
+        //                 if (
+        //                     citySelect.length &&
+        //                     data.city == citySelect[0] &&
+        //                     data.rName == citySelect[1]
+        //                 ) {
+        //                     arr.push(data);
+        //                 } else if (allhouse) {
+        //                     if (data.resName == allhouse) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //             if (allPic == "3" && !data[type].length) {
+        //                 if (
+        //                     citySelect.length &&
+        //                     data.city == citySelect[0] &&
+        //                     data.rName == citySelect[1]
+        //                 ) {
+        //                     arr.push(data);
+        //                 } else if (allhouse) {
+        //                     if (data.resName == allhouse) {
+        //                         arr.push(data);
+        //                     }
+        //                 } else {
+        //                     arr.push(data);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     console.log("searchImg", arr);
+        //     if (type == "upImgArr") {
+        //         this.currUpReportArr = arr;
+        //         // this.changeUpPage(1);
+        //         // this.changePage(1);
+        //     } else {
+        //         this.currDownReportArr = arr;
+        //         // this.changePage(1);
+        //         // this.changeDownPage(1);
+        //     }
+        //     if (!arr.length) {
+        //         Message.warning("查询数据为空");
+        //     }
+        // },
         // 城市筛选
         filterCity(value, row) {
             return row.city === value;
@@ -2121,6 +2335,7 @@ export default {
                             }
                         }
                         this.upReportArr.push();
+                        // this.changePage(this.currUpPage);
                         // this.changeUpPage(this.currUpPage);
                     } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
@@ -2172,6 +2387,7 @@ export default {
                             }
                         }
                         this.downReportArr.push();
+                        this.changePage(this.currDownPage);
                         // this.changeUpPage(this.currDownPage);
                     } else if (res.data.SysCode == 100302) {
                         Message.warning("登录超时,请重新登录");
