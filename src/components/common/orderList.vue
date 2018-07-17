@@ -97,7 +97,7 @@
                                 <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item v-if="(role=='SM')" @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
-                                        <el-dropdown-item @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
+                                        <el-dropdown-item v-if="(role=='MD')" @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
                                         </el-dropdown-item>
                                         <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->
                                         <!--<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>-->
@@ -209,10 +209,7 @@ export default {
                                 let arr = item.rIDs.split(",");
                                 let resultArr = [];
                                 for (let data of arr) {
-                                    let text = data.substr(
-                                        0,
-                                        data.indexOf(")") + 1
-                                    );
+                                    let text = data.substr(0, data.indexOf(")") + 1);
                                     resultArr.push(text);
                                 }
                                 item.cityArea = resultArr;
@@ -233,14 +230,16 @@ export default {
         // 跳转到详情页面
         ToDetail(apid) {
             console.log(apid);
+            sessionStorage.setItem('change_point', 'no');
             sessionStorage.setItem("order_apid", apid);
             this.$router.push("./orderDetail");
         },
         // 更换点位
         changePoint(apid) {
-            Message.warning("该功能尚未完善");
-            // sessionStorage.setItem("order_apid", apid);
-            // this.$router.push("./orderDetail");
+            // Message.warning("该功能尚未完善");
+            sessionStorage.setItem('change_point', 'yes');
+            sessionStorage.setItem("order_apid", apid);
+            this.$router.push("./orderDetail");
         },
         // 状态转换成文本
         stateToText(val) {
@@ -416,7 +415,7 @@ export default {
             }
             this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
         },
-        loginTimeout() {
+        loginTimeout(){
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },

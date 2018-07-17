@@ -29,7 +29,7 @@
                         </el-dialog>
                         <div class="handleBtn">
                             <!-- <el-button plain @click="changeRemark = true" :disabled="usableBtn">监播备注</el-button> -->
-                            <el-button type="primary" :disabled="usableBtn" @click="changePoint">换点</el-button>
+                            <el-button type="primary" :disabled="usableBtn" v-if="role=='MD'&& planPanel=='first'" @click="changePoint">换点</el-button>
                             <!--监播备注对话框-->
                             <el-dialog title="监播备注" :visible.sync="changeRemark" width="30%">
                                 <el-input type="textarea" v-model="remark" :rows="2"></el-input>
@@ -102,9 +102,9 @@
                         <div class="first-wrap box-wrap">
                             <h4 v-if="!showTitle">选点排期</h4>
                             <h4 v-if="showTitle">更换点位
-                                <el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位
-                                </el-button>
-                                <span>原投放面数:40&nbsp;&nbsp; 种植投放面数:1&nbsp;&nbsp; 新增面数:1&nbsp;&nbsp; 现投放面数:40</span>
+                                <!--<el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位-->
+                                <!--</el-button>-->
+                                <span>原投放面数:{{setpointArr.length}}&nbsp;&nbsp; 中止投放面数:{{stopPointNum}} &nbsp;&nbsp;&nbsp; 现投放面数:{{nowPointNum}}</span>
                             </h4>
                             <div style="display:inline-block;margin-left: 30px;margin-top: 20px;" class="search-wrap">
                                 <span>
@@ -142,7 +142,6 @@
                                             </el-form>
                                         </template>
                                     </el-table-column>
-
                                     <el-table-column label="资源名称" min-width="16.1%" prop="resName">
                                     </el-table-column>
                                     <el-table-column prop="mTitle" label="媒体名称" min-width="10.3%" class="tar">
@@ -163,8 +162,30 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
+                                        <template slot-scope="scope">
+                                            <template v-if="scope.row.lState==2">
+                                                <span>{{formatTime(scope.row.lStar)+"-"+formatTime(scope.row.lSetTime)}}</span>
+                                                <el-tooltip placement="top">
+                                                    <div slot="content">
+                                                        <span>{{scope.row.timeRange}}</span>
+                                                    </div>
+                                                    <i class="el-icon-question"> </i>
+                                                </el-tooltip>
+                                            </template>
+                                            <span v-else>{{scope.row.timeRange}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="操作" min-width="4.3%" v-if="showHandel">
+                                        <template slot-scope="scope">
+                                            <span style="color:#999;" v-if="scope.row.lState==2">终止</span>
+                                            <el-button type="text" v-else @click="disContinue(scope.row)">终止</el-button>
+                                        </template>
                                     </el-table-column>
                                 </el-table>
+                                <!-- <div class="content_bottom_btn" v-if="!showBtn">
+                                    <el-button type="primary" @click="saveChangePoint">保存</el-button>
+                                    <el-button type="default" @click="cancelChangePoint">取消</el-button>
+                                </div> -->
                             </div>
                         </div>
                     </el-tab-pane>
@@ -290,7 +311,7 @@
                             <div class="panel" v-loading="UpReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                 <div class="up-report">
                                     <div class="up-loader-header">
-                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
+                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImgChange()">
                                         </el-cascader>
                                         <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
                                             <el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
@@ -360,7 +381,7 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <el-pagination small background :current-page="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                        <el-pagination small background :current-page.sync="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
                                         </el-pagination>
                                     </div>
                                     <div class="up-report-bottom">
@@ -371,7 +392,7 @@
                                         </div>
                                         <div class="up-report-bottom-btns">
                                             <!--<el-button type="primary">生成报告</el-button>-->
-                                            <el-button plain>下载PDF</el-button>
+                                            <el-button plain @click="downloadUp">下载PDF</el-button>
                                             <el-button plain @click="showH5Up">查看H5</el-button>
                                         </div>
                                     </div>
@@ -447,7 +468,7 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <el-pagination small background :current-page="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                        <el-pagination small background :current-page.sync="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
                                         </el-pagination>
                                     </div>
                                     <div class="up-report-bottom">
@@ -458,7 +479,7 @@
                                         </div>
                                         <div class="up-report-bottom-btns">
                                             <!--<el-button type="primary">生成报告</el-button>-->
-                                            <el-button plain>下载PDF</el-button>
+                                            <el-button plain @click="downloadDown">下载PDF</el-button>
                                             <el-button plain @click="showH5Down">查看H5</el-button>
                                         </div>
                                     </div>
@@ -469,7 +490,7 @@
                 </el-tabs>
 
                 <!--添加点位对话框-->
-                <el-dialog title="添加点位" :visible.sync="dialogAddPoint" width="30%">
+                <el-dialog title="添加点位" :visible.sync="dialogAddPoint" width="80%">
                     <div class="step2">
                         <div>
                             <div class="search-nav">
@@ -632,7 +653,7 @@
                                     </el-table-column>
                                     <el-table-column label="楼盘价格" min-width="7.3%">
                                         <template slot-scope="scope">
-                                            <span>&yen;{{scope.row.buildPrice}}</span>
+                                            <span>{{scope.row.buildPrice}}</span>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="schedules" label="排期" min-width="14.2%">
@@ -659,8 +680,8 @@
                 </el-dialog>
 
                 <!-- 图片查看显示 -->
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
+                <el-dialog :visible.sync="dialogVisible" class="imgPreview">
+                    <img  :src="dialogImageUrl" alt="">
                 </el-dialog>
                 <!-- 返回框 -->
                 <div class="content_bottom_btn">
@@ -1081,13 +1102,16 @@ export default {
             showTitle: false,
             //选点排期按钮
             showBtn: true,
-            //更换点位取消中止按钮
+            //更换点位取消终止按钮
             cancelbtnShow: false,
             //选点排期操作
             showHandel: false
         };
     },
     created() {
+        if(this.isChangePoint()){
+            this.changePoint();
+        }
         // 根据角色判断是否有修改合同编号的权限
         this.getRole();
         // 获取订单详情的上面公司的信息
@@ -1098,6 +1122,30 @@ export default {
         this.getPriceData();
     },
     computed: {
+        // 现投放面数
+        nowPointNum() {
+            if (this.setpointArr.length) {
+                let num = 0;
+                for (let data of this.setpointArr) {
+                    if (data.lState != 2) {
+                        num++;
+                    }
+                }
+                return num;
+            }
+        },
+        // 中止投放面数
+        stopPointNum() {
+            if (this.setpointArr.length) {
+                let num = 0;
+                for (let data of this.setpointArr) {
+                    if (data.lState == 2) {
+                        num++;
+                    }
+                }
+                return num;
+            }
+        },
         // 上刊报告进度条
         currUpNum() {
             // let num = this.currUpReportArr.length;
@@ -1132,6 +1180,13 @@ export default {
         }
     },
     methods: {
+        isChangePoint(){
+            let isChange = sessionStorage.getItem('change_point');
+            if(isChange == 'yes'){
+                return true;
+            }
+            return false;
+        },
         // 获取角色
         getRole() {
             this.role = JSON.parse(
@@ -1156,9 +1211,11 @@ export default {
             let resultArr = [];
 
             if (this.planPanel == "forth") {
+                this.currUpPage = page;
                 pageSize = this.pageUpSize;
                 arr = this.currUpReportArr;
             } else if (this.planPanel == "fifth") {
+                this.currDownPage = page;
                 pageSize = this.pageDownSize;
                 arr = this.currDownReportArr;
             }
@@ -1192,15 +1249,28 @@ export default {
                 console.log("materialInfo", this.materialInfo);
             }
             if (this.planPanel == "forth") {
+                // this.currUpPage = 1;
                 this.getUpImgInfo();
             }
             if (this.planPanel == "fifth") {
+                // this.currDownPage = 1;
                 this.getDownImgInfo();
             }
         },
         //返回列表
         goBack() {
-            this.$router.push("./orderList");
+            let isChange = sessionStorage.getItem('change_point');
+            if(isChange =='yes'){
+                sessionStorage.setItem('change_point', 'no');
+                // location.reload();
+                this.usableBtn = false;
+                $(window).scrollTop(0);
+                this.showTitle = false;
+                this.showBtn = true;
+                this.showHandel = false;
+            }else{
+                this.$router.push("./orderList");
+            }
         },
         // 去重城市
         filter(val) {
@@ -1308,7 +1378,7 @@ export default {
         getUpImgInfo() {
             if (this.upLoadImg.length) {
                 this.citySelect[0] = "全部";
-                this.currUpPage = 1;
+                // this.currUpPage = 1;
                 this.searchImg();
                 return;
             }
@@ -1338,7 +1408,7 @@ export default {
                             JSON.stringify(this.upReportArr)
                         );
                         this.citySelect[0] = "全部";
-                        this.currUpPage = 1;
+                        // this.currUpPage = 1;
                         this.searchImg();
                         // this.changeUpPage(1);
                         console.log("upimginfo", this.upReportArr);
@@ -1365,7 +1435,7 @@ export default {
         getDownImgInfo() {
             if (this.downImg.length) {
                 this.citySelect[0] = "全部";
-                this.currDownPage = 1;
+                // this.currDownPage = 1;
                 this.searchImg();
                 return;
             }
@@ -1389,7 +1459,7 @@ export default {
                             JSON.stringify(this.downReportArr)
                         );
                         this.citySelect[0] = "全部";
-                        this.currDownPage = 1;
+                        // this.currDownPage = 1;
                         this.searchImg();
                         // this.changeDownPage(1);
                         console.log("downimginfo", this.downReportArr);
@@ -1586,6 +1656,7 @@ export default {
                                 let pdSendFee = 0;
                                 let pdOtherFee = 0;
                                 let arr = [];
+                                let city = '';
                                 for (let price of plandata) {
                                     pdTotal += price.pdTotal;
                                     pdSendFee += price.pdSendFee;
@@ -1619,62 +1690,27 @@ export default {
                                         allprice: 0,
                                         pdRemark: price.pdRemark
                                     };
-                                    obj.allprice =
-                                        (price.pdTotal +
-                                            price.pdSendFee +
-                                            price.pdOtherFee) /
-                                        100;
+                                    obj.allprice = (price.pdTotal + price.pdSendFee + price.pdOtherFee) / 100;
                                     obj.city = areaToText.toTextCity(obj.rID);
+                                    city = obj.city+','+city;
                                     arr.push(obj);
                                 }
+                                this.$set(this.orderDetail, "rIDs", city);
                                 let total = pdTotal + pdSendFee + pdOtherFee;
-                                this.$set(
-                                    this.orderDetail,
-                                    "Total",
-                                    this.priceFormat(total / 100)
-                                );
-                                this.$set(
-                                    this.orderDetail,
-                                    "pdTotal",
-                                    this.priceFormat(pdTotal / 100)
-                                );
-                                this.$set(
-                                    this.orderDetail,
-                                    "pdSendFee",
-                                    this.priceFormat(pdSendFee / 100)
-                                );
-                                this.$set(
-                                    this.orderDetail,
-                                    "pdOtherFee",
-                                    this.priceFormat(pdOtherFee / 100)
-                                );
+                                this.$set(this.orderDetail, "Total",this.priceFormat(total / 100));
+                                this.$set(this.orderDetail, "pdTotal", this.priceFormat(pdTotal / 100));
+                                this.$set(this.orderDetail, "pdSendFee", this.priceFormat(pdSendFee / 100));
+                                this.$set(this.orderDetail, "pdOtherFee", this.priceFormat(pdOtherFee / 100));
                                 // 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
                                 for (let ta of arr) {
                                     for (let ad of adPrice) {
                                         if (ad.rID == ta.rID) {
                                             ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
                                             let onedayPrice = ta.adPrice / 7;
-                                            let discount =
-                                                Math.round(
-                                                    ta.pdAdFee /
-                                                        (onedayPrice *
-                                                            ta.pdDays) *
-                                                        10000
-                                                ) / 100;
-                                            let ADMakeDiscount =
-                                                Math.round(
-                                                    ta.pdAdMake /
-                                                        (100 * ta.pdNum) *
-                                                        10000
-                                                ) / 100;
-                                            ta.discount = isNaN(discount)
-                                                ? 0
-                                                : discount; // 广告费折扣百分比
-                                            ta.ADMakeDiscount = isNaN(
-                                                ADMakeDiscount
-                                            )
-                                                ? 0
-                                                : ADMakeDiscount; // 制作费折扣百分比
+                                            let discount = Math.round(ta.pdAdFee / (onedayPrice * ta.pdDays) * 10000) / 100;
+                                            let ADMakeDiscount = Math.round(ta.pdAdMake / (100 * ta.pdNum) * 10000 ) / 100;
+                                            ta.discount = isNaN(discount)? 0 : discount; // 广告费折扣百分比
+                                            ta.ADMakeDiscount = isNaN(ADMakeDiscount) ? 0 : ADMakeDiscount; // 制作费折扣百分比
                                             break;
                                         }
                                     }
@@ -1717,15 +1753,7 @@ export default {
                         if (schedules == "") {
                             schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules =
-                                schedules +
-                                " " +
-                                ds +
-                                "-" +
-                                de +
-                                "(" +
-                                asid.mNum +
-                                "面)";
+                            schedules = schedules +" " + ds + "-" + de +"(" + asid.mNum +"面)";
                         }
                     }
                 }
@@ -1864,6 +1892,14 @@ export default {
             }
             this.currentSetpoint = this.setpointArr;
         },
+        searchImgChange(){
+            let citySelect = this.citySelect;
+            if(citySelect[0] == "全部"){
+                this.allPic = '';
+                this.allhouse ='';
+            }
+            this.searchImg();
+        },
         // 上下刊搜索图片
         searchImg() {
             console.log("citySelect", this.citySelect);
@@ -1875,24 +1911,6 @@ export default {
             let arr = [];
             let imgArr = [];
             let type = "";
-            if (citySelect[0] == "全部") {
-                this.allhouse = "";
-                this.allPic = "";
-                if (this.planPanel == "forth") {
-                    // arr = JSON.parse(JSON.stringify(this.upReportArr));
-                    arr = this.upReportArr;
-                    this.currUpReportArr = arr;
-                    this.changePage(1);
-                    // this.changeUpPage(1);
-                } else {
-                    // arr = JSON.parse(JSON.stringify(this.downReportArr));
-                    arr = this.downReportArr;
-                    this.currDownReportArr = arr;
-                    this.changePage(1);
-                    // this.changeDownPage(1);
-                }
-                return;
-            }
             if (this.planPanel == "forth") {
                 imgArr = this.upReportArr;
                 type = "upImgArr";
@@ -1900,29 +1918,24 @@ export default {
                 imgArr = this.downReportArr;
                 type = "downImgArr";
             }
-            for (let data of imgArr) {
-                if (citySelect.length && allhouse && allPic) {
-                    if (
-                        data.city == citySelect[0] &&
-                        data.rName == citySelect[1] &&
-                        data.resName == allhouse
-                    ) {
-                        if (allPic == "1") {
-                            arr.push(data);
-                        }
-                        if (allPic == "2" && data[type].length) {
-                            arr.push(data);
-                        }
-                        if (allPic == "3" && !data[type].length) {
-                            arr.push(data);
-                        }
-                    }
-                } else if (citySelect.length) {
-                    if (
-                        data.city == citySelect[0] &&
-                        data.rName == citySelect[1]
-                    ) {
-                        if (allhouse) {
+            if (citySelect[0] == "全部") {
+                if(!allhouse && !allPic){
+                    arr = imgArr;
+                }else{
+                    for (let data of imgArr) {
+                        if(allhouse && allPic){
+                            if(data.resName == allhouse){
+                                if (allPic == "1") {
+                                    arr.push(data);
+                                }
+                                if (allPic == "2" && data[type].length) {
+                                    arr.push(data);
+                                }
+                                if (allPic == "3" && !data[type].length) {
+                                    arr.push(data);
+                                }
+                            }
+                        } else if (allhouse) {
                             if (data.resName == allhouse) {
                                 arr.push(data);
                             }
@@ -1936,77 +1949,118 @@ export default {
                             if (allPic == "3" && !data[type].length) {
                                 arr.push(data);
                             }
-                        } else {
-                            arr.push(data);
                         }
                     }
-                } else if (allhouse) {
-                    if (data.resName == allhouse) {
-                        if (citySelect.length) {
+                }
+            }else{
+                for (let data of imgArr) {
+                    if (citySelect.length && allhouse && allPic) {
+                        if (
+                            data.city == citySelect[0] &&
+                            data.rName == citySelect[1] &&
+                            data.resName == allhouse
+                        ) {
+                            if (allPic == "1") {
+                                arr.push(data);
+                            }
+                            if (allPic == "2" && data[type].length) {
+                                arr.push(data);
+                            }
+                            if (allPic == "3" && !data[type].length) {
+                                arr.push(data);
+                            }
+                        }
+                    } else if (citySelect.length) {
+                        if (
+                            data.city == citySelect[0] &&
+                            data.rName == citySelect[1]
+                        ) {
+                            if (allhouse) {
+                                if (data.resName == allhouse) {
+                                    arr.push(data);
+                                }
+                            } else if (allPic) {
+                                if (allPic == "1") {
+                                    arr.push(data);
+                                }
+                                if (allPic == "2" && data[type].length) {
+                                    arr.push(data);
+                                }
+                                if (allPic == "3" && !data[type].length) {
+                                    arr.push(data);
+                                }
+                            } else {
+                                arr.push(data);
+                            }
+                        }
+                    } else if (allhouse) {
+                        if (data.resName == allhouse) {
+                            if (citySelect.length) {
+                                if (
+                                    data.city == citySelect[0] &&
+                                    data.rName == citySelect[1]
+                                ) {
+                                    arr.push(data);
+                                }
+                            } else if (allPic) {
+                                if (allPic == "1") {
+                                    arr.push(data);
+                                }
+                                if (allPic == "2" && data[type].length) {
+                                    arr.push(data);
+                                }
+                                if (allPic == "3" && !data[type].length) {
+                                    arr.push(data);
+                                }
+                            } else {
+                                arr.push(data);
+                            }
+                        }
+                    } else if (allPic) {
+                        if (allPic == "1") {
                             if (
+                                citySelect.length &&
                                 data.city == citySelect[0] &&
                                 data.rName == citySelect[1]
                             ) {
                                 arr.push(data);
-                            }
-                        } else if (allPic) {
-                            if (allPic == "1") {
+                            } else if (allhouse) {
+                                if (data.resName == allhouse) {
+                                    arr.push(data);
+                                }
+                            } else {
                                 arr.push(data);
                             }
-                            if (allPic == "2" && data[type].length) {
-                                arr.push(data);
-                            }
-                            if (allPic == "3" && !data[type].length) {
-                                arr.push(data);
-                            }
-                        } else {
-                            arr.push(data);
                         }
-                    }
-                } else if (allPic) {
-                    if (allPic == "1") {
-                        if (
-                            citySelect.length &&
-                            data.city == citySelect[0] &&
-                            data.rName == citySelect[1]
-                        ) {
-                            arr.push(data);
-                        } else if (allhouse) {
-                            if (data.resName == allhouse) {
+                        if (allPic == "2" && data[type].length) {
+                            if (
+                                citySelect.length &&
+                                data.city == citySelect[0] &&
+                                data.rName == citySelect[1]
+                            ) {
+                                arr.push(data);
+                            } else if (allhouse) {
+                                if (data.resName == allhouse) {
+                                    arr.push(data);
+                                }
+                            } else {
                                 arr.push(data);
                             }
-                        } else {
-                            arr.push(data);
                         }
-                    }
-                    if (allPic == "2" && data[type].length) {
-                        if (
-                            citySelect.length &&
-                            data.city == citySelect[0] &&
-                            data.rName == citySelect[1]
-                        ) {
-                            arr.push(data);
-                        } else if (allhouse) {
-                            if (data.resName == allhouse) {
+                        if (allPic == "3" && !data[type].length) {
+                            if (
+                                citySelect.length &&
+                                data.city == citySelect[0] &&
+                                data.rName == citySelect[1]
+                            ) {
+                                arr.push(data);
+                            } else if (allhouse) {
+                                if (data.resName == allhouse) {
+                                    arr.push(data);
+                                }
+                            } else {
                                 arr.push(data);
                             }
-                        } else {
-                            arr.push(data);
-                        }
-                    }
-                    if (allPic == "3" && !data[type].length) {
-                        if (
-                            citySelect.length &&
-                            data.city == citySelect[0] &&
-                            data.rName == citySelect[1]
-                        ) {
-                            arr.push(data);
-                        } else if (allhouse) {
-                            if (data.resName == allhouse) {
-                                arr.push(data);
-                            }
-                        } else {
-                            arr.push(data);
                         }
                     }
                 }
@@ -2040,22 +2094,25 @@ export default {
             console.log("row------, order----", row, order);
             this.upLoadData.ptid = row.asID;
             this.imgOrder = order;
+            let account = JSON.parse(sessionStorage.getItem("session_data"))
+                .username;
             let username = JSON.parse(sessionStorage.getItem("session_data"))
                 .realName;
             let alt = {
-                plan: this.orderDetail.apName,
-                res: row.resName,
-                media: row.mTitle,
-                city: row.city,
-                area: row.rName,
-                asLab: row.asLab,
-                lstart: row.lStar,
-                lend: row.lEnd,
-                assettag: row.assetTag,
-                brand: this.orderDetail.bTitle,
-                username: username,
-                resid: row.resID,
-                address: row.resAddress
+                plan: this.orderDetail.apName ? this.orderDetail.apName : "",
+                res: row.resName ? row.resName : "",
+                media: row.mTitle ? row.mTitle : "",
+                city: row.city ? row.city : "",
+                area: row.rName ? row.rName : "",
+                asLab: row.asLab ? row.asLab : "",
+                lstart: row.lStar ? row.lStar : "",
+                lend: row.lEnd ? row.lEnd : "",
+                assettag: row.assetTag ? row.assetTag : "",
+                brand: this.orderDetail.bTitle ? this.orderDetail.bTitle : "",
+                account: account ? account : "",
+                username: username ? username : "",
+                resid: row.resID ? row.resID : "",
+                address: row.resAddress ? row.resAddress : ""
             };
             this.upLoadData.palt = JSON.stringify(alt);
             this.upLoadData.ptp = sessionStorage.getItem("order_apid");
@@ -2064,16 +2121,17 @@ export default {
         beforeAvatarUpload(file) {
             const isIMAGE =
                 file.type === "image/jpeg" || file.type === "image/png";
-            const isLt1M = file.size / 1024 / 1024 < 1;
+            const isLt1M = file.size / 1024 / 1024 < 2;
 
             if (!isIMAGE) {
                 Message.error("只能上传jpg/png图片!");
-                return false;
+                // return false;
             }
             if (!isLt1M) {
-                Message.error("上传文件大小不能超过 1MB!");
-                return false;
+                Message.error("上传文件大小不能超过 2MB!");
+                // return false;
             }
+            return isIMAGE&&isLt1M;
         },
         // 上传上刊图片并关联
         handleUpSuccess(res, file, fileList) {
@@ -2234,9 +2292,9 @@ export default {
                             }
                         }
                     } else if (res.data.SysCode == 100302) {
-                        this.loginTimeout();
+                        // this.loginTimeout();
                     } else {
-                        Message.warning(res.data.MSG);
+                        // Message.warning(res.data.MSG);
                     }
                 })
                 .catch(res => {
@@ -2249,15 +2307,37 @@ export default {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
         },
+        downloadUp() {
+            Message.warning("该功能尚未完善");
+        },
+        downloadDown() {
+            Message.warning("该功能尚未完善");
+        },
         // 查看h5上刊报告按钮
         showH5Up() {
+            // getReport
             // this.$router.push("/upReport");
-            window.open(window.location.origin + "/upReport");
+            // window.open(window.location.origin + "/upReport");
+            // window.open(window.location.origin + "/Report?SK="+'4564641');
+            let apid = sessionStorage.getItem('order_apid');
+            api.getApi('/EncryptNo', {num: apid}).then(res =>{
+                console.log(res.data);
+                window.open(window.location.origin + "/Report?SK="+res.data.EncryptCode);
+            }).catch(res =>{
+                console.log(res);
+            });
         },
         //查看h5下刊报告按钮
         showH5Down() {
             // this.$router.push("/downReport");
-            window.open(window.location.origin + "/downReport");
+            // window.open(window.location.origin + "/downReport");
+            let apid = sessionStorage.getItem('order_apid');
+            api.getApi('/EncryptNo', {num: apid}).then(res =>{
+                console.log(res.data);
+                window.open(window.location.origin + "/Report?XK="+res.data.EncryptCode);
+            }).catch(res =>{
+                console.log(res);
+            });
         },
         // 取消修改合同编号
         cancelChangeID() {
@@ -2305,6 +2385,54 @@ export default {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },
+        //终止操作确认操作对话框
+        disContinue(row) {
+            console.log(row);
+            let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
+            let rid = row.rID.toString().substring(0,4)+'00';
+            console.log('uwho------', uwho);
+            if((uwho == '0')  || uwho.includes(rid) ){
+                let info = {
+                    uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
+                    lid: row.lID
+                };
+                this.$confirm(
+                    `是否终止 ${row.resName + row.mTitle + row.asLab}面在 ${
+                        row.timeRange
+                    } 的投放？\n`,
+                    "提示",
+                    {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                    }
+                )
+                    .then(() => {
+                        api
+                            .postApi("/StopADS", info)
+                            .then(res => {
+                                console.log(res.data);
+                                if (!res.data.SysCode) {
+                                    this.$set(row, "lState", res.data.lState);
+                                    this.$set(row, "lSetTime", res.data.lSetTime);
+                                    Message.success("终止成功");
+                                } else if (res.data.SysCode == 100302) {
+                                    this.loginTimeout();
+                                } else {
+                                    Message.warning(res.data.MSG);
+                                }
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    })
+                    .catch(() => {
+                        Message.info("已取消操作");
+                    });
+            }else{
+                Message.warning('您没有权限终止点位');
+            }
+        },
 
         cancelChangeRemark() {
             this.changeRemark = false;
@@ -2316,12 +2444,13 @@ export default {
         },
         //点击换点
         changePoint() {
-            Message.warning("该功能尚未完善");
-            // this.usableBtn = true;
-            // $(window).scrollTop(288);
-            // this.showTitle = true;
-            // this.showBtn = false;
-            // this.showHandel = true;
+            // Message.warning("该功能尚未完善");
+            sessionStorage.setItem('change_point', 'yes');
+            this.usableBtn = true;
+            $(window).scrollTop(288);
+            this.showTitle = true;
+            this.showBtn = false;
+            this.showHandel = true;
         },
         //保存更换点位
         saveChangePoint() {
@@ -2574,7 +2703,7 @@ export default {
 .first-wrap /deep/ .el-button i {
     /*position: relative;*/
     /*!*top: -2px;*!*/
-    left: -16px;
+    left: -23px;
 }
 
 .first-wrap /deep/ .el-button span a {
@@ -3222,6 +3351,7 @@ export default {
 }
 
 /deep/ .el-dialog {
+  width: 42%;
 }
 
 /*选择点位*/
@@ -3654,6 +3784,19 @@ export default {
 
 /deep/ .el-dialog__body {
     padding: 30px 20px 0;
+
+}
+.imgPreview /deep/ .el-dialog__body{
+  height: 640px;
+}
+.imgPreview /deep/ .el-dialog {
+  height: 750px;
+}
+
+
+/deep/ .el-dialog__body img{
+  width: 100%;
+  height: 640px;
 }
 
 /deep/ .el-dialog__footer {
@@ -3718,15 +3861,13 @@ export default {
     .up-loader-Imgpanel {
         width: 445px;
         margin-top: 13px;
+      margin-right: 67px;
+      margin-left: 61px;
         /*margin-left: 37px;*/
     }
 
     .plan-detail-right {
         width: 15%;
-    }
-
-    .imgs-box {
-        padding: 0 90px;
     }
 
     .plan-detail-left ul li {
@@ -3735,4 +3876,6 @@ export default {
         margin-bottom: 12px;
     }
 }
+
+
 </style>

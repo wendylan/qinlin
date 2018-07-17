@@ -444,18 +444,26 @@ export default {
                 .then(res => {
                     console.log(res);
                     let data = res.data;
-                    this.resetForm();
-                    MessageBox.alert(
+                    if(data.SysCode === 100302 || data.MSG === '登陆超时'){
+                      this.$message({
+                        message: '登录超时或权限异常,请重新登录',
+                        type: 'warning'
+                      })
+                      this.$router.push('/login')
+                    }else{
+                      this.resetForm()
+                      MessageBox.alert(
                         data.MSG + "<br>" + "用户ID：" + data.uID,
                         "注册用户",
                         {
-                            showClose: false,
-                            dangerouslyUseHTMLString: true,
-                            confirmButtonText: "确定"
+                          showClose: false,
+                          dangerouslyUseHTMLString: true,
+                          confirmButtonText: "确定"
                         }
-                    );
-                    // accountList
-                    this.$router.push("./accountList");
+                      )
+                      // accountList
+                      this.$router.push("./accountList");
+                    }
                 })
                 .catch(err => {
                     console.log(err);

@@ -15,7 +15,7 @@
                             <em>投放城市：</em>
                             <i>{{filter(downReport.rIDs)}}</i>
                             <em>投放面数：</em>
-                            <i>{{downReport.totalNum}}</i>
+                            <i>{{downReport.totalNum}}面</i>
                         </p>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                                 </span>
                             </div>
                             <div class="table_wrap">
-                                <el-table border :data="currPutDetail" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+                                <el-table border :data="currPutDetail" style="width: 100%" fit="true" :default-sort="{prop: 'recName', order: 'descending'}">
                                     <el-table-column type="expand">
                                         <template slot-scope="props">
                                             <el-form label-position="left" inline class="demo-table-expand">
@@ -105,8 +105,9 @@
                                 <button @click="changeImgType">按图片分</button>
                             </div>
                             <div class="typeOfRec" v-if="isActive">
-                                <div>
-                                    <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
+
+                                    <!-- <div class="picBox" v-for="(down, downIndex) of currDownReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null"> -->
+                                    <div class="picBox" v-for="(down, downIndex) of downReportArr" :key="down.asID" @mouseenter="showPreImg = downIndex" @mouseleave="showPreImg = null">
                                         <el-carousel :autoplay="false" trigger="click">
                                             <el-carousel-item v-for="(item, index) in down.downImgArr" :key="index">
                                                 <img :src="item.url" alt="">
@@ -117,19 +118,20 @@
                                             </el-carousel-item>
                                         </el-carousel>
                                         <div class="pic-title">{{down.resName}}</div>
-                                    </div>
+
                                 </div>
                                 <!-- 分页功能 -->
                                 <div class="pager">
                                     <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
                                     </el-pagination> -->
-                                    <el-pagination small background :current-page="currUpPage" :page-sizes="[5, 10]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="handleUpSizeChange" @current-change='changeUpPage'>
-                                    </el-pagination>
+                                    <!-- <el-pagination small background :current-page="currUpPage" :page-sizes="[5, 10]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="downReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                    </el-pagination> -->
                                 </div>
                             </div>
                             <div class="typeOfPic" v-if="!isActive">
-                                <div>
-                                    <div class="picBox" v-for="(img, index) of currImgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+
+                                    <!-- <div class="picBox" v-for="(img, index) of currImgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null"> -->
+                                    <div class="picBox" v-for="(img, index) of imgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
                                         <img :src="img.pURL" alt="">
                                         <!--缩略图-->
                                         <div class="mask-btn" v-if="showPreImg == index ">
@@ -137,12 +139,12 @@
                                         </div>
                                         <div class="pic-title">{{img.resName}}</div>
                                     </div>
-                                </div>
+
                                 <div class="pager">
                                     <!-- <el-pagination small background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10]" :page-size="5" layout=" sizes, prev, pager, next, jumper" :total="30">
                                     </el-pagination> -->
-                                    <el-pagination small background :current-page="currDownPage" :page-sizes="[5, 10]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="imgInfo.length" @size-change="handleDownSizeChange" @current-change='changeDownPage'>
-                                    </el-pagination>
+                                    <!-- <el-pagination small background :current-page="currDownPage" :page-sizes="[5, 10]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="imgInfo.length" @size-change="sizeChange" @current-change='changePage'>
+                                    </el-pagination> -->
                                 </div>
                             </div>
                         </div>
@@ -172,10 +174,10 @@
                     <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
                 </el-dialog>
                 <!--监播图-->
-                <el-dialog :visible.sync="isShowImgArr">
+                <el-dialog :visible.sync="isShowImgArr" class="JB">
                     <el-carousel :autoplay="false" trigger="click">
                         <el-carousel-item v-for="(item, index) in ImgBoxArr" :key="index">
-                            <img :src="item.url" alt="" style="height:100%;">
+                            <img :src="item.url" alt="" style="height:100%;width: 100%">
                         </el-carousel-item>
                     </el-carousel>
                 </el-dialog>
@@ -307,23 +309,32 @@ export default {
         this.getCompanyInfo();
     },
     methods: {
-        // 分页功能
-        handleUpSizeChange(pageVal) {
+        // 页数大小改变
+        sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            this.pageUpSize = pageVal;
-            this.changeUpPage(1);
-        },
-        handleDownSizeChange(pageVal) {
-            console.log("pageVal", pageVal);
-            this.pageDownSize = pageVal;
-            this.changeDownPage(1);
+            if (this.isActive) {
+                this.pageUpSize = pageVal;
+            } else {
+                this.pageDownSize = pageVal;
+            }
+            this.changePage(1);
         },
         // 分页功能
-        changeUpPage(page) {
-            let pageSize = this.pageUpSize;
-            let arr = this.downReportArr;
-            let total = arr.length;
+        changePage(page) {
+            console.log("page-------", page);
+            let pageSize = "";
+            let arr = [];
             let resultArr = [];
+
+            if (this.isActive) {
+                pageSize = this.pageUpSize;
+                arr = this.downReportArr;
+            } else {
+                pageSize = this.pageDownSize;
+                arr = this.imgInfo;
+            }
+
+            let total = arr.length;
             for (
                 let i = (page - 1) * pageSize;
                 i < (page * pageSize < total ? page * pageSize : total);
@@ -331,29 +342,60 @@ export default {
             ) {
                 resultArr.push(arr[i]);
             }
-            this.currDownReportArr = [];
-            this.currDownReportArr = resultArr;
-            console.log("currDownReportArr", this.currDownReportArr);
-            console.log("page", page, "pageSize", pageSize);
-        },
-        // 分页功能
-        changeDownPage(page) {
-            let pageSize = this.pageDownSize;
-            let arr = this.imgInfo;
-            let total = arr.length;
-            let resultArr = [];
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
-                resultArr.push(arr[i]);
+            if (this.isActive) {
+                this.currDownReportArr = resultArr;
+            } else {
+                this.currImgInfo = resultArr;
             }
-            this.currImgInfo = [];
-            this.currImgInfo = resultArr;
-            console.log("currImgInfo", this.currImgInfo);
-            console.log("page", page, "pageSize", pageSize);
         },
+
+        // // 分页功能
+        // handleUpSizeChange(pageVal) {
+        //     console.log("pageVal", pageVal);
+        //     this.pageUpSize = pageVal;
+        //     this.changeUpPage(1);
+        // },
+        // handleDownSizeChange(pageVal) {
+        //     console.log("pageVal", pageVal);
+        //     this.pageDownSize = pageVal;
+        //     this.changeDownPage(1);
+        // },
+        // // 分页功能
+        // changeUpPage(page) {
+        //     let pageSize = this.pageUpSize;
+        //     let arr = this.downReportArr;
+        //     let total = arr.length;
+        //     let resultArr = [];
+        //     for (
+        //         let i = (page - 1) * pageSize;
+        //         i < (page * pageSize < total ? page * pageSize : total);
+        //         i++
+        //     ) {
+        //         resultArr.push(arr[i]);
+        //     }
+        //     this.currDownReportArr = [];
+        //     this.currDownReportArr = resultArr;
+        //     console.log("currDownReportArr", this.currDownReportArr);
+        //     console.log("page", page, "pageSize", pageSize);
+        // },
+        // // 分页功能
+        // changeDownPage(page) {
+        //     let pageSize = this.pageDownSize;
+        //     let arr = this.imgInfo;
+        //     let total = arr.length;
+        //     let resultArr = [];
+        //     for (
+        //         let i = (page - 1) * pageSize;
+        //         i < (page * pageSize < total ? page * pageSize : total);
+        //         i++
+        //     ) {
+        //         resultArr.push(arr[i]);
+        //     }
+        //     this.currImgInfo = [];
+        //     this.currImgInfo = resultArr;
+        //     console.log("currImgInfo", this.currImgInfo);
+        //     console.log("page", page, "pageSize", pageSize);
+        // },
         // 去重城市
         filter(val) {
             let res = "";
@@ -475,7 +517,7 @@ export default {
                                 this.currDownReportArr = JSON.parse(
                                     JSON.stringify(this.downReportArr)
                                 );
-                                this.changeUpPage(1);
+                                // this.changeUpPage(1);
                                 console.log("downimginfo", this.downReportArr);
                                 // 下刊数据(组合图片按图片分)
                                 this.imgInfo = this.initImg(
@@ -485,7 +527,8 @@ export default {
                                 this.currImgInfo = JSON.parse(
                                     JSON.stringify(this.imgInfo)
                                 );
-                                this.changeDownPage(1);
+                                this.changePage(1);
+                                // this.changeDownPage(1);
                                 console.log(
                                     "downImgInfo--------",
                                     this.imgInfo
@@ -647,6 +690,7 @@ export default {
         },
         changeImgType() {
             this.isActive = !this.isActive;
+            this.changePage(1);
         },
         loginTimeout() {
             Message.warning("登录超时,请重新登录");
@@ -696,7 +740,7 @@ export default {
 }
 
 .mediaMana_content_top {
-    padding: 28px 31px 60px;
+    padding: 28px 31px 70px;
     background-color: #fff;
     width: 1247px;
     box-sizing: border-box;
@@ -709,16 +753,16 @@ export default {
 }
 
 .title h1 {
-    font-size: 28px;
+    font-size: 42px;
     margin-bottom: 8px;
     color: rgba(0, 0, 0, 0.85);
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .title h3 {
-    font-size: 20px;
+    font-size: 24px;
     color: #333333;
-    font-weight: bold;
+    /*font-weight: bold;*/
     margin-bottom: 12px;
 }
 
@@ -727,7 +771,7 @@ export default {
 }
 
 .detail p em {
-    font-size: 14px;
+    font-size: 18px;
     color: #333333;
     margin-left: 24px;
 }
@@ -737,7 +781,7 @@ export default {
 }
 
 .detail p i {
-    font-size: 14px;
+    font-size: 18px;
     color: #2a2a2a;
     font-style: normal;
 }
@@ -845,7 +889,7 @@ export default {
 }
 
 .box-wrap > h4 {
-    margin-bottom: 16px;
+    margin-bottom: 26px;
     height: 55px;
     padding-left: 28px;
     border-bottom: 1px solid #e6e7e9;
@@ -898,9 +942,9 @@ export default {
 
 /*滚动条*/
 /deep/ .el-table__body-wrapper {
-    height: 450px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    /* height: 450px; */
+    /* overflow-y: scroll; */
+    /* overflow-x: hidden; */
 }
 
 /deep/ .el-table__body-wrapper::-webkit-scrollbar {
@@ -940,12 +984,28 @@ export default {
     height: 527px;
     padding: 21px 29px;
 }
+/*查看监播*/
+
+.JB /deep/ .el-dialog {
+  width: 42%;
+  margin-top: 7vh;
+}
+.JB /deep/ .el-carousel__container {
+  height: 650px;
+}
 
 /*监播图片*/
+/deep/ .el-dialog{
+  width: 40%;
+  height: 730px;
+}
+/deep/ .el-dialog__body{
+  height: 640px;
+}
 .tabs {
-    padding-left: 24px;
-    margin-bottom: 12px;
-    height: 34px;
+  padding-left: 38px;
+  margin-bottom: 25px;
+  height: 34px;
 }
 
 .tabs button {
@@ -973,24 +1033,27 @@ export default {
 /*图片切换*/
 .typeOfRec,
 .typeOfPic {
-    padding: 0 24px 30px;
+  padding: 0 28px;
+  display: flex;
+  flex-wrap: wrap;
+
 }
 
 .picBox {
-    width: 220px;
-    height: 326px;
-    padding: 4px;
-    box-sizing: border-box;
-    border: 1px solid #e9e9e9;
-    border-radius: 2px;
-    display: inline-block;
-    margin-bottom: 22px;
-    position: relative;
+  width: 220px;
+  height: 326px;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid #e9e9e9;
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 42px;
+  position: relative;
+  margin-right: 8px;
+  margin-left: 8px;
 }
 
-.picBox + .picBox {
-    margin-left: 19px;
-}
+
 
 .picBox img {
     width: 210px;
@@ -1095,16 +1158,18 @@ export default {
     top: -4px;
 }
 
+
+
 /*1440*/
 @media all and (min-width: 1420px) {
     .mediaMana_content_top,
     .plan-panel {
         width: 1320px;
     }
-
-    .picBox + .picBox {
-        margin-left: 37px;
-    }
+  .picBox{
+    margin-right: 16px;
+    margin-left: 16px;
+  }
 }
 
 /*1920*/
@@ -1114,13 +1179,17 @@ export default {
         width: 1800px;
     }
 
-    .picBox + .picBox[data-v-74e3f71e] {
-        margin-left: 118px;
-    }
+  .picBox{
+    margin-right: 16px;
+    margin-left: 16px;
+  }
 
-    .typeOfRec[data-v-74e3f71e],
-    .typeOfPic[data-v-74e3f71e] {
-        padding: 0 103px 30px;
-    }
+}
+
+@media print{
+  .mediaMana_content_top,
+  .plan-panel {
+    width: 1247px;
+  }
 }
 </style>

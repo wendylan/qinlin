@@ -15,8 +15,8 @@
                                 <div style="display:inline-block">
                                     <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
                                         <el-select v-model="select" slot="prepend" placeholder="请选择">
-                                            <el-option label="方案名称" value="1"></el-option>
-                                            <el-option label="媒体名称" value="2"></el-option>
+                                            <el-option label="方案名称" value="1" v-if="(activeName=='first')||(activeName=='second')"></el-option>
+                                            <el-option label="账号名称" value="2"></el-option>
                                             <el-option label="资源名称" value="3"></el-option>
                                         </el-select>
                                     </el-input>
@@ -24,7 +24,7 @@
                             </span>
                             <el-cascader :options="citys" v-model="citySelect" class="plan-select" placeholder="选择地区" change-on-select>
                             </el-cascader>
-                            <span>
+                            <span v-if="(activeName=='first')||(activeName=='second')">
                                 <el-select v-model="LabSelect" placeholder="选择投放面" class="plan-select">
                                     <el-option label="A面" value="A"></el-option>
                                     <el-option label="B面" value="B"></el-option>
@@ -32,7 +32,8 @@
                             </span>
                             <span>
                                 <div class="block">
-                                    <el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期">
+                                    <!-- <el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" start-placeholder="投放日期" end-placeholder="投放日期"> -->
+                                    <el-date-picker v-model="date" type="daterange" range-separator="-" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :start-placeholder="(activeName=='first'|| activeName=='second')?'投放日期':'上传日期'" :end-placeholder="(activeName=='first'||activeName=='second')?'投放日期':'上传日期'">
                                     </el-date-picker>
                                 </div>
                             </span>
@@ -65,7 +66,7 @@
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index ">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(upimg)"></i>
-                                                    <a :href="upimg.pURL" :download="upimg.pID+'.png'">下载图片</a>
+                                                    <a :href="upimg.pURL" :download="upimg.pAlt.plan+formatTime(upimg.pUTime)+'上刊'+upimg.pAlt.account+upimg.pAlt.city+upimg.pAlt.area+upimg.pAlt.res+upimg.pAlt.assettag+upimg.pAlt.asLab+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
@@ -128,7 +129,7 @@
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(downimg)"></i>
-                                                    <a :href="downimg.pURL" :download="downimg.pID+'.png'">下载图片</a>
+                                                    <a :href="downimg.pURL" :download="downimg.pAlt.plan+formatTime(downimg.pUTime)+'下刊'+downimg.pAlt.account+downimg.pAlt.city+downimg.pAlt.area+downimg.pAlt.res+downimg.pAlt.assettag+downimg.pAlt.asLab+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
@@ -192,7 +193,7 @@
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(install)"></i>
-                                                    <a :href="install.pURL" :download="install.pID+'.png'">下载图片</a>
+                                                    <a :href="install.pURL" :download="formatTime(install.pUTime)+'下刊'+install.pAlt.account+install.pAlt.city+install.pAlt.area+install.pAlt.res+install.pAlt.assettag+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
@@ -255,7 +256,7 @@
                                                 <!--查看缩略图和下载-->
                                                 <div class="mask-btn" v-if="showPreImg == index">
                                                     <i class="el-icon-search" @click="handlePictureCardPreview(search)"></i>
-                                                    <a :href="search.pURL" :download="search.pID+'.png'">下载图片</a>
+                                                    <a :href="search.pURL" :download="formatTime(search.pUTime)+'下刊'+search.pAlt.account+search.pAlt.city+search.pAlt.area+search.pAlt.res+search.pAlt.assettag+'.png'">下载图片</a>
                                                 </div>
                                             </div>
                                             <div class="detailBox">
@@ -349,8 +350,8 @@
 </template>
 
 <script>
-import Vue from "vue";
-import LazyLoad from "../../commonFun/lazyLoad.js";
+import Vue from 'vue';
+import LazyLoad from '../../commonFun/lazyLoad.js'
 Vue.use(LazyLoad);
 import { api } from "../../api/api.js";
 // 时间格式化
@@ -427,9 +428,11 @@ export default {
             select: "1",
             keyword: "",
             LabSelect: "",
-            date: "",
+            date: '',
             // tab默认选择第一项
             activeName: "first",
+            //是否搜索到图片
+            showPic: 1,
 
             //缩略图
             dialogImageUrl: "../../../static/images/testPic.png",
@@ -442,8 +445,6 @@ export default {
             ludan: false,
             ludanSelect: "任务名称",
 
-            //是否搜索到图片
-            showPic: 1,
             // showPic: 3,
             //  录单
             input: "",
@@ -580,80 +581,86 @@ export default {
         // 页数大小改变
         sizeChange(pageVal) {
             console.log("pageVal", pageVal);
-            if (this.activeName == "first") {
+            if(this.activeName == 'first'){
                 this.pageUpSize = pageVal;
-            } else if (this.activeName == "second") {
+            }else if(this.activeName == 'second'){
                 this.pageDownSize = pageVal;
-            } else if (this.activeName == "third") {
+            }else if(this.activeName == 'third'){
                 this.pageInstallSize = pageVal;
-            } else {
+            }else{
                 this.pageSearchSize = pageVal;
             }
             this.changePage(1);
         },
         // 分页功能
         changePage(page) {
-            console.log("page-------", page);
-            let pageSize = "";
+            console.log('page-------', page);
+            let pageSize = '';
             let arr = [];
             let resultArr = [];
 
-            if (this.activeName == "first") {
+            if(this.activeName == 'first'){
                 pageSize = this.pageUpSize;
                 // arr = this.upImgArr;
                 // this.currUpPage = page;
                 arr = this.currUpImgArr;
-            } else if (this.activeName == "second") {
+            }else if(this.activeName == 'second'){
                 pageSize = this.pageDownSize;
                 // this.currDownPage = page;
                 // arr = this.downImgArr;
                 arr = this.currDownImgArr;
-            } else if (this.activeName == "third") {
+            }else if(this.activeName == 'third'){
                 pageSize = this.pageInstallSize;
                 // this.currInstallPage = page;
                 // arr = this.installArr;
                 arr = this.currInstallImgArr;
-            } else {
+            }else{
                 pageSize = this.pageSearchSize;
                 // this.currSearchPage = page;
                 // arr = this.searchAreaArr;
                 arr = this.currSearchImgArr;
             }
-
+            
             let total = arr.length;
-            for (
-                let i = (page - 1) * pageSize;
-                i < (page * pageSize < total ? page * pageSize : total);
-                i++
-            ) {
+            for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
                 resultArr.push(arr[i]);
             }
-            if (this.activeName == "first") {
+            if(this.activeName == 'first'){
                 this.pageUpImgArr = resultArr;
-            } else if (this.activeName == "second") {
+            }else if(this.activeName == 'second'){
                 this.pageDownImgArr = resultArr;
-            } else if (this.activeName == "third") {
+            }else if(this.activeName == 'third'){
                 this.pageInstallImgArr = resultArr;
-            } else {
+            }else{
                 this.pageSearchImgArr = resultArr;
             }
         },
         // tabClick
         handleClick() {
+            this.select = '';
+            this.keyword ='';
+            this.LabSelect = '';
+            this.date = '';
+            this.citySelect = [];
+            this.showPic = 1;
             if (this.activeName == "first") {
                 this.getUpReport();
+                this.select = '1';
                 this.ludan = false;
             }
             if (this.activeName == "second") {
                 this.getDownReport();
+                this.select = '1';
                 this.ludan = false;
             }
             if (this.activeName == "third") {
                 this.getInstallImg();
+                this.select = '2';
                 this.ludan = false;
             }
             if (this.activeName == "fourth") {
                 this.getSearchImg();
+                this.select = '2';
                 this.ludan = false;
             }
             if (this.activeName == "fifth") {
@@ -664,7 +671,10 @@ export default {
         getUpReport() {
             // 真实数据
             if (this.upImgArr.length) {
-                this.searchPic();
+                // this.searchPic();
+                // this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                // this.changePage(1);
+                this.citys = this.getCitys(this.upImgArr);
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -675,17 +685,16 @@ export default {
             api
                 .postApi("/GetImg", upinfo)
                 .then(res => {
-                    if (!res.data.SysCode) {
+                    if(!res.data.SysCode){
                         console.log(res.data);
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.upImgArr = result;
-                        this.currUpImgArr = JSON.parse(
-                            JSON.stringify(this.upImgArr)
-                        );
-                        this.searchPic();
+                        this.currUpImgArr = JSON.parse(JSON.stringify(this.upImgArr));
+                        // this.searchPic();
+                        // this.changePage(1);
                         console.log("upimginfo", this.upImgArr);
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
@@ -698,7 +707,10 @@ export default {
         // 获取下刊图片
         getDownReport() {
             if (this.downImgArr.length) {
-                this.searchPic();
+                // this.searchPic();
+                // this.currDownImgArr = JSON.parse(JSON.stringify(this.downImgArr));
+                // this.changePage(1);
+                this.citys = this.getCitys(this.downImgArr);
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -714,12 +726,11 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.downImgArr = result;
-                        this.currDownImgArr = JSON.parse(
-                            JSON.stringify(this.downImgArr)
-                        );
-                        this.searchPic();
+                        this.currDownImgArr = JSON.parse(JSON.stringify(this.downImgArr));
+                        // this.searchPic();
+                        // this.changePage(1);
                         console.log("upimginfo", this.downImgArr);
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
@@ -730,10 +741,13 @@ export default {
                 });
         },
         // 获取安装图片
-        getInstallImg() {
+        getInstallImg(){
             // 真实数据
             if (this.installArr.length) {
-                this.searchPic();
+                this.citys = this.getCitys(this.installArr);
+                // this.searchPic();
+                // this.currInstallImgArr = JSON.parse(JSON.stringify(this.installArr));
+                // this.changePage(1);
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -749,12 +763,11 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.installArr = result;
-                        this.currInstallImgArr = JSON.parse(
-                            JSON.stringify(this.installArr)
-                        );
-                        this.searchPic();
+                        this.currInstallImgArr = JSON.parse(JSON.stringify(this.installArr));
+                        // this.searchPic();
+                        // this.changePage(1);
                         console.log("upimginfo", this.installArr);
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
@@ -765,10 +778,13 @@ export default {
                 });
         },
         // 获取巡点图片
-        getSearchImg() {
+        getSearchImg(){
             // 真实数据
             if (this.searchAreaArr.length) {
-                this.searchPic();
+                // this.searchPic();
+                // this.currSearchImgArr = JSON.parse(JSON.stringify(this.searchAreaArr));
+                // this.changePage(1);
+                this.citys = this.getCitys(this.searchAreaArr);
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -784,12 +800,11 @@ export default {
                         let result = res.data;
                         this.citys = this.getCitys(result);
                         this.searchAreaArr = result;
-                        this.currSearchImgArr = JSON.parse(
-                            JSON.stringify(this.searchAreaArr)
-                        );
-                        this.searchPic();
+                        this.currSearchImgArr = JSON.parse(JSON.stringify(this.searchAreaArr));
+                        // this.searchPic();
+                        // this.changePage(1);
                         console.log("upimginfo", this.searchAreaArr);
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
@@ -799,12 +814,14 @@ export default {
                     console.log(res);
                 });
         },
-        // 区域二级联动
+         // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
                 if (data.pAlt) {
-                    data.pAlt = JSON.parse(data.pAlt);
+                    if( (typeof data.pAlt) == 'string'){
+                        data.pAlt = JSON.parse(data.pAlt);
+                    }
                     let obj = {
                         value: data.pAlt.city,
                         label: data.pAlt.city,
@@ -847,7 +864,7 @@ export default {
         },
         // 查看图片
         handlePictureCardPreview(item) {
-            console.log("imgInfo--------", item);
+            console.log('imgInfo--------', item);
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
         },
@@ -862,32 +879,31 @@ export default {
             ) {
                 Message.warning("请先输入搜索条件");
             } else {
-                let initData = [];
-                if (this.activeName == "first") {
-                    initData = this.upImgArr;
-                } else if (this.activeName == "second") {
-                    initData = this.downImgArr;
-                } else if (this.activeName == "third") {
-                    initData = this.installArr;
-                } else if (this.activeName == "fourth") {
-                    initData = this.searchAreaArr;
-                }
+                this.searchImg();
+            }
+        },
+        searchImg(){
+            let initData = [];
+            if(this.activeName == 'first'){
+                initData = this.upImgArr;
+            }else if(this.activeName == 'second'){
+                initData = this.downImgArr;
+            }else if(this.activeName == 'third'){
+                initData = this.installArr;
+            }else if(this.activeName == 'fourth'){
+                initData = this.searchAreaArr;
+            }
 
-                // 搜索
-                console.log(
-                    this.select,
-                    this.keyword,
-                    this.LabSelect,
-                    this.date,
-                    this.citySelect
-                );
-                let arr = [];
-                let range = this.date;
-                let select = this.select;
-                let keyword = this.keyword;
-                let lab = this.LabSelect;
-                let city = this.citySelect;
-                if (range || keyword || lab || city.length) {
+            // 搜索
+            console.log(this.select,this.keyword,this.LabSelect,this.date,this.citySelect);
+            let arr = [];
+            let range = this.date;
+            let select = this.select;
+            let keyword = this.keyword;
+            let lab = this.LabSelect;
+            let city = this.citySelect;
+            if (range || keyword || lab || city.length) {
+                if(this.activeName == 'first' || this.activeName == 'second'){
                     for (let data of initData) {
                         let alt = data.pAlt;
                         if (range && keyword && lab && city.length) {
@@ -906,7 +922,7 @@ export default {
                                 }
                                 if (
                                     select == "2" &&
-                                    alt.media.includes(keyword) &&
+                                    alt.account.includes(keyword) &&
                                     alt.asLab == lab &&
                                     alt.city == city[0] &&
                                     alt.area == city[1]
@@ -937,12 +953,12 @@ export default {
                                     }
                                     if (
                                         select == "2" &&
-                                        alt.media.includes(keyword)
+                                        alt.account.includes(keyword)
                                     ) {
                                         arr.push(data);
                                     }
                                     if (
-                                        select == "2" &&
+                                        select == "3" &&
                                         alt.res.includes(keyword)
                                     ) {
                                         arr.push(data);
@@ -952,103 +968,108 @@ export default {
                                         arr.push(data);
                                     }
                                 } else if (city.length) {
-                                    if (
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
-                        } else if (keyword) {
-                            if (select == "1" && alt.plan.includes(keyword)) {
+                        }else if(keyword){
+                            if (
+                                select == "1" &&
+                                alt.plan.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "2" && alt.media.includes(keyword)) {
+                            if (
+                                select == "2" &&
+                                alt.account.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                            if (select == "3" && alt.res.includes(keyword)) {
+                            if (
+                                select == "3" &&
+                                alt.res.includes(keyword)
+                            ) {
                                 // arr.push(data);
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (lab) {
+                                }else if (lab){
                                     if (alt.asLab == lab) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if (city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (lab) {
-                            if (alt.asLab == lab) {
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if(lab){
+                            if(alt.asLab == lab){
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1057,38 +1078,40 @@ export default {
                                     }
                                     if (
                                         select == "2" &&
-                                        alt.media.includes(keyword)
+                                        alt.account.includes(keyword)
                                     ) {
                                         arr.push(data);
                                     }
                                     if (
-                                        select == "2" &&
+                                        select == "3" &&
                                         alt.res.includes(keyword)
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (city.length) {
-                                    if (
+                                }else if(city.length){
+                                    if(
                                         alt.city == city[0] &&
                                         alt.area == city[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else {
+                                }else{
                                     arr.push(data);
                                 }
                             }
-                        } else if (city.length) {
-                            if (alt.city == city[0] && alt.area == city[1]) {
-                                if (range) {
-                                    if (
-                                        dateFormat.toDate(alt.lstart) >=
-                                            range[0] &&
+                        }else if (city.length){
+                            if(
+                                alt.city == city[0] &&
+                                alt.area == city[1]
+                            ){
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(alt.lstart) >= range[0] &&
                                         dateFormat.toDate(alt.lend) <= range[1]
-                                    ) {
+                                    ){
                                         arr.push(data);
                                     }
-                                } else if (keyword) {
+                                }else if(keyword){
                                     if (
                                         select == "1" &&
                                         alt.plan.includes(keyword)
@@ -1097,60 +1120,191 @@ export default {
                                     }
                                     if (
                                         select == "2" &&
-                                        alt.media.includes(keyword)
+                                        alt.account.includes(keyword)
                                     ) {
                                         arr.push(data);
                                     }
                                     if (
-                                        select == "2" &&
+                                        select == "3" &&
                                         alt.res.includes(keyword)
                                     ) {
                                         arr.push(data);
                                     }
-                                } else if (lab) {
-                                    if (alt.asLab == lab) {
+                                }else if(lab){
+                                    if(alt.asLab == lab){
+                                        arr.push(data);
+                                    }
+                                }else{
+                                    arr.push(data);
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    for(let data of initData){
+                        let alt = data.pAlt;
+                        if(range && keyword && city.length){
+                            if(
+                                dateFormat.toDate(data.pUTime) >= range[0] && 
+                                dateFormat.toDate(data.pUTime) <= range[1]
+                            ){
+                                if (
+                                    select == "2" &&
+                                    alt.account.includes(keyword) &&
+                                    alt.city == city[0] &&
+                                    alt.area == city[1]
+                                ) {
+                                    arr.push(data);
+                                }
+                                if (
+                                    select == "3" &&
+                                    alt.res.includes(keyword) &&
+                                    alt.city == city[0] &&
+                                    alt.area == city[1]
+                                ) {
+                                    arr.push(data);
+                                }
+                            }
+                        }else if(range){
+                            if (
+                                dateFormat.toDate(data.pUTime) >= range[0] &&
+                                dateFormat.toDate(data.pUTime) <= range[1]
+                            ) {
+                                if (keyword) {
+                                    if (
+                                        select == "2" &&
+                                        alt.account.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "3" &&
+                                        alt.res.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                } else if (city.length) {
+                                    if(
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ){
                                         arr.push(data);
                                     }
                                 } else {
                                     arr.push(data);
                                 }
                             }
+                        }else if(keyword){
+                            if (
+                                select == "2" &&
+                                alt.account.includes(keyword)
+                            ) {
+                                // arr.push(data);
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(data.pUTime) >= range[0] &&
+                                        dateFormat.toDate(data.pUTime) <= range[1]
+                                    ){
+                                        arr.push(data);
+                                    }
+                                }else if (city.length){
+                                    if(
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ){
+                                        arr.push(data);
+                                    }
+                                }else{
+                                    arr.push(data);
+                                }
+                            }
+                            if (
+                                select == "3" &&
+                                alt.res.includes(keyword)
+                            ) {
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(data.pUTime) >= range[0] &&
+                                        dateFormat.toDate(data.pUTime) <= range[1]
+                                    ){
+                                        arr.push(data);
+                                    }
+                                }else if (city.length){
+                                    if(
+                                        alt.city == city[0] &&
+                                        alt.area == city[1]
+                                    ){
+                                        arr.push(data);
+                                    }
+                                }else{
+                                    arr.push(data);
+                                }
+                            }
+                        }else if(city.length){
+                            if(
+                                alt.city == city[0] &&
+                                alt.area == city[1]
+                            ){
+                                if(range){
+                                    if(
+                                        dateFormat.toDate(data.pUTime) >= range[0] &&
+                                        dateFormat.toDate(data.pUTime) <= range[1]
+                                    ){
+                                        arr.push(data);
+                                    }
+                                }else if(keyword){
+                                    if (
+                                        select == "2" &&
+                                        alt.account.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                    if (
+                                        select == "3" &&
+                                        alt.res.includes(keyword)
+                                    ) {
+                                        arr.push(data);
+                                    }
+                                }else{
+                                    arr.push(data);
+                                }
+                            }
                         }
                     }
-
-                    if (arr.length) {
-                        this.showPic = 3;
-                        // 上刊
-                        if (this.activeName == "first") {
-                            this.currUpImgArr = arr;
-                            // this.currUpPage = 1;
-                        }
-                        // 下刊
-                        if (this.activeName == "second") {
-                            this.currDownImgArr = arr;
-                            // this.currDownPage = 1;
-                        }
-                        // 安装
-                        if (this.activeName == "third") {
-                            this.currInstallImgArr = arr;
-                            // this.currInstallPage = 1;
-                        }
-                        // 巡点
-                        if (this.activeName == "fourth") {
-                            this.currSearchImgArr = arr;
-                            // this.currSearchPage = 1;
-                        }
-                        this.changePage(1);
-                    }
-                    if (!arr.length) {
-                        this.showPic = 2;
-                        Message.warning("查询数据为空");
-                    }
-                    console.log(arr);
                 }
+
+                if(arr.length){
+                    this.showPic = 3;
+                    // 上刊
+                    if(this.activeName =='first'){
+                        this.currUpImgArr = arr;
+                        // this.currUpPage = 1;
+                    }
+                    // 下刊
+                    if(this.activeName == 'second'){
+                        this.currDownImgArr = arr;
+                        // this.currDownPage = 1;
+                    }
+                    // 安装
+                    if(this.activeName == 'third'){
+                        this.currInstallImgArr = arr;
+                        // this.currInstallPage = 1;
+                    }
+                    // 巡点
+                    if(this.activeName == 'fourth'){
+                        this.currSearchImgArr = arr;
+                        // this.currSearchPage = 1;
+                    }
+                    this.changePage(1);
+                }
+                if (!arr.length) {
+                    this.showPic = 2;
+                    Message.warning("查询数据为空");
+                }
+                console.log(arr);
             }
         },
-        loginTimeout() {
+        loginTimeout(){
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },
@@ -1162,7 +1316,8 @@ export default {
         newPath() {
             this.$router.push("./ludanReport");
         }
-    }
+    },
+
 };
 </script>
 
@@ -1529,7 +1684,7 @@ export default {
     top: 50px;
 } */
 
-.pager {
+.pager{
     width: 100%;
     margin-top: 20px;
 }

@@ -84,7 +84,7 @@
                                         <h4>选点排期</h4>
                                         <div class="table_wrap">
                                             <!-- <el-table border :data="setpointArr" :row-class-name="tableRowClassName" :highlight-current-row="true" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"> -->
-                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                            <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                                 <el-table-column type="expand">
                                                     <template slot-scope="props">
                                                         <el-form label-position="left" inline class="demo-table-expand">
@@ -127,6 +127,18 @@
                                                     </template>
                                                 </el-table-column>
                                                 <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
+                                                    <template slot-scope="scope">
+                                                        <template v-if="scope.row.lState==2">
+                                                            <span>{{formatTime(scope.row.lStar)+"-"+formatTime(scope.row.lSetTime)}}</span>
+                                                            <el-tooltip placement="top">
+                                                                <div slot="content">
+                                                                    <span>{{scope.row.timeRange}}</span>
+                                                                </div>
+                                                                <i class="el-icon-question"> </i>
+                                                            </el-tooltip>
+                                                        </template>
+                                                        <span v-else>{{scope.row.timeRange}}</span>
+                                                    </template>
                                                 </el-table-column>
                                             </el-table>
                                         </div>
@@ -417,9 +429,9 @@ export default {
                         this.planDetail = info;
                         // 选点排期
                         this.getSetPoint();
-                    } else if (res.data.SysCode == 100302) {
+                    } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
-                    } else {
+                    }else{
                         Message.warning(res.data.MSG);
                     }
                 })
@@ -463,22 +475,17 @@ export default {
                             // 城市筛选过滤
                             this.filterCityData = filterFormat(resInfo, "city");
                             this.filtersArea = filterFormat(resInfo, "rName");
-                            this.filtersData = filterFormat(
-                                resInfo,
-                                "timeRange"
-                            );
+                            this.filtersData = filterFormat(resInfo, "timeRange");
                             // 选点排期
                             // this.checkLock(resInfo);
                             // 选点排期
-                            this.copyAsidArr = JSON.parse(
-                                JSON.stringify(resInfo)
-                            );
+                            this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
                             this.setpointArr = resInfo;
                             this.currentSetpoint = this.setpointArr;
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
-                        } else if (res.data.SysCode == 100302) {
+                        } else if(res.data.SysCode == 100302){
                             this.loginTimeout();
                         } else {
                             Message.warning(res.data.MSG);
@@ -522,7 +529,7 @@ export default {
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
-                        } else if (res.data.SysCode == 100302) {
+                        } else if(res.data.SysCode == 100302){
                             this.loginTimeout();
                         } else {
                             Message.warning(res.data.MSG);
@@ -562,6 +569,7 @@ export default {
                                 let pdSendFee = 0;
                                 let pdOtherFee = 0;
                                 let arr = [];
+                                let city = '';
                                 for (let price of plandata) {
                                     pdTotal += price.pdTotal;
                                     pdSendFee += price.pdSendFee;
@@ -601,29 +609,15 @@ export default {
                                             price.pdOtherFee) /
                                         100;
                                     obj.city = areaToText.toTextCity(obj.rID);
+                                    city = obj.city+','+city;
                                     arr.push(obj);
                                 }
+                                this.$set(this.planDetail, "rIDs", city);
                                 let total = pdTotal + pdSendFee + pdOtherFee;
-                                this.$set(
-                                    this.planDetail,
-                                    "Total",
-                                    this.priceFormat(total / 100)
-                                );
-                                this.$set(
-                                    this.planDetail,
-                                    "pdTotal",
-                                    this.priceFormat(pdTotal / 100)
-                                );
-                                this.$set(
-                                    this.planDetail,
-                                    "pdSendFee",
-                                    this.priceFormat(pdSendFee / 100)
-                                );
-                                this.$set(
-                                    this.planDetail,
-                                    "pdOtherFee",
-                                    this.priceFormat(pdOtherFee / 100)
-                                );
+                                this.$set(this.planDetail, "Total", this.priceFormat(total / 100));
+                                this.$set(this.planDetail, "pdTotal", this.priceFormat(pdTotal / 100));
+                                this.$set(this.planDetail, "pdSendFee", this.priceFormat(pdSendFee / 100));
+                                this.$set(this.planDetail, "pdOtherFee", this.priceFormat(pdOtherFee / 100));
                                 // 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
                                 for (let ta of arr) {
                                     for (let ad of adPrice) {
@@ -666,7 +660,7 @@ export default {
                                     asidRes
                                 );
                                 this.priceSheet = arr;
-                            } else if (res.data.SysCode == 100302) {
+                            } else if(res.data.SysCode == 100302){
                                 this.loginTimeout();
                             } else {
                                 Message.warning(res.data.MSG);
@@ -693,15 +687,7 @@ export default {
                         if (schedules == "") {
                             schedules = ds + "-" + de + "(" + asid.mNum + "面)";
                         } else {
-                            schedules =
-                                schedules +
-                                " " +
-                                ds +
-                                "-" +
-                                de +
-                                "(" +
-                                asid.mNum +
-                                "面)";
+                            schedules = schedules + " " + ds + "-" + de + "(" + asid.mNum +"面)";
                         }
                     }
                 }
@@ -830,14 +816,14 @@ export default {
                     .then(res => {
                         if (!res.data.IsLock) {
                             sumNotLock++;
-                        } else {
+                        }else{
                             sumLock++;
                         }
                         if (sumNotLock >= priceSheet.length) {
                             this.$router.push("./editPlan");
                         } else {
                             if (i >= priceSheet.length - 1) {
-                                if (sumLock) {
+                                if(sumLock){
                                     MessageBox.confirm(
                                         `该方案被预锁,请先解除预锁,是否去解锁？`,
                                         "提示",
@@ -868,7 +854,7 @@ export default {
                 sessionStorage.getItem("session_data")
             ).uType;
         },
-        loginTimeout() {
+        loginTimeout(){
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },

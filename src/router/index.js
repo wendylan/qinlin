@@ -43,6 +43,7 @@ import changePwd from '../components/home/changePwd.vue';
 //亲邻科技上刊报告
 import upReport from '../components/h5/upReport.vue';
 import downReport from '../components/h5/downReport.vue';
+import Report from '../components/h5/Report.vue';
 
 Vue.use(Router);
 
@@ -55,6 +56,7 @@ export default new Router({
 		//上下刊报告h5页面
 		{ path: '/upReport', name: 'upReport', component: upReport },
 		{ path: '/downReport', name: 'downReport', component: downReport },
+		{ path: '/Report', name: 'Report', component: Report },
 
 		//admin
 		{

@@ -85,7 +85,7 @@
 							<el-form-item label="小区全貌:" prop="mImg">
 								<div class="upload_img_wrap" style="width: 120px;">
 									<!--:auto-upload = 'false'-->
-									<el-upload :action="doUpload" list-type="picture-card" :file-list="resUpdata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview_res" :on-remove="handleRemoveR">
+									<el-upload :action="doUpload" list-type="picture-card" :file-list="resUpdata" :limit='1' :on-success="handleDownSuccess" :on-preview="handlePictureCardPreview_res" :before-upload="beforeUpload_res" :on-remove="handleRemoveR">
 										<i class="el-icon-plus"></i>
 									</el-upload>
 									<el-dialog :visible.sync="resImgDialog">
@@ -300,7 +300,17 @@ export default {
                 "媒体七",
                 "媒体八",
                 "媒体九",
-                "媒体十"
+                "媒体十",
+                "媒体十一",
+                "媒体十二",
+                "媒体十三",
+                "媒体十四",
+                "媒体十五",
+                "媒体十六",
+                "媒体十七",
+                "媒体十八",
+                "媒体十九",
+                "媒体二十"
             ],
             titleIndex: 0,
             arrMediaStatue: [], // 编辑媒体时记录状态
@@ -654,7 +664,6 @@ export default {
             ],
             selectedOptions: [], // 城市默认选项
             PathHaveEdit: false, //  新建/编辑
-            recImg: {}, // 上传的资源图片
             mediaImg_title: "", // 媒体图片对应的媒体信息
             mediaImg: {
                 // 媒体图片
@@ -665,9 +674,23 @@ export default {
                 ptid: "", // 关联类型对应唯一ID
                 ptp: "" // 关联类型区分属性
             },
+            arrMediaImg: [
+                {
+                    text: "媒体一",
+                    mediaImg: {
+                        uid: JSON.parse(sessionStorage.getItem("session_data"))
+                            .uID,
+                        pid: "", // 图片id
+                        palt: "", // 图片标题
+                        ptype: "", // 关联类型
+                        ptid: "", // 关联类型对应唯一ID
+                        ptp: "" // 关联类型区分属性
+                    }
+                }
+            ],
             liveTime: "", // 资源时间
             doUpload: "/QADN/UpLoad", //'/api'+ '/UpLoad',
-            upLoadData: {
+            resImg: {
                 // 上传图片附带参数
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
                 pid: "", // 图片id
@@ -765,16 +788,32 @@ export default {
                     }
                 }
             ];
+            let mediaImgArr = [
+                {
+                    text: "媒体一",
+                    mediaImg: {
+                        uid: JSON.parse(sessionStorage.getItem("session_data"))
+                            .uID,
+                        pid: "", // 图片id
+                        palt: "", // 图片标题
+                        ptype: "", // 关联类型
+                        ptid: "", // 关联类型对应唯一ID
+                        ptp: "" // 关联类型区分属性
+                    }
+                }
+            ];
             //  console.log(mediaArr[this.titleIndex])
             if (this.PathHaveEdit) {
                 mediaArr[0].mediaForm.mediaType = "广告门";
             }
             mediaArr[0].text = this.titleArr[++this.titleIndex];
-            if (this.titleIndex < 10) {
+            mediaImgArr[0].text = mediaArr[0].text;
+            if (this.titleIndex < 20) {
                 this.arrMedia.push(mediaArr[0]);
+                this.arrMediaImg.push(mediaImgArr[0]);
             } else {
                 Message({
-                    message: "最多同时支持十个媒体面板的操作！",
+                    message: "最多同时支持二十个媒体面板的操作！",
                     type: "warning"
                 });
             }
@@ -890,7 +929,10 @@ export default {
             console.log("媒体状态", this.arrMedia[i].mediaForm.mstate);
             if (this.PathHaveEdit && i <= this.editMediaLength - 1) {
                 console.log("判断记录编辑媒体的状态");
-                if (this.arrMediaStatue[i] === "待安装") {
+                if (
+                    this.arrMediaStatue[i] == 2 ||
+                    this.arrMediaStatue[i] === "待安装"
+                ) {
                     this.arrMedia[i].mediaForm.assetIdBolean = true;
                     Message({
                         type: "warning",
@@ -903,21 +945,30 @@ export default {
                         type: "warning",
                         message: "请按正常流程走，当前媒体已安装"
                     });
-                    if (this.arrMediaStatue[i] === "禁用") {
+                    if (
+                        this.arrMediaStatue[i] === "禁用" ||
+                        this.arrMediaStatue[i] == 0
+                    ) {
                         this.arrMedia[i].mediaForm.mstate = "0" + i;
-                    } else if (this.arrMediaStatue[i] === "正常") {
+                    } else if (
+                        this.arrMediaStatue[i] === "正常" ||
+                        this.arrMediaStatue[i] == 1
+                    ) {
                         this.arrMedia[i].mediaForm.mstate = "1" + i;
-                    } else if (this.arrMediaStatue[i] === "待维修") {
+                    } else if (
+                        this.arrMediaStatue[i] === "待维修" ||
+                        this.arrMediaStatue[i] == 3
+                    ) {
                         this.arrMedia[i].mediaForm.mstate = "3" + i;
                     }
                 } else {
                     this.arrMedia[i].mediaForm.assetIdBolean = false;
                     if (valArr[0] === "0") {
-                        this.arrMediaStatue[i] = "禁用";
+                        this.arrMediaStatue[i] = 0; //'禁用'
                     } else if (valArr[0] === "1") {
-                        this.arrMediaStatue[i] = "正常";
+                        this.arrMediaStatue[i] = 1; //'正常'
                     } else if (valArr[0] === "3") {
-                        this.arrMediaStatue[i] = "待维修";
+                        this.arrMediaStatue[i] = 3; //'待维修'
                     }
                 }
             } else {
@@ -1012,8 +1063,8 @@ export default {
                         ) {
                             if (!recData.SysCode) {
                                 // 设置资源图片信息
-                                this.upLoadData.ptid = recData.resID; // 资源图片的ptid就是资源的id
-                                this.upLoadData.palt =
+                                this.resImg.ptid = recData.resID; // 资源图片的ptid就是资源的id
+                                this.resImg.palt =
                                     this.recForm.resname + "-" + recData.rID;
                                 this.setImg();
                                 Message({
@@ -1149,6 +1200,49 @@ export default {
                             message: arr_media.mediaName + "媒体创建成功",
                             type: "success"
                         });
+                        console.log("this.arrMediaImg", this.arrMediaImg);
+                        if (
+                            this.arrMediaImg[i].mediaImg.pid !== "" &&
+                            this.arrMediaImg[i].mediaImg.pid !== null &&
+                            this.arrMediaImg[i].mediaImg.pid !== undefined
+                        ) {
+                            /*  let city = ''
+                if (this.cityOther === true) {
+                  city = areaToTextNew.toTextCity(this.recForm.city)
+                }else if(this.cityOther === false){
+                  for(let i=0;i<this.throwCity.length;i++){
+                    if(this.recForm.city == this.throwCity[i].value){
+                      city = this.throwCity[i].label
+                    }
+                  }
+                }
+                let area = ''
+                for(let j=0;j< this.regionOpt.length;j++){
+                  if(this.recForm.region == this.regionOpt[j].value){
+                    area = this.regionOpt[j].label
+                  }
+                }
+                this.arrMediaImg[i].mediaImg.ptid = res.data.mID
+                // this.arrMediaImg[i].mediaImg.palt = res.data.mTitle
+                this.arrMediaImg[i].mediaImg.palt = {
+                  plan: '',
+                  res: this.resData.resName,
+                  media: res.data.mTitle,
+                  city: city,
+                  area: area,
+                  asLab: '',
+                  lstart: this.arrMediaImg[i].pUTime,     //图片上传时间
+                  leng: '',
+                  assettag: res.data.assetTag || '',
+                  brand: '',
+                  username: this.sessionData.username,
+                  resid: res.data.resID,
+                  address: this.resData.resAddress,
+                }
+                this.setImg(this.arrMediaImg[i].mediaImg)*/
+                            console.log("0000");
+                            // this.setMediaImgInfo(res.data,i)
+                        }
                         this.iteratorCreateMeida(i + 1);
                     }
                 } else {
@@ -1161,6 +1255,53 @@ export default {
                     // return
                 }
             });
+        },
+        // 设置媒体上传图片的信息
+        setMediaImgInfo(mediaInfo, i) {
+            console.log("1111");
+            let city = "";
+            console.log("this.recForm", this.recForm);
+            if (this.cityOther === true) {
+                console.log("全国", this.recForm.city);
+                city = areaToTextNew.toTextCity(this.recForm.city);
+            } else if (this.cityOther === false) {
+                for (let i = 0; i < this.throwCity.length; i++) {
+                    if (this.recForm.city == this.throwCity[i].value) {
+                        city = this.throwCity[i].label;
+                    }
+                }
+            }
+            let area = "";
+            for (let j = 0; j < this.regionOpt.length; j++) {
+                if (this.recForm.region == this.regionOpt[j].value) {
+                    area = this.regionOpt[j].label;
+                }
+            }
+            this.arrMediaImg[i].mediaImg.ptid = this.resData.resID;
+            this.arrMediaImg[i].mediaImg.ptp = mediaInfo.mID; //this.resData
+            this.arrMediaImg[i].mediaImg.palt = {
+                plan: "",
+                res: this.resData.resName,
+                media: mediaInfo.mTitle,
+                city: city,
+                area: area,
+                asLab: "",
+                lstart: this.arrMediaImg[i].pUTime, //图片上传时间
+                lend: "",
+                assettag: mediaInfo.assetTag || "",
+                brand: "",
+                account: this.sessionData.username,
+                username: this.sessionData.realName
+                    ? this.sessionData.realName
+                    : "",
+                resid: mediaInfo.resID,
+                address: this.resData.resAddress
+            };
+            this.arrMediaImg[i].mediaImg.palt = JSON.stringify(
+                this.arrMediaImg[i].mediaImg.palt
+            );
+            console.log("上传的媒体图片", this.arrMediaImg[i].mediaImg);
+            this.setImg(this.arrMediaImg[i].mediaImg);
         },
         // 创建媒体
         createMedia(mediaObj, n, mediaImg) {
@@ -1194,34 +1335,30 @@ export default {
             // })
         },
 
-        // 上传图片
-        /*  submitUpload() {
-        this.$refs.upload.submit();
-      },*/
         // 删除原资源图片，进行重新选择
         handleRemoveR(file, fileList) {
             console.log("删除或修改了资源图片", file, fileList);
             let imgInfo = {
                 uid: this.sessionData.uID,
-                pid: this.upLoadData.pid,
+                pid: this.resImg.pid,
                 ptype: "del"
             };
             api
                 .postApi("/SetImg", imgInfo)
                 .then(res => {
                     console.log("把上次上传的图片ptype修改为del", res.data);
-                    this.upLoadData.pid = "";
+                    this.resImg.pid = "";
                     // Message.success(res.data.MSG);
                 })
                 .catch(err => {
                     console.log("error", err);
                 });
-            // this.upLoadData.pid = ''
+            // this.resImg.pid = ''
         },
         handlePreview(file) {
             console.log(file);
         },
-        //资源图片
+        // 资源图片
         handlePictureCardPreview_res(file) {
             console.log(file);
             this.resImgUrl = file.url;
@@ -1230,19 +1367,33 @@ export default {
         //媒体图片
         handlePictureCardPreview() {},
         mediaUploadChange() {},
+        // 图片上传前验证格式和大小
+        beforeUpload_res(file) {
+            const isJPG =
+                file.type === "image/jpeg" || file.type === "image/png";
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG) {
+                this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
+            }
+            if (!isLt2M) {
+                this.$message.error("上传头像图片大小不能超过 2MB!");
+            }
+            return isJPG && isLt2M;
+        },
         handleDownSuccess(res) {
             console.log("上传资源图片", res);
-            this.upLoadData.pid = res.pID;
-            this.upLoadData.ptype = "resType";
+            this.resImg.pid = res.pID;
+            this.resImg.ptype = "resType";
         },
         // 上传图片与资源关联
         setImg(mediaImg) {
-            console.log("上传图片的信息", this.upLoadData);
+            console.log("上传图片的信息", this.resImg);
             console.log("mediaImg", mediaImg);
             let info = [];
             if (mediaImg == undefined || mediaImg == null) {
-                console.log("上传资源图片的信息", this.upLoadData);
-                info = this.upLoadData;
+                console.log("上传资源图片的信息", this.resImg);
+                info = this.resImg;
             } else {
                 console.log("上传媒体图片的信息", mediaImg);
                 info = mediaImg;
@@ -1276,15 +1427,14 @@ export default {
         },
         mediaUploadSuccess(res) {
             console.log("上传媒体图片", res);
-            this.mediaImg.pid = res.pID;
-            this.mediaImg.ptype = "mediaImg";
-            let arrMedia = this.arrMedia;
-            for (let i = 0; i < arrMedia.length; i++) {
-                if (arrMedia[i].text === this.mediaImg_title) {
-                    arrMedia[i].mediaForm.mImg = this.mediaImg;
+            for (let i = 0; i < this.arrMediaImg.length; i++) {
+                if (this.arrMediaImg[i].text === this.mediaImg_title) {
+                    this.arrMediaImg[i].mediaImg.pid = res.pID;
+                    this.arrMediaImg[i].mediaImg.ptype = "XD";
+                    this.arrMediaImg[i].pUTime = res.pUTime;
                 }
             }
-            console.log("媒体信息", this.arrMedia);
+            console.log("媒体信息", this.arrMediaImg);
         },
         // 表单验证
         submitForm(r_item, m_item) {
@@ -1449,9 +1599,28 @@ export default {
                         }
                         // media.mediaRemark = ''
                         console.log("media", media);
-                        if (media.mstate == "待安装") {
+                        if (
+                            media.mstate === "禁用" ||
+                            media.mstate === "禁止" ||
+                            media.mstate == 0
+                        ) {
+                            media.mstate = "0" + i;
+                        } else if (
+                            media.mstate === "正常" ||
+                            media.mstate == 1
+                        ) {
+                            media.mstate = "1" + i;
+                        } else if (
+                            media.mstate === "待安装" ||
+                            media.mstate == 2
+                        ) {
                             media.assetIdBolean = true;
-                            // this.assetIdBolean = true
+                            media.mstate = "2" + i;
+                        } else if (
+                            media.mstate === "待维修" ||
+                            media.mstate == 3
+                        ) {
+                            media.mstate = "3" + i;
                         }
                         for (let key in media) {
                             if (media[key] == undefined || media[key] == null) {
@@ -1488,7 +1657,7 @@ export default {
                             url: res.data[0].pURL
                         };
                         this.resUpdata.push(resImg);
-                        this.upLoadData.pid = res.data[0].pID;
+                        this.resImg.pid = res.data[0].pID;
                         this.beforeResPID = res.data[0].pID;
                     }
                 })
@@ -1567,8 +1736,8 @@ export default {
                             res.data.MSG === "操作成功"
                         ) {
                             // 设置资源图片信息
-                            this.upLoadData.ptid = SetResCTObj.resid; // 资源图片的ptid就是资源的id
-                            this.upLoadData.palt =
+                            this.resImg.ptid = SetResCTObj.resid; // 资源图片的ptid就是资源的id
+                            this.resImg.palt =
                                 SetResCTObj.resname + "-" + SetResCTObj.rid;
                             this.setImg();
                             let mediaArr = this.arrMedia;
@@ -1611,7 +1780,10 @@ export default {
                                     );
                                     if (tempObj.mstate === "正常") {
                                         tempObj.mstate = "1";
-                                    } else if (tempObj.mstate === "禁用") {
+                                    } else if (
+                                        tempObj.mstate === "禁用" ||
+                                        tempObj.mstate === "禁止"
+                                    ) {
                                         tempObj.mstate = "0";
                                     } else if (tempObj.mstate === "待安装") {
                                         tempObj.mstate = "2";
