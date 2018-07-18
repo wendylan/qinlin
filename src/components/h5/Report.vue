@@ -1,94 +1,94 @@
 <template>
-	<div>
-		<div class="ad_mediaMana_wrap">
-			<div class="mediaMana_content_top">
-				<div class="content_top_wrap">
-					<div class="title">
-						<h1>{{upReport.apName}}{{(Info.name =='SK')?'上刊':'下刊'}}报告</h1>
-						<h3>{{upReport.bTitle}} &nbsp;&nbsp;{{formatTime(upReport.apcTime)}}</h3>
-					</div>
-					<div class="detail">
-						<p>
-							<em>公司名称：</em>
-							<i>{{upReport.cName}}</i>
-							<em>投放城市：</em>
-							<i>{{filter(upReport.rIDs)}}</i>
-							<em>投放面数：</em>
-							<i>{{upReport.totalNum}}</i>
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="plan-panel">
-				<el-tabs v-model="planPanel">
-					<el-tab-pane label="投放详情" name="first">
-						<div class="first-wrap box-wrap">
-							<h4>投放详情</h4>
-							<div class="search-wrap">
-								<span>
-									<el-select v-model="select" placeholder="请选择" class="type-select">
-										<el-option v-for="item in typeSelect" :key="item.value" :label="item.label" :value="item.value"></el-option>
-									</el-select>
-									<el-input v-model="keyword" placeholder="请输入要搜索的内容" class="searchInput" @change="initData"></el-input>
-								</span>
-								<span>
-									<el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
-								</span>
-							</div>
-							<div class="table_wrap">
-								<el-table border :data="currPutDetail" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-									<el-table-column type="expand">
-										<template slot-scope="props">
-											<el-form label-position="left" inline class="demo-table-expand">
-												<el-form-item label="商圈：">
-													<span>{{ props.row.tradingArea}}</span>
-												</el-form-item>
-												<el-form-item label="楼栋数量：">
-													<span>{{ props.row.fNum }}</span>
-												</el-form-item>
-												<el-form-item label="资产编号：">
-													<span>{{ props.row.assetTag }}</span>
-												</el-form-item>
-												<el-form-item label="入住年份：">
-													<span>{{ props.row.chDay }}</span>
-												</el-form-item>
-												<el-form-item label="广告限制：">
-													<span>{{ props.row.notPush }}</span>
-												</el-form-item>
-											</el-form>
-										</template>
-									</el-table-column>
-									<el-table-column prop="city" label="城市" min-width="6.7%" :filters="filterCityData" :filter-method="filterCity">
-									</el-table-column>
-									<el-table-column prop="rName" label="区域" min-width="6.7%" :filters="filtersArea" :filter-method="filterRName">
-									</el-table-column>
-									<el-table-column prop="resName" label="资源名称" min-width="11.9%" class="tar">
-									</el-table-column>
-									<el-table-column prop="resAddress" label="地址" min-width="19.5%">
-									</el-table-column>
-									<el-table-column prop="cType" label="楼盘类型" min-width="6.1%">
-									</el-table-column>
-									<el-table-column prop="chDay" label="入住时间" min-width="6.1%" class="tar">
-									</el-table-column>
-									<el-table-column label="楼盘价格" min-width="7.6%">
-										<template slot-scope="scope">
-											<span>{{priceFormat(scope.row.hPrice/100)}}</span>
-										</template>
-									</el-table-column>
-									<el-table-column prop="hNum" label="户数" min-width="5.6%">
-									</el-table-column>
-									<el-table-column label="媒体数量" prop="mediaNum" min-width="6.1%">
-									</el-table-column>
-									<el-table-column label="操作" min-width="6.1%">
-										<template slot-scope="scope">
-											<el-button type="text" @click="showImg(scope.row)">查看监播</el-button>
-										</template>
-									</el-table-column>
-								</el-table>
-							</div>
-						</div>
-					</el-tab-pane>
-					<!-- <el-tab-pane label="地图展示" name="second">
+    <div>
+        <div class="ad_mediaMana_wrap">
+            <div class="mediaMana_content_top">
+                <div class="content_top_wrap">
+                    <div class="title">
+                        <h1>{{upReport.apName}}{{(Info.name =='SK')?'上刊':'下刊'}}报告</h1>
+                        <h3>{{upReport.bTitle}} &nbsp;&nbsp;{{formatTime(upReport.apcTime)}}</h3>
+                    </div>
+                    <div class="detail">
+                        <p>
+                            <em>公司名称：</em>
+                            <i>{{upReport.cName}}</i>
+                            <em>投放城市：</em>
+                            <i>{{filter(upReport.rIDs)}}</i>
+                            <em>投放面数：</em>
+                            <i>{{upReport.totalNum}}</i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="plan-panel">
+                <el-tabs v-model="planPanel">
+                    <el-tab-pane label="投放详情" name="first">
+                        <div class="first-wrap box-wrap">
+                            <h4>投放详情</h4>
+                            <div class="search-wrap">
+                                <span>
+                                    <el-select v-model="select" placeholder="请选择" class="type-select">
+                                        <el-option v-for="item in typeSelect" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                    </el-select>
+                                    <el-input v-model="keyword" placeholder="请输入要搜索的内容" class="searchInput" @change="initData"></el-input>
+                                </span>
+                                <span>
+                                    <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
+                                </span>
+                            </div>
+                            <div class="table_wrap">
+                                <el-table border :data="currPutDetail" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                    <el-table-column type="expand">
+                                        <template slot-scope="props">
+                                            <el-form label-position="left" inline class="demo-table-expand">
+                                                <el-form-item label="商圈：">
+                                                    <span>{{ props.row.tradingArea}}</span>
+                                                </el-form-item>
+                                                <el-form-item label="楼栋数量：">
+                                                    <span>{{ props.row.fNum }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="资产编号：">
+                                                    <span>{{ props.row.assetTag }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="入住年份：">
+                                                    <span>{{ props.row.chDay }}</span>
+                                                </el-form-item>
+                                                <el-form-item label="广告限制：">
+                                                    <span>{{ props.row.notPush }}</span>
+                                                </el-form-item>
+                                            </el-form>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="city" label="城市" min-width="6.7%" :filters="filterCityData" :filter-method="filterCity">
+                                    </el-table-column>
+                                    <el-table-column prop="rName" label="区域" min-width="6.7%" :filters="filtersArea" :filter-method="filterRName">
+                                    </el-table-column>
+                                    <el-table-column prop="resName" label="资源名称" min-width="11.9%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column prop="resAddress" label="地址" min-width="19.5%">
+                                    </el-table-column>
+                                    <el-table-column prop="cType" label="楼盘类型" min-width="6.1%">
+                                    </el-table-column>
+                                    <el-table-column prop="chDay" label="入住时间" min-width="6.1%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column label="楼盘价格" min-width="7.6%">
+                                        <template slot-scope="scope">
+                                            <span>{{priceFormat(scope.row.hPrice/100)}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="hNum" label="户数" min-width="5.6%">
+                                    </el-table-column>
+                                    <el-table-column label="媒体数量" prop="mediaNum" min-width="6.1%">
+                                    </el-table-column>
+                                    <el-table-column label="操作" min-width="6.1%">
+                                        <template slot-scope="scope">
+                                            <el-button type="text" @click="showImg(scope.row)">查看监播</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <!-- <el-tab-pane label="地图展示" name="second">
 						<div class="sec-wrap box-wrap">
 							<h4>地图展示</h4>
 							<div class="map">
@@ -96,85 +96,85 @@
 							</div>
 						</div>
 					</el-tab-pane> -->
-					<el-tab-pane label="监播图片" name="third">
-						<div class="sec-wrap box-wrap">
-							<h4>监播图片</h4>
-							<div class="tabs">
-								<button class="active" @click="changeImgType">按资源分</button>
-								<button @click="changeImgType">按图片分</button>
-							</div>
-							<div class="typeOfRec" v-if="isActive">
+                    <el-tab-pane label="监播图片" name="third">
+                        <div class="sec-wrap box-wrap">
+                            <h4>监播图片</h4>
+                            <div class="tabs">
+                                <button class="active" @click="changeImgType">按资源分</button>
+                                <button @click="changeImgType">按图片分</button>
+                            </div>
+                            <div class="typeOfRec" v-if="isActive">
 
-								<div class="picBox" v-for="(up, upIndex) of upReportArr" :key="up.asID" @mouseenter="showPreImg = upIndex" @mouseleave="showPreImg = null">
-									<el-carousel :autoplay="false" trigger="click">
-										<el-carousel-item v-for="(item, index) in up.upImgArr" :key="index">
-											<!-- <img :src="item.url" alt=""> -->
-											<img v-lazyload="item.url" alt="">
-											<!--缩略图-->
-											<div class="mask-btn" v-if="showPreImg == upIndex ">
-												<i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
-											</div>
-										</el-carousel-item>
-									</el-carousel>
-									<div class="pic-title">{{up.resName}}</div>
+                                <div class="picBox" v-for="(up, upIndex) of upReportArr" :key="up.asID" @mouseenter="showPreImg = upIndex" @mouseleave="showPreImg = null">
+                                    <el-carousel :autoplay="false" trigger="click">
+                                        <el-carousel-item v-for="(item, index) in up.upImgArr" :key="index">
+                                            <!-- <img :src="item.url" alt=""> -->
+                                            <img v-lazyload="item.url" alt="">
+                                            <!--缩略图-->
+                                            <div class="mask-btn" v-if="showPreImg == upIndex ">
+                                                <i class="el-icon-search" @click="handlePictureCardPreview(item.url)"></i>
+                                            </div>
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <div class="pic-title">{{up.resName}}</div>
 
-								</div>
-							</div>
-							<div class="typeOfPic" v-if="!isActive">
-								<div class="picBox" v-for="(img, index) of imgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-									<!-- <img :src="img.pURL" alt=""> -->
-									<img v-lazyload="img.pURL" alt="">
-									<!--缩略图-->
-									<div class="mask-btn" v-if="showPreImg == index ">
-										<i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
-									</div>
-									<div class="pic-title">{{JSON.parse(img.pAlt).res}}</div>
-								</div>
-							</div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="发布情况" name="forth">
-						<div class="forth-wrap box-wrap">
-							<h4>发布情况</h4>
-							<div class="table_wrap">
-								<el-table border :data="postDetail" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
-									<el-table-column prop="city" label="城市" min-width="10.3%">
-									</el-table-column>
-									<el-table-column prop="planNum" label="计划点位数" min-width="18.6%">
-									</el-table-column>
-									<el-table-column prop="realNum" label="实际执行点位数" min-width="18.8%" class="tar">
-									</el-table-column>
-									<el-table-column prop="wrongNum" label="问题点位数" min-width="19.3%">
-									</el-table-column>
-									<el-table-column prop="resolveNum" label="问题解决数" min-width="19.8%">
-									</el-table-column>
-								</el-table>
-							</div>
-						</div>
-					</el-tab-pane>
-				</el-tabs>
-				<!--缩略图对话框-->
-				<el-dialog :visible.sync="dialogVisible">
-					<img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
-				</el-dialog>
-				<!--监播图-->
-				<el-dialog :visible.sync="isShowImgArr" class="JB">
-					<div style="clear: both">
-						<el-carousel :autoplay="false" trigger="click">
-							<el-carousel-item v-for="(item, index) in ImgBoxArr" :key="index">
-								<img :src="item.url" alt="" style="width:100%; height:100%;">
-							</el-carousel-item>
-						</el-carousel>
-					</div>
-				</el-dialog>
-			</div>
-			<div class="ad_index_footer clearfix">
-				<p>
-					Copyright &copy;2018 亲邻科技线上产品部
-				</p>
-			</div>
-		</div>
-	</div>
+                                </div>
+                            </div>
+                            <div class="typeOfPic" v-if="!isActive">
+                                <div class="picBox" v-for="(img, index) of imgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
+                                    <!-- <img :src="img.pURL" alt=""> -->
+                                    <img v-lazyload="img.pURL" alt="">
+                                    <!--缩略图-->
+                                    <div class="mask-btn" v-if="showPreImg == index ">
+                                        <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
+                                    </div>
+                                    <div class="pic-title">{{JSON.parse(img.pAlt).res}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="发布情况" name="forth">
+                        <div class="forth-wrap box-wrap">
+                            <h4>发布情况</h4>
+                            <div class="table_wrap">
+                                <el-table border :data="postDetail" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+                                    <el-table-column prop="city" label="城市" min-width="10.3%">
+                                    </el-table-column>
+                                    <el-table-column prop="planNum" label="计划点位数" min-width="18.6%">
+                                    </el-table-column>
+                                    <el-table-column prop="realNum" label="实际执行点位数" min-width="18.8%" class="tar">
+                                    </el-table-column>
+                                    <el-table-column prop="wrongNum" label="问题点位数" min-width="19.3%">
+                                    </el-table-column>
+                                    <el-table-column prop="resolveNum" label="问题解决数" min-width="19.8%">
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+                <!--缩略图对话框-->
+                <el-dialog :visible.sync="dialogVisible">
+                    <img style="width: 100%;height: 100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+                <!--监播图-->
+                <el-dialog :visible.sync="isShowImgArr" class="JB">
+                    <div style="clear: both">
+                        <el-carousel :autoplay="false" trigger="click">
+                            <el-carousel-item v-for="(item, index) in ImgBoxArr" :key="index">
+                                <img :src="item.url" alt="" style="width:100%; height:100%;">
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                </el-dialog>
+            </div>
+            <div class="ad_index_footer clearfix">
+                <p>
+                    Copyright &copy;2018 亲邻科技线上产品部
+                </p>
+            </div>
+        </div>
+    </div>
 
 </template>
 
@@ -291,14 +291,14 @@ export default {
         this.getData();
     },
     methods: {
-		// 获取路由数据
-        getRouter(){
+        // 获取路由数据
+        getRouter() {
             let route = this.$route.query;
             console.log(route);
             this.Info.name = Object.keys(route);
             this.Info.val = route[this.Info.name];
-		},
-		// 获取原始数据
+        },
+        // 获取原始数据
         getData() {
             let name = this.Info.name.toString().toLowerCase();
             let val = this.Info.val;
@@ -399,8 +399,8 @@ export default {
                     if (!res.includes(data)) {
                         res = data + "," + res;
                     }
-				}
-				res = res.toString().substring(0, res.toString().length - 1);
+                }
+                res = res.toString().substring(0, res.toString().length - 1);
                 console.log(res);
             }
             return res;
@@ -553,7 +553,7 @@ export default {
         loginTimeout() {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
-		},
+        }
     },
     mounted() {
         $(function() {
@@ -1021,87 +1021,85 @@ export default {
 }
 
 @media all and (min-width: 1420px) {
-  .mediaMana_content_top,
-  .plan-panel {
-    width: 1320px;
-  }
-  .mediaMana_content_top{
-    padding-bottom: 75px;
-  }
-  .box-wrap>h4{
-    margin-bottom: 75px;
-  }
-  .tabs{
-    margin-bottom: 48px;
-  }
+    .mediaMana_content_top,
+    .plan-panel {
+        width: 1320px;
+    }
+    .mediaMana_content_top {
+        padding-bottom: 75px;
+    }
+    .box-wrap > h4 {
+        margin-bottom: 75px;
+    }
+    .tabs {
+        margin-bottom: 48px;
+    }
 
-  .picBox {
-    margin-right: 9px;
-    margin-left: 9px;
-    width: 233.5px;
-    height: 346px;
-    margin-bottom: 38px;
-  }
-  /deep/ .el-carousel__container{
-    height: 312px;
-  }
-  .picBox img{
-    width: 100%;
-    height: 285px;
-  }
+    .picBox {
+        margin-right: 9px;
+        margin-left: 9px;
+        width: 233.5px;
+        height: 346px;
+        margin-bottom: 38px;
+    }
+    /deep/ .el-carousel__container {
+        height: 312px;
+    }
+    .picBox img {
+        width: 100%;
+        height: 285px;
+    }
 }
 
 /*1920*/
 @media all and (min-width: 1900px) {
-  .mediaMana_content_top,
-  .plan-panel {
-    width: 1800px;
-  }
-  .mediaMana_content_top{
-    padding-bottom: 145px;
-  }
-  .box-wrap>h4{
-    margin-bottom: 56px;
-  }
-  .tabs{
-    margin-bottom: 62px;
-  }
+    .mediaMana_content_top,
+    .plan-panel {
+        width: 1800px;
+    }
+    .mediaMana_content_top {
+        padding-bottom: 145px;
+    }
+    .box-wrap > h4 {
+        margin-bottom: 56px;
+    }
+    .tabs {
+        margin-bottom: 62px;
+    }
 
-  .picBox {
-    margin-right: 10px;
-    margin-left: 10px;
-    width: 322.2px;
-    height: 477.5px;
-    margin-bottom: 20.5px;
-  }
+    .picBox {
+        margin-right: 10px;
+        margin-left: 10px;
+        width: 322.2px;
+        height: 477.5px;
+        margin-bottom: 20.5px;
+    }
 
-  /deep/ .el-carousel__container{
-    height: 446px;
-  }
-  .picBox img{
-    width: 100%;
-    height: 410px;
-  }
-
-
+    /deep/ .el-carousel__container {
+        height: 446px;
+    }
+    .picBox img {
+        width: 100%;
+        height: 410px;
+    }
 }
 
 @media print {
-
-  @page {
-    size: A4;
-    width: 210mm;
-  }
-  @media all and (min-width: 1420px) {
-    .mediaMana_content_top,
-    .plan-panel {
-      width: 1000px;
+    @page {
+        size: A4;
+        width: 210mm;
     }
-
-  }
-  @media all and (min-width: 1900px) {
-    body{transform: scale(0.6);}
-  }
+    @media all and (min-width: 1420px) {
+        .mediaMana_content_top,
+        .plan-panel {
+            width: 1000px;
+        }
+    }
+    @media all and (min-width: 1900px) {
+        body {
+            transform: scale(0.6);
+        }
+    }
 
     /*@page {*/
     /*width: 210mm!important;*/

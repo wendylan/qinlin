@@ -1033,6 +1033,8 @@ export default {
                                 this.planForm.companyBrand = "";
                                 this.planForm.ownerBU = "";
                                 this.planForm.throwCity = [];
+                                this.dynamicTags = [];
+                                this.throwCity = [];
 
                                 this.Get_cName();
                                 let results = [res.data];
