@@ -133,6 +133,7 @@
 import api from "../../api/api";
 import commentFun from "../../js/commentFun";
 import areaToText from "../../commonFun/areaToText.js";
+import areaToText_new from "../../commonFun/areaToText_new";
 import { Button, Table, TableColumn, Row, Col, Message } from "element-ui";
 export default {
     name: "mediaDetail",
@@ -253,11 +254,15 @@ export default {
                     this.obj.rid = res.data.rID;
                     this.obj.houseType = res.data.cType;
                     this.obj.pmc = res.data.resPMC;
-                    areaToText.toTextCityArea(data => {
-                        console.log("公司信息所在城市", data);
-                        this.obj.city = data.city;
-                        this.obj.cityArea = data.area;
-                    }, res.data.rID);
+                    // areaToText.toTextCityArea(data => {
+                    //   console.log('公司信息所在城市', data);
+                    //   this.obj.city= data.city
+                    //   this.obj.cityArea = data.area
+                    // }, res.data.rID);
+                    // let data = areaToText.toTextCity(RMList[i].rID)
+                    let cityArea = areaToText_new.toTextCityArea(res.data.rID);
+                    this.obj.city = cityArea.city;
+                    this.obj.cityArea = cityArea.area;
                     console.log("this.obj", this.obj);
                 })
                 .catch(err => {

@@ -1,7 +1,26 @@
 <template>
 	<div>
 		<div class="ad_index_container">
-			<ul class="ad_index_panel clearfix">
+            <!-- 超级管理员 -->
+            <ul class="ad_index_panel clearfix"   v-if="role=='super'">
+				<li v-for="(item, index) in containData" :key="index" style="height:117px;">
+					<router-link :to="{path: item.path}" class="mask" style="height:146px;"></router-link>
+					<div class="panel_top">
+						<div class="panel_top_icon_wrap" :class="item.classPar">
+							<div class="panel_top_icon" :class="item.class">
+							</div>
+						</div>
+						<div class="panel_top_right">
+							<h1>{{item.name}}</h1>
+							<span>{{item.smallOpera}}
+								<i class="fa fa-angle-right fa-lg"></i>
+							</span>
+						</div>
+					</div>
+				</li>
+			</ul>
+            <!-- 非超级管理员 -->
+			<ul class="ad_index_panel clearfix" v-else>
 				<li v-for="(item, index) in containData" :key="index">
 					<router-link :to="{path: item.path}" class="mask"></router-link>
 					<div class="panel_top">
@@ -23,6 +42,7 @@
 					</div>
 				</li>
 			</ul>
+            
 		</div>
 	</div>
 </template>
@@ -34,6 +54,10 @@ export default {
             default: function() {
                 return [];
             }
+        },
+        role: {
+            type: String,
+            default: ''
         }
     },
     data() {

@@ -1251,8 +1251,8 @@ export default {
                         type: "warning"
                     });
                     // console.log(arr_media.mediaName,'媒体创建失败')
-                    this.iteratorCreateMeida(i + 1);
-                    // return
+                    // this.iteratorCreateMeida(i + 1)
+                    return;
                 }
             });
         },

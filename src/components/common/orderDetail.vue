@@ -406,7 +406,7 @@
                             <div class="panel" v-loading="DownReportLoading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                 <div class="up-report">
                                     <div class="up-loader-header">
-                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImg()">
+                                        <el-cascader :options="citys" v-model="citySelect" @change="searchImgChange()">
                                         </el-cascader>
                                         <el-select placeholder="请选择资源" filterable v-model="allhouse" @change="searchImg()">
                                             <el-option v-for="(item, index) of allResource" :key="index" :label="item.text" :value="item.value"></el-option>
@@ -702,6 +702,8 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
+// 转换时间
+import dayToWeek from "../../commonFun/dayToWeek.js";
 import {
     Table,
     TableColumn,
@@ -1236,6 +1238,9 @@ export default {
         },
         // tab点击
         handleClick() {
+            this.allPic = '';
+            this.allhouse = '';
+            this.citySelect = [];
             if (this.planPanel == "first") {
                 this.getSetPoint();
             }
@@ -1379,7 +1384,7 @@ export default {
             if (this.upLoadImg.length) {
                 this.citySelect[0] = "全部";
                 // this.currUpPage = 1;
-                this.searchImg();
+                // this.searchImg();
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -1404,12 +1409,13 @@ export default {
                             "SK"
                         );
                         this.upReportArr = result;
-                        this.currUpReportArr = JSON.parse(
-                            JSON.stringify(this.upReportArr)
-                        );
+                        this.currUpReportArr = JSON.parse(JSON.stringify(this.upReportArr));
                         this.citySelect[0] = "全部";
+                        this.changePage(1);
+                        // this.pageUpReportArr = this.currUpReportArr;
+                        // this.searchImg();
+
                         // this.currUpPage = 1;
-                        this.searchImg();
                         // this.changeUpPage(1);
                         console.log("upimginfo", this.upReportArr);
 
@@ -1436,7 +1442,7 @@ export default {
             if (this.downImg.length) {
                 this.citySelect[0] = "全部";
                 // this.currDownPage = 1;
-                this.searchImg();
+                // this.searchImg();
                 return;
             }
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -1455,12 +1461,13 @@ export default {
                         // 下刊数据(组合图片)
                         result = this.constructImg(result, this.downImg, "XK");
                         this.downReportArr = result;
-                        this.currDownReportArr = JSON.parse(
-                            JSON.stringify(this.downReportArr)
-                        );
+                        this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
                         this.citySelect[0] = "全部";
+                        this.changePage(1);
+                        // this.pageDownReportArr = this.currDownReportArr;
+                        // this.searchImg();
+
                         // this.currDownPage = 1;
-                        this.searchImg();
                         // this.changeDownPage(1);
                         console.log("downimginfo", this.downReportArr);
 
@@ -1740,6 +1747,12 @@ export default {
                     console.log(res);
                 });
         },
+        dayToweeks(days){
+            return dayToWeek.toWeeks(days)
+        },
+        dateToDays(start, end){
+            return dayToWeek.toDays(start, end);
+        },
         // 整合排期信息
         setSchedules(arr, asidRes) {
             for (let arrData of arr) {
@@ -1749,11 +1762,21 @@ export default {
                     let dataRID = asid.rID.toString().substring(0, 4);
                     let ds = dateFormat.toDate(asid.ds, ".");
                     let de = dateFormat.toDate(asid.de, ".");
+                    let days = this.dateToDays(ds, de);
+                    let weekDay = this.dayToweeks(days);
+                    let weekDays = '';
+                    if(days < 7){
+                        weekDays = weekDay.day+'天';
+                    }else if((weekDay.day ==0) && (weekDay.week != 0)){
+                        weekDays = weekDay.week+'周';
+                    }else{
+                        weekDays = weekDay.week +'周'+weekDay.day+'天';
+                    }
                     if (arrDataRID == dataRID) {
                         if (schedules == "") {
-                            schedules = ds + "-" + de + "(" + asid.mNum + "面)";
+                            schedules = ds + "-" + de + "("+ weekDays+',共'+ asid.mNum + "面)";
                         } else {
-                            schedules = schedules +" " + ds + "-" + de +"(" + asid.mNum +"面)";
+                            schedules = schedules +" " + ds + "-" + de +"("+ weekDays+',共'+ asid.mNum + "面)";
                         }
                     }
                 }

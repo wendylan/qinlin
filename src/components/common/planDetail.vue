@@ -78,12 +78,11 @@
                             </div>
                         </div>
                         <div class="plan-panel">
-                            <el-tabs v-model="planPanel">
+                            <el-tabs v-model="planPanel" @tab-click="handleClick()">
                                 <el-tab-pane label="选点排期" name="first">
                                     <div class="first-wrap box-wrap">
                                         <h4>选点排期</h4>
                                         <div class="table_wrap">
-                                            <!-- <el-table border :data="setpointArr" :row-class-name="tableRowClassName" :highlight-current-row="true" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"> -->
                                             <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                                 <el-table-column type="expand">
                                                     <template slot-scope="props">
@@ -157,8 +156,6 @@
                                                         <div class="pqxx">
                                                             <h4>排期信息</h4>
                                                             <p>{{item.schedules}}</p>
-                                                            <!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
-                                                            <!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
                                                         </div>
                                                         <div class="price">
                                                             <div class="price-left">
@@ -240,6 +237,32 @@
                                         <el-button class="cancel" @click="goBack()">返回</el-button>
                                     </div>
                                 </el-tab-pane>
+                                <el-tab-pane label="物料信息" name="third">
+                                    <div class="third-wrap box-wrap">
+                                        <h4>物料信息</h4>
+                                        <div class="table_wrap">
+                                            <el-table :data="materialInfo" border style="width: 100%">
+                                                <el-table-column label="序号" min-width="5.9%">
+                                                    <template slot-scope="scope">
+                                                        <span>{{scope.$index+1}}</span>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="adSize" label="广告尺寸" min-width="12.4%">
+                                                </el-table-column>
+                                                <el-table-column prop="adViewSize" label="可视画面" min-width="12.4%">
+                                                </el-table-column>
+                                                <el-table-column prop="resolution" label="分辨率" min-width="12.4%">
+                                                </el-table-column>
+                                                <el-table-column prop="colorMode" label="颜色模式" min-width="12.4%">
+                                                </el-table-column>
+                                                <el-table-column prop="photoFormat" label="文件格式" min-width="17.6%">
+                                                </el-table-column>
+                                                <el-table-column prop="pointNum" label="点位面数" min-width="12.7%">
+                                                </el-table-column>
+                                            </el-table>
+                                        </div>
+                                    </div>
+                                </el-tab-pane>
                             </el-tabs>
                         </div>
                     </div>
@@ -264,6 +287,8 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
+// 转换时间
+import dayToWeek from "../../commonFun/dayToWeek.js";
 import {
     Table,
     TableColumn,
@@ -289,27 +314,14 @@ export default {
             loading: true,
             role: "",
             // 方案详情
-            planDetail: {
-                // realName: "",
-                // apState: 1,
-                // rIDs: "",
-                // cName: "",
-                // apID: 1,
-                // apcTime: "",
-                // cuName: "",
-                // bTitle: "",
-                // apTotal: 0,
-                // apName: "",
-                // apQC: "",
-                // pdTotal: 0,
-                // pdSendFee: 0,
-                // pdOtherFee: 0
-            },
+            planDetail: {},
             // 选点排期
             setpointArr: [],
             copyAsidArr: [],
             // 报价单详情
             priceSheet: [],
+            //物料信息
+            materialInfo: [],
             // 城市过滤结果
             filterCityData: [],
             // 排期时间过滤
@@ -324,48 +336,21 @@ export default {
         this.getRole();
         // 获取选点排期数据
         this.getInitData();
-        // // 选点排期
-        // this.getSetPoint();
-        // // 报价单
-        // this.getPriceData();
     },
     methods: {
-        // // 当前行是否高亮
-        // tableRowClassName({ row }) {
-        //     if (row.lState) {
-        //         return "warning-row";
-        //     } else {
-        //         return "";
-        //     }
-        // },
-        // 添加是否被占的状态
-        // checkLock(tableData) {
-        //     // CheckADS
-        //     // uid         int【必填】         当前账户UserID
-        //     // asid        int【必填】         投放广告点位状态查询
-        //     let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-        //     for (let i = 0; i < tableData.length; i++) {
-        //         tableData[i].lState = 0;
-        //         this.$set(tableData[i], "lState", 0);
-        //         api
-        //             .getApi("/CheckADS", { uid: uid, asid: tableData[i].asID })
-        //             .then(res => {
-        //                 console.log(res);
-        //                 if (res.data.length) {
-        //                     // tableData[i].lState = 1;
-        //                     this.$set(tableData[i], "lState", 1);
-        //                 }
-        //                 if (i >= tableData.length - 1) {
-        //                     console.log("tableData------------", tableData);
-        //                     this.setpointArr = tableData;
-        //                 }
-        //                 // console.log(data);
-        //             })
-        //             .catch(res => {
-        //                 console.log(res);
-        //             });
-        //     }
-        // },
+        // tab点击
+        handleClick() {
+            if (this.planPanel == "first") {
+                this.getSetPoint();
+            }
+            if (this.planPanel == "second") {
+                this.getPriceData();
+            }
+            if (this.planPanel == "third") {
+                // 物料信息
+                this.getMaterialInfo(this.copyAsidArr);
+            }
+        },
         // 去重城市
         filter(val) {
             let res = "";
@@ -382,31 +367,6 @@ export default {
         },
         // 获取选点排期列表数据
         getInitData() {
-            // 测试数据
-            // let plan = {
-            // 	realName: "黄启炜",
-            // 	apState: 1,
-            // 	rIDs: "广州市,北京市,重庆市",
-            // 	cName: "新光百货",
-            // 	apID: 1,
-            // 	apcTime: "May 9, 2018 6:29:47 PM",
-            // 	cuName: "赵爽",
-            // 	bTitle: "新光百货",
-            // 	apTotal: 465200,
-            // 	apName: "第一个投放方案",
-            // 	apQC: "QC201803284401001",
-            // 	pdTotal: 0,
-            // 	pdSendFee: 0,
-            // 	pdOtherFee: 0
-            // };
-            // plan.apTotal = this.priceFormat(plan.apTotal);
-            // plan.apcTime = dateFormat.toDateTime(plan.apcTime);
-            // this.planDetail = plan;
-            // console.log(
-            //     "time",
-            //     dateFormat.toDateTime("Jun 6, 2018 6:31:59 PM")
-            // );
-
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -441,6 +401,9 @@ export default {
         },
         // 获取选点排期
         getSetPoint() {
+            if(this.setpointArr.length){
+                return;
+            }
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -448,7 +411,6 @@ export default {
                 uid: uid,
                 apid: apid
             };
-            console.log("apState------------", this.planDetail.apState);
             if (this.planDetail.apState == 0 || this.planDetail.apState == 1) {
                 // uid         int【必填】     当前账户UserID
                 // apid        int             公司对应方案apID
@@ -460,16 +422,8 @@ export default {
                             let resInfo = res.data;
                             // 城市中文名称
                             for (let data of resInfo) {
-                                // this.$set(
-                                //     data,
-                                //     "city",
-                                //     areaToText.toTextCity(data.rID)
-                                // );
                                 data.city = areaToText.toTextCity(data.rID);
-                                let time =
-                                    this.formatTime(data.pbStar) +
-                                    "-" +
-                                    this.formatTime(data.pbEnd);
+                                let time = this.formatTime(data.pbStar) + "-" + this.formatTime(data.pbEnd);
                                 this.$set(data, "timeRange", time);
                             }
                             // 城市筛选过滤
@@ -477,11 +431,9 @@ export default {
                             this.filtersArea = filterFormat(resInfo, "rName");
                             this.filtersData = filterFormat(resInfo, "timeRange");
                             // 选点排期
-                            // this.checkLock(resInfo);
-                            // 选点排期
                             this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
                             this.setpointArr = resInfo;
-                            this.currentSetpoint = this.setpointArr;
+                            // this.currentSetpoint = this.setpointArr;
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
@@ -525,7 +477,7 @@ export default {
                                 JSON.stringify(result)
                             );
                             this.setpointArr = result;
-                            this.currentSetpoint = this.setpointArr;
+                            // this.currentSetpoint = this.setpointArr;
                             this.loading = false;
                             // 报价单
                             this.getPriceData();
@@ -541,8 +493,17 @@ export default {
                     });
             }
         },
+        dayToweeks(days){
+            return dayToWeek.toWeeks(days)
+        },
+        dateToDays(start, end){
+            return dayToWeek.toDays(start, end);
+        },
         // 获取三个费用价格(报价单)
         getPriceData() {
+            if(this.priceSheet.length){
+                return;
+            }
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -603,11 +564,7 @@ export default {
                                         allprice: 0,
                                         pdRemark: price.pdRemark
                                     };
-                                    obj.allprice =
-                                        (price.pdTotal +
-                                            price.pdSendFee +
-                                            price.pdOtherFee) /
-                                        100;
+                                    obj.allprice = (price.pdTotal + price.pdSendFee + price.pdOtherFee) / 100;
                                     obj.city = areaToText.toTextCity(obj.rID);
                                     city = obj.city+','+city;
                                     arr.push(obj);
@@ -624,41 +581,19 @@ export default {
                                         if (ad.rID == ta.rID) {
                                             ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
                                             let onedayPrice = ta.adPrice / 7;
-                                            let discount =
-                                                Math.round(
-                                                    ta.pdAdFee /
-                                                        (onedayPrice *
-                                                            ta.pdDays) *
-                                                        10000
-                                                ) / 100;
-                                            let ADMakeDiscount =
-                                                Math.round(
-                                                    ta.pdAdMake /
-                                                        (100 * ta.pdNum) *
-                                                        10000
-                                                ) / 100;
-                                            ta.discount = isNaN(discount)
-                                                ? 0
-                                                : discount; // 广告费折扣百分比
-                                            ta.ADMakeDiscount = isNaN(
-                                                ADMakeDiscount
-                                            )
-                                                ? 0
-                                                : ADMakeDiscount; // 制作费折扣百分比
+                                            let discount = Math.round(ta.pdAdFee /(onedayPrice *ta.pdDays) *10000) / 100;
+                                            let ADMakeDiscount =Math.round(ta.pdAdMake /(100 * ta.pdNum) *10000) / 100;
+                                            ta.discount = isNaN(discount)? 0: discount; // 广告费折扣百分比
+                                            ta.ADMakeDiscount = isNaN(ADMakeDiscount)? 0: ADMakeDiscount; // 制作费折扣百分比
                                             break;
                                         }
                                     }
                                 }
 
                                 // 整合排期信息
-                                let asidRes = this.getSchedules(
-                                    this.copyAsidArr
-                                );
+                                let asidRes = this.getSchedules(this.copyAsidArr);
                                 // 整合排期信息并且渲染页面
-                                this.priceSheet = this.setSchedules(
-                                    arr,
-                                    asidRes
-                                );
+                                this.priceSheet = this.setSchedules(arr, asidRes);
                                 this.priceSheet = arr;
                             } else if(res.data.SysCode == 100302){
                                 this.loginTimeout();
@@ -683,23 +618,30 @@ export default {
                     let dataRID = asid.rID.toString().substring(0, 4);
                     let ds = dateFormat.toDate(asid.ds, ".");
                     let de = dateFormat.toDate(asid.de, ".");
+                    let days = this.dateToDays(ds, de);
+                    let weekDay = this.dayToweeks(days);
+                    let weekDays = '';
+                    if(days < 7){
+                        weekDays = weekDay.day+'天';
+                    }else if((weekDay.day ==0) && (weekDay.week != 0)){
+                        weekDays = weekDay.week+'周';
+                    }else{
+                        weekDays = weekDay.week +'周'+weekDay.day+'天';
+                    }
                     if (arrDataRID == dataRID) {
                         if (schedules == "") {
-                            schedules = ds + "-" + de + "(" + asid.mNum + "面)";
+                            schedules = ds + "-" + de + "("+ weekDays+',共'+ asid.mNum + "面)";
                         } else {
-                            schedules = schedules + " " + ds + "-" + de + "(" + asid.mNum +"面)";
+                            schedules = schedules +" " + ds + "-" + de +"("+ weekDays+',共'+ asid.mNum + "面)";
                         }
                     }
                 }
-                console.log("schedules----------", schedules);
                 arrData.schedules = schedules;
             }
-            console.log("arrschedules--------------", arr);
             return arr;
         },
         // 获取过滤选点排期以便在报价单一栏显示排期信息
         getSchedules(asidArr) {
-            console.log("asidArr=========", asidArr);
             // 组装数据
             let result = [];
             if (!result.length) {
@@ -763,10 +705,49 @@ export default {
                 }
                 res.asidlist = asIDs;
                 res.mNum = mNum;
-
-                console.log("asidS", asIDs);
             }
-            console.log("result-------------", result);
+            return result;
+        },
+        // 组装成物料信息数据
+        getMaterialInfo(info) {
+            if (this.materialInfo.length) {
+                return;
+            }
+            let result = [];
+            for (let data of info) {
+                let door = 1;
+                for (let res of result) {
+                    if (
+                        res.adSize == data.adSize &&
+                        res.adViewSize == data.adViewSize
+                    ) {
+                        door = 0;
+                    }
+                }
+                if (door) {
+                    result.push(data);
+                }
+            }
+            for (let res of result) {
+                let pointNum = 0;
+                for (let init of info) {
+                    if (
+                        res.adSize == init.adSize &&
+                        res.adViewSize == init.adViewSize
+                    ) {
+                        if (pointNum == 0) {
+                            pointNum = 1;
+                        } else {
+                            pointNum++;
+                        }
+                    }
+                }
+                res.pointNum = pointNum;
+                res.resolution = "150dpi";
+                res.colorMode = "CMYK";
+                res.photoFormat = "JPG/TIF/AI/PSD/CDR";
+            }
+            this.materialInfo = result;
             return result;
         },
         // 城市转换为中文
@@ -801,6 +782,24 @@ export default {
         goBack() {
             this.$router.push("./planList");
         },
+        // 弹出框修改路径
+        changeRoute(){
+            MessageBox.confirm(
+                `该方案被预锁,请先解除预锁,是否去解锁？`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }
+            )
+                .then(() => {
+                    this.$router.push("./planList");
+                })
+                .catch(() => {
+                    Message.info("已取消操作");
+                });
+        },
         // 编辑
         edit() {
             let priceSheet = this.priceSheet;
@@ -822,24 +821,8 @@ export default {
                         if (sumNotLock >= priceSheet.length) {
                             this.$router.push("./editPlan");
                         } else {
-                            if (i >= priceSheet.length - 1) {
-                                if(sumLock){
-                                    MessageBox.confirm(
-                                        `该方案被预锁,请先解除预锁,是否去解锁？`,
-                                        "提示",
-                                        {
-                                            confirmButtonText: "确定",
-                                            cancelButtonText: "取消",
-                                            type: "warning"
-                                        }
-                                    )
-                                        .then(() => {
-                                            this.$router.push("./planList");
-                                        })
-                                        .catch(() => {
-                                            Message.info("已取消操作");
-                                        });
-                                }
+                            if(sumLock && sumLock+sumNotLock == priceSheet.length){
+                                this.changeRoute();
                             }
                         }
                     })

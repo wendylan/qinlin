@@ -38,7 +38,7 @@ export default {
                     classPar: "order_box",
                     class: "order"
                 }
-            ]
+            ],
         };
     },
     components: {

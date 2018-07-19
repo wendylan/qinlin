@@ -137,25 +137,7 @@ export default {
                 division: "",
                 email: ""
             },
-            throwCity: [
-                /* {
-				value: '0',
-				label: '全国'
-				},
-				{
-				value: '440100',
-				label: '广州'
-					}, {
-				value: '310100',
-				label: '上海'
-					}, {
-				value: '110100',
-				label: '北京'
-					}, {
-				value: '440300',
-				label: '深圳'
-					}*/
-            ],
+            throwCity: [],
             accountRules: {
                 account: [
                     {

@@ -338,99 +338,10 @@ export default {
         addOne() {
             this.$router.push("./createPlan");
         },
-        // 当搜索框为空的时候进行重置显示
-        initData() {
-            if (!this.rangeDate && !this.keyword) {
-                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
-            }
-        },
-        // 搜索方案
-        search() {
-            let range = this.rangeDate;
-            let arr = [];
-            let select = this.select;
-            let keyword = this.keyword;
-            console.log(select, range);
-            if (range || this.keyword) {
-                for (let data of this.planList) {
-                    if (range && keyword) {
-                        if (
-                            dateFormat.toDate(data.apcTime) >= range[0] &&
-                            dateFormat.toDate(data.apcTime) <= range[1]
-                        ) {
-                            if (data.apName) {
-                                if (
-                                    select == "1" &&
-                                    data.apName.includes(keyword)
-                                ) {
-                                    arr.push(data);
-                                }
-                            }
-                            if (data.cName) {
-                                if (
-                                    select == "2" &&
-                                    data.cName.includes(keyword)
-                                ) {
-                                    arr.push(data);
-                                }
-                            }
-                            if (data.bTitle) {
-                                if (
-                                    select == "3" &&
-                                    data.bTitle.includes(keyword)
-                                ) {
-                                    arr.push(data);
-                                }
-                            }
-                        }
-                    } else if (range) {
-                        if (
-                            dateFormat.toDate(data.apcTime) >= range[0] &&
-                            dateFormat.toDate(data.apcTime) <= range[1]
-                        ) {
-                            arr.push(data);
-                        }
-                    } else if (keyword) {
-                        if (data.apName) {
-                            if (
-                                select == "1" &&
-                                data.apName.includes(keyword)
-                            ) {
-                                arr.push(data);
-                            }
-                        }
-                        if (data.cName) {
-                            if (select == "2" && data.cName.includes(keyword)) {
-                                arr.push(data);
-                            }
-                        }
-                        if (data.bTitle) {
-                            if (
-                                select == "3" &&
-                                data.bTitle.includes(keyword)
-                            ) {
-                                arr.push(data);
-                            }
-                        }
-                    }
-                }
-                this.currentPlan = arr;
-                if (!arr.length) {
-                    Message.warning({
-                        message: "查询数据为空",
-                        duration: 1500
-                    });
-                }
-                // console.log(arr);
-                return;
-            }
-            this.currentPlan = JSON.parse(JSON.stringify(this.planList));
-        },
         //筛选
         filterStatus(value, row) {
             //不匹配的数据
             let sum = 0;
-
             for (let data of this.planList) {
                 if (data.apState != value) {
                     sum++;
@@ -479,7 +390,6 @@ export default {
                     rIDArr = rIDArr.substring(0, rIDArr.length-1).split(',').sort(function(a, b){
                         return a-b;
                     }).join(',');
-                    console.log('rIDArr----------', rIDArr);
                     if(uWhoArr == '0'){
                         isRelease = true;
                     }else{
@@ -487,12 +397,9 @@ export default {
                         uWhoArr = uWhoArr.split(',').sort(function(a, b){
                             return a-b;
                         }).join(',');
-                        console.log('uWhoArr-------------', uWhoArr);
                         if(uWhoArr.includes(rIDArr)){
-                            console.log('uWhoArr-------------', uWhoArr);
                             isRelease = true;
                         }
-                        console.log('isrelease-----------', isRelease);
                     }
                     if(isRelease){
                         // uid         int【必填】     当前账户UserID
@@ -504,7 +411,6 @@ export default {
                                 if (!res.data.SysCode) {
                                     let text = res.data;
                                     let QCinfo = this.getContractNo(text.rID);
-                                    console.log(QCinfo);
                                     MessageBox.prompt("合同编号:", {
                                         confirmButtonText: "是",
                                         cancelButtonText: "否",
@@ -513,8 +419,6 @@ export default {
                                         inputValue: QCinfo
                                     })
                                         .then(() => {
-                                            console.log("rowData-----------", row);
-                                            console.log("row.cityarea", row.cityArea);
                                             let sumNotLock = 0;
                                             let sumLock = 0;
                                             let cityContent = row.cityArea;
@@ -533,44 +437,16 @@ export default {
                                                         if (
                                                             sumNotLock >= cityContent.length
                                                         ) {
-                                                            // this.Ctrlloading = Loading.service(
-                                                            //     {
-                                                            //         text: "请耐心等待...",
-                                                            //         spinner:
-                                                            //             "el-icon-loading",
-                                                            //         background:
-                                                            //             "rgba(0, 0, 0, 0.7)"
-                                                            //     }
-                                                            // );
                                                             // 保存合同编号
                                                             this.saveContractNo(QCinfo);
                                                             // 组合数据并发布
                                                             this.getDataOfSetPrice(info,"R");
                                                             
                                                         } else {
-                                                            if (i >= cityContent.length - 1) {
-                                                                if(sumLock){
-                                                                    Message.warning("该方案被预锁,请先解除预锁");
-                                                                }
+                                                            if(sumLock && sumLock+sumNotLock == cityContent.length){
+                                                                Message.warning("该方案被预锁,请先解除预锁");
                                                             }
                                                         }
-
-                                                        // if (i >= cityContent.length - 1) {
-                                                        //     if (sumLock) {
-                                                        //         Message.warning(
-                                                        //             "该方案被预锁,请先解除预锁"
-                                                        //         );
-                                                        //     } else {
-                                                        //         this.Ctrlloading = Loading.service({ text: '请耐心等待...',spinner: 'el-icon-loading',background: 'rgba(0, 0, 0, 0.7)'});
-                                                        //         // 保存合同编号
-                                                        //         this.saveContractNo(QCinfo);
-                                                        //         // 组合数据并发布
-                                                        //         this.getDataOfSetPrice(
-                                                        //             info,
-                                                        //             "R"
-                                                        //         );
-                                                        //     }
-                                                        // }
                                                     })
                                                     .catch(res => {
                                                         console.log(res);
@@ -641,23 +517,7 @@ export default {
                     }
                 }else if(res.data.length){
                     // 存在点位被占，是否立即去方案详情修改？
-                    MessageBox.confirm(
-                        `存在点位被占，是否修改方案？`,
-                        "提示",
-                        {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning"
-                        }
-                    )
-                        .then(() => {
-                            this.ToEdit(this.Info.apid);
-                            this.Ctrlloading.close();
-                        })
-                        .catch(() => {
-                            Message.info("已取消操作");
-                            this.Ctrlloading.close();
-                        });
+                     this.changeRoute();
                 }
             }).catch(res =>{
                 console.log(res);
@@ -831,139 +691,18 @@ export default {
                     }
                     console.log('holdsum----------',holdSum);
                     if(holdNoSum >= arr.length){
-                        // uid         int【必填】         当前账户UserID
-                        // act         String【必填】      事务类型：L锁点；R发布
-                        // pdid        int【必填】         选择方案投放pdID
-                        // ds          String【必填】      广告开始投放日期
-                        // de          String【必填】      广告投放结束日期
-                        // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
-                        // 发布接口
+                        // 发布
                         if(act == 'R'){
                             this.releaseFangan(this.Info);
                         }else{
                             this.SetLock(citySelect);
                         }
-                        // for (let i = 0; i < arr.length; i++) {
-                        //     api
-                        //         .postApi("/CtrlFangan", arr[i])
-                        //         .then(res => {
-                        //             console.log(res.data);
-                        //             Message.success(res.data.MSG);
-                        //             if (act == "R") {
-                        //                 if (i >= arr.length - 1) {
-                        //                     for (let data of this
-                        //                         .planList) {
-                        //                         if (
-                        //                             data.apID ==
-                        //                             this.Info.apid
-                        //                         ) {
-                        //                             this.$set(
-                        //                                 data,
-                        //                                 "apState",
-                        //                                 2
-                        //                             );
-                        //                             break;
-                        //                         }
-                        //                     }
-                        //                 }
-                        //             }
-                        //             this.Ctrlloading.close();
-                        //         })
-                        //         .catch(res => {
-                        //             console.log(res);
-                        //             this.Ctrlloading.close();
-                        //         });
-                        // }
                     }else{
-                        console.log(holdSum, (holdSum+ holdNoSum== arr.length));
-                        console.log(i, holdSum, holdNoSum);
                         if (holdSum && (holdSum+ holdNoSum == arr.length)) {
-                            // if (i >= arr.length - 1) {
-                                // 存在点位被占，是否立即去方案详情修改？
-                                MessageBox.confirm(
-                                    `存在点位被占，是否修改方案？`,
-                                    "提示",
-                                    {
-                                        confirmButtonText: "确定",
-                                        cancelButtonText: "取消",
-                                        type: "warning"
-                                    }
-                                )
-                                    .then(() => {
-                                        this.ToEdit(this.Info.apid);
-                                        this.Ctrlloading.close();
-                                    })
-                                    .catch(() => {
-                                        Message.info("已取消操作");
-                                        this.Ctrlloading.close();
-                                    });
-                            // }
-                        }else{
-                            console.log('i------', i, holdSum, holdNoSum);
+                            // 存在点位被占，是否立即去方案详情修改？
+                            this.changeRoute();
                         }
                     }
-
-                    // if (i >= arr.length - 1) {
-                    //     if (holdSum) {
-                    //         // 存在点位被占，是否立即去方案详情修改？
-                    //         MessageBox.confirm(
-                    //             `存在点位被占，是否修改方案？`,
-                    //             "提示",
-                    //             {
-                    //                 confirmButtonText: "确定",
-                    //                 cancelButtonText: "取消",
-                    //                 type: "warning"
-                    //             }
-                    //         )
-                    //             .then(() => {
-                    //                 this.ToEdit(this.Info.apid);
-                    //                 this.Ctrlloading.close();
-                    //             })
-                    //             .catch(() => {
-                    //                 Message.info("已取消操作");
-                    //                 this.Ctrlloading.close();
-                    //             });
-                    //     } else {
-                    //         // uid         int【必填】         当前账户UserID
-                    //         // act         String【必填】      事务类型：L锁点；R发布
-                    //         // pdid        int【必填】         选择方案投放pdID
-                    //         // ds          String【必填】      广告开始投放日期
-                    //         // de          String【必填】      广告投放结束日期
-                    //         // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
-                    //         // 发布接口
-                    //         for (let i = 0; i < arr.length; i++) {
-                    //             api
-                    //                 .postApi("/CtrlFangan", arr[i])
-                    //                 .then(res => {
-                    //                     console.log(res.data);
-                    //                     Message.success(res.data.MSG);
-                    //                     if (act == "R") {
-                    //                         if (i >= arr.length - 1) {
-                    //                             for (let data of this
-                    //                                 .planList) {
-                    //                                 if (
-                    //                                     data.apID ==
-                    //                                     this.Info.apid
-                    //                                 ) {
-                    //                                     this.$set(
-                    //                                         data,
-                    //                                         "apState",
-                    //                                         2
-                    //                                     );
-                    //                                     break;
-                    //                                 }
-                    //                             }
-                    //                             this.Ctrlloading.close();
-                    //                         }
-                    //                     }
-                    //                 })
-                    //                 .catch(res => {
-                    //                     console.log(res);
-                    //                     this.Ctrlloading.close();
-                    //                 });
-                    //         }
-                    //     }
-                    // }
                 });
             }
         },
@@ -1182,6 +921,114 @@ export default {
                     this.Ctrlloading.close();
                 });
             }
+        },
+        // 弹出框修改路径
+        changeRoute(){
+            MessageBox.confirm(
+                `存在点位被占，是否修改方案？`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }
+            )
+                .then(() => {
+                    this.ToEdit(this.Info.apid);
+                    this.Ctrlloading.close();
+                })
+                .catch(() => {
+                    Message.info("已取消操作");
+                    this.Ctrlloading.close();
+                });
+        },
+        // 当搜索框为空的时候进行重置显示
+        initData() {
+            if (!this.rangeDate && !this.keyword) {
+                this.currentPlan = JSON.parse(JSON.stringify(this.planList));
+            }
+        },
+        // 搜索方案
+        search() {
+            let range = this.rangeDate;
+            let arr = [];
+            let select = this.select;
+            let keyword = this.keyword;
+            console.log(select, range);
+            if (range || this.keyword) {
+                for (let data of this.planList) {
+                    if (range && keyword) {
+                        if (
+                            dateFormat.toDate(data.apcTime) >= range[0] &&
+                            dateFormat.toDate(data.apcTime) <= range[1]
+                        ) {
+                            if (data.apName) {
+                                if (
+                                    select == "1" &&
+                                    data.apName.includes(keyword)
+                                ) {
+                                    arr.push(data);
+                                }
+                            }
+                            if (data.cName) {
+                                if (
+                                    select == "2" &&
+                                    data.cName.includes(keyword)
+                                ) {
+                                    arr.push(data);
+                                }
+                            }
+                            if (data.bTitle) {
+                                if (
+                                    select == "3" &&
+                                    data.bTitle.includes(keyword)
+                                ) {
+                                    arr.push(data);
+                                }
+                            }
+                        }
+                    } else if (range) {
+                        if (
+                            dateFormat.toDate(data.apcTime) >= range[0] &&
+                            dateFormat.toDate(data.apcTime) <= range[1]
+                        ) {
+                            arr.push(data);
+                        }
+                    } else if (keyword) {
+                        if (data.apName) {
+                            if (
+                                select == "1" &&
+                                data.apName.includes(keyword)
+                            ) {
+                                arr.push(data);
+                            }
+                        }
+                        if (data.cName) {
+                            if (select == "2" && data.cName.includes(keyword)) {
+                                arr.push(data);
+                            }
+                        }
+                        if (data.bTitle) {
+                            if (
+                                select == "3" &&
+                                data.bTitle.includes(keyword)
+                            ) {
+                                arr.push(data);
+                            }
+                        }
+                    }
+                }
+                this.currentPlan = arr;
+                if (!arr.length) {
+                    Message.warning({
+                        message: "查询数据为空",
+                        duration: 1500
+                    });
+                }
+                // console.log(arr);
+                return;
+            }
+            this.currentPlan = JSON.parse(JSON.stringify(this.planList));
         },
         loginTimeout(){
             Message.warning("登录超时,请重新登录");

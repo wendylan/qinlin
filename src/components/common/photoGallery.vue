@@ -100,7 +100,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
 											</el-pagination> -->
-                                            <el-pagination small background :current-page="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                            <el-pagination small background :current-page.sync="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -163,7 +163,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
 											</el-pagination> -->
-                                            <el-pagination small background :current-page="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                            <el-pagination small background :current-page.sync="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
                                             </el-pagination> -->
-                                            <el-pagination small background :current-page="currInstallPage" :page-sizes="[10, 20]" :page-size="pageInstallSize" layout="sizes, prev, pager, next, jumper" :total="currInstallImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                            <el-pagination small background :current-page.sync="currInstallPage" :page-sizes="[10, 20]" :page-size="pageInstallSize" layout="sizes, prev, pager, next, jumper" :total="currInstallImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -290,7 +290,7 @@
                                         <div class="pager">
                                             <!-- <el-pagination small background :current-page="1" :page-sizes="[10, 20]" :page-size="10" layout=" sizes, prev, pager, next, jumper" :total="60">
                                             </el-pagination> -->
-                                            <el-pagination small background :current-page="currSearchPage" :page-sizes="[10, 20]" :page-size="pageSearchSize" layout="sizes, prev, pager, next, jumper" :total="currSearchImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                            <el-pagination small background :current-page.sync="currSearchPage" :page-sizes="[10, 20]" :page-size="pageSearchSize" layout="sizes, prev, pager, next, jumper" :total="currSearchImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -602,21 +602,21 @@ export default {
             if(this.activeName == 'first'){
                 pageSize = this.pageUpSize;
                 // arr = this.upImgArr;
-                // this.currUpPage = page;
+                this.currUpPage = page;
                 arr = this.currUpImgArr;
             }else if(this.activeName == 'second'){
                 pageSize = this.pageDownSize;
-                // this.currDownPage = page;
+                this.currDownPage = page;
                 // arr = this.downImgArr;
                 arr = this.currDownImgArr;
             }else if(this.activeName == 'third'){
                 pageSize = this.pageInstallSize;
-                // this.currInstallPage = page;
+                this.currInstallPage = page;
                 // arr = this.installArr;
                 arr = this.currInstallImgArr;
             }else{
                 pageSize = this.pageSearchSize;
-                // this.currSearchPage = page;
+                this.currSearchPage = page;
                 // arr = this.searchAreaArr;
                 arr = this.currSearchImgArr;
             }
@@ -828,8 +828,7 @@ export default {
                         children: []
                     };
                     if (
-                        JSON.stringify(cityArr).indexOf(JSON.stringify(obj)) ===
-                        -1
+                        JSON.stringify(cityArr).indexOf(JSON.stringify(obj)) === -1
                     ) {
                         cityArr.push(obj);
                     }
@@ -845,9 +844,7 @@ export default {
                         if (data.pAlt.city == item.value) {
                             // 去重
                             if (
-                                JSON.stringify(item.children).indexOf(
-                                    JSON.stringify(areaObj)
-                                ) === -1
+                                JSON.stringify(item.children).indexOf(JSON.stringify(areaObj)) === -1
                             ) {
                                 item.children.push(areaObj);
                             }

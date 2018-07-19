@@ -719,15 +719,15 @@ export default {
             for (let i = LevelIndex; i < LevelList.length; i++) {
                 LevelArr.push(LevelList[i]);
                 if (
-                    i >= LevelIndex + 100 &&
-                    LevelList.length > 100 + LevelIndex
+                    i >= LevelIndex + 49 &&
+                    LevelList.length > 49 + LevelIndex
                 ) {
                     console.log("LevelArr", LevelArr);
                     for (let j = 0; j < LevelArr.length; j++) {
                         this.planList.push(LevelArr[j]);
                     }
                     console.log("planList", this.planList);
-                    this.firstLevelList = i;
+                    this.firstLevelListIndex = i;
                     break;
                 } else {
                     if (i >= LevelList.length - 1) {
@@ -735,7 +735,7 @@ export default {
                         let c = this.planList.concat(LevelArr);
                         this.planList = c;
                         console.log("planList", this.planList);
-                        this.firstLevelList = i;
+                        this.firstLevelListIndex = i;
                     }
                 }
             }

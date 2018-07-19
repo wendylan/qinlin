@@ -253,6 +253,7 @@
 									<div class="car-title">
 										<h4>已选{{shopMedia_ADNum.mediaNum}}个媒体
 											<p>投放{{shopMedia_ADNum.ADNum}}面</p>
+											<p>其中有{{ADLockNum}}个被占点位</p>
 											<span @click="clearShop" style="cursor: pointer">清空已选</span>
 											<span @click="clearADLock" style="cursor: pointer">移除被占点位</span>
 										</h4>
@@ -835,7 +836,8 @@ export default {
             totalChangeOther: true, // 修改制作费其他费用输入验证
             commentMediaADNum: [], // 统计同一城市相同因不同排期而选择相同的asid
             editApid: "", // 编辑方案的id
-            editApRemark: [] // 编辑方案之前的备注信息，[{rid:440100,remark:''}]
+            editApRemark: [], // 编辑方案之前的备注信息，[{rid:440100,remark:''}]
+            ADLockNum: 0
         };
     },
     mounted() {
@@ -909,67 +911,10 @@ export default {
         // step1投放城市权限是全国时handleClose1、showInput、handleInputConfirm
         spliceCity(tag) {
             // step1方案创建,删除选择城市
-            /*  this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-        let city_arr = this.cityOptions
-        for (let i = 0; i < city_arr.length; i++) {       // 遍历城市查找城市名对应的rid，用于删除勾选的城市
-          for (let j = 0; j < city_arr[i].children.length; j++) {
-            if (city_arr[i].children[j].label === tag) {
-              let city_rid = city_arr[i].children[j].value
-              for (let n = 0; n < this.planForm.throwCity.length; n++) {
-                if (city_rid === this.planForm.throwCity[n]) {
-                  for (let t = 0; t < this.throwCity.length; t++) {
-                    if (city_rid === this.throwCity[t].value) {
-                      this.throwCity.splice(t, 1)
-                    }
-                  }
-                  this.planForm.throwCity.splice(n, 1)
-                }
-              }
-            }
-          }
-        }*/
         },
-        showInput() {
-            /* this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });*/
-        },
+        showInput() {},
         // 选择投放城市
-        handleInputConfirm() {
-            /*   let inputValue = this.selectedOptions;
-        // console.log('********',inputValue)
-        if (inputValue) {
-          let cityArr = this.cityOptions
-          for (let i = 0; i < cityArr.length; i++) {
-            if (cityArr[i].value == inputValue[0]) {
-              let childArr = cityArr[i].children
-              for (let j = 0; j < childArr.length; j++) {
-                if (childArr[j].value == inputValue[1]) {
-                  if (this.dynamicTags.indexOf(childArr[j].label) === -1) {
-                    this.dynamicTags.push(childArr[j].label);
-                    this.planForm.throwCity.push(inputValue[1])
-                    let cityObj = {
-                      label: childArr[j].label,
-                      value: inputValue[1],
-                    }
-                    this.throwCity.push(cityObj)
-                    this.inputVisible = false;
-                    this.selectedOptions = [];
-                    break
-                  } else {
-                    Message({
-                      message: '不可以选择重复的城市！',
-                      type: 'warning'
-                    })
-                  }
-                }
-              }
-              break
-            }
-          }
-        }*/
-        },
+        handleInputConfirm() {},
         // 获取浏览器session数据
         getsessionData() {
             this.sessionData = JSON.parse(
@@ -2084,15 +2029,24 @@ export default {
         // 行选中打钩
         handleSelect(selection, row) {
             if (!row.checkBox.B && !row.checkBox.A) {
-                if (!row.box.A) {
+                if (!row.box.A && row.box.B) {
                     row.checkBox.A = true;
-                    this.shopShow_hide(); // 动画效果
-                    this.AddShopingInfo(row); // 添加到购物车
                 } else if (!row.box.B && row.box.A) {
                     row.checkBox.B = true;
-                    this.shopShow_hide(); // 动画效果
-                    this.AddShopingInfo(row); // 添加到购物车
+                } else {
+                    // 前提条件AB都可选
+                    // Math.floor(Math.random()*2 + 1)
+                    let num = Math.floor(Math.random() * 10); // 0-9
+                    console.log("随机生成的数字", num);
+                    if (num % 2) {
+                        // 偶数勾选A,奇数勾选B
+                        row.checkBox.A = true;
+                    } else {
+                        row.checkBox.B = true;
+                    }
                 }
+                this.shopShow_hide(); // 动画效果
+                this.AddShopingInfo(row); // 添加到购物车
             } else if (row.checkBox.A || row.checkBox.B) {
                 if (row.checkBox.A && row.checkBox.B) {
                     this.badgeNumber -= 2;
@@ -2739,18 +2693,38 @@ export default {
                 let SM = "";
                 for (let n = 0; n < this.CSMList.length; n++) {
                     if (this.CSMList[n].city === this.quotation[m].city) {
+                        let schedulesList = this.CSMList[n].schedules.split(
+                            "-"
+                        );
+                        let dayNum =
+                            this.DateDiff(schedulesList[0], schedulesList[1]) +
+                            1;
+                        console.log(schedulesList, "排期天数", dayNum);
+                        let weekAndDay = "";
+                        if (dayNum < 7) {
+                            weekAndDay = dayNum + "天";
+                        } else if (dayNum % 7 === 0 && dayNum > 7) {
+                            weekAndDay = dayNum / 7 + "周";
+                        } else {
+                            weekAndDay =
+                                parseInt(dayNum / 7) + "周" + dayNum % 7 + "天";
+                        }
                         if (SM === "" || SM === null || SM === undefined) {
                             SM =
                                 this.CSMList[n].schedules +
                                 "(" +
+                                weekAndDay +
+                                "," +
                                 this.CSMList[n].mNum +
-                                "面)";
+                                "面) ";
                         } else {
                             SM +=
                                 this.CSMList[n].schedules +
                                 "(" +
+                                weekAndDay +
+                                "," +
                                 this.CSMList[n].mNum +
-                                "面)";
+                                "面) ";
                         }
                     }
                 }
@@ -3006,6 +2980,9 @@ export default {
         },
         // 取消全选时的购物车删除
         selectAlldelRow(rows) {
+            if (this.ADLockNum > 0) {
+                this.ADLockNum -= 1;
+            }
             for (let j = 0; j < this.shopingList.length; j++) {
                 if (
                     this.shopingList[j].mID === rows.mID &&
@@ -3672,6 +3649,7 @@ export default {
                         message: "取消成功"
                     });
                 });
+            this.ADLockNum = 0;
             this.resetPlanList();
         },
         // 统计购物车媒体数、面数
@@ -3965,6 +3943,8 @@ export default {
             // ds          String【必填】      广告开始投放日期
             // de          String【必填】      广告投放结束日期
             // asidlist    String【必填】      选择的广告点位asID组合，以","逗号组合
+            //this.ADLockNum = 0
+            let LockNum = 0;
             let resultArr = this.constructData(tableData);
             console.log("resultArr ------------", resultArr);
             let holdArr = [];
@@ -3984,6 +3964,7 @@ export default {
                             for (let data of holdArr) {
                                 if (data.asID == tab.asID) {
                                     this.$set(tab, "lState", 1);
+                                    LockNum += 1;
                                 }
                             }
                             if (tab.lState) {
@@ -3995,6 +3976,7 @@ export default {
                         tableData = hightArr.concat(lowArr);
                         console.log("tableData------------", tableData);
 
+                        this.ADLockNum = LockNum; // 被占点位的个数
                         this.shopingList = tableData;
                         this.shopLoading = false;
                         this.computeMedia_AD(); // 统计购物车媒体数和面数

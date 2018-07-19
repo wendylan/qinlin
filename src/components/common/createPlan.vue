@@ -80,8 +80,12 @@
 									<el-input v-model="searchInput" placeholder="请输入要搜索的内容" class="searchInput input-with-select"></el-input>
 								</span>
 								<span>
-									<el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select input-with-select">
-										<el-option label="努力开发中,敬请期待" value="beijing"></el-option>
+									<!--  <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select input-with-select">
+                    <el-option label="努力开发中,敬请期待" value="beijing"></el-option>
+                  </el-select>-->
+									<el-select v-model="mState" placeholder="请选择媒体状态" class="plan-select input-with-select">
+										<el-option label="正常" value="1"></el-option>
+										<el-option label="待安装" value="2"></el-option>
 									</el-select>
 								</span>
 								<span>
@@ -206,8 +210,14 @@
 											<el-form-item label="资产编号：">
 												<span>{{ props.row.assetID }}</span>
 											</el-form-item>
+											<el-form-item label="广告尺寸：">
+												<span>{{ props.row.adSize }}</span>
+											</el-form-item>
 											<el-form-item :label="recType === 1? '入住年份:' : '建成年份:'">
 												<span>{{ props.row.liveYear }}</span>
+											</el-form-item>
+											<el-form-item :label="recType === 1? '小区户数:': '办公室数量:'">
+												<span>{{ props.row.houseNum }}</span>
 											</el-form-item>
 											<el-form-item label="广告限制：">
 												<span>{{ props.row.adLimit }}</span>
@@ -229,8 +239,15 @@
 								</el-table-column>
 								<el-table-column prop="buildType" :label="recType === 1? '楼盘类型':'写字楼类型'" min-width="8.8%">
 								</el-table-column>
-								<el-table-column prop="houseNum" :label="recType === 1? '小区户数': '办公室数量'" min-width="7.8%" class="tar">
+								<el-table-column prop="mState" label="媒体状态" min-width="7.8%" class="tar">
 								</el-table-column>
+								<!-- <el-table-column
+                  prop="houseNum"
+                  :label="recType === 1? '小区户数': '办公室数量'"
+                  min-width="7.8%"
+                  class="tar"
+                >
+                </el-table-column>-->
 								<el-table-column label="楼盘价格" min-width="7.8%">
 									<template slot-scope="scope">
 										<span>&yen;{{scope.row.buildPrice}}</span>
@@ -258,6 +275,7 @@
 										<h4>已选{{shopMedia_ADNum.mediaNum}}个媒体
 											<p>投放{{shopMedia_ADNum.ADNum}}面</p>
 											<span @click="clearShop" style="cursor: pointer">清空已选</span>
+											<span @click="getMapADList" style="cursor: pointer">获取地图选点</span>
 										</h4>
 									</div>
 									<el-table border :data="shopingList" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
@@ -685,6 +703,10 @@ export default {
                 {
                     value: "商圈",
                     label: "商圈"
+                },
+                {
+                    value: "资产编号",
+                    label: "资产编号"
                 }
             ],
             //默认
@@ -720,6 +742,7 @@ export default {
             //搜索框
             searchInput: "",
             planSelect: "",
+            mState: "", //媒体状态
             active: 0, //步骤
             dateInput: [], // 时间输入框
             beforeDate: [], // 时间输入框的前一次时间
@@ -1028,7 +1051,7 @@ export default {
                                 this.BDData.realName = res.data.realName;
                                 this.planForm.ownerSales = res.data.realName;
                                 this.BDuWho = res.data.uWho;
-
+                                // 重新输入账号时，初始化部分数据
                                 this.planForm.companyName = "";
                                 this.planForm.companyBrand = "";
                                 this.planForm.ownerBU = "";
@@ -1450,6 +1473,7 @@ export default {
                     this.city.sort(this.compareFun);
                     console.log("this.city ", this.city);
                     this.activeCityData = this.city[0]; // 设置初始选中城市信息
+                    this.activeRName = this.activeCityData.rName;
                     for (let n = 0; n < this.city.length; n++) {
                         let rid = this.city[n].rid;
                         console.log("投放城市rid", rid);
@@ -1552,34 +1576,36 @@ export default {
             let planArr = [];
             let rName = this.activeCityData.rName; //this.activeRName
             for (let i = 0; i < datalist.length; i++) {
-                let adObj = {
-                    rid: 0 + i.toString(),
-                    mID: datalist[i].mID,
-                    resType: datalist[i].resType,
-                    asIDs: datalist[i].asIDs,
-                    asLabs: datalist[i].asLabs,
-                    recName: datalist[i].resName,
-                    city: rName, //'广州',
-                    origin: datalist[i].rName,
-                    buildType: datalist[i].cType,
-                    houseNum: datalist[i].hNum,
-                    buildPrice: datalist[i].hPrice / 100,
-                    mediaName: datalist[i].mTitle,
-                    buildNum: datalist[i].fNum,
-                    schedules: this.dateInput[0] + "-" + this.dateInput[1],
-                    businessOrigin: datalist[i].tradingArea,
-                    assetID: datalist[i].assetTag,
-                    liveYear: datalist[i].chDay,
-                    adLimit: datalist[i].notPush,
-                    checkBox: { A: false, B: false },
-                    box: { A: false, B: false }
-                };
-                if (datalist[i].asLabs.indexOf("A") === -1) {
-                    adObj.box.A = true;
-                }
-                if (datalist[i].asLabs.indexOf("B") === -1) {
-                    adObj.box.B = true;
-                }
+                /*  let adObj = {
+            rid: 0 + i.toString(),
+            mID: datalist[i].mID,
+            resType: datalist[i].resType,
+            asIDs: datalist[i].asIDs,
+            asLabs: datalist[i].asLabs,
+            recName: datalist[i].resName,
+            city: rName, //'广州',
+            origin: datalist[i].rName,
+            buildType: datalist[i].cType,
+            houseNum: datalist[i].hNum,
+            buildPrice: (datalist[i].hPrice / 100),
+            mediaName: datalist[i].mTitle,
+            buildNum: datalist[i].fNum,
+            schedules: this.dateInput[0] + '-' + this.dateInput[1],
+            businessOrigin: datalist[i].tradingArea,
+            assetID: datalist[i].assetTag,
+            liveYear: datalist[i].chDay,
+            adLimit: datalist[i].notPush,
+            checkBox: {A: false, B: false},
+            box: {A: false, B: false},
+          }
+          if (datalist[i].asLabs.indexOf('A') === -1) {
+            adObj.box.A = true
+          }
+          if (datalist[i].asLabs.indexOf('B') === -1) {
+            adObj.box.B = true
+          }
+          planArr.push(adObj)*/
+                let adObj = this.setTeblePlanList(datalist[i], i);
                 planArr.push(adObj);
                 if (i >= datalist.length - 1) {
                     console.log("资源类型过滤完成后的planArr", planArr);
@@ -1602,6 +1628,11 @@ export default {
                     }
                 } else if (this.selectValue === "商圈") {
                     if (BPL[i].tradingArea.includes(this.searchInput)) {
+                        // console.log('商圈不为空')
+                        arr.push(BPL[i]);
+                    }
+                } else if (this.selectValue === "资产编号") {
+                    if (BPL[i].assetTag.includes(this.searchInput)) {
                         // console.log('商圈不为空')
                         arr.push(BPL[i]);
                     }
@@ -1894,34 +1925,36 @@ export default {
             let cityName = this.activeCityData.rName; //this.activeRName
             let FBAIndex = this.activeIndex;
             for (let n = 0; n < filterData.length; n++) {
-                let filterAD = {
-                    rid: FBAIndex + n.toString(),
-                    mID: filterData[n].mID,
-                    resType: filterData[n].resType,
-                    asIDs: filterData[n].asIDs,
-                    asLabs: filterData[n].asLabs,
-                    recName: filterData[n].resName,
-                    city: cityName, //'广州',
-                    origin: filterData[n].rName,
-                    buildType: filterData[n].cType,
-                    houseNum: filterData[n].hNum,
-                    buildPrice: filterData[n].hPrice / 100,
-                    mediaName: filterData[n].mTitle,
-                    buildNum: filterData[n].fNum,
-                    schedules: this.dateInput[0] + "-" + this.dateInput[1],
-                    businessOrigin: filterData[n].tradingArea,
-                    assetID: filterData[n].assetTag,
-                    liveYear: filterData[n].chDay,
-                    adLimit: filterData[n].notPush,
-                    checkBox: { A: false, B: false },
-                    box: { A: false, B: false }
-                };
-                if (filterData[n].asLabs.indexOf("A") === -1) {
-                    filterAD.box.A = true;
-                }
-                if (filterData[n].asLabs.indexOf("B") === -1) {
-                    filterAD.box.B = true;
-                }
+                /*  let filterAD = {
+            rid: FBAIndex + n.toString(),
+            mID: filterData[n].mID,
+            resType: filterData[n].resType,
+            asIDs: filterData[n].asIDs,
+            asLabs: filterData[n].asLabs,
+            recName: filterData[n].resName,
+            city: cityName, //'广州',
+            origin: filterData[n].rName,
+            buildType: filterData[n].cType,
+            houseNum: filterData[n].hNum,
+            buildPrice: (filterData[n].hPrice / 100),
+            mediaName: filterData[n].mTitle,
+            buildNum: filterData[n].fNum,
+            schedules: this.dateInput[0] + '-' + this.dateInput[1],
+            businessOrigin: filterData[n].tradingArea,
+            assetID: filterData[n].assetTag,
+            liveYear: filterData[n].chDay,
+            adLimit: filterData[n].notPush,
+            checkBox: {A: false, B: false},
+            box: {A: false, B: false},
+          }
+          if (filterData[n].asLabs.indexOf('A') === -1) {
+            filterAD.box.A = true
+          }
+          if (filterData[n].asLabs.indexOf('B') === -1) {
+            filterAD.box.B = true
+          }
+          filterPlanArr.push(filterAD)*/
+                let filterAD = this.setTeblePlanList(filterData[n], n);
                 filterPlanArr.push(filterAD);
                 if (n >= filterData.length - 1) {
                     console.log("搜索中的filterPlanArr", filterPlanArr);
@@ -1998,10 +2031,12 @@ export default {
             }
         },
         // 从原数据到teble显示的数据
-        setTeblePlanList(data, j) {
+        setTeblePlanList(data, j, n) {
+            let i = n || this.activeIndex;
+            console.log("n", n, "this.activeIndex", this.activeIndex, "i", i);
             let setData = data;
             let AD_data = {
-                rid: this.activeIndex + j.toString(),
+                rid: i + j.toString(),
                 mID: setData.mID,
                 resType: setData.resType,
                 asIDs: setData.asIDs,
@@ -2019,6 +2054,11 @@ export default {
                 assetID: setData.assetTag,
                 liveYear: setData.chDay,
                 adLimit: setData.notPush,
+                mState:
+                    setData.mState === 1
+                        ? "正常"
+                        : setData.mState === 2 ? "待安装" : "",
+                adSize: setData.adSize || "",
                 checkBox: { A: false, B: false },
                 box: { A: false, B: false }
             };
@@ -2146,6 +2186,13 @@ export default {
                                     assetID: ADList[i].assetTag,
                                     liveYear: ADList[i].chDay,
                                     adLimit: ADList[i].notPush,
+                                    mState:
+                                        ADList[i].mState === 1
+                                            ? "正常"
+                                            : ADList[i].mState === 2
+                                                ? "待安装"
+                                                : "",
+                                    adSize: ADList[i].adSize || "",
                                     checkBox: { A: false, B: false },
                                     box: { A: false, B: false }
                                 };
@@ -2241,40 +2288,46 @@ export default {
                         let planArr = { rid: rid, list: [] };
                         for (let i = myIndex; i < ADList.length; i++) {
                             console.log("遍历选点列表");
-                            let adObj = {
-                                rid: n.toString() + i.toString(),
-                                mID: ADList[i].mID,
-                                resType: ADList[i].resType,
-                                asIDs: ADList[i].asIDs,
-                                asLabs: ADList[i].asLabs,
-                                recName: ADList[i].resName,
-                                city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
-                                origin: ADList[i].rName,
-                                buildType: ADList[i].cType,
-                                houseNum: ADList[i].hNum,
-                                buildPrice: ADList[i].hPrice / 100,
-                                mediaName: ADList[i].mTitle,
-                                buildNum: ADList[i].fNum,
-                                schedules:
-                                    this.dateInput[0] + "-" + this.dateInput[1],
-                                businessOrigin: ADList[i].tradingArea,
-                                assetID: ADList[i].assetTag,
-                                liveYear: ADList[i].chDay,
-                                adLimit: ADList[i].notPush,
-                                checkBox: { A: false, B: false },
-                                box: { A: false, B: false }
-                            };
-                            if (ADList[i].asLabs.indexOf("A") === -1) {
-                                adObj.box.A = true;
-                            }
-                            if (ADList[i].asLabs.indexOf("B") === -1) {
-                                adObj.box.B = true;
-                            }
+                            /* let adObj = {
+                  rid: n.toString() + i.toString(),
+                  mID: ADList[i].mID,
+                  resType: ADList[i].resType,
+                  asIDs: ADList[i].asIDs,
+                  asLabs: ADList[i].asLabs,
+                  recName: ADList[i].resName,
+                  city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
+                  origin: ADList[i].rName,
+                  buildType: ADList[i].cType,
+                  houseNum: ADList[i].hNum,
+                  buildPrice: (ADList[i].hPrice / 100),
+                  mediaName: ADList[i].mTitle,
+                  buildNum: ADList[i].fNum,
+                  schedules: this.dateInput[0] + '-' + this.dateInput[1],
+                  businessOrigin: ADList[i].tradingArea,
+                  assetID: ADList[i].assetTag,
+                  liveYear: ADList[i].chDay,
+                  adLimit: ADList[i].notPush,
+                  checkBox: {A: false, B: false},
+                  box: {A: false, B: false},
+                }
+                if (ADList[i].asLabs.indexOf('A') === -1) {
+                  adObj.box.A = true
+                }
+                if (ADList[i].asLabs.indexOf('B') === -1) {
+                  adObj.box.B = true
+                }
+                if(ADList[i].resType === this.recType){      // 资源类型过滤
+                  planArr.list.push(adObj)
+                }*/
                             if (ADList[i].resType === this.recType) {
                                 // 资源类型过滤
+                                let adObj = this.setTeblePlanList(
+                                    ADList[i],
+                                    i,
+                                    n
+                                );
                                 planArr.list.push(adObj);
                             }
-                            // planArr.list.push(adObj)
                             if (
                                 i >= myIndex + 29 &&
                                 ADList.length >= myIndex + 29 &&
@@ -2321,19 +2374,30 @@ export default {
             this.shopXY.y = e.clientY;
             // console.log('this.shopXY.y',this.shopXY.y)
         },
-        // 行选中打钩
+        // 行选中打钩或取消勾选
         handleSelect(selection, row) {
             if (!row.checkBox.B && !row.checkBox.A) {
-                if (!row.box.A) {
+                // 行选中打钩
+                if (!row.box.A && row.box.B) {
                     row.checkBox.A = true;
-                    this.shopShow_hide(); // 动画效果
-                    this.AddShopingInfo(row); // 添加到购物车
                 } else if (!row.box.B && row.box.A) {
                     row.checkBox.B = true;
-                    this.shopShow_hide(); // 动画效果
-                    this.AddShopingInfo(row); // 添加到购物车
+                } else {
+                    // 前提条件AB都可选
+                    // Math.floor(Math.random()*2 + 1)
+                    let num = Math.floor(Math.random() * 10); // 0-9
+                    console.log("随机生成的数字", num);
+                    if (num % 2) {
+                        // 偶数勾选A,奇数勾选B
+                        row.checkBox.A = true;
+                    } else {
+                        row.checkBox.B = true;
+                    }
                 }
+                this.shopShow_hide(); // 动画效果
+                this.AddShopingInfo(row); // 添加到购物车
             } else if (row.checkBox.A || row.checkBox.B) {
+                // 行选取消勾选
                 if (row.checkBox.A && row.checkBox.B) {
                     this.badgeNumber -= 2;
                 } else {
@@ -2343,6 +2407,7 @@ export default {
                 row.checkBox.A = false;
                 row.checkBox.B = false;
             } else {
+                console.log("行勾选或取消触发else");
                 row.checkBox.A = false;
             }
             console.log("选中selection", selection);
@@ -2961,18 +3026,38 @@ export default {
                 let SM = "";
                 for (let n = 0; n < this.CSMList.length; n++) {
                     if (this.CSMList[n].city === this.quotation[m].city) {
+                        let schedulesList = this.CSMList[n].schedules.split(
+                            "-"
+                        );
+                        let dayNum =
+                            this.DateDiff(schedulesList[0], schedulesList[1]) +
+                            1;
+                        console.log(schedulesList, "排期天数", dayNum);
+                        let weekAndDay = "";
+                        if (dayNum < 7) {
+                            weekAndDay = dayNum + "天";
+                        } else if (dayNum % 7 === 0 && dayNum > 7) {
+                            weekAndDay = dayNum / 7 + "周";
+                        } else {
+                            weekAndDay =
+                                parseInt(dayNum / 7) + "周" + dayNum % 7 + "天";
+                        }
                         if (SM === "" || SM === null || SM === undefined) {
                             SM =
                                 this.CSMList[n].schedules +
                                 "(" +
+                                weekAndDay +
+                                "," +
                                 this.CSMList[n].mNum +
-                                "面)";
+                                "面) ";
                         } else {
                             SM +=
                                 this.CSMList[n].schedules +
                                 "(" +
+                                weekAndDay +
+                                "," +
                                 this.CSMList[n].mNum +
-                                "面)";
+                                "面) ";
                         }
                     }
                 }
@@ -3620,21 +3705,50 @@ export default {
         },
         //step2地图选点
         mapAD() {
-            this.$message({
-                message: "该功能努力开发ing",
-                type: "warning"
-            });
-            //this.activeCityData
-            /*   console.log('地图选点提交的rid',this.activeCityData)
-        let rid = this.activeCityData.rid
-        api.getApi('/EncryptNo',{num:rid}).then(res=>{
-          console.log('加密后的apid',res.data)
-          rid = res.data.EncryptCode
-          window.open('https://www.dituwuyou.com/qinlin/embed?mid=xIze7Knb4FooG_GgRFSA2Q&token=gvaH2e0TXevVmExv-iL43i7Lq9eZYOnhSqU&myid=' + rid,
-            '_blank', 'toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes')
-        }).catch(err=>{
-          console.log('error',err)
+            /*  this.$message({
+          message: '该功能努力开发ing',
+          type: 'warning'
         })*/
+            //this.activeCityData
+            console.log("地图选点提交的rid", this.activeCityData);
+            let rid = this.activeCityData.rid;
+            let params = {
+                uid: this.sessionData.uID,
+                rid: rid,
+                act: 1,
+                ls: this.dateInput[0],
+                le: this.dateInput[1]
+            };
+            console.log("生成地图MapID参数", params);
+            api
+                .getApi("/GetMapInfo", params)
+                .then(res => {
+                    console.log("GetMapInfo地图mapid返回的信息", res);
+                    if (!res.data.SysCode) {
+                        let mapid = res.data.MapID;
+                        window.open(
+                            "https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=" +
+                                mapid,
+                            "_blank",
+                            "toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes"
+                        );
+                    } else {
+                        if (
+                            res.data.SysCode === 100302 ||
+                            res.data.MSG === "登陆超时"
+                        ) {
+                            this.loginTimeout(); // 登陆超时
+                        } else {
+                            Message({
+                                message: res.data.MSG + ",请尝试重新点击",
+                                type: "warning"
+                            });
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log("error", err);
+                });
         },
         // 只统计购物车排期以判断是否可搜索这个时间段
         shopSchedules() {
@@ -3729,6 +3843,14 @@ export default {
                         // console.log('商圈不为空')
                         arr.push(BPL[i]);
                     }
+                } else if (this.selectValue === "资产编号") {
+                    if (this.searchInput === "") {
+                        arr = this.copyPlanList;
+                        empty = true;
+                    } else if (BPL[i].assetTag.includes(this.searchInput)) {
+                        // console.log('商圈不为空')
+                        arr.push(BPL[i]);
+                    }
                 }
             }
             if (!empty) {
@@ -3757,6 +3879,11 @@ export default {
                             assetID: arr[n].assetTag,
                             liveYear: arr[n].chDay,
                             adLimit: arr[n].notPush,
+                            mState:
+                                arr[n].mState === 1
+                                    ? "正常"
+                                    : arr[n].mState === 2 ? "待安装" : "",
+                            adSize: arr[n].adSize || "",
                             checkBox: { A: false, B: false },
                             box: { A: false, B: false }
                         };
@@ -3992,6 +4119,8 @@ export default {
          }
          this.planList = arr*/
         },
+        // 购物车-获取地图选择的点位列表
+        getMapADList() {},
         // 清空购物车
         clearShop() {
             this.shopingList = [];
@@ -4194,9 +4323,9 @@ export default {
 </script>
 
 <style scoped>
-/*  .filter-input .input-wrap .showBtn{
-      opacity: 1;
-    }*/
+/deep/ .el-form--inline .el-form-item {
+    margin-right: 10px !important;
+}
 
 /deep/ .el-input__inner:hover {
     border-color: #dcdfe6;
