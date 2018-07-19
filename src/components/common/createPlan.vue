@@ -132,7 +132,7 @@
 							</dl>
 							<dl style="border: none">
 								<dt>广告限制：</dt>
-								<dd v-for="(obj, index) of ADLimit" :key="index" :class="obj.value == limitName ? 'active' : ''" @click="activeADLimit(obj.value)">{{obj.value}}
+								<dd v-for="(obj, index) of ADLimit" :key="index" :class="limitName.includes(obj.value) ? 'active' : ''" @click="activeADLimit(obj.value)">{{obj.value}}
 								</dd>
 							</dl>
 						</div>
@@ -1632,7 +1632,10 @@ export default {
                         arr.push(BPL[i]);
                     }
                 } else if (this.selectValue === "资产编号") {
-                    if (BPL[i].assetTag.includes(this.searchInput)) {
+                    if (
+                        BPL[i].assetTag !== undefined &&
+                        BPL[i].assetTag.includes(this.searchInput)
+                    ) {
                         // console.log('商圈不为空')
                         arr.push(BPL[i]);
                     }
@@ -1972,8 +1975,27 @@ export default {
         },
         // 广告限制切换
         activeADLimit(limit) {
-            this.limitName = limit;
-            this.filterByADLimit(limit);
+            console.log("广告限制limit", limit);
+            let limitText = limit;
+            if (this.limitName === "全部" || limitText === "全部") {
+                if (this.limitName === "全部") {
+                    this.limitName = limitText + "、";
+                } else {
+                    this.limitName = limitText;
+                }
+            } else {
+                let index = this.limitName.indexOf(limitText);
+                if (index === -1) {
+                    this.limitName = limitText + "、" + this.limitName;
+                } else {
+                    console.log(this.limitName, "包含了", limitText);
+                    this.limitName =
+                        this.limitName.split(limitText + "、").join("") ||
+                        "全部";
+                }
+            }
+            console.log("广告限制 this.limitName", this.limitName);
+            // this.filterByADLimit(limit)
         },
         // 广告限制过滤
         filterByADLimit(limit) {
@@ -3726,12 +3748,12 @@ export default {
                     console.log("GetMapInfo地图mapid返回的信息", res);
                     if (!res.data.SysCode) {
                         let mapid = res.data.MapID;
-                        window.open(
+                        // window.open('https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=' + mapid ,
+                        //   '_blank', 'toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes')
+                        let tempwindow = window.open();
+                        tempwindow.location =
                             "https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=" +
-                                mapid,
-                            "_blank",
-                            "toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes"
-                        );
+                            mapid;
                     } else {
                         if (
                             res.data.SysCode === 100302 ||
@@ -3826,30 +3848,26 @@ export default {
             let index = this.activeIndex;
             console.log(index, ",beforPlanList", this.beforADTotalList);
             let BPL = this.beforADTotalList[index].list;
-            for (let i = 0; i < BPL.length; i++) {
-                if (this.selectValue === "资源名称") {
-                    if (this.searchInput === "") {
-                        arr = this.copyPlanList;
-                        empty = true;
-                    } else if (BPL[i].resName.includes(this.searchInput)) {
-                        // console.log('资源名称不为空')
-                        arr.push(BPL[i]);
-                    }
-                } else if (this.selectValue === "商圈") {
-                    if (this.searchInput === "") {
-                        arr = this.copyPlanList;
-                        empty = true;
-                    } else if (BPL[i].tradingArea.includes(this.searchInput)) {
-                        // console.log('商圈不为空')
-                        arr.push(BPL[i]);
-                    }
-                } else if (this.selectValue === "资产编号") {
-                    if (this.searchInput === "") {
-                        arr = this.copyPlanList;
-                        empty = true;
-                    } else if (BPL[i].assetTag.includes(this.searchInput)) {
-                        // console.log('商圈不为空')
-                        arr.push(BPL[i]);
+            if (this.searchInput === "") {
+                arr = this.copyPlanList;
+                empty = true;
+            } else {
+                for (let i = 0; i < BPL.length; i++) {
+                    if (this.selectValue === "资源名称") {
+                        if (BPL[i].resName.includes(this.searchInput)) {
+                            arr.push(BPL[i]);
+                        }
+                    } else if (this.selectValue === "商圈") {
+                        if (BPL[i].tradingArea.includes(this.searchInput)) {
+                            arr.push(BPL[i]);
+                        }
+                    } else if (this.selectValue === "资产编号") {
+                        if (
+                            BPL[i].assetTag !== undefined &&
+                            BPL[i].assetTag.includes(this.searchInput)
+                        ) {
+                            arr.push(BPL[i]);
+                        }
                     }
                 }
             }
