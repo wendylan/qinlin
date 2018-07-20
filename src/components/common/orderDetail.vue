@@ -116,6 +116,7 @@
                                 </span>
                                 <span>
                                     <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="search()">搜索</el-button>
+                                    <el-button type="default" icon="el-icon-download" class="searchBtn" @click="export2Excel(orderDetail.apName)">导出</el-button>
                                 </span>
                             </div>
 
@@ -164,7 +165,7 @@
                                     <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
                                         <template slot-scope="scope">
                                             <template v-if="scope.row.lState==2">
-                                                <span>{{formatTime(scope.row.lStar)+"-"+formatTime(scope.row.lSetTime)}}</span>
+                                                <span>{{scope.row.finishTimeRange}}</span>
                                                 <el-tooltip placement="top">
                                                     <div slot="content">
                                                         <span>{{scope.row.timeRange}}</span>
@@ -687,6 +688,19 @@
                 <div class="content_bottom_btn">
                     <el-button type="default" @click="goBack">返回</el-button>
                 </div>
+                <!-- 终止点位弹出框 -->
+                <el-dialog
+                    title="终止点位"
+                    :visible.sync="isFinish">
+                    <span>请选择终止时间：</span>
+                    <el-date-picker v-model="finishDate" type="date" format="yyyy.MM.dd" value-format="yyyy.MM.dd" placeholder="终止日期" :picker-options="pickerOptions">
+                    </el-date-picker>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="isFinish = false">取消</el-button>
+                        <el-button type="primary" @click="conFirmStopAds">确 定</el-button>
+                    </span>
+                </el-dialog>
+
             </div>
         </div>
     </div>
@@ -822,7 +836,24 @@ export default {
             // 图片显示放大按钮控件
             isShow: null,
             isShow2: null,
-
+            // 终止点位时间弹出框
+            isFinish: false,
+            finishDate: '',
+            nowRow: {},
+            dateRange:{
+                beginDate: '',
+                endDate: ''
+            },
+            pickerOptions:{
+                disabledDate: (time) => {
+                    let beginDateVal = new Date(this.dateRange.beginDate).getTime();
+                    let endDateVal = new Date(this.dateRange.endDate).getTime()-60*60*24*1000;
+                    if (beginDateVal || endDateVal) {
+                        return (time.getTime() < beginDateVal) || (time.getTime() > endDateVal);
+                    }
+                }
+            },
+            
             //添加点位
             dialogAddPoint: false,
             dateInput: "",
@@ -1182,6 +1213,20 @@ export default {
         }
     },
     methods: {
+        export2Excel(name) { 
+            require.ensure([], () => { 
+                const { export_json_to_excel } = require('../../vendorExcel/Export2Excel'); 
+                const tHeader = ['市', '区域', '资源名称', '媒体名称', '投放面',  '投放日期', '终止日期','资产编号', '商圈', '楼旁类型/写字楼类型', '楼盘价格', '住户数量/办公室数量', '楼栋数量', '入住年份/建成年份', '广告尺寸']; 
+                const filterVal = ['city', 'rName', 'resName', 'mTitle', 'asLab', 'timeRange', 'finishTimeRange', 'assetTag', 'tradingArea', 'cType', 'hPrice', 'hNum', 'fNum', 'chDay', 'adSize']; 
+                const list = this.currentSetpoint; 
+                const data = this.formatJson(filterVal, list); 
+                export_json_to_excel(tHeader, data, name); 
+            }) 
+        }, 
+        formatJson(filterVal, jsonData) { 
+            return jsonData.map(v => filterVal.map(j => v[j])) 
+        },
+        // 判断是否是有换点跳转过来的？
         isChangePoint(){
             let isChange = sessionStorage.getItem('change_point');
             if(isChange == 'yes'){
@@ -1349,11 +1394,13 @@ export default {
                         for (let data of result) {
                             // 城市中文名称
                             data.city = areaToText.toTextCity(data.rID);
-                            let time =
-                                this.formatTime(data.lStar) +
-                                "-" +
-                                this.formatTime(data.lEnd);
+                            let time = this.formatTime(data.lStar) + "-" +this.formatTime(data.lEnd);
                             data.timeRange = time;
+                            let finishTimeRange = '';
+                            if(data.lState ==2){
+                                finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
+                            }
+                            data.finishTimeRange = finishTimeRange;
                         }
                         // 选点排期
                         this.copyAsidArr = JSON.parse(JSON.stringify(result));
@@ -2408,23 +2455,23 @@ export default {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },
-        //终止操作确认操作对话框
-        disContinue(row) {
-            console.log(row);
+        conFirmStopAds(){
+            console.log(this.nowRow);
             let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
-            let rid = row.rID.toString().substring(0,4)+'00';
+            let rid = this.nowRow.rID.toString().substring(0,4)+'00';
             console.log('uwho------', uwho);
             if((uwho == '0')  || uwho.includes(rid) ){
                 let info = {
                     uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
-                    lid: row.lID
+                    lid: this.nowRow.lID
                 };
-                this.$confirm(
-                    `是否终止 ${row.resName + row.mTitle + row.asLab}面在 ${
-                        row.timeRange
+                MessageBox.confirm(
+                    `是否在${this.finishDate}这一天终止 ${this.nowRow.resName + this.nowRow.mTitle + this.nowRow.asLab}面在 ${
+                        this.nowRow.timeRange
                     } 的投放？\n`,
                     "提示",
                     {
+                        dangerouslyUseHTMLString: true,
                         confirmButtonText: "确定",
                         cancelButtonText: "取消",
                         type: "warning"
@@ -2436,8 +2483,12 @@ export default {
                             .then(res => {
                                 console.log(res.data);
                                 if (!res.data.SysCode) {
-                                    this.$set(row, "lState", res.data.lState);
-                                    this.$set(row, "lSetTime", res.data.lSetTime);
+                                    let resdata = res.data;
+                                    this.$set(this.nowRow, "lState", resdata.lState);
+                                    this.$set(this.nowRow, "lSetTime", resdata.lSetTime);
+                                    let time = this.formatTime(resdata.lStar)+"-"+this.formatTime(resdata.lSetTime);
+                                    this.$set(this.nowRow, 'finishTimeRange', time);
+                                    this.isFinish = false;
                                     Message.success("终止成功");
                                 } else if (res.data.SysCode == 100302) {
                                     this.loginTimeout();
@@ -2451,10 +2502,68 @@ export default {
                     })
                     .catch(() => {
                         Message.info("已取消操作");
+                        this.isFinish = false;
                     });
             }else{
                 Message.warning('您没有权限终止点位');
+                this.isFinish = false;
             }
+        },
+        //终止操作确认操作对话框
+        disContinue(row) {
+            this.isFinish = true;
+            this.finishDate = '';
+            this.dateRange.beginDate = this.formatTime(row.lStar);
+            this.dateRange.endDate = this.formatTime(row.lEnd);
+            this.nowRow = row;
+
+            // console.log(this.dateRange);
+            // console.log(row);
+            // let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
+            // let rid = row.rID.toString().substring(0,4)+'00';
+            // console.log('uwho------', uwho);
+            // if((uwho == '0')  || uwho.includes(rid) ){
+            //     let info = {
+            //         uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
+            //         lid: row.lID
+            //     };
+            //     MessageBox.confirm(
+            //         `是否终止 ${row.resName + row.mTitle + row.asLab}面在 ${
+            //             row.timeRange
+            //         } 的投放？\n`,
+            //         "提示",
+            //         {
+            //             dangerouslyUseHTMLString: true,
+            //             confirmButtonText: "确定",
+            //             cancelButtonText: "取消",
+            //             type: "warning"
+            //         }
+            //     )
+            //         .then(() => {
+            //             api
+            //                 .postApi("/StopADS", info)
+            //                 .then(res => {
+            //                     console.log(res.data);
+            //                     if (!res.data.SysCode) {
+            //                         this.$set(row, "lState", res.data.lState);
+            //                         this.$set(row, "lSetTime", res.data.lSetTime);
+            //                         Message.success("终止成功");
+            //                     } else if (res.data.SysCode == 100302) {
+            //                         this.loginTimeout();
+            //                     } else {
+            //                         Message.warning(res.data.MSG);
+            //                     }
+            //                 })
+            //                 .catch(res => {
+            //                     console.log(res);
+            //                 });
+            //         })
+            //         .catch(() => {
+            //             Message.info("已取消操作");
+            //         });
+            // }else{
+            //     Message.warning('您没有权限终止点位');
+            // }
         },
 
         cancelChangeRemark() {
@@ -3797,8 +3906,8 @@ export default {
 /deep/ .el-date-editor i,
 /deep/ .el-date-editor input,
 /deep/ .el-date-editor span {
-    float: left;
-    position: relative;
+    /* float: left;
+    position: relative; */
 }
 
 /deep/ .el-range-editor .el-range-input {

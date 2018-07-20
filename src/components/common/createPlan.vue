@@ -83,7 +83,8 @@
 									<!--  <el-select v-model="planSelect" placeholder="选择投已有方案" class="plan-select input-with-select">
                     <el-option label="努力开发中,敬请期待" value="beijing"></el-option>
                   </el-select>-->
-									<el-select v-model="mState" placeholder="请选择媒体状态" class="plan-select input-with-select">
+									<el-select v-model="mState" placeholder="请选择媒体状态" class="plan-select input-with-select" @change="mStateChange">
+										<el-option label="不限" value="不限"></el-option>
 										<el-option label="正常" value="1"></el-option>
 										<el-option label="待安装" value="2"></el-option>
 									</el-select>
@@ -241,13 +242,6 @@
 								</el-table-column>
 								<el-table-column prop="mState" label="媒体状态" min-width="7.8%" class="tar">
 								</el-table-column>
-								<!-- <el-table-column
-                  prop="houseNum"
-                  :label="recType === 1? '小区户数': '办公室数量'"
-                  min-width="7.8%"
-                  class="tar"
-                >
-                </el-table-column>-->
 								<el-table-column label="楼盘价格" min-width="7.8%">
 									<template slot-scope="scope">
 										<span>&yen;{{scope.row.buildPrice}}</span>
@@ -258,10 +252,8 @@
 								<el-table-column width="132px">
 									<template slot-scope="scope">
 										<el-checkbox v-model="scope.row.checkBox.A" label="A面" @change="changeA(scope.row)" :disabled="scope.row.box.A">
-											<!-- :disabled="scope.row.box.A"-->
 										</el-checkbox>
 										<el-checkbox v-model="scope.row.checkBox.B" label="B面" @change="changeB(scope.row)" :disabled="scope.row.box.B">
-											<!--:disabled="scope.row.box.B"-->
 										</el-checkbox>
 									</template>
 								</el-table-column>
@@ -1576,35 +1568,6 @@ export default {
             let planArr = [];
             let rName = this.activeCityData.rName; //this.activeRName
             for (let i = 0; i < datalist.length; i++) {
-                /*  let adObj = {
-            rid: 0 + i.toString(),
-            mID: datalist[i].mID,
-            resType: datalist[i].resType,
-            asIDs: datalist[i].asIDs,
-            asLabs: datalist[i].asLabs,
-            recName: datalist[i].resName,
-            city: rName, //'广州',
-            origin: datalist[i].rName,
-            buildType: datalist[i].cType,
-            houseNum: datalist[i].hNum,
-            buildPrice: (datalist[i].hPrice / 100),
-            mediaName: datalist[i].mTitle,
-            buildNum: datalist[i].fNum,
-            schedules: this.dateInput[0] + '-' + this.dateInput[1],
-            businessOrigin: datalist[i].tradingArea,
-            assetID: datalist[i].assetTag,
-            liveYear: datalist[i].chDay,
-            adLimit: datalist[i].notPush,
-            checkBox: {A: false, B: false},
-            box: {A: false, B: false},
-          }
-          if (datalist[i].asLabs.indexOf('A') === -1) {
-            adObj.box.A = true
-          }
-          if (datalist[i].asLabs.indexOf('B') === -1) {
-            adObj.box.B = true
-          }
-          planArr.push(adObj)*/
                 let adObj = this.setTeblePlanList(datalist[i], i);
                 planArr.push(adObj);
                 if (i >= datalist.length - 1) {
@@ -1891,10 +1854,6 @@ export default {
                         this.judgeByselect("FArea");
                         this.secondLevelData = this.planList; // 保存二级过滤
                         this.loading = false;
-                        /*   this.planList = filterAreaArr
-              this.judgeByselect('FArea')
-              this.secondLevelData = this.planList      // 保存二级过滤
-              this.loading = false*/
                     } else {
                         this.filterByADLaunch(filterAreaArr);
                     }
@@ -1928,35 +1887,6 @@ export default {
             let cityName = this.activeCityData.rName; //this.activeRName
             let FBAIndex = this.activeIndex;
             for (let n = 0; n < filterData.length; n++) {
-                /*  let filterAD = {
-            rid: FBAIndex + n.toString(),
-            mID: filterData[n].mID,
-            resType: filterData[n].resType,
-            asIDs: filterData[n].asIDs,
-            asLabs: filterData[n].asLabs,
-            recName: filterData[n].resName,
-            city: cityName, //'广州',
-            origin: filterData[n].rName,
-            buildType: filterData[n].cType,
-            houseNum: filterData[n].hNum,
-            buildPrice: (filterData[n].hPrice / 100),
-            mediaName: filterData[n].mTitle,
-            buildNum: filterData[n].fNum,
-            schedules: this.dateInput[0] + '-' + this.dateInput[1],
-            businessOrigin: filterData[n].tradingArea,
-            assetID: filterData[n].assetTag,
-            liveYear: filterData[n].chDay,
-            adLimit: filterData[n].notPush,
-            checkBox: {A: false, B: false},
-            box: {A: false, B: false},
-          }
-          if (filterData[n].asLabs.indexOf('A') === -1) {
-            filterAD.box.A = true
-          }
-          if (filterData[n].asLabs.indexOf('B') === -1) {
-            filterAD.box.B = true
-          }
-          filterPlanArr.push(filterAD)*/
                 let filterAD = this.setTeblePlanList(filterData[n], n);
                 filterPlanArr.push(filterAD);
                 if (n >= filterData.length - 1) {
@@ -2310,37 +2240,6 @@ export default {
                         let planArr = { rid: rid, list: [] };
                         for (let i = myIndex; i < ADList.length; i++) {
                             console.log("遍历选点列表");
-                            /* let adObj = {
-                  rid: n.toString() + i.toString(),
-                  mID: ADList[i].mID,
-                  resType: ADList[i].resType,
-                  asIDs: ADList[i].asIDs,
-                  asLabs: ADList[i].asLabs,
-                  recName: ADList[i].resName,
-                  city: this.activeCityData.rName, //throwCity[t].rName, //'广州',
-                  origin: ADList[i].rName,
-                  buildType: ADList[i].cType,
-                  houseNum: ADList[i].hNum,
-                  buildPrice: (ADList[i].hPrice / 100),
-                  mediaName: ADList[i].mTitle,
-                  buildNum: ADList[i].fNum,
-                  schedules: this.dateInput[0] + '-' + this.dateInput[1],
-                  businessOrigin: ADList[i].tradingArea,
-                  assetID: ADList[i].assetTag,
-                  liveYear: ADList[i].chDay,
-                  adLimit: ADList[i].notPush,
-                  checkBox: {A: false, B: false},
-                  box: {A: false, B: false},
-                }
-                if (ADList[i].asLabs.indexOf('A') === -1) {
-                  adObj.box.A = true
-                }
-                if (ADList[i].asLabs.indexOf('B') === -1) {
-                  adObj.box.B = true
-                }
-                if(ADList[i].resType === this.recType){      // 资源类型过滤
-                  planArr.list.push(adObj)
-                }*/
                             if (ADList[i].resType === this.recType) {
                                 // 资源类型过滤
                                 let adObj = this.setTeblePlanList(
@@ -2741,14 +2640,6 @@ export default {
                                             type: "warning"
                                         });
                                     } else {
-                                        // alert('4')
-                                        // if (this.ADchanger.reaPrice > this.quotation[i].advertyPrice) {
-                                        //   this.ADchanger.reaPrice = Math.floor(this.quotation[i].advertyPrice * 100) / 100
-                                        //   this.$message({
-                                        //     message: '大于原价格',
-                                        //     type: 'warning'
-                                        //   });
-                                        // } else {
                                         this.quotation[
                                             i
                                         ].reaPrice = this.quotation[
@@ -3718,6 +3609,47 @@ export default {
         getBadeNumberByShopList() {
             this.badgeNumber = this.shopingList.length;
         },
+        // 修改搜索中的媒体状态
+        mStateChange(val) {
+            let state = val;
+            let beforAD = "";
+            if (state !== "不限") {
+                if (this.searchInput === "") {
+                    beforAD = this.firstLevelData;
+                } else {
+                    let index = this.activeIndex;
+                    beforAD = this.beforADTotalList[index].list;
+                }
+                let ADList_mState = this.filter_mState(beforAD); // 媒体状态过滤
+                console.log("媒体状态过滤", ADList_mState);
+            } else {
+                this.mState = "";
+            }
+        },
+        filter_mState(dataInfo) {
+            console.log("触发filter_mState", dataInfo);
+            let tempList = [];
+            let mStateType = this.mState;
+            let dataList = dataInfo;
+            console.log(
+                "this.mState数据类型:",
+                typeof this.mState,
+                this.mState
+            );
+            for (let i = 0; i < dataList.length; i++) {
+                if (dataList[i].mState === "待安装") {
+                    dataList[i].mState = 2;
+                } else if (dataList[i].mState === "正常") {
+                    dataList[i].mState = 1;
+                }
+                if (dataList[i].mState == mStateType) {
+                    tempList.push(dataList[i]);
+                } else {
+                    console.log("***媒体状态filter***");
+                }
+            }
+            return tempList;
+        },
         //step2搜索按钮
         searchFun() {
             console.log("搜索排期时间", this.dateInput);
@@ -3727,10 +3659,6 @@ export default {
         },
         //step2地图选点
         mapAD() {
-            /*  this.$message({
-          message: '该功能努力开发ing',
-          type: 'warning'
-        })*/
             //this.activeCityData
             console.log("地图选点提交的rid", this.activeCityData);
             let rid = this.activeCityData.rid;
@@ -4138,7 +4066,12 @@ export default {
          this.planList = arr*/
         },
         // 购物车-获取地图选择的点位列表
-        getMapADList() {},
+        getMapADList() {
+            console.log("触发获取地图选点信息click");
+            api.getApi("/SendMap", { uid: this.sessionData.uID }).then(res => {
+                console.log("地图选点", res);
+            });
+        },
         // 清空购物车
         clearShop() {
             this.shopingList = [];

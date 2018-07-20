@@ -15,11 +15,11 @@
 				<div class="loginInput" v-if="isActive">
 					<div class="username">
 						<input type="text" placeholder="账户" v-model="username">
-						<i class="fa fa-user-o"></i>
+						<img src="../../assets/images/usericon.png" alt="">
 					</div>
 					<div class="password">
 						<input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
-						<i class="fa fa-lock"></i>
+						<img src="../../assets/images/passicon.png" alt="">
 					</div>
 					<div class="remeberUser">
 						<el-checkbox v-model="remeAccount">记住账号</el-checkbox>
@@ -424,12 +424,11 @@ export default {
     margin-bottom: 24px;
 }
 
-.loginInput i {
+.loginInput img {
     position: absolute;
     left: 10px;
     top: 13px;
     width: 12px;
-    color: #999;
 }
 
 input::placeholder {

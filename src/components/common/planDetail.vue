@@ -128,7 +128,7 @@
                                                 <el-table-column prop="timeRange" label="排期" min-width="14.2%" :filters="filtersData" :filter-method="filterTimeRange">
                                                     <template slot-scope="scope">
                                                         <template v-if="scope.row.lState==2">
-                                                            <span>{{formatTime(scope.row.lStar)+"-"+formatTime(scope.row.lSetTime)}}</span>
+                                                            <span>{{scope.row.finishTimeRange}}</span>
                                                             <el-tooltip placement="top">
                                                                 <div slot="content">
                                                                     <span>{{scope.row.timeRange}}</span>
@@ -143,6 +143,7 @@
                                         </div>
                                     </div>
                                     <div class="content_bottom_btn">
+                                        <el-button type="default" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
                                         <el-button class="cancel" @click="goBack()">返回</el-button>
                                     </div>
                                 </el-tab-pane>
@@ -338,6 +339,19 @@ export default {
         this.getInitData();
     },
     methods: {
+        export2Excel(name) { 
+            require.ensure([], () => { 
+                const { export_json_to_excel } = require('../../vendorExcel/Export2Excel'); 
+                const tHeader = ['市', '区域', '资源名称', '媒体名称', '投放面',  '投放日期', '终止日期','资产编号', '商圈', '楼旁类型/写字楼类型', '楼盘价格', '住户数量/办公室数量', '楼栋数量', '入住年份/建成年份', '广告尺寸']; 
+                const filterVal = ['city', 'rName', 'resName', 'mTitle', 'asLab', 'timeRange', 'finishTimeRange', 'assetTag', 'tradingArea', 'cType', 'hPrice', 'hNum', 'fNum', 'chDay', 'adSize']; 
+                const list = this.setpointArr; 
+                const data = this.formatJson(filterVal, list); 
+                export_json_to_excel(tHeader, data, name); 
+            }) 
+        }, 
+        formatJson(filterVal, jsonData) { 
+            return jsonData.map(v => filterVal.map(j => v[j])) 
+        },
         // tab点击
         handleClick() {
             if (this.planPanel == "first") {
@@ -424,7 +438,12 @@ export default {
                             for (let data of resInfo) {
                                 data.city = areaToText.toTextCity(data.rID);
                                 let time = this.formatTime(data.pbStar) + "-" + this.formatTime(data.pbEnd);
-                                this.$set(data, "timeRange", time);
+                                data.timeRange = time;
+                                let finishTimeRange = '';
+                                if(data.lState ==2){
+                                    finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
+                                }
+                                data.finishTimeRange = finishTimeRange;
                             }
                             // 城市筛选过滤
                             this.filterCityData = filterFormat(resInfo, "city");
@@ -459,11 +478,13 @@ export default {
                             for (let data of result) {
                                 // 城市中文名称
                                 data.city = areaToText.toTextCity(data.rID);
-                                let time =
-                                    this.formatTime(data.lStar) +
-                                    "-" +
-                                    this.formatTime(data.lEnd);
+                                let time = this.formatTime(data.lStar) + "-" +this.formatTime(data.lEnd);
                                 data.timeRange = time;
+                                let finishTimeRange = '';
+                                if(data.lState ==2){
+                                    finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
+                                }
+                                data.finishTimeRange = finishTimeRange;
                             }
                             // 城市筛选过滤
                             this.filterCityData = filterFormat(result, "city");
