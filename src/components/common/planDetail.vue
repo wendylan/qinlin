@@ -45,7 +45,6 @@
                                     </li>
                                     <li>
                                         <span>投放城市：</span>
-                                        <!-- <em>{{filter(planDetail.rIDs)}}</em> -->
                                         <em>{{filter(planDetail.rIDs)}}</em>
                                     </li>
                                     <li>
@@ -142,13 +141,9 @@
                                             </el-table>
                                         </div>
                                     </div>
-                                    <div class="content_bottom_btn">
-                                        <el-button type="default" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
-                                        <el-button class="cancel" @click="goBack()">返回</el-button>
-                                    </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="报价单" name="second">
-                                    <div class="second-wrap box-wrap">
+                                    <!-- <div class="second-wrap box-wrap">
                                         <h4>报价单</h4>
                                         <div class="panel">
                                             <el-tabs type="border-card" class="baojiadan">
@@ -233,13 +228,15 @@
                                                 </el-tab-pane>
                                             </el-tabs>
                                         </div>
-                                    </div>
-                                    <div class="content_bottom_btn">
+                                    </div> -->
+                                    <!-- <price-sheet :price-sheet="priceSheet"></price-sheet> -->
+                                    <price-sheet @detailInfo="setInfo" :copydata="copyAsidArr"></price-sheet>
+                                    <!-- <div class="content_bottom_btn">
                                         <el-button class="cancel" @click="goBack()">返回</el-button>
-                                    </div>
+                                    </div> -->
                                 </el-tab-pane>
                                 <el-tab-pane label="物料信息" name="third">
-                                    <div class="third-wrap box-wrap">
+                                    <!-- <div class="third-wrap box-wrap">
                                         <h4>物料信息</h4>
                                         <div class="table_wrap">
                                             <el-table :data="materialInfo" border style="width: 100%">
@@ -262,9 +259,17 @@
                                                 </el-table-column>
                                             </el-table>
                                         </div>
-                                    </div>
+                                    </div> -->
+                                    <material :material="copyAsidArr"></material>
+                                    <!-- <div class="content_bottom_btn">
+                                        <el-button class="cancel" @click="goBack()">返回</el-button>
+                                    </div> -->
                                 </el-tab-pane>
                             </el-tabs>
+                            <div class="content_bottom_btn">
+                                <el-button type="default" v-if="planPanel =='first'" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
+                                <el-button class="cancel" @click="goBack()">返回</el-button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,8 +293,8 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
-// 转换时间
-import dayToWeek from "../../commonFun/dayToWeek.js";
+import priceSheet from "./components/priceSheet.vue";
+import material from "./components/materialInfo.vue";
 import {
     Table,
     TableColumn,
@@ -303,11 +308,13 @@ import {
 export default {
     name: "planDetail",
     components: {
+        priceSheet,
+        material,
         elTable: Table,
         elTableColumn: TableColumn,
         elTabs: Tabs,
         elTabPane: TabPane,
-        elButton: Button
+        elButton: Button,
     },
     data() {
         return {
@@ -339,6 +346,16 @@ export default {
         this.getInitData();
     },
     methods: {
+        setInfo(data){
+           console.log('defail------data', data); 
+            this.$set(this.planDetail, "rIDs", data.rIDs);
+            this.$set(this.planDetail, "Total", data.Total);
+            this.$set(this.planDetail, "pdTotal", data.pdTotal);
+            this.$set(this.planDetail, "pdSendFee", data.pdSendFee);
+            this.$set(this.planDetail, "pdOtherFee", data.pdOtherFee);
+            this.priceSheet = data.priceSheet;
+        },
+        // 导出excel
         export2Excel(name) { 
             require.ensure([], () => { 
                 const { export_json_to_excel } = require('../../vendorExcel/Export2Excel'); 
@@ -356,13 +373,6 @@ export default {
         handleClick() {
             if (this.planPanel == "first") {
                 this.getSetPoint();
-            }
-            if (this.planPanel == "second") {
-                this.getPriceData();
-            }
-            if (this.planPanel == "third") {
-                // 物料信息
-                this.getMaterialInfo(this.copyAsidArr);
             }
         },
         // 去重城市
@@ -396,9 +406,6 @@ export default {
                     console.log(res.data);
                     if (!res.data.SysCode) {
                         let info = res.data;
-                        // if (info.apTotal) {
-                        //     info.apTotal = this.priceFormat(info.apTotal / 100);
-                        // }
                         info.apcTime = dateFormat.toDateTime(info.apcTime);
                         this.planDetail = info;
                         // 选点排期
@@ -454,8 +461,6 @@ export default {
                             this.setpointArr = resInfo;
                             // this.currentSetpoint = this.setpointArr;
                             this.loading = false;
-                            // 报价单
-                            this.getPriceData();
                         } else if(res.data.SysCode == 100302){
                             this.loginTimeout();
                         } else {
@@ -500,8 +505,6 @@ export default {
                             this.setpointArr = result;
                             // this.currentSetpoint = this.setpointArr;
                             this.loading = false;
-                            // 报价单
-                            this.getPriceData();
                         } else if(res.data.SysCode == 100302){
                             this.loginTimeout();
                         } else {
@@ -513,221 +516,6 @@ export default {
                         console.log(res);
                     });
             }
-        },
-        dayToweeks(days){
-            return dayToWeek.toWeeks(days)
-        },
-        dateToDays(start, end){
-            return dayToWeek.toDays(start, end);
-        },
-        // 获取三个费用价格(报价单)
-        getPriceData() {
-            if(this.priceSheet.length){
-                return;
-            }
-            // 真实数据
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            let apid = sessionStorage.getItem("plan_apid");
-            let info = {
-                uid: uid,
-                apid: apid
-            };
-            // 获取各个城市的刊例价
-            // uid         int【必填】     当前账户UserID
-            api
-                .getApi("/GetAdPrice", { uid: uid })
-                .then(res => {
-                    console.log(res.data);
-                    let adPrice = res.data;
-                    // uid         int【必填】     当前账户UserID
-                    // apid        int             公司对应方案apID
-                    api
-                        .getApi("/GetAPD", info)
-                        .then(res => {
-                            console.log(res.data);
-                            if (!res.data.SysCode) {
-                                let plandata = res.data;
-                                let pdTotal = 0;
-                                let pdSendFee = 0;
-                                let pdOtherFee = 0;
-                                let arr = [];
-                                let city = '';
-                                for (let price of plandata) {
-                                    pdTotal += price.pdTotal;
-                                    pdSendFee += price.pdSendFee;
-                                    pdOtherFee += price.pdOtherFee;
-
-                                    let obj = {
-                                        pdID: price.pdID,
-                                        apID: price.apID,
-                                        rID: price.rID,
-                                        city: "",
-                                        muID: price.muID,
-                                        adPrice: 0,
-                                        // 投放量
-                                        pdDays: price.pdDays,
-                                        pdStar: price.pdStar,
-                                        pdEnd: price.pdEnd,
-                                        // 赠送
-                                        pdFreeNum: price.pdFreeNum,
-                                        // 广告费用
-                                        pdAdFee: price.pdAdFee / 100,
-                                        // 广告画数量
-                                        pdNum: price.pdNum,
-                                        // 制作费
-                                        pdAdMake: price.pdAdMake / 100,
-                                        // 现金结算
-                                        pdTotal: price.pdTotal / 100,
-                                        // 资源置换
-                                        pdSendFee: price.pdSendFee / 100,
-                                        // 其他费用
-                                        pdOtherFee: price.pdOtherFee / 100,
-                                        allprice: 0,
-                                        pdRemark: price.pdRemark
-                                    };
-                                    obj.allprice = (price.pdTotal + price.pdSendFee + price.pdOtherFee) / 100;
-                                    obj.city = areaToText.toTextCity(obj.rID);
-                                    city = obj.city+','+city;
-                                    arr.push(obj);
-                                }
-                                this.$set(this.planDetail, "rIDs", city);
-                                let total = pdTotal + pdSendFee + pdOtherFee;
-                                this.$set(this.planDetail, "Total", this.priceFormat(total / 100));
-                                this.$set(this.planDetail, "pdTotal", this.priceFormat(pdTotal / 100));
-                                this.$set(this.planDetail, "pdSendFee", this.priceFormat(pdSendFee / 100));
-                                this.$set(this.planDetail, "pdOtherFee", this.priceFormat(pdOtherFee / 100));
-                                // 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
-                                for (let ta of arr) {
-                                    for (let ad of adPrice) {
-                                        if (ad.rID == ta.rID) {
-                                            ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
-                                            let onedayPrice = ta.adPrice / 7;
-                                            let discount = Math.round(ta.pdAdFee /(onedayPrice *ta.pdDays) *10000) / 100;
-                                            let ADMakeDiscount =Math.round(ta.pdAdMake /(100 * ta.pdNum) *10000) / 100;
-                                            ta.discount = isNaN(discount)? 0: discount; // 广告费折扣百分比
-                                            ta.ADMakeDiscount = isNaN(ADMakeDiscount)? 0: ADMakeDiscount; // 制作费折扣百分比
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                // 整合排期信息
-                                let asidRes = this.getSchedules(this.copyAsidArr);
-                                // 整合排期信息并且渲染页面
-                                this.priceSheet = this.setSchedules(arr, asidRes);
-                                this.priceSheet = arr;
-                            } else if(res.data.SysCode == 100302){
-                                this.loginTimeout();
-                            } else {
-                                Message.warning(res.data.MSG);
-                            }
-                        })
-                        .catch(res => {
-                            console.log(res);
-                        });
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
-        // 整合排期信息
-        setSchedules(arr, asidRes) {
-            for (let arrData of arr) {
-                let schedules = "";
-                for (let asid of asidRes) {
-                    let arrDataRID = arrData.rID.toString().substring(0, 4);
-                    let dataRID = asid.rID.toString().substring(0, 4);
-                    let ds = dateFormat.toDate(asid.ds, ".");
-                    let de = dateFormat.toDate(asid.de, ".");
-                    let days = this.dateToDays(ds, de);
-                    let weekDay = this.dayToweeks(days);
-                    let weekDays = '';
-                    if(days < 7){
-                        weekDays = weekDay.day+'天';
-                    }else if((weekDay.day ==0) && (weekDay.week != 0)){
-                        weekDays = weekDay.week+'周';
-                    }else{
-                        weekDays = weekDay.week +'周'+weekDay.day+'天';
-                    }
-                    if (arrDataRID == dataRID) {
-                        if (schedules == "") {
-                            schedules = ds + "-" + de + "("+ weekDays+',共'+ asid.mNum + "面)";
-                        } else {
-                            schedules = schedules +" " + ds + "-" + de +"("+ weekDays+',共'+ asid.mNum + "面)";
-                        }
-                    }
-                }
-                arrData.schedules = schedules;
-            }
-            return arr;
-        },
-        // 获取过滤选点排期以便在报价单一栏显示排期信息
-        getSchedules(asidArr) {
-            // 组装数据
-            let result = [];
-            if (!result.length) {
-                let obj = {};
-                obj.rID = asidArr[0].rID;
-                obj.asidlist = "";
-                obj.mNum = "";
-                obj.ds = dateFormat.toDate(asidArr[0].lStar);
-                obj.de = dateFormat.toDate(asidArr[0].lEnd);
-                if (asidArr[0].pbStar) {
-                    obj.ds = dateFormat.toDate(asidArr[0].pbStar);
-                    obj.de = dateFormat.toDate(asidArr[0].pbEnd);
-                }
-                result.push(obj);
-            }
-            // 组合asid
-            for (let res of result) {
-                let asIDs = "";
-                let mNum = 0;
-                for (let init of asidArr) {
-                    let start = dateFormat.toDate(init.lStar);
-                    let end = dateFormat.toDate(init.lEnd);
-                    if (init.pbStar) {
-                        start = dateFormat.toDate(init.pbStar);
-                        end = dateFormat.toDate(init.pbEnd);
-                    }
-                    let resRID = res.rID.toString().substring(0, 4);
-                    let dataRID = init.rID.toString().substring(0, 4);
-                    let resObj = {
-                        rID: init.rID,
-                        ds: start,
-                        de: end,
-                        asidlist: "",
-                        mNum: ""
-                    };
-                    if (resRID == dataRID && res.ds == start && res.de == end) {
-                        if (asIDs === "") {
-                            asIDs = init.asID.toString();
-                            mNum = 1;
-                        } else {
-                            asIDs = asIDs + "," + init.asID;
-                            mNum++;
-                        }
-                    } else {
-                        let door = 1;
-                        for (let data of result) {
-                            let dataR = data.rID.toString().substring(0, 4);
-                            let initR = init.rID.toString().substring(0, 4);
-                            if (
-                                dataR == initR &&
-                                data.ds == start &&
-                                data.de == end
-                            ) {
-                                door = 0;
-                            }
-                        }
-                        if (door) {
-                            result.push(resObj);
-                        }
-                    }
-                }
-                res.asidlist = asIDs;
-                res.mNum = mNum;
-            }
-            return result;
         },
         // 组装成物料信息数据
         getMaterialInfo(info) {
@@ -871,7 +659,7 @@ export default {
         filterTimeRange(value, row) {
             return row.timeRange === value;
         }
-    }
+    },
 };
 </script>
 

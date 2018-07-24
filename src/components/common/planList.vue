@@ -72,10 +72,9 @@
                         <el-table-column label="投放城市(点位面数,排期)" min-width="22.6%">
                             <template slot-scope="scope">
                                 <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item.text)}}
-                                    <!-- <i v-if="item.IsLock" class="fa fa-lock fa-lg" style="color:#999;"></i>
-                                    <i v-else class="fa fa-unlock fa-lg" style="color:#999;"></i> -->
+                                    <i v-if="item.IsLock" class="fa fa-lock fa-lg" style="color:#999;"></i>
+                                    <i v-else></i>
                                 </p>
-                                <!-- <p v-for="(item, index) of scope.row.cityArea" :key="index">{{setComma(item)}}</p> -->
                             </template>
                         </el-table-column>
                         <el-table-column label="创建日期" min-width="8.3%" sortable :sort-method="sortData">
@@ -274,16 +273,13 @@ export default {
                                 let arr = item.rIDs.split(",");
                                 let dataArr = [];
                                 for (let i = 0; i < arr.length; i++) {
-                                    let text = arr[i].substr(
-                                        0,
-                                        arr[i].indexOf(")") + 1
-                                    );
-                                    let pdid = arr[i].substr(
-                                        arr[i].indexOf(")") + 1
-                                    );
+                                    let text = arr[i].substr(0, arr[i].indexOf(")") + 1);
+                                    let pdid = arr[i].substr(arr[i].indexOf(")") + 1);
+                                    let IsLock = '';
                                     dataArr.push({
                                         text: text,
-                                        pdID: pdid
+                                        pdID: pdid,
+                                        IsLock: IsLock
                                     });
                                 }
 

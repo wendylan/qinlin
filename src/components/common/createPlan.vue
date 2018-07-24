@@ -203,21 +203,21 @@
 									<template slot-scope="props">
 										<el-form label-position="left" inline class="demo-table-expand">
 											<el-form-item label="商圈：">
-												<span>{{ props.row.businessOrigin}}</span>
+												<span>{{ props.row.tradingArea}}</span>
 											</el-form-item>
 											<el-form-item label="楼栋数量：">
 												<span>{{ props.row.buildNum }}</span>
 											</el-form-item>
 											<el-form-item label="资产编号：">
-												<span>{{ props.row.assetID }}</span>
+												<span>{{ props.row.assetTag }}</span>
 											</el-form-item>
 											<el-form-item label="广告尺寸：">
 												<span>{{ props.row.adSize }}</span>
 											</el-form-item>
-											<el-form-item :label="recType === 1? '入住年份:' : '建成年份:'">
+											<el-form-item :label="recType === 1? '入住年份：' : '建成年份：'">
 												<span>{{ props.row.liveYear }}</span>
 											</el-form-item>
-											<el-form-item :label="recType === 1? '小区户数:': '办公室数量:'">
+											<el-form-item :label="recType === 1? '小区户数：': '办公室数量：'">
 												<span>{{ props.row.houseNum }}</span>
 											</el-form-item>
 											<el-form-item label="广告限制：">
@@ -228,7 +228,7 @@
 								</el-table-column>
 								<el-table-column type="selection" width="41px" scope="scope">
 								</el-table-column>
-								<el-table-column label="资源名称" min-width="16.1%" prop="recName">
+								<el-table-column label="资源名称" min-width="16.1%" prop="resName">
 								</el-table-column>
 								<el-table-column v-if="false" min-width="0" label="媒体mID" prop="mID">
 								</el-table-column>
@@ -270,15 +270,15 @@
 											<span @click="getMapADList" style="cursor: pointer">获取地图选点</span>
 										</h4>
 									</div>
-									<el-table border :data="shopingList" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}">
+									<el-table border :data="shopingList" style="width: 100%" :default-sort="{prop: 'resName', order: 'descending'}">
 										<el-table-column type="expand">
 											<template slot-scope="props">
 												<el-form label-position="left" inline class="demo-table-expand">
 													<el-form-item label="商圈：">
-														<span>{{ props.row.businessOrigin}}</span>
+														<span>{{ props.row.tradingArea}}</span>
 													</el-form-item>
 													<el-form-item label="资产编号：">
-														<span>{{ props.row.assetID }}</span>
+														<span>{{ props.row.assetTag }}</span>
 													</el-form-item>
 													<el-form-item label="入住年份：">
 														<span>{{ props.row.liveYear }}</span>
@@ -290,7 +290,7 @@
 												</el-form>
 											</template>
 										</el-table-column>
-										<el-table-column label="资源名称" width="120" prop="recName">
+										<el-table-column label="资源名称" width="120" prop="resName">
 										</el-table-column>
 										<el-table-column prop="mediaName" label="媒体名称" width="120">
 										</el-table-column>
@@ -795,7 +795,7 @@ export default {
             planList: [
                 /*{
             rid: 1,
-            recName: '珠江1',
+            resName: '珠江1',
             city: '广州1',
             origin: '海珠区',
             buildType: '高端住宅',
@@ -804,8 +804,8 @@ export default {
             mediaName: '广州市中山大道',
             buildNum: '12',
             schedules: '2017.08.30-2017.09.30',
-            businessOrigin: '白云万达广场',
-            assetID: 'GZ201871024',
+            tradingArea: '白云万达广场',
+            assetTag: 'GZ201871024',
             liveYear: '1999年',
             adLimit: '地产/医药/汽车',
             checkBox: {A: false, B: false},
@@ -856,7 +856,10 @@ export default {
             totalChangeCash: true, // 修改制作费现金输入验证
             totalChangeZyzh: true, // 修改制作费资源置换输入验证
             totalChangeOther: true, // 修改制作费其他费用输入验证
-            commentMediaADNum: [] // 统计同一城市相同因不同排期而选择相同的asid
+            commentMediaADNum: [], // 统计同一城市相同因不同排期而选择相同的asid
+            mStateIndex: 0, // 切换媒体状态时，如果状态为1(正常)则进行滚动加载，mStateIndex记录下标
+            beforADList_mState: [], // 保存切换媒体的所有数据--ADList
+            scroll_mState: false
         };
     },
     mounted() {
@@ -916,12 +919,14 @@ export default {
             if (this.loadScroll) {
                 if (this.loadSign) {
                     this.loadSign = false;
-                    this.addADList();
-                    // console.log('滚动了')
+                    if (this.scroll_mState === true) {
+                        this.addADList_mState();
+                    } else {
+                        this.addADList();
+                    }
                     setTimeout(() => {
                         this.loadSign = true;
                     }, 500);
-                    // console.log('到底了')
                 }
             } else {
                 console.log("此时为搜索出来的数据");
@@ -1544,14 +1549,45 @@ export default {
                 if (tempList.length !== 0) {
                     if (this.searchInput !== "" && this.searchInput !== null) {
                         let filterList = this.filterResOrigin(tempList); // 过滤搜索条件
+                        console.log("搜索框不为空时过滤", filterList);
                         if (filterList.length !== 0) {
-                            this.setResTypeData(filterList);
+                            if (this.mState !== "") {
+                                // 媒体状态过滤
+                                console.log(
+                                    "切换资源时媒体状态过滤",
+                                    this.mState
+                                );
+                                filterList = this.filter_mState(filterList);
+                                if (filterList.length !== 0) {
+                                    this.setResTypeData(filterList);
+                                } else {
+                                    this.loading = false;
+                                    this.planList = [];
+                                }
+                            } else {
+                                console.log(
+                                    "切换资源时没有进行媒体状态过滤",
+                                    this.mState
+                                );
+                                this.setResTypeData(filterList);
+                            }
                         } else {
                             this.loading = false;
                             this.planList = [];
                         }
                     } else {
-                        this.setResTypeData(tempList);
+                        if (this.mState !== "") {
+                            // 媒体状态过滤
+                            tempList = this.filter_mState(tempList);
+                            if (tempList.length !== 0) {
+                                this.setResTypeData(tempList);
+                            } else {
+                                this.loading = false;
+                                this.planList = [];
+                            }
+                        } else {
+                            this.setResTypeData(tempList);
+                        }
                     }
                 } else {
                     this.loading = false;
@@ -1566,7 +1602,6 @@ export default {
         setResTypeData(Data) {
             let datalist = Data;
             let planArr = [];
-            let rName = this.activeCityData.rName; //this.activeRName
             for (let i = 0; i < datalist.length; i++) {
                 let adObj = this.setTeblePlanList(datalist[i], i);
                 planArr.push(adObj);
@@ -1613,8 +1648,17 @@ export default {
             let tempList = [];
             for (let i = 0; i < dataList.length; i++) {
                 if (dataList[i].resType == TypeNum) {
-                    console.log("i:", i);
-                    tempList.push(dataList[i]);
+                    if (this.mState !== "") {
+                        if (this.mState == dataList[i].mState) {
+                            tempList.push(dataList[i]);
+                        } else {
+                            console.log("****");
+                        }
+                    } else {
+                        tempList.push(dataList[i]);
+                    }
+                    // console.log('i:',i)
+                    // tempList.push(dataList[i])
                 } else {
                     console.log("***");
                 }
@@ -1628,6 +1672,7 @@ export default {
         },
         // stpe2, tab切换城市
         activeCity(item, index) {
+            this.limitName = "全部"; // 初始化广告限制
             this.activeIndex = index;
             this.activeRName = item.rName;
             this.activeCityData = item;
@@ -1650,14 +1695,18 @@ export default {
                 );
                 for (let i = 0; i < this.totalPlanList.length; i++) {
                     if (this.totalPlanList[i].rid === item.rid) {
-                        // console.log('this.totalPlanList[i]',this.totalPlanList[i])
                         if (this.recType === 2) {
                             this.planList = this.filterByResType(
                                 this.beforADTotalList[i].list,
                                 "Fcity"
                             );
                         } else {
-                            this.planList = this.totalPlanList[i].list;
+                            // 媒体状态过滤
+                            if (this.mState !== "") {
+                                this.mStateChange(this.mState);
+                            } else {
+                                this.planList = this.totalPlanList[i].list;
+                            }
                             this.resetPlanList(); // 把所有的勾选去掉
                         }
                         console.log("this.planList", this.planList);
@@ -1789,6 +1838,7 @@ export default {
         },
         //  stpe2, 切换区域
         activeArea(rName) {
+            this.limitName = "全部"; // 初始化广告限制
             this.loadScroll = false;
             this.areaName = rName;
             this.filterByArea(rName);
@@ -1798,8 +1848,6 @@ export default {
             this.loading = true;
             let AName = name;
             let FBAIndex = this.activeIndex;
-            // let copyPlan = this.copyPlanList
-            // console.log('切换区域', AName, ',copyPlan', copyPlan)
             console.log("切换区域", this.firstLevelData);
             let FBA = [];
             if (this.searchInput !== "" && this.searchInput !== null) {
@@ -1813,7 +1861,6 @@ export default {
                     console.log("切换区域temp_FBA", temp_FBA);
                     console.log("切换区域FBA", FBA);
                 }
-                //      FBA = this.filterByResType(this.firstLevelData)    // this.planList
             } else {
                 FBA = this.filterByResType(
                     this.beforADTotalList[FBAIndex].list
@@ -1861,22 +1908,19 @@ export default {
                     this.planList = [];
                     this.loading = false;
                 }
-            } else if (
-                AName === "全市" &&
-                this.searchInput !== "" &&
-                this.searchInput !== null
-            ) {
-                this.planList = this.firstLevelData;
-                this.judgeByselect("FArea");
-                this.secondLevelData = this.planList; // 保存二级过滤
-                this.loading = false;
             } else {
-                console.log(
-                    "搜索为空点击全市",
-                    this.activeCityData,
-                    this.activeIndex
-                );
-                this.activeCity(this.activeCityData, this.activeIndex);
+                if (this.firstLevelData.length) {
+                    this.planList = this.firstLevelData;
+                    this.judgeByselect("FArea");
+                    this.secondLevelData = this.planList; // 保存二级过滤
+                } else {
+                    console.log(
+                        "搜索为空点击全市",
+                        this.activeCityData,
+                        this.activeIndex
+                    );
+                    this.activeCity(this.activeCityData, this.activeIndex);
+                }
                 this.loading = false;
             }
         },
@@ -1884,8 +1928,6 @@ export default {
         filterByADLaunch(fdata, letter) {
             let filterData = fdata;
             let filterPlanArr = [];
-            let cityName = this.activeCityData.rName; //this.activeRName
-            let FBAIndex = this.activeIndex;
             for (let n = 0; n < filterData.length; n++) {
                 let filterAD = this.setTeblePlanList(filterData[n], n);
                 filterPlanArr.push(filterAD);
@@ -1925,61 +1967,107 @@ export default {
                 }
             }
             console.log("广告限制 this.limitName", this.limitName);
-            // this.filterByADLimit(limit)
+            this.filterByADLimit(this.limitName);
         },
         // 广告限制过滤
         filterByADLimit(limit) {
-            // setResTypeData
-            if (!this.loadScroll) {
-                console.log("二级搜索的数据", this.secondLevelData);
-                let filterData = this.secondLevelData;
-                let ADLimitData = [];
-                if (limit === "全部") {
-                    ADLimitData = filterData;
-                } else {
-                    for (let i = 0; i < filterData.length; i++) {
-                        if (
-                            filterData[i].adLimit !== "" &&
-                            filterData[i].adLimit !== undefined &&
-                            filterData[i].adLimit.includes(limit)
-                        ) {
-                            ADLimitData.push(filterData[i]);
-                        } else {
-                            console.log("0");
-                        }
-                    }
+            let LimitList = limit.split("、");
+            console.log("匹配字段ADLimitList", LimitList);
+            let FADLIndex = this.activeIndex;
+            console.log("FADLIndex", FADLIndex);
+            if (limit !== "全部") {
+                let FADLArr = [];
+                let FADL = this.beforADTotalList[FADLIndex].list;
+                if (this.searchInput !== "" && this.searchInput !== null) {
+                    FADL = this.filterResOrigin(FADL);
                 }
-                console.log("广告限制过滤得到的数据", ADLimitData);
-            } else {
-                let FADLIndex = this.activeIndex;
-                console.log("FADLIndex", FADLIndex);
-                if (limit !== "全部") {
-                    // this.loadScroll = false
-                    let FADLArr = [];
-                    // let FADL = this.setTeblePlanList(this.beforADTotalList[FADLIndex].list)
-                    let FADL = this.beforADTotalList[FADLIndex].list;
-                    for (let j = 0; j < FADL.length; j++) {
-                        console.log("资源类型为", this.recType);
-                        if (FADL[j].resType === this.recType) {
-                            // 资源类型过滤
-                            if (
-                                FADL[j].notPush !== undefined &&
-                                FADL[j].notPush.includes(limit)
-                            ) {
-                                console.log("媒体mid", FADL[j].mID);
-                                let tempObj = this.setTeblePlanList(FADL[j], j);
+                for (let j = 0; j < FADL.length; j++) {
+                    console.log("资源类型为", this.recType);
+                    if (FADL[j].resType === this.recType) {
+                        // 资源类型过滤
+                        if (FADL[j].notPush !== undefined) {
+                            console.log("存在广告限制的", FADL[j]);
+                            let tempObj = this.ADLimitFun(LimitList, FADL[j]);
+                            if (tempObj) {
+                                tempObj = this.setTeblePlanList(tempObj, j);
                                 FADLArr.push(tempObj);
                             }
                         }
                     }
-                    console.log("广告限制过滤得到的数据1111", FADLArr);
+                }
+                console.log("广告限制过滤得到的数据1111", FADLArr);
+                if (FADLArr.length) {
+                    // filterResOrigin
+                    let filterList = FADLArr;
+                    if (this.mState !== "") {
+                        filterList = this.filter_mState(filterList);
+                    }
+                    this.planList = filterList;
                 } else {
-                    // this.loadScroll = true
+                    Message({
+                        message: "暂无可选的点位",
+                        type: "warning"
+                    });
+                    this.planList = [];
+                }
+            } else {
+                let tempPlanList = "";
+                if (
+                    (this.searchInput !== "" && this.searchInput !== null) ||
+                    this.mState !== ""
+                ) {
+                    tempPlanList = this.beforADTotalList[FADLIndex].list;
+                    if (this.searchInput !== "" && this.searchInput !== null) {
+                        tempPlanList = this.filterResOrigin(tempPlanList);
+                    }
+                    if (this.mState !== "" && tempPlanList.length) {
+                        tempPlanList = this.filter_mState(tempPlanList);
+                    }
+                    let tempList = [];
+                    for (let i = 0; i < tempPlanList.length; i++) {
+                        if (tempPlanList[i].resType === this.recType) {
+                            let tempObj = this.setTeblePlanList(
+                                tempPlanList[i],
+                                i
+                            );
+                            tempList.push(tempObj);
+                        }
+                    }
+                    tempPlanList = tempList;
+                } else {
                     console.log(
                         "广告限制切换为全部",
                         this.totalPlanList[FADLIndex].list
                     );
+                    tempPlanList = this.totalPlanList[FADLIndex].list;
                 }
+                this.planList = tempPlanList;
+            }
+        },
+        // 广告限制过滤
+        ADLimitFun(LData, FData) {
+            let ADLimitList = LData;
+            let FADList = "";
+            if (FData.notPush !== undefined) {
+                FADList = FData.notPush.split("、");
+            } else {
+                FADList = FData.adLimit.split("、");
+            }
+            console.log("待匹配字段FADList", FADList);
+            let num = 0;
+            for (let i = 0; i < ADLimitList.length - 1; i++) {
+                for (let n = 0; n < FADList.length; n++) {
+                    if (FADList[n] === ADLimitList[i]) {
+                        num += 1;
+                        break;
+                    }
+                }
+            }
+            if (ADLimitList.length - 1 === num) {
+                console.log("媒体mid", FData.mID);
+                return FData;
+            } else {
+                return false;
             }
         },
         // 从原数据到teble显示的数据
@@ -1993,7 +2081,7 @@ export default {
                 resType: setData.resType,
                 asIDs: setData.asIDs,
                 asLabs: setData.asLabs,
-                recName: setData.resName,
+                resName: setData.resName,
                 city: this.activeRName, //'广州',
                 origin: setData.rName,
                 buildType: setData.cType,
@@ -2002,8 +2090,8 @@ export default {
                 mediaName: setData.mTitle,
                 buildNum: setData.fNum,
                 schedules: this.dateInput[0] + "-" + this.dateInput[1],
-                businessOrigin: setData.tradingArea,
-                assetID: setData.assetTag,
+                tradingArea: setData.tradingArea || "",
+                assetTag: setData.assetTag || "",
                 liveYear: setData.chDay,
                 adLimit: setData.notPush,
                 mState:
@@ -2122,7 +2210,7 @@ export default {
                                     resType: ADList[i].resType,
                                     asIDs: ADList[i].asIDs,
                                     asLabs: ADList[i].asLabs,
-                                    recName: ADList[i].resName,
+                                    resName: ADList[i].resName,
                                     city: throwCity[t].rName, //'广州',
                                     origin: ADList[i].rName,
                                     buildType: ADList[i].cType,
@@ -2134,10 +2222,10 @@ export default {
                                         this.dateInput[0] +
                                         "-" +
                                         this.dateInput[1],
-                                    businessOrigin: ADList[i].tradingArea,
-                                    assetID: ADList[i].assetTag,
+                                    tradingArea: ADList[i].tradingArea || "",
+                                    assetTag: ADList[i].assetTag || "",
                                     liveYear: ADList[i].chDay,
-                                    adLimit: ADList[i].notPush,
+                                    adLimit: ADList[i].notPush || "",
                                     mState:
                                         ADList[i].mState === 1
                                             ? "正常"
@@ -2242,12 +2330,24 @@ export default {
                             console.log("遍历选点列表");
                             if (ADList[i].resType === this.recType) {
                                 // 资源类型过滤
-                                let adObj = this.setTeblePlanList(
-                                    ADList[i],
-                                    i,
-                                    n
-                                );
-                                planArr.list.push(adObj);
+                                if (this.mState !== "") {
+                                    if (this.mState == ADList[i].mState) {
+                                        let adObj = this.setTeblePlanList(
+                                            ADList[i],
+                                            i
+                                        );
+                                        planArr.list.push(adObj);
+                                    } else {
+                                        console.log("***");
+                                    }
+                                } else {
+                                    let adObj = this.setTeblePlanList(
+                                        ADList[i],
+                                        i,
+                                        n
+                                    );
+                                    planArr.list.push(adObj);
+                                }
                             }
                             if (
                                 i >= myIndex + 29 &&
@@ -2288,6 +2388,45 @@ export default {
             }
             this.judgeByselect("scoll");
             this.copyPlanList = this.planList;
+        },
+        // 切换媒体状态--监听滚动，每次曾加30条数据
+        addADList_mState() {
+            // beforADList_mState
+            let beforADList = this.beforADList_mState;
+            let index = this.mStateIndex;
+            console.log(index, "beforADList", beforADList);
+            let arr_mState = [];
+            for (let i = index; i < beforADList.length; i++) {
+                if (beforADList[i].resType === this.recType) {
+                    // 资源类型过滤
+                    let adObj = this.setTeblePlanList(beforADList[i], i);
+                    arr_mState.push(adObj);
+                    if (
+                        beforADList.length >= index + 29 &&
+                        i >= index + 29 &&
+                        arr_mState.length >= 29
+                    ) {
+                        this.mStateIndex = i + 1;
+                        break;
+                    } else {
+                        if (i >= beforADList.length - 1) {
+                            this.mStateIndex = i + 1;
+                            console.log(
+                                "媒体状态-滚动加载时列表小于index + 49",
+                                arr_mState
+                            );
+                        }
+                    }
+                }
+            }
+            let tempArr = this.planList;
+            console.log("切换媒体状态--监听滚动arr_mState", arr_mState);
+            for (let data of arr_mState) {
+                tempArr.push(data);
+            }
+            this.planList = tempArr;
+            console.log("媒体状态-滚动加载完成", this.planList);
+            this.judgeByselect("scoll");
         },
         //获取mouseEnter屏幕时的坐标像素
         mouseEnter(row, column, cell, event) {
@@ -2435,6 +2574,7 @@ export default {
                 this.submitForm("planForm");
                 this.shopingList = [];
                 this.badgeNumber = 0;
+                this.limitName = "全部"; // 初始化广告限制
             } else if (this.active === 1) {
                 if (this.badgeNumber !== 0) {
                     this.active++;
@@ -3172,7 +3312,7 @@ export default {
                 mID: info.mID,
                 asIDs: info.asIDs,
                 asLabs: info.asLabs,
-                recName: info.recName,
+                resName: info.resName,
                 city: info.city,
                 origin: info.origin,
                 buildType: info.buildType,
@@ -3181,8 +3321,8 @@ export default {
                 mediaName: info.mediaName,
                 buildNum: info.buildNum,
                 schedules: info.schedules,
-                businessOrigin: info.businessOrigin,
-                assetID: info.assetID,
+                tradingArea: info.tradingArea,
+                assetTag: info.assetTag,
                 liveYear: info.liveYear,
                 adLimit: info.adLimit,
                 checkBox: { A: info.checkBox.A, B: info.checkBox.B }
@@ -3436,7 +3576,7 @@ export default {
                             mID: info.mID,
                             asIDs: info.asIDs,
                             asLabs: info.asLabs,
-                            recName: info.recName,
+                            resName: info.resName,
                             city: info.city,
                             origin: info.origin,
                             buildType: info.buildType,
@@ -3445,8 +3585,8 @@ export default {
                             mediaName: info.mediaName,
                             buildNum: info.buildNum,
                             schedules: info.schedules,
-                            businessOrigin: info.businessOrigin,
-                            assetID: info.assetID,
+                            tradingArea: info.tradingArea,
+                            assetTag: info.assetTag,
                             liveYear: info.liveYear,
                             adLimit: info.adLimit,
                             checkBox: {
@@ -3611,21 +3751,34 @@ export default {
         },
         // 修改搜索中的媒体状态
         mStateChange(val) {
+            this.limitName = "全部"; // 初始化广告限制
             let state = val;
-            let beforAD = "";
+            // let beforAD = ''
             if (state !== "不限") {
-                if (this.searchInput === "") {
-                    beforAD = this.firstLevelData;
-                } else {
-                    let index = this.activeIndex;
-                    beforAD = this.beforADTotalList[index].list;
+                this.mStateIndex = 0;
+                this.scroll_mState = true;
+                let index = this.activeIndex;
+                let beforAD = this.beforADTotalList[index].list;
+                if (this.searchInput !== "") {
+                    console.log("this.firstLevelData", this.firstLevelData);
+                    beforAD = this.filterResOrigin(beforAD); // 搜索框不为空则过滤
                 }
                 let ADList_mState = this.filter_mState(beforAD); // 媒体状态过滤
                 console.log("媒体状态过滤", ADList_mState);
+                this.beforADList_mState = ADList_mState;
+                let mStateList = this.setData_mState(ADList_mState);
+                if (this.mState == 1 && this.recType === 1) {
+                    this.loadScroll = true;
+                } else if (this.mState == 2 || this.recType === 2) {
+                    this.loadScroll = false;
+                }
+                this.planList = mStateList;
             } else {
+                this.scroll_mState = false;
                 this.mState = "";
             }
         },
+        // 媒体状态过滤
         filter_mState(dataInfo) {
             console.log("触发filter_mState", dataInfo);
             let tempList = [];
@@ -3637,12 +3790,15 @@ export default {
                 this.mState
             );
             for (let i = 0; i < dataList.length; i++) {
+                let mState = "";
                 if (dataList[i].mState === "待安装") {
-                    dataList[i].mState = 2;
+                    mState = 2;
                 } else if (dataList[i].mState === "正常") {
-                    dataList[i].mState = 1;
+                    mState = 1;
+                } else {
+                    mState = dataList[i].mState;
                 }
-                if (dataList[i].mState == mStateType) {
+                if (mState == mStateType) {
                     tempList.push(dataList[i]);
                 } else {
                     console.log("***媒体状态filter***");
@@ -3650,9 +3806,40 @@ export default {
             }
             return tempList;
         },
+        // 切换媒体状态后，设置数据
+        setData_mState(dataInfo) {
+            let dataList = dataInfo;
+            let ADList = [];
+            let myIndex = this.mStateIndex;
+            for (let i = 0; i < dataList.length; i++) {
+                if (dataList[i].resType == this.recType) {
+                    let tempObj = this.setTeblePlanList(dataList[i], i);
+                    ADList.push(tempObj);
+                    if (
+                        dataList.length >= 49 &&
+                        i >= myIndex + 49 &&
+                        ADList.length >= myIndex + 49
+                    ) {
+                        this.mStateIndex = i + 1;
+                        break;
+                    } else {
+                        if (i >= dataList.length - 1) {
+                            this.mStateIndex = i + 1;
+                            console.log(
+                                "媒体状态-滚动加载时列表小于49",
+                                ADList
+                            );
+                        }
+                    }
+                }
+            }
+            console.log("媒体状态-滚动加载时下标", this.mStateIndex);
+            return ADList;
+        },
         //step2搜索按钮
         searchFun() {
             console.log("搜索排期时间", this.dateInput);
+            this.limitName = "全部"; // 初始化广告限制
             this.recType = 1;
             this.areaName = "全市";
             this.getAdList("search"); // 根据时间段获取被占点位，并重组选点列表
@@ -3802,49 +3989,25 @@ export default {
             if (!empty) {
                 this.firstLevelSearch = true;
                 let planArr = [];
-                let rName = this.activeCityData.rName; //this.activeRName
                 if (arr.length !== 0) {
                     for (let n = 0; n < arr.length; n++) {
-                        let adObj = {
-                            rid: 0 + n.toString(),
-                            mID: arr[n].mID,
-                            resType: arr[n].resType,
-                            asIDs: arr[n].asIDs,
-                            asLabs: arr[n].asLabs,
-                            recName: arr[n].resName,
-                            city: rName, //'广州',
-                            origin: arr[n].rName,
-                            buildType: arr[n].cType,
-                            houseNum: arr[n].hNum,
-                            buildPrice: arr[n].hPrice / 100,
-                            mediaName: arr[n].mTitle,
-                            buildNum: arr[n].fNum,
-                            schedules:
-                                this.dateInput[0] + "-" + this.dateInput[1],
-                            businessOrigin: arr[n].tradingArea,
-                            assetID: arr[n].assetTag,
-                            liveYear: arr[n].chDay,
-                            adLimit: arr[n].notPush,
-                            mState:
-                                arr[n].mState === 1
-                                    ? "正常"
-                                    : arr[n].mState === 2 ? "待安装" : "",
-                            adSize: arr[n].adSize || "",
-                            checkBox: { A: false, B: false },
-                            box: { A: false, B: false }
-                        };
-                        if (arr[n].asLabs.indexOf("A") === -1) {
-                            adObj.box.A = true;
-                        }
-                        if (arr[n].asLabs.indexOf("B") === -1) {
-                            adObj.box.B = true;
-                        }
                         if (this.recType === arr[n].resType) {
-                            planArr.push(adObj);
+                            if (this.mState !== "") {
+                                if (this.mState == arr[n].mState) {
+                                    let adObj = this.setTeblePlanList(
+                                        arr[n],
+                                        n
+                                    );
+                                    planArr.push(adObj);
+                                } else {
+                                    console.log("***");
+                                }
+                            } else {
+                                let adObj = this.setTeblePlanList(arr[n], n);
+                                planArr.push(adObj);
+                            }
                         }
-                        // planArr.push(adObj)
                         if (n >= arr.length - 1) {
-                            // console.log('搜索过滤完成后的planArr', planArr)
                             this.planList = planArr;
                             this.judgeByselect("firstLevel");
                         }

@@ -183,128 +183,14 @@
                                         </template>
                                     </el-table-column>
                                 </el-table>
-                                <!-- <div class="content_bottom_btn" v-if="!showBtn">
-                                    <el-button type="primary" @click="saveChangePoint">保存</el-button>
-                                    <el-button type="default" @click="cancelChangePoint">取消</el-button>
-                                </div> -->
                             </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="报价单" name="second">
-                        <div class="second-wrap box-wrap">
-                            <h4>报价单</h4>
-                            <div class="panel">
-                                <el-tabs type="border-card" class="baojiadan">
-                                    <el-tab-pane :label="item.city" v-for="item of priceSheet" :key="item.pdID">
-                                        <div class="tab-info">
-                                            <div class="pqxx">
-                                                <h4>排期信息</h4>
-                                                <p>{{item.schedules}}</p>
-                                                <!-- <p>{{formatTime(item.pdStar) +"-"+formatTime(item.pdEnd)+" "+"("+item.pdDays+"面)"}}</p> -->
-                                                <!-- <p>2018.03.01-2018.03.28（20面）、2018.04.01-2018.04.28（10面）、2018.05.01-2018.05.28（10面）</p> -->
-                                            </div>
-                                            <div class="price">
-                                                <div class="price-left">
-                                                    <h4>广告费</h4>
-                                                    <ul>
-                                                        <li>刊例价(面/周)
-                                                            <span>¥ {{priceFormat(item.adPrice)}}</span>
-                                                        </li>
-                                                        <li>投放量(面·天)
-                                                            <span>{{item.pdDays}}</span>
-                                                        </li>
-                                                        <li>赠送(面·天)
-                                                            <span>{{item.pdFreeNum}}</span>
-                                                        </li>
-                                                        <li>广告费折扣
-                                                            <span>{{item.discount}}%</span>
-                                                        </li>
-                                                        <li>¥ {{priceFormat(item.pdAdFee)}}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="price-right">
-                                                    <h4>制作费</h4>
-                                                    <ul>
-                                                        <li>制作费单价
-                                                            <span>¥ 100</span>
-                                                        </li>
-                                                        <li>广告画数量(张)
-                                                            <span>{{item.pdNum}}</span>
-                                                        </li>
-                                                        <li></li>
-                                                        <li>制作费折扣
-                                                            <span>{{item.ADMakeDiscount}}%</span>
-                                                        </li>
-                                                        <li>¥ {{priceFormat(item.pdAdMake)}}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="bottom">
-                                                <div class="bottom-detail">
-                                                    <div class="remark">
-                                                        <p>备注：{{item.pdRemark}}</p>
-                                                    </div>
-                                                    <div class="bill-title-right">
-                                                        <ul>
-                                                            <li>
-                                                                <p>
-                                                                    <em>现金结算：</em>
-                                                                    <span>¥ {{priceFormat(item.pdTotal)}}</span>
-                                                                </p>
-                                                            </li>
-                                                            <li>
-                                                                <p>
-                                                                    <em>资源置换：</em>
-                                                                    <span>¥ {{priceFormat(item.pdSendFee)}}</span>
-                                                                </p>
-                                                            </li>
-                                                            <li>
-                                                                <p>
-                                                                    <em>其他费用：</em>
-                                                                    <span>¥ {{priceFormat(item.pdOtherFee)}}</span>
-                                                                </p>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="bottom-fin">
-                                                    <p>
-                                                        <em style="top: 5px">总计：</em>
-                                                        <span class="totalPrice">¥ {{priceFormat(item.allprice)}}</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </el-tab-pane>
-                                </el-tabs>
-                            </div>
-                        </div>
+                        <price-sheet @detailInfo="setInfo" :copydata="copyAsidArr" :isorder="true"></price-sheet>
                     </el-tab-pane>
                     <el-tab-pane label="物料信息" name="third" :disabled="usableBtn">
-                        <div class="third-wrap box-wrap">
-                            <h4>物料信息</h4>
-                            <div class="table_wrap">
-                                <el-table :data="materialInfo" border style="width: 100%">
-                                    <el-table-column label="序号" min-width="5.9%">
-                                        <template slot-scope="scope">
-                                            <span>{{scope.$index+1}}</span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="adSize" label="广告尺寸" min-width="12.4%">
-                                    </el-table-column>
-                                    <el-table-column prop="adViewSize" label="可视画面" min-width="12.4%">
-                                    </el-table-column>
-                                    <el-table-column prop="resolution" label="分辨率" min-width="12.4%">
-                                    </el-table-column>
-                                    <el-table-column prop="colorMode" label="颜色模式" min-width="12.4%">
-                                    </el-table-column>
-                                    <el-table-column prop="photoFormat" label="文件格式" min-width="17.6%">
-                                    </el-table-column>
-                                    <el-table-column prop="pointNum" label="点位面数" min-width="12.7%">
-                                    </el-table-column>
-                                </el-table>
-                            </div>
-                        </div>
+                        <material :material="copyAsidArr"></material>
                     </el-tab-pane>
                     <el-tab-pane label="上刊报告" name="forth" :disabled="usableBtn||role =='OP'">
                         <div class="forth-wrap box-wrap">
@@ -716,8 +602,8 @@ import commaFormat from "../../commonFun/commaFormat.js";
 import filterFormat from "../../commonFun/filterTableData.js";
 // 时间格式化
 import dateFormat from "../../commonFun/timeFormat.js";
-// 转换时间
-import dayToWeek from "../../commonFun/dayToWeek.js";
+import priceSheet from "./components/priceSheet.vue";
+import material from "./components/materialInfo.vue";
 import {
     Table,
     TableColumn,
@@ -744,6 +630,8 @@ import {
 export default {
     name: "orderDetail",
     components: {
+        priceSheet,
+        material,
         elTable: Table,
         elTableColumn: TableColumn,
         elTabs: Tabs,
@@ -761,7 +649,7 @@ export default {
         elPagination: Pagination,
         elPopover: Popover,
         elForm: Form,
-        elFormItem: FormItem
+        elFormItem: FormItem,
     },
     data() {
         return {
@@ -786,7 +674,7 @@ export default {
             currentSetpoint: [],
             copyAsidArr: [],
             // 报价单详情
-            priceSheet: [],
+            // priceSheet: [],
             // 城市过滤结果
             filterCityData: [],
             // 地区过滤结果
@@ -798,7 +686,7 @@ export default {
             selectRecName: "1",
             imgOrder: "",
             //物料信息
-            materialInfo: [],
+            // materialInfo: [],
             // 上刊报告Arr
             upReportArr: [],
             currUpReportArr: [],
@@ -1152,7 +1040,7 @@ export default {
         // 选点排期
         this.getSetPoint();
         // 报价单
-        this.getPriceData();
+        // this.getPriceData();
     },
     computed: {
         // 现投放面数
@@ -1213,6 +1101,16 @@ export default {
         }
     },
     methods: {
+        setInfo(data){
+           console.log('defail------data', data); 
+            this.$set(this.orderDetail, "rIDs", data.rIDs);
+            this.$set(this.orderDetail, "Total", data.Total);
+            this.$set(this.orderDetail, "pdTotal", data.pdTotal);
+            this.$set(this.orderDetail, "pdSendFee", data.pdSendFee);
+            this.$set(this.orderDetail, "pdOtherFee", data.pdOtherFee);
+            // this.priceSheet = data.priceSheet;
+        },
+        // 导出excel
         export2Excel(name) { 
             require.ensure([], () => { 
                 const { export_json_to_excel } = require('../../vendorExcel/Export2Excel'); 
@@ -1224,7 +1122,7 @@ export default {
             }) 
         }, 
         formatJson(filterVal, jsonData) { 
-            return jsonData.map(v => filterVal.map(j => v[j])) 
+            return jsonData.map(v => filterVal.map(j => v[j]));
         },
         // 判断是否是有换点跳转过来的？
         isChangePoint(){
@@ -1289,21 +1187,10 @@ export default {
             if (this.planPanel == "first") {
                 this.getSetPoint();
             }
-            if (this.planPanel == "second") {
-                this.getPriceData();
-            }
-            if (this.planPanel == "third") {
-                // 物料信息
-                this.getMaterialInfo(this.copyAsidArr);
-                // this.materialInfo = this.getMaterialInfo(this.copyAsidArr);
-                console.log("materialInfo", this.materialInfo);
-            }
             if (this.planPanel == "forth") {
-                // this.currUpPage = 1;
                 this.getUpImgInfo();
             }
             if (this.planPanel == "fifth") {
-                // this.currDownPage = 1;
                 this.getDownImgInfo();
             }
         },
@@ -1353,9 +1240,6 @@ export default {
                     console.log(res.data);
                     if (!res.data.SysCode) {
                         let info = res.data;
-                        // if (info.apTotal) {
-                        //     info.apTotal = this.priceFormat(info.apTotal / 100);
-                        // }
                         this.orderDetail = info;
                         this.apQC = this.orderDetail.apQC
                             ? this.orderDetail.apQC
@@ -1406,9 +1290,6 @@ export default {
                         this.copyAsidArr = JSON.parse(JSON.stringify(result));
                         this.setpointArr = result;
                         this.currentSetpoint = this.setpointArr;
-                        // // 物料信息
-                        // this.materialInfo = this.getMaterialInfo(result);
-                        // console.log("materialInfo", this.materialInfo);
                         // 城市筛选过滤
                         this.filterCityData = filterFormat(result, "city");
                         this.filtersArea = filterFormat(result, "rName");
@@ -1536,50 +1417,6 @@ export default {
                     console.log(res);
                 });
         },
-        // 组装成物料信息数据
-        getMaterialInfo(info) {
-            if (this.materialInfo.length) {
-                return;
-            }
-            let result = [];
-            for (let data of info) {
-                let door = 1;
-                for (let res of result) {
-                    if (
-                        res.adSize == data.adSize &&
-                        res.adViewSize == data.adViewSize
-                    ) {
-                        door = 0;
-                    }
-                }
-                if (door) {
-                    result.push(data);
-                }
-            }
-            console.log("reuslt-------", result);
-            for (let res of result) {
-                let pointNum = 0;
-                for (let init of info) {
-                    if (
-                        res.adSize == init.adSize &&
-                        res.adViewSize == init.adViewSize
-                    ) {
-                        if (pointNum == 0) {
-                            pointNum = 1;
-                        } else {
-                            pointNum++;
-                        }
-                    }
-                }
-                res.pointNum = pointNum;
-                res.resolution = "150dpi";
-                res.colorMode = "CMYK";
-                res.photoFormat = "JPG/TIF/AI/PSD/CDR";
-            }
-            console.log("reuslt222-------", result);
-            this.materialInfo = result;
-            return result;
-        },
         // 区域二级联动
         getCitys(arr) {
             let cityArr = [];
@@ -1624,8 +1461,13 @@ export default {
             for (let data of arr) {
                 let upimg = [];
                 let downimg = [];
+                let ds = dateFormat.toDate(data.lStar, ".");
+                let de = dateFormat.toDate(data.lEnd, ".");
                 for (let item of imgArr) {
-                    if (data.asID == item.ptID) {
+                    let alt = JSON.parse(item.pAlt);
+                    let start = dateFormat.toDate(alt.lstart, ".");
+                    let end = dateFormat.toDate(alt.lend, ".");
+                    if (data.asID == item.ptID && ds == start && de == end) {
                         if (type == "SK") {
                             // uid         int【必填】         当前账户UserID
                             // pid         int【必填】         图库pID
@@ -1678,224 +1520,6 @@ export default {
                 }
             }
             return arr;
-        },
-        // 获取三个费用价格(报价单)
-        getPriceData() {
-            if (this.priceSheet.length) {
-                return;
-            }
-            // 真实数据
-            let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
-            let apid = sessionStorage.getItem("order_apid");
-            let info = {
-                uid: uid,
-                apid: apid
-            };
-            // 获取各个城市的刊例价
-            // uid         int【必填】     当前账户UserID
-            api
-                .getApi("/GetAdPrice", { uid: uid })
-                .then(res => {
-                    console.log(res.data);
-                    let adPrice = res.data;
-                    // uid         int【必填】     当前账户UserID
-                    // apid        int             公司对应方案apID
-                    api
-                        .getApi("/GetAPD", info)
-                        .then(res => {
-                            console.log(res.data);
-                            if (!res.data.SysCode) {
-                                let plandata = res.data;
-                                let pdTotal = 0;
-                                let pdSendFee = 0;
-                                let pdOtherFee = 0;
-                                let arr = [];
-                                let city = '';
-                                for (let price of plandata) {
-                                    pdTotal += price.pdTotal;
-                                    pdSendFee += price.pdSendFee;
-                                    pdOtherFee += price.pdOtherFee;
-
-                                    let obj = {
-                                        pdID: price.pdID,
-                                        apID: price.apID,
-                                        rID: price.rID,
-                                        city: "",
-                                        muID: price.muID,
-                                        adPrice: 0,
-                                        // 投放量
-                                        pdDays: price.pdDays,
-                                        pdStar: price.pdStar,
-                                        pdEnd: price.pdEnd,
-                                        // 赠送
-                                        pdFreeNum: price.pdFreeNum,
-                                        // 广告费用
-                                        pdAdFee: price.pdAdFee / 100,
-                                        // 广告画数量
-                                        pdNum: price.pdNum,
-                                        // 制作费
-                                        pdAdMake: price.pdAdMake / 100,
-                                        // 现金结算
-                                        pdTotal: price.pdTotal / 100,
-                                        // 资源置换
-                                        pdSendFee: price.pdSendFee / 100,
-                                        // 其他费用
-                                        pdOtherFee: price.pdOtherFee / 100,
-                                        allprice: 0,
-                                        pdRemark: price.pdRemark
-                                    };
-                                    obj.allprice = (price.pdTotal + price.pdSendFee + price.pdOtherFee) / 100;
-                                    obj.city = areaToText.toTextCity(obj.rID);
-                                    city = obj.city+','+city;
-                                    arr.push(obj);
-                                }
-                                this.$set(this.orderDetail, "rIDs", city);
-                                let total = pdTotal + pdSendFee + pdOtherFee;
-                                this.$set(this.orderDetail, "Total",this.priceFormat(total / 100));
-                                this.$set(this.orderDetail, "pdTotal", this.priceFormat(pdTotal / 100));
-                                this.$set(this.orderDetail, "pdSendFee", this.priceFormat(pdSendFee / 100));
-                                this.$set(this.orderDetail, "pdOtherFee", this.priceFormat(pdOtherFee / 100));
-                                // 为每一条添加刊例价,广告费折扣百分比，制作费折扣百分比
-                                for (let ta of arr) {
-                                    for (let ad of adPrice) {
-                                        if (ad.rID == ta.rID) {
-                                            ta.adPrice = ad.adPrice / (100 * 2); // 刊例价(面/周)
-                                            let onedayPrice = ta.adPrice / 7;
-                                            let discount = Math.round(ta.pdAdFee / (onedayPrice * ta.pdDays) * 10000) / 100;
-                                            let ADMakeDiscount = Math.round(ta.pdAdMake / (100 * ta.pdNum) * 10000 ) / 100;
-                                            ta.discount = isNaN(discount)? 0 : discount; // 广告费折扣百分比
-                                            ta.ADMakeDiscount = isNaN(ADMakeDiscount) ? 0 : ADMakeDiscount; // 制作费折扣百分比
-                                            break;
-                                        }
-                                    }
-                                }
-                                // 整合排期信息
-                                let asidRes = this.getSchedules(
-                                    this.copyAsidArr
-                                );
-                                // 整合排期信息并且渲染页面
-                                this.priceSheet = this.setSchedules(
-                                    arr,
-                                    asidRes
-                                );
-                                // this.loading = false;
-                            } else if (res.data.SysCode == 100302) {
-                                this.loginTimeout();
-                            } else {
-                                Message.warning(res.data.MSG);
-                            }
-                        })
-                        .catch(res => {
-                            // this.loading = false;
-                            console.log(res);
-                        });
-                })
-                .catch(res => {
-                    console.log(res);
-                });
-        },
-        dayToweeks(days){
-            return dayToWeek.toWeeks(days)
-        },
-        dateToDays(start, end){
-            return dayToWeek.toDays(start, end);
-        },
-        // 整合排期信息
-        setSchedules(arr, asidRes) {
-            for (let arrData of arr) {
-                let schedules = "";
-                for (let asid of asidRes) {
-                    let arrDataRID = arrData.rID.toString().substring(0, 4);
-                    let dataRID = asid.rID.toString().substring(0, 4);
-                    let ds = dateFormat.toDate(asid.ds, ".");
-                    let de = dateFormat.toDate(asid.de, ".");
-                    let days = this.dateToDays(ds, de);
-                    let weekDay = this.dayToweeks(days);
-                    let weekDays = '';
-                    if(days < 7){
-                        weekDays = weekDay.day+'天';
-                    }else if((weekDay.day ==0) && (weekDay.week != 0)){
-                        weekDays = weekDay.week+'周';
-                    }else{
-                        weekDays = weekDay.week +'周'+weekDay.day+'天';
-                    }
-                    if (arrDataRID == dataRID) {
-                        if (schedules == "") {
-                            schedules = ds + "-" + de + "("+ weekDays+',共'+ asid.mNum + "面)";
-                        } else {
-                            schedules = schedules +" " + ds + "-" + de +"("+ weekDays+',共'+ asid.mNum + "面)";
-                        }
-                    }
-                }
-                console.log("schedules----------", schedules);
-                arrData.schedules = schedules;
-            }
-            console.log("arrschedules--------------", arr);
-            return arr;
-        },
-        // 获取过滤选点排期以便在报价单一栏显示排期信息
-        getSchedules(asidArr) {
-            // 组装数据
-            let result = [];
-            if (!result.length) {
-                let obj = {
-                    rID: asidArr[0].rID,
-                    ds: dateFormat.toDate(asidArr[0].lStar),
-                    de: dateFormat.toDate(asidArr[0].lEnd),
-                    asidlist: "",
-                    mNum: ""
-                };
-                result.push(obj);
-            }
-            // 组合asid
-            for (let res of result) {
-                let asIDs = "";
-                let mNum = 0;
-                for (let init of asidArr) {
-                    let resRID = res.rID.toString().substring(0, 4);
-                    let dataRID = init.rID.toString().substring(0, 4);
-                    let start = dateFormat.toDate(init.lStar);
-                    let end = dateFormat.toDate(init.lEnd);
-                    let resObj = {
-                        rID: init.rID,
-                        ds: start,
-                        de: end,
-                        asidlist: "",
-                        mNum: ""
-                    };
-                    if (resRID == dataRID && res.ds == start && res.de == end) {
-                        if (asIDs === "") {
-                            asIDs = init.asID.toString();
-                            mNum = 1;
-                        } else {
-                            asIDs = asIDs + "," + init.asID;
-                            mNum++;
-                        }
-                    } else {
-                        let door = 1;
-                        for (let data of result) {
-                            let dataR = data.rID.toString().substring(0, 4);
-                            let initR = init.rID.toString().substring(0, 4);
-                            if (
-                                dataR == initR &&
-                                data.ds == start &&
-                                data.de == end
-                            ) {
-                                door = 0;
-                            }
-                        }
-                        if (door) {
-                            result.push(resObj);
-                        }
-                    }
-                }
-                res.asidlist = asIDs;
-                res.mNum = mNum;
-
-                console.log("asidS", asIDs);
-            }
-            console.log("result-------------", result);
-            return result;
         },
         // 状态转换成文本
         stateToText(val) {
@@ -2226,7 +1850,13 @@ export default {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.upReportArr) {
-                            if (data.asID == this.upLoadData.ptid) {
+                            let ds = dateFormat.toDate(data.lStar, ".");
+                            let de = dateFormat.toDate(data.lEnd, ".");
+                            let alt = JSON.parse(this.upLoadData.palt);
+                            let start = dateFormat.toDate(alt.lstart, ".");
+                            let end = dateFormat.toDate(alt.lend, ".");
+
+                            if (data.asID == this.upLoadData.ptid && ds == start && de == end) {
                                 let item = file.response;
                                 let obj = {
                                     name: info.pid + ".png",
@@ -2276,7 +1906,13 @@ export default {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.downReportArr) {
-                            if (data.asID == this.upLoadData.ptid) {
+                            let ds = dateFormat.toDate(data.lStar, ".");
+                            let de = dateFormat.toDate(data.lEnd, ".");
+                            let alt = JSON.parse(this.upLoadData.palt);
+                            let start = dateFormat.toDate(alt.lstart, ".");
+                            let end = dateFormat.toDate(alt.lend, ".");
+
+                            if (data.asID == this.upLoadData.ptid && ds == start && de == end) {
                                 let item = file.response;
                                 let obj = {
                                     name: info.pid + ".png",
@@ -2321,7 +1957,13 @@ export default {
                         Message.success(res.data.MSG);
                         if (type == "SK") {
                             for (let i = 0; i < this.upReportArr.length; i++) {
-                                if (this.upReportArr[i].asID == file.ptid) {
+                                let ds = dateFormat.toDate(this.upReportArr[i].lStar, ".");
+                                let de = dateFormat.toDate(this.upReportArr[i].lEnd, ".");
+                                let alt = JSON.parse(file.palt);
+                                let start = dateFormat.toDate(alt.lstart, ".");
+                                let end = dateFormat.toDate(alt.lend, ".");
+
+                                if (this.upReportArr[i].asID == file.ptid && ds == start && de == end) {
                                     if (
                                         this.upReportArr[i].upImgArr.length == 1
                                     ) {
@@ -2338,12 +1980,14 @@ export default {
                                 }
                             }
                         } else {
-                            for (
-                                let i = 0;
-                                i < this.downReportArr.length;
-                                i++
-                            ) {
-                                if (this.downReportArr[i].asID == file.ptid) {
+                            for (let i = 0;i < this.downReportArr.length; i++) {
+                                let ds = dateFormat.toDate(this.downReportArr[i].lStar, ".");
+                                let de = dateFormat.toDate(this.downReportArr[i].lEnd, ".");
+                                let alt = JSON.parse(file.palt);
+                                let start = dateFormat.toDate(alt.lstart, ".");
+                                let end = dateFormat.toDate(alt.lend, ".");
+
+                                if (this.downReportArr[i].asID == file.ptid && ds == start && de == end) {
                                     if (
                                         this.downReportArr[i].downImgArr
                                             .length == 1
@@ -2385,26 +2029,20 @@ export default {
         },
         // 查看h5上刊报告按钮
         showH5Up() {
-            // getReport
-            // this.$router.push("/upReport");
-            // window.open(window.location.origin + "/upReport");
-            // window.open(window.location.origin + "/Report?SK="+'4564641');
             let apid = sessionStorage.getItem('order_apid');
             api.getApi('/EncryptNo', {num: apid}).then(res =>{
                 console.log(res.data);
-                window.open(window.location.origin + "/Report?SK="+res.data.EncryptCode);
+                window.open("/Report?SK="+res.data.EncryptCode);
             }).catch(res =>{
                 console.log(res);
             });
         },
         //查看h5下刊报告按钮
         showH5Down() {
-            // this.$router.push("/downReport");
-            // window.open(window.location.origin + "/downReport");
             let apid = sessionStorage.getItem('order_apid');
             api.getApi('/EncryptNo', {num: apid}).then(res =>{
                 console.log(res.data);
-                window.open(window.location.origin + "/Report?XK="+res.data.EncryptCode);
+                window.open("/Report?XK="+res.data.EncryptCode);
             }).catch(res =>{
                 console.log(res);
             });

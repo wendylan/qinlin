@@ -412,6 +412,14 @@ export default {
                                     });
                                     this.planList[index].mState = Status;
                                     this.currentPlan = this.planList;
+                                } else if (
+                                    res.data.SysCode === 200302 ||
+                                    res.data.MSG === "广告位已被占用"
+                                ) {
+                                    Message({
+                                        type: "warning",
+                                        message: res.data.MSG
+                                    });
                                 } else {
                                     Message({
                                         type: "warning",

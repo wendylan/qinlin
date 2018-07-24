@@ -17,6 +17,7 @@ import planDetail from '../components/common/planDetail.vue';
 import orderDetail from '../components/common/orderDetail.vue';
 import photoGallery from '../components/common/photoGallery.vue';
 import ludanReport from '../components/common/ludanReport.vue';
+import mapMessage from '../components/common/mapMessage'
 //管理员
 import admin from '../components/admin/admin_common.vue'
 
@@ -52,6 +53,7 @@ export default new Router({
 	routes: [
 		{ path: '/', redirect: '/login' },
 		{ path: '/login', name: 'login', component: login },
+    { path: '/mapMessage',name: 'mapMessage',component: mapMessage },
 
 		//上下刊报告h5页面
 		{ path: '/upReport', name: 'upReport', component: upReport },

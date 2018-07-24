@@ -1911,15 +1911,36 @@ export default {
                 .postApi("/CtrlMedia", { uid: uid, mid: mid, mstate: mstate })
                 .then(res => {
                     console.log("修改媒体状态", res);
-                    let data = res.data;
-                    if (!data.SysCode) {
+                    if (
+                        res.data.SysCode === 200200 ||
+                        res.data.MSG === "操作成功"
+                    ) {
                         Message({
                             type: "success",
-                            message: "成功更改状态"
+                            message: "状态更改成功"
+                        });
+                    } else if (
+                        res.data.SysCode === 200302 ||
+                        res.data.MSG === "广告位已被占用"
+                    ) {
+                        Message({
+                            type: "warning",
+                            message: res.data.MSG
+                        });
+                    } else {
+                        Message({
+                            type: "warning",
+                            message: "状态更改失败"
                         });
                     }
+                    // let data = res.data
+                    // if(!data.SysCode){
+                    //   Message({
+                    //     type: 'success',
+                    //     message: '成功更改状态'
+                    //   });
+                    // }
                 });
-            // }
         },
         editReturn() {},
         clearData() {
