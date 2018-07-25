@@ -24,58 +24,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="plan-detail">
-                            <div class="plan-detail-left">
-                                <ul>
-                                    <li>
-                                        <span>公司名称：</span>
-                                        <em>{{planDetail.cName}}</em>
-                                    </li>
-                                    <li>
-                                        <span>联系人：</span>
-                                        <em>{{planDetail.cuName}}</em>
-                                    </li>
-                                    <li>
-                                        <span>现金结算：</span>
-                                        <em>¥ {{planDetail.pdTotal}}</em>
-                                    </li>
-                                    <li>
-                                        <span>公司品牌：</span>
-                                        <em>{{planDetail.bTitle}}</em>
-                                    </li>
-                                    <li>
-                                        <span>投放城市：</span>
-                                        <em>{{filter(planDetail.rIDs)}}</em>
-                                    </li>
-                                    <li>
-                                        <span>资源置换：</span>
-                                        <em>¥ {{planDetail.pdSendFee}}</em>
-                                    </li>
-                                    <li>
-                                        <span>所属销售：</span>
-                                        <em>{{planDetail.realName}}</em>
-                                    </li>
-                                    <!-- <li>
-                                        <span>方案备注：</span>
-                                        <em>{{planDetail.apRemark}}</em>
-                                    </li> -->
-                                    <li>
-                                        <span>其他费用：</span>
-                                        <em>¥ {{planDetail.pdOtherFee}}</em>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="plan-detail-right">
-                                <dl>
-                                    <dt>状态</dt>
-                                    <dd>{{stateToText(planDetail.apState)}}</dd>
-                                </dl>
-                                <dl>
-                                    <dt>方案金额</dt>
-                                    <dd>¥ {{planDetail.Total}}</dd>
-                                </dl>
-                            </div>
-                        </div>
+                        <detail :detail="planDetail"></detail>
                         <div class="plan-panel">
                             <el-tabs v-model="planPanel" @tab-click="handleClick()">
                                 <el-tab-pane label="选点排期" name="first">
@@ -295,6 +244,7 @@ import filterFormat from "../../commonFun/filterTableData.js";
 import dateFormat from "../../commonFun/timeFormat.js";
 import priceSheet from "./components/priceSheet.vue";
 import material from "./components/materialInfo.vue";
+import detail from "./components/detailInfo.vue";
 import {
     Table,
     TableColumn,
@@ -310,6 +260,7 @@ export default {
     components: {
         priceSheet,
         material,
+        detail,
         elTable: Table,
         elTableColumn: TableColumn,
         elTabs: Tabs,
@@ -374,20 +325,6 @@ export default {
             if (this.planPanel == "first") {
                 this.getSetPoint();
             }
-        },
-        // 去重城市
-        filter(val) {
-            let res = "";
-            if (val) {
-                for (let data of val.split(",")) {
-                    if (!res.includes(data)) {
-                        res = data + "," + res;
-                    }
-                }
-                console.log(res);
-                res = res.toString().substring(0, res.toString().length - 1);
-            }
-            return res;
         },
         // 获取选点排期列表数据
         getInitData() {
@@ -517,66 +454,9 @@ export default {
                     });
             }
         },
-        // 组装成物料信息数据
-        getMaterialInfo(info) {
-            if (this.materialInfo.length) {
-                return;
-            }
-            let result = [];
-            for (let data of info) {
-                let door = 1;
-                for (let res of result) {
-                    if (
-                        res.adSize == data.adSize &&
-                        res.adViewSize == data.adViewSize
-                    ) {
-                        door = 0;
-                    }
-                }
-                if (door) {
-                    result.push(data);
-                }
-            }
-            for (let res of result) {
-                let pointNum = 0;
-                for (let init of info) {
-                    if (
-                        res.adSize == init.adSize &&
-                        res.adViewSize == init.adViewSize
-                    ) {
-                        if (pointNum == 0) {
-                            pointNum = 1;
-                        } else {
-                            pointNum++;
-                        }
-                    }
-                }
-                res.pointNum = pointNum;
-                res.resolution = "150dpi";
-                res.colorMode = "CMYK";
-                res.photoFormat = "JPG/TIF/AI/PSD/CDR";
-            }
-            this.materialInfo = result;
-            return result;
-        },
         // 城市转换为中文
         cityToText(rid) {
             return areaToText.toTextCity(rid);
-        },
-        // 状态转换成文本
-        stateToText(val) {
-            let state = [
-                { text: "已完成", state: 0 },
-                { text: "进行中", state: 1 },
-                { text: "未投放", state: 2 },
-                { text: "投放中", state: 3 },
-                { text: "强行结束", state: 5 }
-            ];
-            for (let data of state) {
-                if (val == data.state) {
-                    return data.text;
-                }
-            }
         },
         // 时间格式规范
         formatTime(val) {
@@ -1051,69 +931,6 @@ export default {
     margin-right: 16px;
 }
 
-.plan-detail {
-    font-size: 14px;
-    color: #333333;
-    padding-left: 41px;
-}
-
-.plan-detail-left {
-    float: left;
-    width: 78%;
-}
-
-.plan-detail-left ul {
-    width: 100%;
-    float: left;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.plan-detail-left ul li {
-    float: left;
-    width: 280px;
-    margin-bottom: 12px;
-}
-
-.plan-detail-left ul li:nth-child(3n-2) {
-    /*width: 350px;*/
-}
-
-.plan-detail-left ul li:nth-child(3n-1) {
-    /*width: 248px;*/
-}
-
-.plan-detail-left ul li em {
-    font-size: 14px;
-    color: #666666;
-}
-
-.plan-detail-right {
-    display: flex;
-    justify-content: space-between;
-    width: 21%;
-    float: right;
-}
-
-.plan-detail-right dl {
-    float: left;
-    text-align: right;
-}
-
-.plan-detail-right dt {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.45);
-}
-
-.plan-detail-right dd {
-    margin-top: 4px;
-    display: inline-block;
-    font-size: 20px;
-    color: rgba(0, 0, 0, 0.85);
-    font-weight: bold;
-}
-
 /*面包屑导航*/
 .tip {
     position: absolute;
@@ -1213,29 +1030,12 @@ export default {
     .tab-info .price h4 {
         width: 94%;
     }
-
-    .plan-detail-left ul li:nth-child(3n-2) {
-        /*width: 500px;*/
-    }
-
-    .plan-detail-left ul li:nth-child(3n-1) {
-        /*width: 400px;*/
-    }
-
     .up-loader-Imgpanel + .up-loader-Imgpanel {
         margin-left: 54px;
     }
 
     .up-loader-Imgpanel:nth-child(5) {
         margin-left: 0;
-    }
-
-    .plan-detail-left ul li {
-        width: 400px;
-    }
-
-    .plan-detail-right {
-        width: 15%;
     }
 }
 </style>

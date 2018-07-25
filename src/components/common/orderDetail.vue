@@ -20,7 +20,6 @@
                         </h4>
                         <!--修改合同号对话框-->
                         <el-dialog title="修改合同编号" :visible.sync="changeCID" width="30%">
-                            <!-- <el-input v-model="apQC" @change="setApQC()"></el-input> -->
                             <el-input v-model="apQC"></el-input>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="cancelChangeID">取 消</el-button>
@@ -41,58 +40,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="plan-detail">
-                            <div class="plan-detail-left">
-                                <ul>
-                                    <li>
-                                        <span>公司名称：</span>
-                                        <em>{{orderDetail.cName}}</em>
-                                    </li>
-                                    <li>
-                                        <span>所属销售：</span>
-                                        <em>{{orderDetail.realName}}</em>
-                                    </li>
-                                    <li>
-                                        <span>现金结算：</span>
-                                        <em>¥ {{orderDetail.pdTotal}}</em>
-                                    </li>
-                                    <li>
-                                        <span>公司品牌：</span>
-                                        <em>{{orderDetail.bTitle}}</em>
-                                    </li>
-                                    <li>
-                                        <span>投放城市：</span>
-                                        <em>{{filter(orderDetail.rIDs)}}</em>
-                                    </li>
-                                    <li>
-                                        <span>资源置换：</span>
-                                        <em>¥ {{orderDetail.pdSendFee}}</em>
-                                    </li>
-                                    <li>
-                                        <span>联系人：</span>
-                                        <em>{{orderDetail.cuName}}</em>
-                                    </li>
-                                    <!-- <li>
-                                        <span>方案备注：</span>
-                                        <em>{{orderDetail.remark||"无"}}</em>
-                                    </li> -->
-                                    <li>
-                                        <span>其他费用：</span>
-                                        <em>¥ {{orderDetail.pdOtherFee}}</em>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="plan-detail-right">
-                                <dl>
-                                    <dt>状态</dt>
-                                    <dd>{{stateToText(orderDetail.apState)}}</dd>
-                                </dl>
-                                <dl>
-                                    <dt>方案金额</dt>
-                                    <dd>¥ {{orderDetail.Total}}</dd>
-                                </dl>
-                            </div>
-                        </div>
+                        <detail :detail="orderDetail" :isorder="true"></detail>
                     </div>
                 </div>
             </div>
@@ -219,13 +167,10 @@
                                         <div class="up-loader-Imgpanel" v-for="(updata,index) in pageUpReportArr" :key="index">
                                             <el-card class="box-card" shadow="never">
                                                 <div slot="header" class="clearfix img-car">
-                                                    <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
                                                     <span>{{updata.city+"-"+updata.rName+"-"+updata.resName+"-"+updata.mTitle+"-"+updata.asLab}}</span>
                                                     <el-popover placement="top-start" width="200" trigger="hover">
                                                         <ol slot-scope="scope" style="text-align:center">
                                                             <li>{{updata.timeRange}}</li>
-                                                            <!-- <li>2017.10.10-2018.10.10</li>
-                                                            <li>2017.10.10-2018.10.10</li> -->
                                                         </ol>
                                                         <i class="el-icon-date" style="float: right; padding: 3px 0" type="text" slot="reference"></i>
                                                     </el-popover>
@@ -313,7 +258,6 @@
                                         <div class="up-loader-Imgpanel" v-for="(downData,index) in pageDownReportArr" :key="index">
                                             <el-card class="box-card" shadow="never">
                                                 <div slot="header" class="clearfix img-car">
-                                                    <!-- <span>广州市-天河区-东方雅苑-西门-B</span> -->
                                                     <span>{{downData.city+"-"+downData.rName+"-"+downData.resName+"-"+downData.mTitle+"-"+downData.asLab}}</span>
                                                     <i class="el-icon-date" style="float: right; padding: 3px 0" type="text"></i>
                                                 </div>
@@ -604,6 +548,7 @@ import filterFormat from "../../commonFun/filterTableData.js";
 import dateFormat from "../../commonFun/timeFormat.js";
 import priceSheet from "./components/priceSheet.vue";
 import material from "./components/materialInfo.vue";
+import detail from "./components/detailInfo.vue";
 import {
     Table,
     TableColumn,
@@ -632,6 +577,7 @@ export default {
     components: {
         priceSheet,
         material,
+        detail,
         elTable: Table,
         elTableColumn: TableColumn,
         elTabs: Tabs,
@@ -1209,20 +1155,6 @@ export default {
                 this.$router.push("./orderList");
             }
         },
-        // 去重城市
-        filter(val) {
-            let res = "";
-            if (val) {
-                for (let data of val.split(",")) {
-                    if (!res.includes(data)) {
-                        res = data + "," + res;
-                    }
-                }
-                res = res.toString().substring(0, res.toString().length - 1);
-                console.log(res);
-            }
-            return res;
-        },
         // 获取选点排期列表数据
         getInitData() {
             // 真实数据
@@ -1392,12 +1324,6 @@ export default {
                         this.currDownReportArr = JSON.parse(JSON.stringify(this.downReportArr));
                         this.citySelect[0] = "全部";
                         this.changePage(1);
-                        // this.pageDownReportArr = this.currDownReportArr;
-                        // this.searchImg();
-
-                        // this.currDownPage = 1;
-                        // this.changeDownPage(1);
-                        console.log("downimginfo", this.downReportArr);
 
                         // 区域二级联动
                         this.citys = this.getCitys(result);
@@ -1461,13 +1387,9 @@ export default {
             for (let data of arr) {
                 let upimg = [];
                 let downimg = [];
-                let ds = dateFormat.toDate(data.lStar, ".");
-                let de = dateFormat.toDate(data.lEnd, ".");
                 for (let item of imgArr) {
                     let alt = JSON.parse(item.pAlt);
-                    let start = dateFormat.toDate(alt.lstart, ".");
-                    let end = dateFormat.toDate(alt.lend, ".");
-                    if (data.asID == item.ptID && ds == start && de == end) {
+                    if (data.asID == item.ptID && data.lID == alt.lid) {
                         if (type == "SK") {
                             // uid         int【必填】         当前账户UserID
                             // pid         int【必填】         图库pID
@@ -1521,21 +1443,6 @@ export default {
             }
             return arr;
         },
-        // 状态转换成文本
-        stateToText(val) {
-            let state = [
-                { text: "已完成", state: 0 },
-                { text: "进行中", state: 1 },
-                { text: "未投放", state: 2 },
-                { text: "投放中", state: 3 },
-                { text: "强制结束", state: 5 }
-            ];
-            for (let data of state) {
-                if (val == data.state) {
-                    return data.text;
-                }
-            }
-        },
         // 时间格式规范
         formatTime(val) {
             return dateFormat.toDate(val, ".");
@@ -1554,10 +1461,6 @@ export default {
             result = result + "00" + Math.round(Math.random() * 10);
             // console.log(result);
             return result;
-        },
-        // 根据输入转变合同编号
-        setApQC() {
-            this.orderDetail.apQC = apQC;
         },
         // 当搜索框为空的时候进行重置显示
         init() {
@@ -1806,7 +1709,8 @@ export default {
                 account: account ? account : "",
                 username: username ? username : "",
                 resid: row.resID ? row.resID : "",
-                address: row.resAddress ? row.resAddress : ""
+                address: row.resAddress ? row.resAddress : "",
+                lid: row.lID ? row.lID : ""
             };
             this.upLoadData.palt = JSON.stringify(alt);
             this.upLoadData.ptp = sessionStorage.getItem("order_apid");
@@ -1850,13 +1754,8 @@ export default {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.upReportArr) {
-                            let ds = dateFormat.toDate(data.lStar, ".");
-                            let de = dateFormat.toDate(data.lEnd, ".");
                             let alt = JSON.parse(this.upLoadData.palt);
-                            let start = dateFormat.toDate(alt.lstart, ".");
-                            let end = dateFormat.toDate(alt.lend, ".");
-
-                            if (data.asID == this.upLoadData.ptid && ds == start && de == end) {
+                            if (data.asID == this.upLoadData.ptid && data.lID == alt.lid) {
                                 let item = file.response;
                                 let obj = {
                                     name: info.pid + ".png",
@@ -1906,13 +1805,8 @@ export default {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
                         for (let data of this.downReportArr) {
-                            let ds = dateFormat.toDate(data.lStar, ".");
-                            let de = dateFormat.toDate(data.lEnd, ".");
                             let alt = JSON.parse(this.upLoadData.palt);
-                            let start = dateFormat.toDate(alt.lstart, ".");
-                            let end = dateFormat.toDate(alt.lend, ".");
-
-                            if (data.asID == this.upLoadData.ptid && ds == start && de == end) {
+                            if (data.asID == this.upLoadData.ptid && data.lID == alt.lid) {
                                 let item = file.response;
                                 let obj = {
                                     name: info.pid + ".png",
@@ -1957,13 +1851,8 @@ export default {
                         Message.success(res.data.MSG);
                         if (type == "SK") {
                             for (let i = 0; i < this.upReportArr.length; i++) {
-                                let ds = dateFormat.toDate(this.upReportArr[i].lStar, ".");
-                                let de = dateFormat.toDate(this.upReportArr[i].lEnd, ".");
                                 let alt = JSON.parse(file.palt);
-                                let start = dateFormat.toDate(alt.lstart, ".");
-                                let end = dateFormat.toDate(alt.lend, ".");
-
-                                if (this.upReportArr[i].asID == file.ptid && ds == start && de == end) {
+                                if (this.upReportArr[i].asID == file.ptid && this.upReportArr[i].lID == alt.lid) {
                                     if (
                                         this.upReportArr[i].upImgArr.length == 1
                                     ) {
@@ -1981,13 +1870,8 @@ export default {
                             }
                         } else {
                             for (let i = 0;i < this.downReportArr.length; i++) {
-                                let ds = dateFormat.toDate(this.downReportArr[i].lStar, ".");
-                                let de = dateFormat.toDate(this.downReportArr[i].lEnd, ".");
                                 let alt = JSON.parse(file.palt);
-                                let start = dateFormat.toDate(alt.lstart, ".");
-                                let end = dateFormat.toDate(alt.lend, ".");
-
-                                if (this.downReportArr[i].asID == file.ptid && ds == start && de == end) {
+                                if (this.downReportArr[i].asID == file.ptid && this.downReportArr[i].lID == alt.lid) {
                                     if (
                                         this.downReportArr[i].downImgArr
                                             .length == 1
@@ -2075,7 +1959,6 @@ export default {
                 .then(res => {
                     console.log(res);
                     if (res.data.SysCode == 300200) {
-                        // this.orderDetail.apQC = qc;
                         this.$set(this.orderDetail, "apQC", qc);
                         Message.success(res.data.MSG);
                     } else if (res.data.SysCode == 100302) {
@@ -2767,74 +2650,6 @@ export default {
 
 .plan-title .el-input__inner {
     width: 100%;
-}
-
-.plan-detail {
-    font-size: 14px;
-    color: #333333;
-    padding-left: 41px;
-}
-
-.plan-detail-left {
-    float: left;
-    width: 78%;
-}
-
-.plan-detail-left ul {
-    width: 100%;
-    float: left;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    text-align: left;
-}
-
-.plan-detail-left ul li {
-    float: left;
-    width: 280px;
-    margin-bottom: 12px;
-}
-
-/*.plan-detail-left ul li:nth-child(3n-2) {*/
-/*width: 350px;*/
-/*}*/
-
-/*.plan-detail-left ul li:nth-child(3n-1) {*/
-/*width: 248px;*/
-/*}*/
-
-.plan-detail-left ul li em {
-    font-size: 14px;
-    color: #666666;
-}
-
-.plan-detail-right {
-    width: 20%;
-    float: right;
-    display: flex;
-    justify-content: space-between;
-}
-
-.plan-detail-right dl {
-    float: left;
-    text-align: right;
-}
-
-.plan-detail-right dl:last-of-type {
-    /*margin-left: 34px;*/
-}
-
-.plan-detail-right dt {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.45);
-}
-
-.plan-detail-right dd {
-    margin-top: 4px;
-    display: inline-block;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.85);
 }
 
 /*物料信息*/
@@ -3609,19 +3424,6 @@ export default {
     .tab-info .price h4 {
         width: 94%;
     }
-
-    /*.plan-detail-left ul li:nth-child(3n-2) {*/
-    /*width: 500px;*/
-    /*}*/
-    /*.plan-detail-left ul li:nth-child(3n-1) {*/
-    /*width: 400px;*/
-    /*}*/
-    /*.up-loader-Imgpanel + .up-loader-Imgpanel {
-            margin-left: 54px;
-        }*/
-    /*.up-loader-Imgpanel:nth-child(5) {
-            margin-left: 0;
-        }*/
     .plan-title .handleBtn {
         position: absolute;
         /*right: 135px;*/
@@ -3634,16 +3436,6 @@ export default {
       margin-right: 67px;
       margin-left: 61px;
         /*margin-left: 37px;*/
-    }
-
-    .plan-detail-right {
-        width: 15%;
-    }
-
-    .plan-detail-left ul li {
-        float: left;
-        width: 400px;
-        margin-bottom: 12px;
     }
 }
 

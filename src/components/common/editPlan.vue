@@ -1452,6 +1452,14 @@ export default {
                         // console.log('商圈不为空')
                         arr.push(BPL[i]);
                     }
+                } else if (this.selectValue === "资产编号") {
+                    if (
+                        BPL[i].assetTag !== undefined &&
+                        BPL[i].assetTag.includes(this.searchInput)
+                    ) {
+                        // console.log('商圈不为空')
+                        arr.push(BPL[i]);
+                    }
                 }
             }
             return arr;
@@ -1551,8 +1559,6 @@ export default {
                                 that.shopingList[i].schedules
                             );
                             if (crossIf) {
-                                // console.log('相同的that.shopingList', that.shopingList[i])
-                                // console.log('相同的that.planList', that.planList[j])
                                 if (that.shopingList[i].A_B === "A面") {
                                     that.planList[j].checkBox.A = true;
                                 } else if (that.shopingList[i].A_B === "B面") {
@@ -3697,29 +3703,6 @@ export default {
             //   console.log('error', err)
             // })
         },
-        // 只统计购物车排期以判断是否可搜索这个时间段
-        shopSchedules() {
-            let rid_scheArr = [];
-            let shop_list = this.shopingList;
-            for (let i = 0; i < this.city.length; i++) {
-                let scheObj = { rid: this.city[i].rid, schedules: [] };
-                for (let j = 0; j < shop_list.length; j++) {
-                    if (scheObj.schedules.length === 0) {
-                        scheObj.schedules.push(shop_list[j].schedules);
-                    } else {
-                        if (
-                            scheObj.schedules.indexOf(
-                                shop_list[j].schedules
-                            ) === -1
-                        ) {
-                            scheObj.schedules.push(shop_list[j].schedules);
-                        }
-                    }
-                }
-                rid_scheArr.push(scheObj);
-            }
-            return rid_scheArr;
-        },
         //计算天数差的函数，通用
         DateDiff(sDate1, sDate2) {
             //sDate1和sDate2是2002.12.18格式
@@ -4085,7 +4068,7 @@ export default {
                                     tradingArea: data.tradingArea || "",
                                     assetTag: data.assetTag || "",
                                     liveYear: data.chDay,
-                                    adLimit: data.adLimit,
+                                    adLimit: data.adLimit || "",
                                     A_B: data.A_B,
                                     checkBox: { A: checkBox.A, B: checkBox.B }
                                 };
@@ -4441,7 +4424,7 @@ export default {
 
 <style scoped>
 /deep/ .el-form--inline .el-form-item {
-    margin-right: 10px !important;
+    margin-right: 7px !important;
 }
 
 /*状态行*/

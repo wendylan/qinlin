@@ -138,20 +138,19 @@
 							</dl>
 						</div>
 						<!--数量价格年份输入筛选框-->
-						<!--<div class="filter-input">
-              <ul>
-                <li style="margin-left: 0">
-                  <span>住户数量:</span>
-                  <div class="input-wrap" :class="HSearch === 'h'? 'focus': ''">
-                    <input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[0]">
-                    -
-                    <input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[1]">
-                    <el-button size="mini" v-show=" HSearch === 'h'" @click="emptyFun('H')">清除</el-button>
-                    <el-button size="mini" type="primary" v-show=" HSearch === 'h'" @click="tableHSearch('H')">确定
-                    </el-button>
-                  </div>
-                </li>
-                <li>
+						<div class="filter-input">
+							<ul>
+								<li style="margin-left: 0">
+									<span>住户数量:</span>
+									<div class="input-wrap" :class="HSearch === 'h'? 'focus': ''">
+										<input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[0]"> -
+										<input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[1]">
+										<el-button size="mini" v-show=" HSearch === 'h'" @click="emptyFun('H')">清除</el-button>
+										<el-button size="mini" type="primary" v-show=" HSearch === 'h'" @click="tableHeaderFilter_y()">确定
+										</el-button>
+									</div>
+								</li>
+								<!--  <li>
                   <span>楼栋数量:</span>
                   <div class="input-wrap" :class="HSearch === 'b'? 'focus': ''">
                     <input type="text" class="input" @focus="haveFocus('b')" v-model="buildNum[0]">
@@ -162,40 +161,36 @@
                     </el-button>
                   </div>
 
-                </li>
-                <li>
-                  <span>楼盘价格:</span>
-                  <div class="input-wrap" :class="HSearch === 'p'? 'focus': ''">
-                    <input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[0]">
-                    -
-                    <input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[1]">
-                    <el-button size="mini" v-show=" HSearch === 'p'" @click="emptyFun('P')">清除</el-button>
-                    <el-button size="mini" type="primary" v-show=" HSearch === 'p'" @click="tableHSearch('P')">确定
-                    </el-button>
-                  </div>
+                </li>-->
+								<li>
+									<span>楼盘价格:</span>
+									<div class="input-wrap" :class="HSearch === 'p'? 'focus': ''">
+										<input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[0]"> -
+										<input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[1]">
+										<el-button size="mini" v-show=" HSearch === 'p'" @click="emptyFun('P')">清除</el-button>
+										<el-button size="mini" type="primary" v-show=" HSearch === 'p'" @click="tableHeaderFilter_y()">确定
+										</el-button>
+									</div>
 
-                </li>
-                <li>
-                  <span>入住年份:</span>
-                  <div class="input-wrap" :class="HSearch === 'y'? 'focus': ''">
-                    <input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[0]">
-                    -
-                    <input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[1]">
-                    <el-button size="mini" v-show=" HSearch === 'y'" @click="emptyFun('Y')">清除</el-button>
-                    <el-button size="mini" type="primary" v-show=" HSearch === 'y'" @click="tableHSearch('Y')">确定
-                    </el-button>
-                  </div>
-                </li>
-                <li>
-                  <span style="float: left">楼盘类型:</span>
-                  <el-select v-model="buildValue" placeholder="请选择" class="buildType" style="float: left;"
-                             @change="searchBT">
-                    <el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue"
-                               :value="item.buildValue"></el-option>
-                  </el-select>
-                </li>
-              </ul>
-            </div>-->
+								</li>
+								<li>
+									<span>入住年份:</span>
+									<div class="input-wrap" :class="HSearch === 'y'? 'focus': ''">
+										<input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[0]"> -
+										<input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[1]">
+										<el-button size="mini" v-show=" HSearch === 'y'" @click="emptyFun('Y')">清除</el-button>
+										<el-button size="mini" type="primary" v-show=" HSearch === 'y'" @click="tableHeaderFilter_y()">确定
+										</el-button>
+									</div>
+								</li>
+								<li>
+									<span style="float: left">楼盘类型:</span>
+									<el-select v-model="buildValue" placeholder="请选择" class="buildType" style="float: left;" @change="searchBT">
+										<el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue" :value="item.buildValue"></el-option>
+									</el-select>
+								</li>
+							</ul>
+						</div>
 						<!--表格-->
 						<div class="table_wrap">
 							<el-table v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" v-loadmore="loadMore" ref="multipleTable" border :data="planList" :select-on-indeterminate="selectOnAll" :default-sort="{prop: 'mID', order: 'descending'}" @select="handleSelect" @select-all="handleSelectAll" @cell-mouse-enter="mouseEnter" style="width: 100%">
@@ -530,6 +525,13 @@
 				</div>
 			</div>
 		</div>
+		<!--  <div v-if="mapADDialog">
+      <el-dialog
+        :visible.sync="mapADDialog"
+        width="80%">
+        <iframe ref="iframe" src="www.baidu.com" @load="loaded"></iframe>
+      </el-dialog>
+    </div>-->
 		<div class="content_bottom_btn">
 			<el-button @click="prev" v-if="active == 1 || active == 2" type="default">上一步</el-button>
 			<el-button @click="clearData" v-if="active === 0" type="default">取消</el-button>
@@ -629,6 +631,7 @@ export default {
             }
         };
         return {
+            mapADDialog: false,
             loading: true, //加载中
             dynamicTags: [],
             inputVisible: false,
@@ -859,7 +862,9 @@ export default {
             commentMediaADNum: [], // 统计同一城市相同因不同排期而选择相同的asid
             mStateIndex: 0, // 切换媒体状态时，如果状态为1(正常)则进行滚动加载，mStateIndex记录下标
             beforADList_mState: [], // 保存切换媒体的所有数据--ADList
-            scroll_mState: false
+            scroll_mState: false,
+            mapADList: [], // 地图选择的点位数据
+            mapParams: {} // 记录当前地图选点时的参数，包括排期、城市名和rid
         };
     },
     mounted() {
@@ -2073,7 +2078,7 @@ export default {
         // 从原数据到teble显示的数据
         setTeblePlanList(data, j, n) {
             let i = n || this.activeIndex;
-            console.log("n", n, "this.activeIndex", this.activeIndex, "i", i);
+            // console.log('n',n,'this.activeIndex',this.activeIndex,'i',i)
             let setData = data;
             let AD_data = {
                 rid: i + j.toString(),
@@ -2696,8 +2701,6 @@ export default {
                 if (this.ADchangerReaPrice === true) {
                     for (let i = 0; i < QArr.length; i++) {
                         if (QArr[i].rid === this.ADchanger.rid) {
-                            // this.quotation[i].advertyPrice = ((this.quotation[i].tfl - this.ADchanger.GMDate) * (this.quotation[i].ADPrice / 7))
-                            // this.quotation[i].GMDate = this.ADchanger.GMDate
                             if (this.ADchanger.GMDate != 0) {
                                 let reg = /^[0-9]\d*$/;
                                 if (
@@ -3301,7 +3304,6 @@ export default {
         dialogVisible() {
             this.dialogTableVisible = true;
             this.computeMedia_AD(); // 统计媒体数量和媒体面数
-            //    this.deleteCommentData()          // 删除相同的点位
         },
         // 添加到购物车
         AddShopingInfo(info, letter) {
@@ -3849,6 +3851,12 @@ export default {
             //this.activeCityData
             console.log("地图选点提交的rid", this.activeCityData);
             let rid = this.activeCityData.rid;
+            this.mapParams = {
+                rid: rid,
+                city: this.activeCityData.rName,
+                ls: this.dateInput[0],
+                le: this.dateInput[1]
+            };
             let params = {
                 uid: this.sessionData.uID,
                 rid: rid,
@@ -3863,6 +3871,7 @@ export default {
                     console.log("GetMapInfo地图mapid返回的信息", res);
                     if (!res.data.SysCode) {
                         let mapid = res.data.MapID;
+                        this.dialogTableVisible = true;
                         // window.open('https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=' + mapid ,
                         //   '_blank', 'toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes')
                         let tempwindow = window.open();
@@ -3887,30 +3896,6 @@ export default {
                     console.log("error", err);
                 });
         },
-        // 只统计购物车排期以判断是否可搜索这个时间段
-        shopSchedules() {
-            let schedulesArr = [];
-            let rid_scheArr = [];
-            let shop_list = this.shopingList;
-            for (let i = 0; i < this.city.length; i++) {
-                let scheObj = { rid: this.city[i].rid, schedules: [] };
-                for (let j = 0; j < shop_list.length; j++) {
-                    if (scheObj.schedules.length === 0) {
-                        scheObj.schedules.push(shop_list[j].schedules);
-                    } else {
-                        if (
-                            scheObj.schedules.indexOf(
-                                shop_list[j].schedules
-                            ) === -1
-                        ) {
-                            scheObj.schedules.push(shop_list[j].schedules);
-                        }
-                    }
-                }
-                rid_scheArr.push(scheObj);
-            }
-            return rid_scheArr;
-        },
         //计算天数差的函数，通用
         DateDiff(sDate1, sDate2) {
             //sDate1和sDate2是2002.12.18格式
@@ -3919,11 +3904,7 @@ export default {
             oDate1 = new Date(aDate[1] + "/" + aDate[2] + "/" + aDate[0]); //转换为12-18-2002格式
             aDate = sDate2.split(".");
             oDate2 = new Date(aDate[1] + "/" + aDate[2] + "/" + aDate[0]);
-            // console.log('oDate1',oDate1,',oDate2',oDate2)
             iDays = Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24;
-            // console.log('idays',iDays)
-            // let iDays_ = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24)    //把相差的毫秒数转换为天数
-            // console.log('iDays_',iDays_)
             return iDays;
         },
         // 数组排序，城市rid从小到大排
@@ -4024,177 +4005,129 @@ export default {
             }
             this.loading = false;
         },
+        // 住户数量过滤
+        tableHeaderFilter_h() {
+            let FADLIndex = this.activeIndex;
+            let levelData = this.beforADTotalList[FADLIndex].list;
+            let keyword = this.houseNum;
+            let arr = [];
+            for (let data of levelData) {
+                if (keyword[0] !== "" && keyword[1] !== "") {
+                    if (data.hNum >= keyword[0] && data.hNum <= keyword[1]) {
+                        console.log("h");
+                        arr.push(data);
+                    }
+                } else {
+                    arr = levelData;
+                    break;
+                }
+            }
+            console.log("住户数量过滤", arr);
+            return arr;
+        },
+        // 楼盘价格过滤
+        tableHeaderFilter_p() {
+            let filterData = "";
+            let keyword = this.buildPrice;
+            let arr = [];
+            if (this.houseNum[0] !== "" && this.houseNum[1] !== "") {
+                filterData = this.tableHeaderFilter_h();
+            } else {
+                let FADLIndex = this.activeIndex;
+                filterData = this.beforADTotalList[FADLIndex].list;
+            }
+            for (let data of filterData) {
+                if (keyword[0] !== "" && keyword[1] !== "") {
+                    if (
+                        data.hPrice / 100 >= keyword[0] &&
+                        data.hPrice / 100 <= keyword[1]
+                    ) {
+                        console.log("p");
+                        arr.push(data);
+                    }
+                } else {
+                    arr = filterData;
+                    break;
+                }
+            }
+            console.log("楼盘价格过滤", arr);
+            return arr;
+        },
+        // 年份过滤
+        tableHeaderFilter_y() {
+            let filterData = "";
+            let keyword = this.liveYear;
+            let arr = [];
+            if (
+                (this.buildPrice[0] !== "" && this.buildPrice[1] !== "") ||
+                (this.houseNum[0] !== "" && this.houseNum[1] !== "")
+            ) {
+                filterData = this.tableHeaderFilter_p();
+            } else {
+                let FADLIndex = this.activeIndex;
+                filterData = this.beforADTotalList[FADLIndex].list;
+            }
+            for (let data of filterData) {
+                if (keyword[0] !== "" && keyword[1] !== "") {
+                    let yearDay = data.chDay.split("年")[0];
+                    if (yearDay >= keyword[0] && yearDay <= keyword[1]) {
+                        console.log("y");
+                        arr.push(data);
+                    }
+                } else {
+                    arr = filterData;
+                    break;
+                }
+            }
+            console.log("入住年份过滤", arr);
+            this.HSearch = "";
+            if (this.searchInput !== "" && this.searchInput !== null) {
+                // 搜索框不为空时，进行搜索框过滤
+                arr = this.filterResOrigin(arr);
+            }
+            let tempList = [];
+            console.log(typeof this.recType, "资源类型", this.recType);
+            console.log(typeof this.mState, "媒体状态", this.mState);
+            console.log("城市区域", this.areaName);
+            for (let i = 0; i < arr.length; i++) {
+                if (this.recType === arr[i].resType) {
+                    // 资源类型过滤
+                    if (this.mState !== "") {
+                        // 媒体状态过滤框不为空，则进行媒体状态过滤
+                        if (this.mState == arr[i].mState) {
+                            if (this.areaName !== "全市") {
+                                // 城市区域不为'全市'时，进行城市区域过滤
+                                if (this.areaName === arr[i].rName) {
+                                    let tempObj = this.setTeblePlanList(
+                                        arr[i],
+                                        i
+                                    );
+                                    tempList.push(tempObj);
+                                } else {
+                                    console.log("城市区域不符", arr[i].rName);
+                                }
+                            } else {
+                                let tempObj = this.setTeblePlanList(arr[i], i);
+                                tempList.push(tempObj);
+                            }
+                        } else {
+                            console.log("媒体状态不符", arr[i].mState);
+                        }
+                    } else {
+                        console.log("***");
+                        let tempObj = this.setTeblePlanList(arr[i], i);
+                        tempList.push(tempObj);
+                    }
+                } else {
+                    console.log("资源类型不符", arr[i].resType);
+                }
+            }
+            this.loadScroll = false;
+            console.log("头部过滤得到的数据", tempList);
+            this.planList = tempList;
+        },
         tableHSearch(letter) {
             // 表头搜索this.copyPlanList
-            /*  console.log(' this.copyPlanList', this.copyPlanList)
-          let arr = [];
-          for (let data of this.copyPlanList) {
-            if (letter === 'H') {
-              console.log('this.houseNum', this.houseNum)
-              let keyword = this.houseNum
-              if (keyword[0] !== '' && keyword[1] !== '') {
-                if ((this.buildNum[0] !== '' && this.buildNum[1] !== '') || (this.buildPrice[0] !== ''
-                  && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                  this.tableHSearch_2(keyword, 'H')
-                  break
-                } else {
-                  console.log('其他为空')
-                  if (data.houseNum >= keyword[0] && data.houseNum <= keyword[1]) {
-                    console.log('h')
-                    arr.push(data);
-                  }
-                }
-              } else {
-                // alert('1')
-                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                  this.tableHSearch('Y')
-                  return
-                } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                  this.tableHSearch('P')
-                  return
-                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                  this.tableHSearch('B')
-                  return
-                } else {
-                  arr = this.copyPlanList
-                }
-              }
-            } else if (letter === 'B') {
-              let keyword = this.buildNum
-              if (keyword[0] !== '' && keyword[1] !== '') {
-                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildPrice[0] !== ''
-                  && this.buildPrice[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                  this.tableHSearch_2(keyword, 'B')
-                  break
-                } else {
-                  console.log('其他为空')
-                  if (data.buildNum >= keyword[0] && data.buildNum <= keyword[1]) {
-                    console.log('b')
-                    arr.push(data);
-                  }
-                }
-              } else {
-                // alert('2')
-                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                  this.tableHSearch('Y')
-                  return
-                } else if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                  this.tableHSearch('P')
-                  return
-                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                  this.tableHSearch('H')
-                  return
-                } else {
-                  arr = this.copyPlanList
-                }
-              }
-            } else if (letter === 'P') {
-              let keyword = this.buildPrice
-              if (keyword[0] !== '' && keyword[1] !== '') {
-                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
-                  && this.buildNum[1] !== '') || (this.liveYear[0] !== '' && this.liveYear[1] !== '')) {
-                  this.tableHSearch_2(keyword, 'P')
-                  break
-                } else {
-                  // alert('其他为空')
-                  if (data.buildPrice >= keyword[0] && data.buildPrice <= keyword[1]) {
-                    // alert('p')
-                    arr.push(data);
-                  }
-                }
-              } else {
-                if (this.liveYear[0] !== '' && this.liveYear[1] !== '') {
-                  this.tableHSearch('Y')
-                  return
-                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                  this.tableHSearch('B')
-                  return
-                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                  this.tableHSearch('H')
-                  return
-                } else {
-                  arr = this.copyPlanList
-                }
-              }
-            } else if (letter === 'Y') {
-              let keyword = this.liveYear
-              if (keyword[0] !== '' && keyword[1] !== '') {
-                if ((this.houseNum[0] !== '' && this.houseNum[1] !== '') || (this.buildNum[0] !== ''
-                  && this.buildNum[1] !== '') || (this.buildPrice[0] !== '' && this.buildPrice[1] !== '')) {
-                  this.tableHSearch_2(keyword, 'Y')
-                  break
-                } else {
-                  // alert('其他为空')
-                  if (data.liveYear >= keyword[0] && data.liveYear <= keyword[1]) {
-                    //   alert('y')
-                    arr.push(data);
-                  }
-                }
-              } else {
-                if (this.buildPrice[0] !== '' && this.buildPrice[1] !== '') {
-                  this.tableHSearch('P')
-                  return
-                } else if (this.buildNum[0] !== '' && this.buildNum[1] !== '') {
-                  this.tableHSearch('B')
-                  return
-                } else if (this.houseNum[0] !== '' && this.houseNum[1] !== '') {
-                  this.tableHSearch('H')
-                  return
-                } else {
-                  arr = this.copyPlanList
-                }
-              }
-            }
-          }
-          this.planList = arr
-          this.backupsList = arr
-          this.HSearch = ''*/
-            //    this.ResOriginSearch()
-        },
-        tableHSearch_2(data, letter) {
-            /*  let arr = [];
-          let keyword = data
-          console.log('this.planList', this.planList)
-          let planList = []
-          if (this.planList.length === 0) {
-            planList = this.copyPlanList
-          } else {
-            // planList = this.planList
-            planList = this.backupsList
-          }
-          for (let i = 0; i < planList.length; i++) {
-            if (letter === 'H') {
-              if (planList[i].houseNum >= keyword[0] && planList[i].houseNum <= keyword[1]) {
-                // alert('h2')
-                arr.push(planList[i]);
-              }
-            } else if (letter === 'B') {
-              if (planList[i].buildNum >= keyword[0] && planList[i].buildNum <= keyword[1]) {
-                // alert('b2')
-                arr.push(planList[i]);
-                console.log('*********1233', arr)
-              }
-            } else if (letter === 'P') {
-              if (planList[i].buildPrice >= keyword[0] && planList[i].buildPrice <= keyword[1]) {
-                // alert('p2')
-                arr.push(planList[i]);
-              }
-            } else if (letter === 'Y') {
-              if (planList[i].liveYear >= keyword[0] && planList[i].liveYear <= keyword[1]) {
-                //  alert('y2')
-                arr.push(planList[i]);
-              }
-            }
-            if (i >= planList.length - 1) {
-              console.log('遍历完成')
-              console.log('*********1233', arr)
-              let that = this
-              setTimeout(function () {
-                that.planList = arr
-                console.log('11111111111111', that.planList)
-              }, 0)
-            }
-          }*/
         },
         emptyFun(letter) {
             // 清空
@@ -4233,7 +4166,137 @@ export default {
             console.log("触发获取地图选点信息click");
             api.getApi("/SendMap", { uid: this.sessionData.uID }).then(res => {
                 console.log("地图选点", res);
+                // this.setShopDataByMapAD()
+                if (!res.data.SysCode && res.data !== "") {
+                    this.mapADList = res.data;
+                    this.setShopDataByMapAD();
+                } else {
+                    if (
+                        res.data.SysCode === 100302 ||
+                        res.data.MSG === "登陆超时"
+                    ) {
+                        this.loginTimeout();
+                    } else {
+                        Message({
+                            message: "无法获取到数据",
+                            type: "warning"
+                        });
+                    }
+                }
             });
+        },
+        // 根据地图选点返回的数据，设置成购物车所需的数据格式
+        setShopDataByMapAD() {
+            console.log("执行了setShopDataByMapAD", this.mapADList);
+            let mapADList_ = this.mapADList; // tempData
+            let tempArr = [];
+            for (let data of mapADList_) {
+                for (let i = 0; i < 2; i++) {
+                    let ADInfo = {
+                        mID: data.mID,
+                        resType: data.resType,
+                        asIDs: data.asIDs,
+                        asLabs: data.asLabs,
+                        resName: data.resName,
+                        city: this.mapParams.city,
+                        origin: data.rName,
+                        buildType: data.cType,
+                        houseNum: data.hNum,
+                        buildPrice: data.hPrice / 100,
+                        mediaName: data.mTitle,
+                        buildNum: data.fNum,
+                        schedules: this.mapParams.ls + "-" + this.mapParams.le,
+                        tradingArea: data.tradingArea,
+                        assetTag: data.assetTag,
+                        liveYear: data.chDay,
+                        adLimit: data.notPush || "",
+                        checkBox: { A: false, B: false }
+                    };
+                    let asLabsArr = ADInfo.asLabs.split(",");
+                    let asIDArr = ADInfo.asIDs.split(",");
+                    for (let n = 0; n < asLabsArr.length; n++) {
+                        if (i === 0 && asLabsArr[n] === "A") {
+                            ADInfo.checkBox.A = true;
+                            ADInfo.A_B = "A面";
+                            ADInfo.asIDs = asIDArr[n];
+                            if (this.judgeHaveDiffAD(ADInfo)) {
+                                tempArr.push(ADInfo);
+                                break;
+                            }
+                        } else if (i === 1 && asLabsArr[n] === "B") {
+                            ADInfo.checkBox.B = true;
+                            ADInfo.A_B = "B面";
+                            ADInfo.asIDs = asIDArr[n];
+                            if (this.judgeHaveDiffAD(ADInfo)) {
+                                tempArr.push(ADInfo);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(
+                "根据地图选点返回的数据，设置成购物车所需的数据格式",
+                tempArr
+            );
+            if (this.shopingList.length !== 0) {
+                for (let key of tempArr) {
+                    this.shopingList.push(key);
+                }
+            } else {
+                this.shopingList = tempArr;
+            }
+            this.computeMedia_AD();
+            this.getBadeNumberByShopList();
+        },
+        // 判断点位是否已存在购物车
+        judgeHaveDiffAD(data) {
+            let ADData = data;
+            let shopArr = this.shopingList;
+            console.log("点位是否已存在购物车", ADData);
+            if (shopArr.length !== 0) {
+                for (let i = 0; i < shopArr.length; i++) {
+                    if (
+                        ADData.mID === shopArr[i].mID &&
+                        ADData.A_B === shopArr[i].A_B
+                    ) {
+                        console.log("相同mid,相同面", ADData);
+                        let ADScheArr = ADData.schedules.split("-");
+                        let shopScheArr = shopArr[i].schedules.split("-");
+                        if (
+                            shopScheArr[0] == ADScheArr[0] &&
+                            shopScheArr[1] == ADScheArr[1]
+                        ) {
+                            return false;
+                        } else if (
+                            shopScheArr[0] < ADScheArr[0] &&
+                            shopScheArr[1] >= ADScheArr[0]
+                        ) {
+                            return false;
+                        } else if (
+                            shopScheArr[0] > ADScheArr[0] &&
+                            shopScheArr[0] < ADScheArr[1]
+                        ) {
+                            return false;
+                        } else if (
+                            shopScheArr[1] > ADScheArr[0] &&
+                            shopScheArr[1] < ADScheArr[1]
+                        ) {
+                            return false;
+                        } else if (
+                            shopScheArr[0] <= ADScheArr[1] &&
+                            shopScheArr[1] > ADScheArr[1]
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+                return true;
+            } else {
+                return true;
+            }
         },
         // 清空购物车
         clearShop() {
@@ -4289,8 +4352,8 @@ export default {
                     // console.log('重复的asIDs是', shopList[i].asIDs)
                 }
             }
-            console.log("mediaArr", mediaArr);
-            console.log("mediaAD", mediaAD);
+            // console.log('mediaArr', mediaArr)
+            // console.log('mediaAD', mediaAD)
             this.shopMedia_ADNum.mediaNum = mediaArr.length;
             this.shopMedia_ADNum.ADNum = mediaAD.length;
         },
@@ -4323,16 +4386,6 @@ export default {
             }
             this.commentMediaADNum = mediaAD;
             console.log("this.commentMediaADNum", this.commentMediaADNum);
-        },
-        // 购物车删除相同的点位
-        deleteCommentData() {
-            let shopList = this.shopingList;
-            for (let i = 0; i < shopList.length; i++) {
-                for (let j = i + 1; j < shopList.length; j++) {
-                    if (shopList[i] == shopList[j]) {
-                    }
-                }
-            }
         },
         // 价格加上逗号
         priceFormat(price) {
@@ -4438,7 +4491,7 @@ export default {
 
 <style scoped>
 /deep/ .el-form--inline .el-form-item {
-    margin-right: 10px !important;
+    margin-right: 7px !important;
 }
 
 /deep/ .el-input__inner:hover {
