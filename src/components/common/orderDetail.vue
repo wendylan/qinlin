@@ -652,7 +652,8 @@ export default {
                 palt: "",
                 ptype: "",
                 ptid: "",
-                ptp: ""
+                ptp: "",
+                prk: ""
             },
             // 上刊图片
             upLoadImg: [],
@@ -1388,8 +1389,8 @@ export default {
                 let upimg = [];
                 let downimg = [];
                 for (let item of imgArr) {
-                    let alt = JSON.parse(item.pAlt);
-                    if (data.asID == item.ptID && data.lID == alt.lid) {
+                    let prk = JSON.parse(item.pRemarks);
+                    if (data.asID == item.ptID && data.lID == prk.lid) {
                         if (type == "SK") {
                             // uid         int【必填】         当前账户UserID
                             // pid         int【必填】         图库pID
@@ -1405,7 +1406,8 @@ export default {
                                 palt: item.pAlt,
                                 ptype: item.pType,
                                 ptid: item.ptID,
-                                ptp: item.ptP
+                                ptp: item.ptP,
+                                prk: item.pRemarks
                             });
                         }
                         if (type == "XK") {
@@ -1417,7 +1419,8 @@ export default {
                                 palt: item.pAlt,
                                 ptype: item.pType,
                                 ptid: item.ptID,
-                                ptp: item.ptP
+                                ptp: item.ptP,
+                                prk: item.pRemarks
                             });
                         }
                     }
@@ -1695,7 +1698,7 @@ export default {
                 .username;
             let username = JSON.parse(sessionStorage.getItem("session_data"))
                 .realName;
-            let alt = {
+            let prk = {
                 plan: this.orderDetail.apName ? this.orderDetail.apName : "",
                 res: row.resName ? row.resName : "",
                 media: row.mTitle ? row.mTitle : "",
@@ -1712,7 +1715,8 @@ export default {
                 address: row.resAddress ? row.resAddress : "",
                 lid: row.lID ? row.lID : ""
             };
-            this.upLoadData.palt = JSON.stringify(alt);
+            this.upLoadData.palt = this.orderDetail.apName+'-'+row.resName+"-"+row.mTitle;
+            this.upLoadData.prk = JSON.stringify(prk);
             this.upLoadData.ptp = sessionStorage.getItem("order_apid");
         },
         // 限制只能上传png,jpeg格式的照片
@@ -1730,6 +1734,64 @@ export default {
                 // return false;
             }
             return isIMAGE&&isLt1M;
+        },
+        // 上传图片后进行深层次更新数据
+        listUpdate(arr, res){
+            let info = this.upLoadData;
+            for (let data of arr) {
+                let prk = JSON.parse(info.prk);
+                if (data.asID == info.ptid && data.lID == prk.lid) {
+                    let item = res.response;
+                    let obj = {
+                        name: info.pid + ".png",
+                        url: item.pURL,
+                        uid: info.uid,
+                        pid: info.pid,
+                        palt: info.palt,
+                        ptype: info.ptype,
+                        ptid: info.ptid,
+                        ptp: info.ptp,
+                        prk: info.prk
+                    };
+                    if(info.ptype=='SK'){
+                        data.upImgArr.push(obj);
+                        data.upImg[this.imgOrder] = [obj];
+                    }else{
+                        data.downImgArr.push(obj);
+                        data.downImg[this.imgOrder] = [obj];
+                    }
+                    break;
+                }
+            }
+        },
+        // 删除图片后进行深层次更新数据
+        listDelupdate(arr, file, type){
+            for (let i = 0; i < arr.length; i++) {
+                let prk = JSON.parse(file.prk);
+                if (arr[i].asID == file.ptid && arr[i].lID == prk.lid) {
+                    if(type == "SK"){
+                        if (arr[i].upImgArr.length == 1) {
+                            arr[i].upImgArr = [];
+                        } else {
+                            arr[i].upImgArr.splice(i,1);
+                        }
+                        arr.push();
+                        arr[i].upImg[this.imgOrder] = [];
+                        arr[i].upImg[this.imgOrder].push();
+                        break;
+                    }else{
+                        if (arr[i].downImgArr.length == 1) {
+                            arr[i].downImgArr = [];
+                        } else {
+                            arr[i].downImgArr.splice(i,1);
+                        }
+                        arr.push();
+                        arr[i].downImg[this.imgOrder] = [];
+                        arr[i].downImg[this.imgOrder].push();
+                        break;
+                    }
+                }
+            }
         },
         // 上传上刊图片并关联
         handleUpSuccess(res, file, fileList) {
@@ -1753,25 +1815,34 @@ export default {
                     if (res.data.SysCode == 400200) {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
-                        for (let data of this.upReportArr) {
-                            let alt = JSON.parse(this.upLoadData.palt);
-                            if (data.asID == this.upLoadData.ptid && data.lID == alt.lid) {
-                                let item = file.response;
-                                let obj = {
-                                    name: info.pid + ".png",
-                                    url: item.pURL,
-                                    uid: info.uid,
-                                    pid: info.pid,
-                                    palt: info.palt,
-                                    ptype: info.ptype,
-                                    ptid: info.ptid,
-                                    ptp: info.ptp
-                                };
-                                data.upImgArr.push(obj);
-                                data.upImg[this.imgOrder] = [obj];
-                            }
-                        }
+                        // for (let data of this.upReportArr) {
+                        //     let prk = JSON.parse(this.upLoadData.prk);
+                        //     if (data.asID == this.upLoadData.ptid && data.lID == prk.lid) {
+                        //         let item = file.response;
+                        //         let obj = {
+                        //             name: info.pid + ".png",
+                        //             url: item.pURL,
+                        //             uid: info.uid,
+                        //             pid: info.pid,
+                        //             palt: info.palt,
+                        //             ptype: info.ptype,
+                        //             ptid: info.ptid,
+                        //             ptp: info.ptp,
+                        //             prk: this.upLoadData.prk
+                        //         };
+                        //         data.upImgArr.push(obj);
+                        //         data.upImg[this.imgOrder] = [obj];
+                        //     }
+                        // }
+                        // console.log('this.upReportArr------', this.upReportArr);
+                        this.listUpdate(this.upReportArr, file);
+                        this.listUpdate(this.currUpReportArr, file);
+                        // this.listUpdate(this.pageUpReportArr, file);
                         this.upReportArr.push();
+                        // this.currUpReportArr.push();
+                        // this.pageUpReportArr.push();
+                        // this.currUpReportArr = this.upReportArr;
+                        // this.pageUpReportArr.push();
                         // this.changePage(this.currUpPage);
                     } else if (res.data.SysCode == 100302) {
                         this.loginTimeout();
@@ -1804,25 +1875,34 @@ export default {
                     if (res.data.SysCode == 400200) {
                         Message.success(res.data.MSG);
                         // 实时更新进度条
-                        for (let data of this.downReportArr) {
-                            let alt = JSON.parse(this.upLoadData.palt);
-                            if (data.asID == this.upLoadData.ptid && data.lID == alt.lid) {
-                                let item = file.response;
-                                let obj = {
-                                    name: info.pid + ".png",
-                                    url: item.pURL,
-                                    uid: info.uid,
-                                    pid: info.pid,
-                                    palt: info.palt,
-                                    ptype: info.ptype,
-                                    ptid: info.ptid,
-                                    ptp: info.ptp
-                                };
-                                data.downImgArr.push(obj);
-                                data.downImg[this.imgOrder] = [obj];
-                            }
-                        }
+                        // for (let data of this.downReportArr) {
+                        //     let prk = JSON.parse(this.upLoadData.prk);
+                        //     if (data.asID == this.upLoadData.ptid && data.lID == prk.lid) {
+                        //         let item = file.response;
+                        //         let obj = {
+                        //             name: info.pid + ".png",
+                        //             url: item.pURL,
+                        //             uid: info.uid,
+                        //             pid: info.pid,
+                        //             palt: info.palt,
+                        //             ptype: info.ptype,
+                        //             ptid: info.ptid,
+                        //             ptp: info.ptp,
+                        //             prk: this.upLoadData.prk
+                        //         };
+                        //         data.downImgArr.push(obj);
+                        //         data.downImg[this.imgOrder] = [obj];
+                        //     }
+                        // }
+                        // console.log('this.downReportArr------', this.downReportArr);
+                        this.listUpdate(this.downReportArr, file);
+                        this.listUpdate(this.currDownReportArr, file);
+                        // this.listUpdate(this.pageDownReportArr, file);
                         this.downReportArr.push();
+                        // this.currDownReportArr.push();
+                        // this.pageDownReportArr.push();
+                        // this.currDownReportArr = this.downReportArr;
+                        // this.pageDownReportArr.push();
                         // this.changePage(this.currDownPage);
                     } else if (res.data.SysCode == 100302) {
                         this.loginTimeout();
@@ -1849,46 +1929,66 @@ export default {
                     // 实时更新进度条
                     if (res.data.SysCode == 400200) {
                         Message.success(res.data.MSG);
-                        if (type == "SK") {
-                            for (let i = 0; i < this.upReportArr.length; i++) {
-                                let alt = JSON.parse(file.palt);
-                                if (this.upReportArr[i].asID == file.ptid && this.upReportArr[i].lID == alt.lid) {
-                                    if (
-                                        this.upReportArr[i].upImgArr.length == 1
-                                    ) {
-                                        this.upReportArr[i].upImgArr = [];
-                                        this.upReportArr.push();
-                                        break;
-                                    } else {
-                                        this.upReportArr[i].upImgArr.splice(
-                                            i,
-                                            1
-                                        );
-                                        this.upReportArr.push();
-                                    }
-                                }
-                            }
-                        } else {
-                            for (let i = 0;i < this.downReportArr.length; i++) {
-                                let alt = JSON.parse(file.palt);
-                                if (this.downReportArr[i].asID == file.ptid && this.downReportArr[i].lID == alt.lid) {
-                                    if (
-                                        this.downReportArr[i].downImgArr
-                                            .length == 1
-                                    ) {
-                                        this.downReportArr[i].downImgArr = [];
-                                        this.downReportArr.push();
-                                        break;
-                                    } else {
-                                        this.downReportArr[i].downImgArr.splice(
-                                            i,
-                                            1
-                                        );
-                                        this.downReportArr.push();
-                                    }
-                                }
-                            }
+                        if(type =="SK"){
+                            console.log('this.upReportArr---', this.upReportArr);
+                            console.log('this.currUpReportArr---', this.currUpReportArr);
+                            console.log('this.pageUpReportArr---', this.pageUpReportArr);
+                            this.listDelupdate(this.upReportArr, file, type);
+                            this.listDelupdate(this.currUpReportArr, file, type);
+                            // this.listDelupdate(this.pageUpReportArr, file, type);
+                            this.upReportArr.push();
+                            // this.changePage(this.currUpPage);
+                            // this.currUpReportArr.push();
+                            // this.pageUpReportArr.push();
+                            console.log('this.upReportArr---2', this.upReportArr);
+                            console.log('this.currUpReportArr---2', this.currUpReportArr);
+                            console.log('this.pageUpReportArr---2', this.pageUpReportArr);
+                        }else{
+                            this.listDelupdate(this.downReportArr, file, type);
+                            this.listDelupdate(this.currDownReportArr, file, type);
+                            // this.listDelupdate(this.pageDownReportArr, file, type);
+                            this.downReportArr.push();
+                            // this.changePage(this.currDownPage);
+                            // this.currDownReportArr.push();
+                            // this.pageDownReportArr.push();
                         }
+                        // if (type == "SK") {
+                        //     for (let i = 0; i < this.upReportArr.length; i++) {
+                        //         let prk = JSON.parse(file.prk);
+                        //         if (this.upReportArr[i].asID == file.ptid && this.upReportArr[i].lID == prk.lid) {
+                        //             if (
+                        //                 this.upReportArr[i].upImgArr.length == 1
+                        //             ) {
+                        //                 this.upReportArr[i].upImgArr = [];
+                        //                 this.upReportArr.push();
+                        //                 break;
+                        //             } else {
+                        //                 this.upReportArr[i].upImgArr.splice(i,1);
+                        //                 this.upReportArr.push();
+                        //             }
+                        //         }
+                        //     }
+                        // } else {
+                        //     for (let i = 0;i < this.downReportArr.length; i++) {
+                        //         let prk = JSON.parse(file.prk);
+                        //         if (this.downReportArr[i].asID == file.ptid && this.downReportArr[i].lID == prk.lid) {
+                        //             if (
+                        //                 this.downReportArr[i].downImgArr
+                        //                     .length == 1
+                        //             ) {
+                        //                 this.downReportArr[i].downImgArr = [];
+                        //                 this.downReportArr.push();
+                        //                 break;
+                        //             } else {
+                        //                 this.downReportArr[i].downImgArr.splice(
+                        //                     i,
+                        //                     1
+                        //                 );
+                        //                 this.downReportArr.push();
+                        //             }
+                        //         }
+                        //     }
+                        // }
                     } else if (res.data.SysCode == 100302) {
                         // this.loginTimeout();
                     } else {

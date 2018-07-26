@@ -588,13 +588,13 @@ export default {
         getCitys(arr) {
             let cityArr = [];
             for (let data of arr) {
-                if (data.pAlt) {
-                    if( (typeof data.pAlt) == 'string'){
-                        data.pAlt = JSON.parse(data.pAlt);
+                if (data.pRemarks) {
+                    if( (typeof data.pRemarks) == 'string'){
+                        data.pRemarks = JSON.parse(data.pRemarks);
                     }
                     let obj = {
-                        value: data.pAlt.city,
-                        label: data.pAlt.city,
+                        value: data.pRemarks.city,
+                        label: data.pRemarks.city,
                         children: []
                     };
                     if (
@@ -606,12 +606,12 @@ export default {
             }
             for (let item of cityArr) {
                 for (let data of arr) {
-                    if (data.pAlt) {
+                    if (data.pRemarks) {
                         let areaObj = {
-                            value: data.pAlt.area,
-                            label: data.pAlt.area
+                            value: data.pRemarks.area,
+                            label: data.pRemarks.area
                         };
-                        if (data.pAlt.city == item.value) {
+                        if (data.pRemarks.city == item.value) {
                             // 去重
                             if (
                                 JSON.stringify(item.children).indexOf(JSON.stringify(areaObj)) === -1
@@ -662,7 +662,7 @@ export default {
             if (range || keyword || lab || city.length) {
                 if(this.activeName == 'first' || this.activeName == 'second'){
                     for (let data of initData) {
-                        let alt = data.pAlt;
+                        let alt = data.pRemarks;
                         if (range && keyword && lab && city.length) {
                             if (
                                 dateFormat.toDate(alt.lstart) >= range[0] &&
@@ -899,7 +899,7 @@ export default {
                     }
                 }else{
                     for(let data of initData){
-                        let alt = data.pAlt;
+                        let alt = data.pRemarks;
                         if(range && keyword && city.length){
                             if(
                                 dateFormat.toDate(data.pUTime) >= range[0] && 

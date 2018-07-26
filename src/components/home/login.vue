@@ -1,57 +1,57 @@
 <template>
-    <div class="login_wrap">
-        <div class="loginBox">
-            <div class="logo">
-                <img src="../../assets/images/login_logo.png" alt="">
-                <p>致力于成为中国最有效的社区营销服务商</p>
-            </div>
-            <div class="login">
-                <ul class="loginType">
-                    <li v-bind:class="{active:isActive}" @click="loginType">密码登录
-                    </li>
-                    <li v-bind:class="{active:!isActive}" @click="loginType">扫码登录
-                    </li>
-                </ul>
-                <div class="loginInput" v-if="isActive">
-                    <div class="username">
-                        <input type="text" placeholder="账户" v-model="username">
-                        <img src="../../assets/images/usericon.png" alt="">
-                    </div>
-                    <div class="password">
-                        <input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
-                        <img src="../../assets/images/passicon.png" alt="">
-                    </div>
-                    <div class="remeberUser">
-                        <el-checkbox v-model="remeAccount">记住账号</el-checkbox>
-                    </div>
-                    <div class="loginBtn">
-                        <button id="login" @click="doLogin()">登&nbsp;录</button>
-                    </div>
-                </div>
-                <div class="weixinLogin" v-if="!isActive">
-                    <div class="weixinCode">
-                        <img src="../../assets/images/code.jpg" alt="">
-                        <p>打开微信扫一扫登录</p>
-                    </div>
-                </div>
-                <div class="tip">
-                    <p>温馨提示：加盟城市请(
-                        <a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
-                </div>
-            </div>
-        </div>
-        <!--背景canvas特效 -->
-        <!-- <div>
+	<div class="login_wrap">
+		<div class="loginBox">
+			<div class="logo">
+				<img src="../../assets/images/login_logo.png" alt="">
+				<p>致力于成为中国最有效的社区营销服务商</p>
+			</div>
+			<div class="login">
+				<ul class="loginType">
+					<li v-bind:class="{active:isActive}" @click="loginType">密码登录
+					</li>
+					<li v-bind:class="{active:!isActive}" @click="loginType">扫码登录
+					</li>
+				</ul>
+				<div class="loginInput" v-if="isActive">
+					<div class="username">
+						<input type="text" placeholder="账户" v-model="username">
+						<img src="../../assets/images/usericon.png" alt="">
+					</div>
+					<div class="password">
+						<input type="password" placeholder="密码" v-model="password" @keyup="show($event)">
+						<img src="../../assets/images/passicon.png" alt="">
+					</div>
+					<div class="remeberUser">
+						<el-checkbox v-model="remeAccount">记住账号</el-checkbox>
+					</div>
+					<div class="loginBtn">
+						<button id="login" @click="doLogin()">登&nbsp;录</button>
+					</div>
+				</div>
+				<div class="weixinLogin" v-if="!isActive">
+					<div class="weixinCode">
+						<img src="../../assets/images/code.jpg" alt="">
+						<p>打开微信扫一扫登录</p>
+					</div>
+				</div>
+				<div class="tip">
+					<p>温馨提示：加盟城市请(
+						<a href="ApplicationForm.doc" download="申请表">点击并下载申请表</a>)，申请平台账号</p>
+				</div>
+			</div>
+		</div>
+		<!--背景canvas特效 -->
+		<!-- <div>
        <canvas id="Mycanvas"></canvas>
      </div>-->
-        <!--背景图片动画-->
-        <div class="backgroundImg">
-            <img src="../../assets/images/loginBg.png" alt="">
-        </div>
-        <div class="footer">
-            <p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
-        </div>
-    </div>
+		<!--背景图片动画-->
+		<div class="backgroundImg">
+			<img src="../../assets/images/loginBg.png" alt="">
+		</div>
+		<div class="footer">
+			<p>copyright &copy; 2017 Qinlin technology. All rights reserved. 粤ICP备15007183号</p>
+		</div>
+	</div>
 </template>
 
 <script>

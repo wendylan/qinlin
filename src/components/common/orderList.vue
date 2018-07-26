@@ -96,7 +96,7 @@
                             <template slot-scope="scope">
                                 <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-if="(role=='SM')" @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
+                                        <el-dropdown-item v-if="(role=='SM')" :disabled="scope.row.apState==5" @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
                                         <el-dropdown-item v-if="(role=='MD')" @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
                                         </el-dropdown-item>
                                         <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->

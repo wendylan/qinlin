@@ -3848,7 +3848,6 @@ export default {
         },
         //step2地图选点
         mapAD() {
-            //this.activeCityData
             console.log("地图选点提交的rid", this.activeCityData);
             let rid = this.activeCityData.rid;
             this.mapParams = {
@@ -4086,38 +4085,74 @@ export default {
                 arr = this.filterResOrigin(arr);
             }
             let tempList = [];
+            let requireList = [];
             console.log(typeof this.recType, "资源类型", this.recType);
             console.log(typeof this.mState, "媒体状态", this.mState);
             console.log("城市区域", this.areaName);
+            /*if (FADL[j].notPush !== undefined) {
+                console.log('存在广告限制的', FADL[j])
+                let tempObj = this.ADLimitFun(LimitList, FADL[j])
+                if (tempObj) {
+                  tempObj = this.setTeblePlanList(tempObj, j)
+                  FADLArr.push(tempObj)
+                }
+              }*/
             for (let i = 0; i < arr.length; i++) {
                 if (this.recType === arr[i].resType) {
                     // 资源类型过滤
-                    if (this.mState !== "") {
-                        // 媒体状态过滤框不为空，则进行媒体状态过滤
+                    if (this.mState !== "" && this.areaName !== "全市") {
+                        if (
+                            this.mState == arr[i].mState &&
+                            this.areaName === arr[i].rName
+                        ) {
+                            let tempObj = this.setTeblePlanList(arr[i], i);
+                            tempList.push(tempObj);
+                        } else {
+                            console.log(
+                                "媒体状态或城市区域不符",
+                                arr[i].mState,
+                                arr[i].rName
+                            );
+                        }
+                    } else if (this.mState !== "" && this.areaName === "全市") {
                         if (this.mState == arr[i].mState) {
-                            if (this.areaName !== "全市") {
-                                // 城市区域不为'全市'时，进行城市区域过滤
-                                if (this.areaName === arr[i].rName) {
-                                    let tempObj = this.setTeblePlanList(
-                                        arr[i],
-                                        i
-                                    );
-                                    tempList.push(tempObj);
-                                } else {
-                                    console.log("城市区域不符", arr[i].rName);
-                                }
-                            } else {
-                                let tempObj = this.setTeblePlanList(arr[i], i);
-                                tempList.push(tempObj);
-                            }
+                            let tempObj = this.setTeblePlanList(arr[i], i);
+                            tempList.push(tempObj);
                         } else {
                             console.log("媒体状态不符", arr[i].mState);
                         }
+                    } else if (this.mState === "" && this.areaName !== "全市") {
+                        if (this.areaName === arr[i].rName) {
+                            let tempObj = this.setTeblePlanList(arr[i], i);
+                            tempList.push(tempObj);
+                        } else {
+                            console.log("城市区域不符", arr[i].rName);
+                        }
                     } else {
-                        console.log("***");
                         let tempObj = this.setTeblePlanList(arr[i], i);
                         tempList.push(tempObj);
                     }
+                    // if(this.mState !== ''){                       // 媒体状态过滤框不为空，则进行媒体状态过滤
+                    //   if(this.mState == arr[i].mState){
+                    // if(this.areaName !== '全市'){             // 城市区域不为'全市'时，进行城市区域过滤
+                    //   if(this.areaName === arr[i].rName){
+                    //     let tempObj = this.setTeblePlanList(arr[i], i)
+                    //     tempList.push(tempObj)
+                    //   }else{
+                    //     console.log('城市区域不符',arr[i].rName)
+                    //   }
+                    // }else{
+                    //   let tempObj = this.setTeblePlanList(arr[i], i)
+                    //   tempList.push(tempObj)
+                    // }
+                    //   }else{
+                    //     console.log('媒体状态不符',arr[i].mState)
+                    //   }
+                    // }else{
+                    //   console.log('***')
+                    //   let tempObj = this.setTeblePlanList(arr[i], i)
+                    //   tempList.push(tempObj)
+                    // }
                 } else {
                     console.log("资源类型不符", arr[i].resType);
                 }
@@ -4248,6 +4283,7 @@ export default {
             }
             this.computeMedia_AD();
             this.getBadeNumberByShopList();
+            this.judgeByselect();
         },
         // 判断点位是否已存在购物车
         judgeHaveDiffAD(data) {

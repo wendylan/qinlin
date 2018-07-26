@@ -61,32 +61,32 @@ export default {
                             <!--查看缩略图和下载-->
                             <div class="mask-btn" v-if="showPreImg == index">
                                 <i class="el-icon-search" @click="handlePictureCardPreview(img)"></i>
-                                <a :href="img.pURL" :download="formatTime(img.pUTime)+'下刊'+img.pAlt.account+img.pAlt.city+img.pAlt.area+img.pAlt.res+img.pAlt.assettag+'.png'">下载图片</a>
+                                <a :href="img.pURL" :download="formatTime(img.pUTime)+'下刊'+img.pRemarks.account+img.pRemarks.city+img.pRemarks.area+img.pRemarks.res+img.pRemarks.assettag+'.png'">下载图片</a>
                             </div>
                         </div>
                         <div class="detailBox">
-                            <p>{{img.pAlt.plan}}</p>
+                            <p>{{img.pRemarks.plan}}</p>
                             <!-- <span>华南碧桂园二期-东门</span> -->
-                            <span>{{img.pAlt.res}}-{{img.pAlt.media}}</span>
+                            <span>{{img.pRemarks.res}}-{{img.pRemarks.media}}</span>
                             <div class="icons">
-                                <span class="el-icon-location">{{img.pAlt.city}}</span>
+                                <span class="el-icon-location">{{img.pRemarks.city}}</span>
                                 <span>
                                     <i class="fa fa-file-text"></i>
-                                    {{img.pAlt.asLab}}面
+                                    {{img.pRemarks.asLab}}面
                                 </span>
                                 <el-tooltip placement="bottom" effect="light">
                                     <span class="el-icon-info"></span>
                                     <div slot="content" class="content">
-                                        <p>{{img.pAlt.username}}上传</p>
-                                        <p>{{img.pAlt.assettag}}</p>
-                                        <p>{{img.pAlt.address}}</p>
+                                        <p>{{img.pRemarks.username}}上传</p>
+                                        <p>{{img.pRemarks.assettag}}</p>
+                                        <p>{{img.pRemarks.address}}</p>
                                     </div>
                                 </el-tooltip>
                             </div>
                         </div>
                         <div class="infoBox">
-                            <i>{{img.pAlt.username.substr(-1)}}</i>
-                            <span>{{img.pAlt.brand}}</span>
+                            <i>{{img.pRemarks.username.substr(-1)}}</i>
+                            <span>{{img.pRemarks.brand}}</span>
                             <em>{{formatTime(img.pUTime)}}</em>
                         </div>
                     </div>
