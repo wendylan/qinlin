@@ -61,7 +61,7 @@
                         <el-table-column label="公司名称" min-width="18.4%">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
-                                    <span>{{scope.row.cName}}</span>
+                                    <span>{{scope.row.cName||'--'}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>

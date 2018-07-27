@@ -29,7 +29,10 @@
                             <el-tabs v-model="planPanel" @tab-click="handleClick()">
                                 <el-tab-pane label="选点排期" name="first">
                                     <div class="first-wrap box-wrap">
-                                        <h4>选点排期</h4>
+                                        <h4>选点排期
+                                            <el-button type="default" style="margin-left:20px;height: 34px;line-height:1;" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
+                                        </h4>
+
                                         <div class="table_wrap">
                                             <el-table border :data="setpointArr" style="width: 100%" :default-sort="{prop: 'recName', order: 'descending'}"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                                                 <el-table-column type="expand">
@@ -216,7 +219,6 @@
                                 </el-tab-pane>
                             </el-tabs>
                             <div class="content_bottom_btn">
-                                <el-button type="default" v-if="planPanel =='first'" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
                                 <el-button class="cancel" @click="goBack()">返回</el-button>
                             </div>
                         </div>

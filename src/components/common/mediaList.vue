@@ -754,35 +754,6 @@ export default {
             this.loading = true;
             this.loadScroll = false;
             this.searchListFun();
-            /*console.log('selectInfo', this.selectInfo)
-        console.log('keyword', this.keyword)
-        let select = this.selectInfo;
-        let keyword = this.keyword;
-        // tradingArea, resName
-        if (this.keyword) {
-          let arr = [];
-          for (let data of this.planList) {
-            if (data.resName) {
-              if ((select == '1') && data.resName.includes(keyword)) {
-                arr.push(data);
-              }
-            }
-            if (data.tradingArea) {
-              if ((select == '2') && data.tradingArea.includes(keyword)) {
-                arr.push(data);
-              }
-            }
-          }
-          this.currentPlan = arr;
-          if (!arr.length) {
-            Message.warning({
-              message: '查询数据为空',
-              duration: 1500
-            });
-          }
-          return;
-        }
-        this.currentPlan = JSON.parse(JSON.stringify(this.planList));*/
         }
     }
 };

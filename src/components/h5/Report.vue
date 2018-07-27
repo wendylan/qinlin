@@ -128,7 +128,7 @@
                                     <div class="mask-btn" v-if="showPreImg == index ">
                                         <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
                                     </div>
-                                    <div class="pic-title">{{JSON.parse(img.pAlt).res}}</div>
+                                    <div class="pic-title">{{JSON.parse(img.pRemarks).res}}</div>
                                 </div>
                             </div>
                         </div>
@@ -456,8 +456,8 @@ export default {
             for (let data of arr) {
                 let img = [];
                 for (let item of imgArr) {
-                    let alt = JSON.parse(item.pAlt);
-                    if (data.resID == alt.resid) {
+                    let prk = JSON.parse(item.pRemarks);
+                    if (data.resID == prk.resid) {
                         // uid         int【必填】         当前账户UserID
                         // pid         int【必填】         图库pID
                         // palt        String              图片标题
@@ -472,7 +472,8 @@ export default {
                             palt: item.pAlt,
                             ptype: item.pType,
                             ptid: item.ptID,
-                            ptp: item.ptP
+                            ptp: item.ptP,
+                            prk: item.pRemarks
                         });
                     }
                 }

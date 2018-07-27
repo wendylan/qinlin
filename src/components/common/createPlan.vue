@@ -146,7 +146,7 @@
 										<input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[0]"> -
 										<input type="text" class="input" @focus="haveFocus('h')" v-model="houseNum[1]">
 										<el-button size="mini" v-show=" HSearch === 'h'" @click="emptyFun('H')">清除</el-button>
-										<el-button size="mini" type="primary" v-show=" HSearch === 'h'" @click="tableHeaderFilter_y()">确定
+										<el-button size="mini" type="primary" v-show=" HSearch === 'h'" @click="tableHSearch()">确定
 										</el-button>
 									</div>
 								</li>
@@ -168,7 +168,7 @@
 										<input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[0]"> -
 										<input type="text" class="input" @focus="haveFocus('p')" v-model="buildPrice[1]">
 										<el-button size="mini" v-show=" HSearch === 'p'" @click="emptyFun('P')">清除</el-button>
-										<el-button size="mini" type="primary" v-show=" HSearch === 'p'" @click="tableHeaderFilter_y()">确定
+										<el-button size="mini" type="primary" v-show=" HSearch === 'p'" @click="tableHSearch()">确定
 										</el-button>
 									</div>
 
@@ -179,13 +179,13 @@
 										<input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[0]"> -
 										<input type="text" class="input" @focus="haveFocus('y')" v-model="liveYear[1]">
 										<el-button size="mini" v-show=" HSearch === 'y'" @click="emptyFun('Y')">清除</el-button>
-										<el-button size="mini" type="primary" v-show=" HSearch === 'y'" @click="tableHeaderFilter_y()">确定
+										<el-button size="mini" type="primary" v-show=" HSearch === 'y'" @click="tableHSearch()">确定
 										</el-button>
 									</div>
 								</li>
 								<li>
 									<span style="float: left">楼盘类型:</span>
-									<el-select v-model="buildValue" placeholder="请选择" class="buildType" style="float: left;" @change="searchBT">
+									<el-select v-model="buildValue" placeholder="请选择" class="buildType" style="float: left;" @change="tableHSearch">
 										<el-option v-for="item in buildType" :key="item.buildValue" :label="item.buildValue" :value="item.buildValue"></el-option>
 									</el-select>
 								</li>
@@ -258,11 +258,15 @@
 						<el-dialog title="已选点位" :visible.sync="dialogTableVisible">
 							<template slot-scope="scope">
 								<div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
+									<span @click="getMapADList" class="mapBtn">获取地图选点</span>
 									<div class="car-title">
-										<h4>已选{{shopMedia_ADNum.mediaNum}}个媒体
-											<p>投放{{shopMedia_ADNum.ADNum}}面</p>
-											<span @click="clearShop" style="cursor: pointer">清空已选</span>
-											<span @click="getMapADList" style="cursor: pointer">获取地图选点</span>
+										<i class="el-icon-info" style="color: #1890FF;"></i>
+										<h4> 已选择
+											<span>{{shopMedia_ADNum.mediaNum}}</span>个媒体,
+											<p>投放
+												<span>{{shopMedia_ADNum.ADNum}}</span>面</p>
+											<span @click="clearShop" style="cursor: pointer">&nbsp; &nbsp;清空</span>
+											<!-- <span @click="getMapADList" style="cursor: pointer">获取地图选点</span>-->
 										</h4>
 									</div>
 									<el-table border :data="shopingList" style="width: 100%" :default-sort="{prop: 'resName', order: 'descending'}">
@@ -285,38 +289,40 @@
 												</el-form>
 											</template>
 										</el-table-column>
-										<el-table-column label="资源名称" width="120" prop="resName">
+										<el-table-column label="资源名称" min-width="140" prop="resName">
 										</el-table-column>
-										<el-table-column prop="mediaName" label="媒体名称" width="120">
+										<el-table-column prop="mediaName" label="媒体名称" min-width="130">
 										</el-table-column>
-										<el-table-column prop="city" label="城市" width="80">
+										<el-table-column prop="city" label="城市" min-width="85">
 										</el-table-column>
-										<el-table-column prop="origin" label="区域" width="80">
+										<el-table-column prop="origin" label="区域" min-width="85">
 										</el-table-column>
-										<el-table-column prop="buildType" label="楼盘类型" width="80">
+										<el-table-column prop="buildType" label="楼盘类型" min-width="85">
 										</el-table-column>
-										<el-table-column prop="houseNum" label="小区户数" width="80">
+										<el-table-column prop="houseNum" label="小区户数" min-width="85">
 										</el-table-column>
-										<el-table-column label="楼盘价格" width="80">
+										<el-table-column label="楼盘价格" min-width="90">
 											<template slot-scope="scope">
 												<span>&yen;{{scope.row.buildPrice}}</span>
 											</template>
 										</el-table-column>
-										<el-table-column prop="schedules" label="排期" width="160">
+										<el-table-column prop="schedules" label="排期" min-width="200">
 											<template slot-scope="scope">
 												<el-tooltip class="item" effect="dark" :content="scope.row.schedules" placement="bottom">
 													<span>{{scope.row.schedules}}</span>
 												</el-tooltip>
 											</template>
 										</el-table-column>
-										<el-table-column width="52px">
+										<el-table-column min-width="55px">
 											<template slot-scope="scope">
 												<span>{{scope.row.A_B}}</span>
 											</template>
 										</el-table-column>
-										<el-table-column width="52px">
+										<el-table-column min-width="54px">
 											<template slot-scope="scope">
-												<span style="cursor: pointer;color: #1890ff" @click="deleteRow(scope.row)">删除</span>
+												<span style="cursor: pointer;color: #1890ff" @click="deleteRow(scope.row)">
+													<i class="el-icon-delete" style="color: #108DE7;font-size: 20px;margin-left: 6px"></i>
+												</span>
 											</template>
 										</el-table-column>
 									</el-table>
@@ -1914,7 +1920,7 @@ export default {
                     this.loading = false;
                 }
             } else {
-                if (this.firstLevelData.length) {
+                if (this.firstLevelData.length && this.searchInput !== "") {
                     this.planList = this.firstLevelData;
                     this.judgeByselect("FArea");
                     this.secondLevelData = this.planList; // 保存二级过滤
@@ -2554,7 +2560,6 @@ export default {
                         );
                         if (crossIf) {
                             console.log("删除城市为：", planListCity);
-                            // this.deleteRow(shopingArr[i],'delAll')
                             this.selectAlldelRow(shopingArr[i]); // 取消全勾选时的购物车删除
                         } else {
                             i++;
@@ -2606,10 +2611,7 @@ export default {
                     spinner: "el-icon-loading",
                     background: "rgba(0, 0, 0, 0.7)"
                 });
-                // setTimeout(() => {
                 this.creatAdPlan(); // 创建方案
-                // this.getPDIDFun()
-                // }, 1000);
             }
             if (this.active > 3) {
                 this.active = 0;
@@ -2662,14 +2664,6 @@ export default {
         },
         // 继续创建
         continueCreate() {
-            /* this.active = 0;
-         this.$refs['planForm'].resetFields();
-         Object.assign(this.$data, this.$options.data()) // vue data恢复初始化数据
-         // this.timeout = null
-         clearTimeout(this.timeout)
-         this.areaCity = areaArr.cityArea()
-         this.getsessionData()
-         this.getADLimit()*/
             location.reload(false);
         },
         changePrice(letter, info) {
@@ -3778,6 +3772,12 @@ export default {
             } else {
                 this.scroll_mState = false;
                 this.mState = "";
+                console.log(
+                    "修改搜索中的媒体状态",
+                    this.activeCityData,
+                    this.activeIndex
+                );
+                this.activeCity(this.activeCityData, this.activeIndex);
             }
         },
         // 媒体状态过滤
@@ -3864,6 +3864,7 @@ export default {
                 le: this.dateInput[1]
             };
             console.log("生成地图MapID参数", params);
+            let tempwindow = window.open();
             api
                 .getApi("/GetMapInfo", params)
                 .then(res => {
@@ -3873,11 +3874,12 @@ export default {
                         this.dialogTableVisible = true;
                         // window.open('https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=' + mapid ,
                         //   '_blank', 'toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes')
-                        let tempwindow = window.open();
+                        // let tempwindow = window.open()
                         tempwindow.location =
                             "https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=" +
                             mapid;
                     } else {
+                        tempwindow.close();
                         if (
                             res.data.SysCode === 100302 ||
                             res.data.MSG === "登陆超时"
@@ -4053,10 +4055,27 @@ export default {
             return arr;
         },
         // 年份过滤
-        tableHeaderFilter_y() {
+        tableHSearch() {
+            this.planList = [];
+            this.loading = true;
             let filterData = "";
             let keyword = this.liveYear;
             let arr = [];
+            if (
+                (this.buildPrice[0] === "" || this.buildPrice[1] === "") &&
+                (this.houseNum[0] === "" || this.houseNum[1] === "") &&
+                (this.liveYear[0] === "" || this.liveYear[1] === "") &&
+                (this.buildValue === "全部" || this.buildValue === "")
+            ) {
+                console.log(
+                    "tableHSearch时过滤条件无效时，回调activeCity方法",
+                    this.activeCityData,
+                    this.activeIndex
+                );
+                this.activeCity(this.activeCityData, this.activeIndex);
+                this.loading = false;
+                return;
+            }
             if (
                 (this.buildPrice[0] !== "" && this.buildPrice[1] !== "") ||
                 (this.houseNum[0] !== "" && this.houseNum[1] !== "")
@@ -4084,19 +4103,13 @@ export default {
                 // 搜索框不为空时，进行搜索框过滤
                 arr = this.filterResOrigin(arr);
             }
+            if (this.buildValue !== "全部" && this.buildValue !== "") {
+                arr = this.filter_cType(arr);
+            }
             let tempList = [];
-            let requireList = [];
             console.log(typeof this.recType, "资源类型", this.recType);
             console.log(typeof this.mState, "媒体状态", this.mState);
             console.log("城市区域", this.areaName);
-            /*if (FADL[j].notPush !== undefined) {
-                console.log('存在广告限制的', FADL[j])
-                let tempObj = this.ADLimitFun(LimitList, FADL[j])
-                if (tempObj) {
-                  tempObj = this.setTeblePlanList(tempObj, j)
-                  FADLArr.push(tempObj)
-                }
-              }*/
             for (let i = 0; i < arr.length; i++) {
                 if (this.recType === arr[i].resType) {
                     // 资源类型过滤
@@ -4132,27 +4145,6 @@ export default {
                         let tempObj = this.setTeblePlanList(arr[i], i);
                         tempList.push(tempObj);
                     }
-                    // if(this.mState !== ''){                       // 媒体状态过滤框不为空，则进行媒体状态过滤
-                    //   if(this.mState == arr[i].mState){
-                    // if(this.areaName !== '全市'){             // 城市区域不为'全市'时，进行城市区域过滤
-                    //   if(this.areaName === arr[i].rName){
-                    //     let tempObj = this.setTeblePlanList(arr[i], i)
-                    //     tempList.push(tempObj)
-                    //   }else{
-                    //     console.log('城市区域不符',arr[i].rName)
-                    //   }
-                    // }else{
-                    //   let tempObj = this.setTeblePlanList(arr[i], i)
-                    //   tempList.push(tempObj)
-                    // }
-                    //   }else{
-                    //     console.log('媒体状态不符',arr[i].mState)
-                    //   }
-                    // }else{
-                    //   console.log('***')
-                    //   let tempObj = this.setTeblePlanList(arr[i], i)
-                    //   tempList.push(tempObj)
-                    // }
                 } else {
                     console.log("资源类型不符", arr[i].resType);
                 }
@@ -4160,9 +4152,21 @@ export default {
             this.loadScroll = false;
             console.log("头部过滤得到的数据", tempList);
             this.planList = tempList;
+            this.loading = false;
         },
-        tableHSearch(letter) {
-            // 表头搜索this.copyPlanList
+        // 楼盘类型过滤
+        filter_cType(data) {
+            let filterData = data;
+            let returnData = [];
+            for (let val of filterData) {
+                if (val.cType === this.buildValue) {
+                    returnData.push(val);
+                } else {
+                    console.log("楼盘类型不符", val.cType);
+                }
+            }
+            console.log("楼盘类型过滤得到的数据", returnData);
+            return returnData;
         },
         emptyFun(letter) {
             // 清空
@@ -4176,25 +4180,9 @@ export default {
                 this.liveYear = ["", ""];
             }
         },
+        // 表头过滤中的取消、确认按钮的显示隐藏
         haveFocus(l) {
-            // console.log('2',l)
             this.HSearch = l;
-        },
-        // 搜索楼盘类型
-        searchBT(val) {
-            /* let planList = []
-         let arr = []
-         planList = this.copyPlanList
-         for (let i = 0; i < planList.length; i++) { //buildType
-           if (val === '全部') {
-             arr = planList
-           } else {
-             if (val === planList[i].buildType) {
-               arr.push(planList[i])
-             }
-           }
-         }
-         this.planList = arr*/
         },
         // 购物车-获取地图选择的点位列表
         getMapADList() {
@@ -4336,39 +4324,60 @@ export default {
         },
         // 清空购物车
         clearShop() {
-            this.shopingList = [];
-            this.getBadeNumberByShopList();
-            this.computeMedia_AD();
-            let cityData = this.activeCityData;
-            console.log(
-                "cityData.rid",
-                cityData.rid,
-                ",this.totalPlanList",
-                this.totalPlanList
-            );
-            let that = this;
-            for (let i = 0; i < that.totalPlanList.length; i++) {
-                setTimeout(function() {
-                    for (
-                        let j = 0;
-                        j < that.totalPlanList[i].list.length;
-                        j++
-                    ) {
-                        that.totalPlanList[i].list[j].checkBox.A = false;
-                        that.totalPlanList[i].list[j].checkBox.B = false;
+            this.$confirm("此操作将删除已选的所有数据, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    this.shopingList = [];
+                    this.getBadeNumberByShopList();
+                    this.computeMedia_AD();
+                    let cityData = this.activeCityData;
+                    console.log(
+                        "cityData.rid",
+                        cityData.rid,
+                        ",this.totalPlanList",
+                        this.totalPlanList
+                    );
+                    this.$message({
+                        type: "success",
+                        message: "删除成功!"
+                    });
+                    let that = this;
+                    for (let i = 0; i < that.totalPlanList.length; i++) {
+                        setTimeout(function() {
+                            for (
+                                let j = 0;
+                                j < that.totalPlanList[i].list.length;
+                                j++
+                            ) {
+                                that.totalPlanList[i].list[
+                                    j
+                                ].checkBox.A = false;
+                                that.totalPlanList[i].list[
+                                    j
+                                ].checkBox.B = false;
+                            }
+                            if (that.totalPlanList[i].rid === cityData.rid) {
+                                that.planList = that.totalPlanList[i].list;
+                                for (let n = 0; n < that.planList.length; n++) {
+                                    that.$refs.multipleTable.toggleRowSelection(
+                                        that.planList[n],
+                                        false
+                                    );
+                                }
+                                console.log("this.planList", that.planList);
+                            }
+                        }, 10);
                     }
-                    if (that.totalPlanList[i].rid === cityData.rid) {
-                        that.planList = that.totalPlanList[i].list;
-                        for (let n = 0; n < that.planList.length; n++) {
-                            that.$refs.multipleTable.toggleRowSelection(
-                                that.planList[n],
-                                false
-                            );
-                        }
-                        console.log("this.planList", that.planList);
-                    }
-                }, 10);
-            }
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消删除"
+                    });
+                });
         },
         // 统计购物车媒体数、面数
         computeMedia_AD() {
@@ -4526,6 +4535,19 @@ export default {
 </script>
 
 <style scoped>
+.mapBtn {
+    width: 110px;
+    text-align: center;
+    display: inline-block;
+    padding: 3px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+    margin-bottom: 5px;
+    cursor: pointer;
+}
 /deep/ .el-form--inline .el-form-item {
     margin-right: 7px !important;
 }
@@ -5268,9 +5290,9 @@ export default {
 
 /*滚动条*/
 /deep/ .el-table__body-wrapper {
-    height: 480px;
+    height: 440px;
     overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
 }
 
 /deep/ .el-table__body-wrapper::-webkit-scrollbar {
@@ -5291,12 +5313,17 @@ export default {
 }
 
 /deep/ .el-dialog {
-    width: 1000px;
+    width: 1100px;
+    height: 680px;
 }
 
 /*购物车列表*/
 .car-title {
+    background: #e6f7ff;
+    border: 1px solid #bae7ff;
+    border-radius: 4px;
     margin-bottom: 10px;
+    padding: 5px;
 }
 
 .car-title h4 {
@@ -5315,7 +5342,7 @@ export default {
 .car-title span {
     font-size: 14px;
     font-weight: normal;
-    margin-left: 10px;
+    margin: 0 10px;
     cursor: pointer;
     color: #1890ff;
 }
@@ -5569,7 +5596,8 @@ export default {
 
 /*确认报价单修改框*/
 /deep/ .el-dialog__body {
-    padding: 8px 20px;
+    /*padding: 8px 20px;*/
+    padding: 2px 20px 8px 20px;
 }
 
 .changeBill h4 {

@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <el-pagination small background :current-page.sync="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                        <el-pagination v-if="paginationShow" small background :current-page.sync="currUpPage" :page-sizes="[6, 12]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpReportArr.length" @size-change="sizeChange" @current-change='changePage'>
                                         </el-pagination>
                                     </div>
                                     <div class="up-report-bottom">
@@ -299,7 +299,7 @@
                                         </div>
                                     </div>
                                     <div class="pager">
-                                        <el-pagination small background :current-page.sync="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                        <el-pagination v-if="paginationShow" small background :current-page.sync="currDownPage" :page-sizes="[6, 12]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownReportArr.length" @size-change="sizeChange" @current-change='changePage'>
                                         </el-pagination>
                                     </div>
                                     <div class="up-report-bottom">
@@ -605,6 +605,7 @@ export default {
             DownReportLoading: true,
             // 判断
             role: "",
+            paginationShow: true,
             // 当前页
             currUpPage: 1,
             currDownPage: 1,
@@ -1089,11 +1090,18 @@ export default {
         sizeChange(pageVal) {
             console.log("pageVal", pageVal);
             if (this.planPanel == "forth") {
+                this.currUpPage = 1;
                 this.pageUpSize = pageVal;
             } else if (this.planPanel == "fifth") {
+                this.currDownPage = 1;
                 this.pageDownSize = pageVal;
             }
+            // this.changePage(1);
+            this.paginationShow = false;
             this.changePage(1);
+            this.$nextTick(function () {
+                this.paginationShow = true;
+            });
         },
         // 分页功能
         changePage(page) {
@@ -1227,7 +1235,7 @@ export default {
                         this.filterCityData = filterFormat(result, "city");
                         this.filtersArea = filterFormat(result, "rName");
                         this.filtersData = filterFormat(result, "timeRange");
-                        this.allResource = filterFormat(result, "resName");
+                        // this.allResource = filterFormat(result, "resName");
                         this.loading = false;
                     } else if (res.data.SysCode == 100302) {
                         this.loginTimeout();
@@ -1240,11 +1248,34 @@ export default {
                     console.log(res);
                 });
         },
+        // 被终止了的选点根据条件不显示上下刊报告
+        filterInitData(arr){
+            let result = [];
+            for(let data of arr){
+                let finish = dateFormat.toDate(data.lSetTime, '');
+                let start = dateFormat.toDate(data.lStar, '');
+                if(data.lState ==2 &&  finish < start){
+
+                }else{
+                    result.push(data);
+                }
+            }
+            return result;
+        },
         // 获取上刊图片数据
         getUpImgInfo() {
             if (this.upLoadImg.length) {
                 this.citySelect[0] = "全部";
+                console.log('this.currUpPage---------', this.currUpPage);
+                // this.currUpPage = 0;
+                // this.changePage(1);
+                this.paginationShow = false;
+                this.changePage(1);
+                this.$nextTick(function () {
+                    this.paginationShow = true;
+                });
                 // this.currUpPage = 1;
+                console.log('this.currUpPage---------', this.currUpPage);
                 // this.searchImg();
                 return;
             }
@@ -1260,7 +1291,9 @@ export default {
                 .then(res => {
                     if (!res.data.SysCode) {
                         console.log(res.data);
-                        let result = this.copyAsidArr;
+                        // let result = this.copyAsidArr;
+                        let result = this.filterInitData(this.copyAsidArr);
+                        this.allResource = filterFormat(result, "resName");
                         // 初始图片
                         this.upLoadImg = res.data;
                         // 上刊数据(组合图片)
@@ -1302,7 +1335,16 @@ export default {
         getDownImgInfo() {
             if (this.downImg.length) {
                 this.citySelect[0] = "全部";
+                // this.currDownPage = 0;
+                console.log('this.currDownPage--------', this.currDownPage);
+                this.paginationShow = false;
+                this.changePage(1);
+                this.$nextTick(function () {
+                    this.paginationShow = true;
+                });
+
                 // this.currDownPage = 1;
+                console.log('this.currDownPage--------', this.currDownPage);
                 // this.searchImg();
                 return;
             }
@@ -1317,7 +1359,9 @@ export default {
                 .then(res => {
                     if (!res.data.SysCode) {
                         console.log(res.data);
-                        let result = this.copyAsidArr;
+                        // let result = this.copyAsidArr;
+                        let result = this.filterInitData(this.copyAsidArr);
+                        this.allResource = filterFormat(result, "resName");
                         this.downImg = res.data;
                         // 下刊数据(组合图片)
                         result = this.constructImg(result, this.downImg, "XK");
@@ -1715,7 +1759,7 @@ export default {
                 address: row.resAddress ? row.resAddress : "",
                 lid: row.lID ? row.lID : ""
             };
-            this.upLoadData.palt = this.orderDetail.apName+'-'+row.resName+"-"+row.mTitle;
+            this.upLoadData.palt = this.orderDetail.apName+'-'+row.resName+"-"+row.mTitle+row.asLab;
             this.upLoadData.prk = JSON.stringify(prk);
             this.upLoadData.ptp = sessionStorage.getItem("order_apid");
         },
@@ -2014,9 +2058,10 @@ export default {
         // 查看h5上刊报告按钮
         showH5Up() {
             let apid = sessionStorage.getItem('order_apid');
+            let tempwindow = window.open();
             api.getApi('/EncryptNo', {num: apid}).then(res =>{
                 console.log(res.data);
-                window.open("/Report?SK="+res.data.EncryptCode);
+                tempwindow.location = "/Report?SK="+res.data.EncryptCode;
             }).catch(res =>{
                 console.log(res);
             });
@@ -2024,9 +2069,10 @@ export default {
         //查看h5下刊报告按钮
         showH5Down() {
             let apid = sessionStorage.getItem('order_apid');
+            let tempwindow = window.open();
             api.getApi('/EncryptNo', {num: apid}).then(res =>{
                 console.log(res.data);
-                window.open("/Report?XK="+res.data.EncryptCode);
+                tempwindow.location = "/Report?XK="+res.data.EncryptCode;
             }).catch(res =>{
                 console.log(res);
             });
@@ -2076,6 +2122,32 @@ export default {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
         },
+        // 状态修改更新数据
+        updateState(order, val){
+            var len = order.length;
+            for(var i = 0; i < len; i++){
+                if(order[i].lID == val){
+                    order.splice(i, 1);
+                    len--;
+                }
+            }
+        },
+        finishState(){
+            if(this.upLoadImg.length){
+                this.updateState(this.upReportArr, this.nowRow.lID);
+                this.updateState(this.currUpReportArr, this.nowRow.lID);
+                this.updateState(this.pageUpReportArr, this.nowRow.lID);
+            }else{
+                this.updateState(this.copyAsidArr, this.nowRow.lID);
+            }
+            if(this.downImg.length){
+                this.updateState(this.downReportArr, this.nowRow.lID);
+                this.updateState(this.currDownReportArr, this.nowRow.lID);
+                this.updateState(this.pageDownReportArr, this.nowRow.lID);
+            }else{
+                this.updateState(this.copyAsidArr, this.nowRow.lID);
+            }
+        },
         conFirmStopAds(){
             console.log(this.nowRow);
             let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
@@ -2110,6 +2182,7 @@ export default {
                                     let time = this.formatTime(resdata.lStar)+"-"+this.formatTime(resdata.lSetTime);
                                     this.$set(this.nowRow, 'finishTimeRange', time);
                                     this.isFinish = false;
+                                    this.finishState();
                                     Message.success("终止成功");
                                 } else if (res.data.SysCode == 100302) {
                                     this.loginTimeout();
@@ -2132,59 +2205,69 @@ export default {
         },
         //终止操作确认操作对话框
         disContinue(row) {
-            this.isFinish = true;
-            this.finishDate = '';
-            this.dateRange.beginDate = this.formatTime(row.lStar);
-            this.dateRange.endDate = this.formatTime(row.lEnd);
-            this.nowRow = row;
+            // this.isFinish = true;
+            // this.finishDate = '';
+            // this.dateRange.beginDate = this.formatTime(row.lStar);
+            // this.dateRange.endDate = this.formatTime(row.lEnd);
+            // this.nowRow = row;
 
             // console.log(this.dateRange);
             // console.log(row);
-            // let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
-            // let rid = row.rID.toString().substring(0,4)+'00';
-            // console.log('uwho------', uwho);
-            // if((uwho == '0')  || uwho.includes(rid) ){
-            //     let info = {
-            //         uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
-            //         lid: row.lID
-            //     };
-            //     MessageBox.confirm(
-            //         `是否终止 ${row.resName + row.mTitle + row.asLab}面在 ${
-            //             row.timeRange
-            //         } 的投放？\n`,
-            //         "提示",
-            //         {
-            //             dangerouslyUseHTMLString: true,
-            //             confirmButtonText: "确定",
-            //             cancelButtonText: "取消",
-            //             type: "warning"
-            //         }
-            //     )
-            //         .then(() => {
-            //             api
-            //                 .postApi("/StopADS", info)
-            //                 .then(res => {
-            //                     console.log(res.data);
-            //                     if (!res.data.SysCode) {
-            //                         this.$set(row, "lState", res.data.lState);
-            //                         this.$set(row, "lSetTime", res.data.lSetTime);
-            //                         Message.success("终止成功");
-            //                     } else if (res.data.SysCode == 100302) {
-            //                         this.loginTimeout();
-            //                     } else {
-            //                         Message.warning(res.data.MSG);
-            //                     }
-            //                 })
-            //                 .catch(res => {
-            //                     console.log(res);
-            //                 });
-            //         })
-            //         .catch(() => {
-            //             Message.info("已取消操作");
-            //         });
-            // }else{
-            //     Message.warning('您没有权限终止点位');
-            // }
+            let uwho = JSON.parse(sessionStorage.getItem('session_data')).uWho;
+            let rid = row.rID.toString().substring(0,4)+'00';
+            this.nowRow = row;
+            console.log('uwho------', uwho);
+            if((uwho == '0')  || uwho.includes(rid) ){
+                let info = {
+                    uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
+                    lid: row.lID
+                };
+                MessageBox.confirm(
+                    `是否终止 ${row.resName + row.mTitle + row.asLab}面在 ${
+                        row.timeRange
+                    } 的投放？\n`,
+                    "提示",
+                    {
+                        dangerouslyUseHTMLString: true,
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                    }
+                )
+                    .then(() => {
+                        api
+                            .postApi("/StopADS", info)
+                            .then(res => {
+                                console.log(res.data);
+                                if (!res.data.SysCode) {
+                                    // this.$set(row, "lState", res.data.lState);
+                                    // this.$set(row, "lSetTime", res.data.lSetTime);
+                                    // Message.success("终止成功");
+                                    let resdata = res.data;
+                                    this.$set(this.nowRow, "lState", resdata.lState);
+                                    this.$set(this.nowRow, "lSetTime", resdata.lSetTime);
+                                    let time = this.formatTime(resdata.lStar)+"-"+this.formatTime(resdata.lSetTime);
+                                    this.$set(this.nowRow, 'finishTimeRange', time);
+                                    this.isFinish = false;
+                                    this.finishState();
+                                    Message.success("终止成功");
+
+                                } else if (res.data.SysCode == 100302) {
+                                    this.loginTimeout();
+                                } else {
+                                    Message.warning(res.data.MSG);
+                                }
+                            })
+                            .catch(res => {
+                                console.log(res);
+                            });
+                    })
+                    .catch(() => {
+                        Message.info("已取消操作");
+                    });
+            }else{
+                Message.warning('您没有权限终止点位');
+            }
         },
 
         cancelChangeRemark() {
@@ -2750,6 +2833,74 @@ export default {
 
 .plan-title .el-input__inner {
     width: 100%;
+}
+
+.plan-detail {
+    font-size: 14px;
+    color: #333333;
+    padding-left: 41px;
+}
+
+.plan-detail-left {
+    float: left;
+    width: 78%;
+}
+
+.plan-detail-left ul {
+    width: 100%;
+    float: left;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    text-align: left;
+}
+
+.plan-detail-left ul li {
+    float: left;
+    width: 280px;
+    margin-bottom: 12px;
+}
+
+/*.plan-detail-left ul li:nth-child(3n-2) {*/
+/*width: 350px;*/
+/*}*/
+
+/*.plan-detail-left ul li:nth-child(3n-1) {*/
+/*width: 248px;*/
+/*}*/
+
+.plan-detail-left ul li em {
+    font-size: 14px;
+    color: #666666;
+}
+
+.plan-detail-right {
+    width: 20%;
+    float: right;
+    display: flex;
+    justify-content: space-between;
+}
+
+.plan-detail-right dl {
+    float: left;
+    text-align: right;
+}
+
+.plan-detail-right dl:last-of-type {
+    /*margin-left: 34px;*/
+}
+
+.plan-detail-right dt {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.plan-detail-right dd {
+    margin-top: 4px;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.85);
 }
 
 /*物料信息*/
@@ -3524,6 +3675,19 @@ export default {
     .tab-info .price h4 {
         width: 94%;
     }
+
+    /*.plan-detail-left ul li:nth-child(3n-2) {*/
+    /*width: 500px;*/
+    /*}*/
+    /*.plan-detail-left ul li:nth-child(3n-1) {*/
+    /*width: 400px;*/
+    /*}*/
+    /*.up-loader-Imgpanel + .up-loader-Imgpanel {
+            margin-left: 54px;
+        }*/
+    /*.up-loader-Imgpanel:nth-child(5) {
+            margin-left: 0;
+        }*/
     .plan-title .handleBtn {
         position: absolute;
         /*right: 135px;*/
@@ -3536,6 +3700,16 @@ export default {
       margin-right: 67px;
       margin-left: 61px;
         /*margin-left: 37px;*/
+    }
+
+    .plan-detail-right {
+        width: 15%;
+    }
+
+    .plan-detail-left ul li {
+        float: left;
+        width: 400px;
+        margin-bottom: 12px;
     }
 }
 
