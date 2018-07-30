@@ -122,13 +122,13 @@
                             </div>
                             <div class="typeOfPic" v-if="!isActive">
                                 <div class="picBox" v-for="(img, index) of imgInfo" :key="index" @mouseenter="showPreImg = index" @mouseleave="showPreImg = null">
-                                    <!-- <img :src="img.pURL" alt=""> -->
-                                    <img v-lazyload="img.pURL" alt="">
+                                    <!-- <img :src="img.url" alt=""> -->
+                                    <img v-lazyload="img.url" alt="">
                                     <!--缩略图-->
                                     <div class="mask-btn" v-if="showPreImg == index ">
-                                        <i class="el-icon-search" @click="handlePictureCardPreview(img.pURL)"></i>
+                                        <i class="el-icon-search" @click="handlePictureCardPreview(img.url)"></i>
                                     </div>
-                                    <div class="pic-title">{{JSON.parse(img.pRemarks).res}}</div>
+                                    <div class="pic-title">{{JSON.parse(img.prk).res}}</div>
                                 </div>
                             </div>
                         </div>
@@ -340,8 +340,22 @@ export default {
                     console.log(res);
                 });
         },
+        // 被终止了的选点根据条件不显示上下刊报告
+        filterInitData(arr) {
+            let result = [];
+            for (let data of arr) {
+                let finish = dateFormat.toDate(data.lSetTime, "");
+                let start = dateFormat.toDate(data.lStar, "");
+                if (data.lState == 2 && finish < start) {
+                } else {
+                    result.push(data);
+                }
+            }
+            return result;
+        },
         // 投放详情
         getPutDetail(resArr, upImginfo) {
+            resArr = this.filterInitData(resArr);
             resArr = this.constructData(resArr);
             for (let result of resArr) {
                 result.city = areaToText.toTextCity(result.rID);
@@ -437,19 +451,28 @@ export default {
                 res.mediaNum = mediaNum;
                 console.log("asidS", asIDs);
             }
+            console.log("res.mediaNumArr----", result);
             return result;
         },
         // 按照图片分类
         initImg(arr, imgArr) {
-            for (let img of imgArr) {
-                for (let data of arr) {
-                    if (data.asID == img.ptID) {
-                        img.resName = data.resName;
-                        break;
-                    }
-                }
+            let result = [];
+            for (let data of arr) {
+                result = result.concat(data.upImgArr);
             }
-            return imgArr;
+            console.log(result);
+            return result;
+            // console.log('arr----', arr);
+            // for (let img of imgArr) {
+            //     let prk = JSON.parse(img.pRemarks);
+            //     for (let data of arr) {
+            //         if (data.asID == img.ptID && data.lID == prk.lid) {
+            //             img.resName = data.resName;
+            //             break;
+            //         }
+            //     }
+            // }
+            // return imgArr;
         },
         // 组合上下刊图片数据(按照资源分类)
         constructImg(arr, imgArr) {

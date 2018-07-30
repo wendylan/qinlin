@@ -222,8 +222,8 @@ export default {
             filtersRName: [], // 区域头部筛选
             loadScroll: true,
             provinceCity: [], //省份及其地级市
-            timeID: "" // 计时器
-            // FValue: '东城区',
+            timeID: "", // 计时器
+            cityRid: "" // 搜索前置条件为城市时,转换成rid
         };
     },
     mounted: function() {
@@ -268,36 +268,30 @@ export default {
     methods: {
         loadMore() {
             console.log("滚动触发了");
-            if (this.loadScroll) {
-                if (this.loadSign) {
-                    this.loadSign = false;
-                    if (this.keyword !== "" && this.selectInfo === "3") {
-                        this.firstLevelAdd();
-                    } else {
-                        this.addMediaList();
-                    }
-                    setTimeout(() => {
-                        this.loadSign = true;
-                    }, 1000);
-                    console.log("到底了");
+            // if(this.loadScroll){
+            if (this.loadSign) {
+                this.loadSign = false;
+                if (this.keyword !== "" && this.loadScroll) {
+                    this.firstLevelAdd();
+                } else {
+                    this.addMediaList();
                 }
-            } else {
-                // console.log('此时为搜索出来的数据')
+                setTimeout(() => {
+                    this.loadSign = true;
+                }, 1000);
+                console.log("到底了");
             }
+            // }else {
+            // console.log('此时为搜索出来的数据')
+            // }
         },
         //新建跳转
         newMedia() {
             this.$router.push("./mediaInput");
         },
-
         //筛选
         filterRecType(value, row) {
             return row.rtName === value;
-            /*return row.rtName.value.includes(value);*/
-            /* if(value =='全国'){
-              return true;
-              }
-              return row.uWhoArr.includes(value);*/
         },
         filterCity(value, row) {
             return row.city === value;
@@ -306,16 +300,6 @@ export default {
             // console.log('value',value,'row',row)
             return row.rName === value;
         },
-        // filterMediaType(value, row) {
-        // if(!(row.mVehicle === value)){
-        //   this.$message({
-        //     message:'筛选数据为空',
-        //     type:'warning',
-        //     duration:2000
-        //   })
-        // }
-        // return row.mVehicle === value;
-        // },
         filterPTStatus(value, row) {
             let sum = 0;
             for (let data of this.planList) {
@@ -605,18 +589,43 @@ export default {
                 this.currentPlan = this.planList;
                 this.tableHeadCity_area();
                 // this.loading = false
-                this.loadScroll = true;
+                this.loadScroll = false;
             }
         },
+        //资源名称/商圈/城市过滤
+        filterData(data) {
+            console.log("filter过滤");
+            let select = this.selectInfo;
+            let keyword = this.keyword;
+            let BML = data;
+            if (BML.resName && select == "1") {
+                if (BML.resName.includes(keyword)) {
+                    // arr.push(BML);
+                    return BML;
+                }
+            } else if (BML.tradingArea && select == "2") {
+                if (BML.tradingArea.includes(keyword)) {
+                    // arr.push(BML);
+                    return BML;
+                }
+            } else if (BML.rID && select == "3") {
+                let BMLrID = Math.floor(BML.rID / 100);
+                console.log("BMLrID", BMLrID);
+                if (BMLrID == this.cityRid) {
+                    return BML;
+                }
+            } else {
+                return false;
+            }
+        },
+        // 搜索主方法
         searchListFun() {
-            this.planList = [];
             console.log("selectInfo", this.selectInfo);
             console.log("keyword", this.keyword);
             let select = this.selectInfo;
             let keyword = this.keyword;
             let BML = this.beforMediaList;
             let searchArr = [];
-            let cityRid = "";
             if (this.keyword !== "" && this.keyword !== null) {
                 let arr = [];
                 if (select == "3") {
@@ -625,12 +634,12 @@ export default {
                         let city = this.provinceCity[n].regionEntitys;
                         for (let m = 0; m < city.length; m++) {
                             if (city[m].region.includes(keyword)) {
-                                cityRid = city[m].code.substring(0, 4);
+                                this.cityRid = city[m].code.substring(0, 4);
                                 console.log(
                                     "城市为:",
                                     keyword,
                                     ",该rid为:",
-                                    cityRid
+                                    this.cityRid
                                 );
                                 break;
                             }
@@ -638,25 +647,11 @@ export default {
                     }
                 }
                 for (let i = 0; i < BML.length; i++) {
-                    if (BML[i].resName) {
-                        if (select == "1" && BML[i].resName.includes(keyword)) {
-                            arr.push(BML[i]);
-                        }
-                    }
-                    if (BML[i].tradingArea) {
-                        if (
-                            select == "2" &&
-                            BML[i].tradingArea.includes(keyword)
-                        ) {
-                            arr.push(BML[i]);
-                        }
-                    }
-                    if (BML[i].rID) {
-                        let BMLrID = Math.floor(BML[i].rID / 100);
-                        console.log("BMLrID", BMLrID);
-                        if (select == "3" && BMLrID == cityRid) {
-                            arr.push(BML[i]);
-                        }
+                    let tempData = this.filterData(BML[i]);
+                    if (tempData) {
+                        arr.push(BML[i]);
+                    } else {
+                        // console.log('不符合')
                     }
                 }
                 for (let j = 0; j < arr.length; j++) {
@@ -674,31 +669,23 @@ export default {
                     searchArr.push(arr[j]);
                 }
                 console.log("searchArr", searchArr);
-                if (select == "3") {
-                    // 搜索城市
-                    console.log("搜索城市select", select);
-                    this.firstLevelList = searchArr;
-                    for (let t = 0; t < searchArr.length; t++) {
-                        if (t < 50 && searchArr.length > 50) {
-                            this.planList.push(searchArr[t]);
-                        } else if (searchArr.length < 50) {
-                            this.planList = searchArr;
-                            this.firstLevelListIndex = searchArr.length;
-                            break;
-                        } else {
-                            this.firstLevelListIndex = t;
-                            this.currentPlan = this.planList;
-                            console.log(
-                                "firstLevelListIndex",
-                                this.firstLevelListIndex
-                            );
-                            break;
-                        }
+                this.firstLevelList = searchArr;
+                for (let t = 0; t < searchArr.length; t++) {
+                    if (t < 50 && searchArr.length > 50) {
+                        this.planList.push(searchArr[t]);
+                    } else if (searchArr.length < 50) {
+                        this.planList = searchArr;
+                        this.firstLevelListIndex = searchArr.length;
+                        break;
+                    } else {
+                        this.firstLevelListIndex = t;
+                        this.currentPlan = this.planList;
+                        console.log(
+                            "firstLevelListIndex",
+                            this.firstLevelListIndex
+                        );
+                        break;
                     }
-                    this.loadScroll = true;
-                } else {
-                    console.log("select不为3");
-                    this.planList = searchArr;
                 }
                 this.currentPlan = this.planList;
                 console.log("搜索完成", this.currentPlan);
@@ -708,13 +695,13 @@ export default {
                         message: "查询数据为空",
                         duration: 1000
                     });
+                } else {
+                    this.loadScroll = true;
                 }
-                // return;
             } else {
                 this.loading = false;
-                this.loadScroll = true;
+                this.loadScroll = false;
             }
-            // this.currentPlan = JSON.parse(JSON.stringify(this.planList))
             this.loading = false;
         },
         // 一级搜索后的滚动加载
@@ -735,7 +722,7 @@ export default {
                         this.planList.push(LevelArr[j]);
                     }
                     console.log("planList", this.planList);
-                    this.firstLevelListIndex = i;
+                    this.firstLevelListIndex = i + 1;
                     break;
                 } else {
                     if (i >= LevelList.length - 1) {
@@ -743,7 +730,7 @@ export default {
                         let c = this.planList.concat(LevelArr);
                         this.planList = c;
                         console.log("planList", this.planList);
-                        this.firstLevelListIndex = i;
+                        this.firstLevelListIndex = i + 1;
                     }
                 }
             }
@@ -751,8 +738,10 @@ export default {
         },
         // 搜索按钮
         searchFun() {
+            this.planList = [];
+            this.currentPlan = [];
             this.loading = true;
-            this.loadScroll = false;
+            this.loadScroll = true;
             this.searchListFun();
         }
     }
@@ -913,7 +902,7 @@ a {
 
 /deep/ .el-table td {
     padding: 8px 0;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     text-overflow: ellipsis;
 }
 

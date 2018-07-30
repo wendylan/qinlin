@@ -4,13 +4,13 @@
         <div class="changePwd-box">
             <el-form :model="formChangePwd" status-icon :rules="ChangePwdRule" ref="formChangePwd" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="" prop="currPwd">
-                    <el-input type="password" v-model.trim="formChangePwd.currPwd" auto-complete="off" placeholder="请输入当前密码"></el-input>
+                    <el-input type="password" v-model.trim="formChangePwd.currPwd" auto-complete="off" maxlength="16" minlength="6" placeholder="请输入当前密码"></el-input>
                 </el-form-item>
                 <el-form-item label="" prop="newPwd">
-                    <el-input type="password" v-model.trim="formChangePwd.newPwd" auto-complete="off" placeholder="请输入新的密码"></el-input>
+                    <el-input type="password" v-model.trim="formChangePwd.newPwd" auto-complete="off" maxlength="16" minlength="6" placeholder="请输入新的密码"></el-input>
                 </el-form-item>
                 <el-form-item label="" prop="confirmPwd">
-                    <el-input type="password" v-model.trim="formChangePwd.confirmPwd" placeholder="请再次输入密码"></el-input>
+                    <el-input type="password" v-model.trim="formChangePwd.confirmPwd" maxlength="16" minlength="6" placeholder="请再次输入密码"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('formChangePwd')">确定</el-button>

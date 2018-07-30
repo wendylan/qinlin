@@ -310,7 +310,37 @@ export default {
                 "媒体十七",
                 "媒体十八",
                 "媒体十九",
-                "媒体二十"
+                "媒体二十",
+                "媒体二十一",
+                "媒体二十二",
+                "媒体二十三",
+                "媒体二十四",
+                "媒体二十五",
+                "媒体二十六",
+                "媒体二十七",
+                "媒体二十八",
+                "媒体二十九",
+                "媒体三十",
+                "媒体三十一",
+                "媒体三十二",
+                "媒体三十三",
+                "媒体三十四",
+                "媒体三十五",
+                "媒体三十六",
+                "媒体三十七",
+                "媒体三十八",
+                "媒体三十九",
+                "媒体四十",
+                "媒体四十一",
+                "媒体四十二",
+                "媒体四十三",
+                "媒体四十四",
+                "媒体四十五",
+                "媒体四十六",
+                "媒体四十七",
+                "媒体四十八",
+                "媒体四十九",
+                "媒体五十"
             ],
             titleIndex: 0,
             arrMediaStatue: [], // 编辑媒体时记录状态
@@ -808,12 +838,12 @@ export default {
             }
             mediaArr[0].text = this.titleArr[++this.titleIndex];
             mediaImgArr[0].text = mediaArr[0].text;
-            if (this.titleIndex < 20) {
+            if (this.titleIndex < 50) {
                 this.arrMedia.push(mediaArr[0]);
                 this.arrMediaImg.push(mediaImgArr[0]);
             } else {
                 Message({
-                    message: "最多同时支持二十个媒体面板的操作！",
+                    message: "最多同时支持五十个媒体面板的操作！",
                     type: "warning"
                 });
             }

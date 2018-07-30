@@ -1070,7 +1070,7 @@ export default {
             }) 
         }, 
         formatJson(filterVal, jsonData) { 
-            return jsonData.map(v => filterVal.map(j => v[j]));
+            return jsonData.map(v => filterVal.map(j => (j=='hPrice')?(v[j]/100):v[j])) 
         },
         // 判断是否是有换点跳转过来的？
         isChangePoint(){
@@ -1270,7 +1270,8 @@ export default {
                 // this.currUpPage = 0;
                 // this.changePage(1);
                 this.paginationShow = false;
-                this.changePage(1);
+                // this.changePage(1);
+                this.searchImg();
                 this.$nextTick(function () {
                     this.paginationShow = true;
                 });
@@ -1338,7 +1339,8 @@ export default {
                 // this.currDownPage = 0;
                 console.log('this.currDownPage--------', this.currDownPage);
                 this.paginationShow = false;
-                this.changePage(1);
+                // this.changePage(1);
+                this.searchImg();
                 this.$nextTick(function () {
                     this.paginationShow = true;
                 });
@@ -1432,9 +1434,13 @@ export default {
             for (let data of arr) {
                 let upimg = [];
                 let downimg = [];
+                let ds = dateFormat.toDate(data.lStar, ".");
+                let de = dateFormat.toDate(data.lEnd, ".");
                 for (let item of imgArr) {
                     let prk = JSON.parse(item.pRemarks);
-                    if (data.asID == item.ptID && data.lID == prk.lid) {
+                    let start = dateFormat.toDate(prk.lstart, ".");
+                    let end = dateFormat.toDate(prk.lend, ".");
+                    if (data.asID == item.ptID && ds == start && de == end ) {
                         if (type == "SK") {
                             // uid         int【必填】         当前账户UserID
                             // pid         int【必填】         图库pID
@@ -1783,8 +1789,12 @@ export default {
         listUpdate(arr, res){
             let info = this.upLoadData;
             for (let data of arr) {
+                let ds = dateFormat.toDate(data.lStar, ".");
+                let de = dateFormat.toDate(data.lEnd, ".");
                 let prk = JSON.parse(info.prk);
-                if (data.asID == info.ptid && data.lID == prk.lid) {
+                let start = dateFormat.toDate(prk.lstart, ".");
+                let end = dateFormat.toDate(prk.lend, ".");
+                if (data.asID == info.ptid && ds == start && de == end) {
                     let item = res.response;
                     let obj = {
                         name: info.pid + ".png",
@@ -1812,7 +1822,11 @@ export default {
         listDelupdate(arr, file, type){
             for (let i = 0; i < arr.length; i++) {
                 let prk = JSON.parse(file.prk);
-                if (arr[i].asID == file.ptid && arr[i].lID == prk.lid) {
+                let ds = dateFormat.toDate(arr[i].lStar, ".");
+                let de = dateFormat.toDate(arr[i].lEnd, ".");
+                let start = dateFormat.toDate(prk.lstart, ".");
+                let end = dateFormat.toDate(prk.lend, ".");
+                if (arr[i].asID == file.ptid && ds == start && de == end) {
                     if(type == "SK"){
                         if (arr[i].upImgArr.length == 1) {
                             arr[i].upImgArr = [];
@@ -2126,7 +2140,11 @@ export default {
         updateState(order, val){
             var len = order.length;
             for(var i = 0; i < len; i++){
-                if(order[i].lID == val){
+                let ds = dateFormat.toDate(order[i].lStar, ".");
+                let de = dateFormat.toDate(order[i].lEnd, ".");
+                let start = dateFormat.toDate(val.lStar, ".");
+                let end = dateFormat.toDate(val.lEnd, ".");
+                if(order[i].asID == val.asID && ds == start && de == end){
                     order.splice(i, 1);
                     len--;
                 }
@@ -2134,18 +2152,18 @@ export default {
         },
         finishState(){
             if(this.upLoadImg.length){
-                this.updateState(this.upReportArr, this.nowRow.lID);
-                this.updateState(this.currUpReportArr, this.nowRow.lID);
-                this.updateState(this.pageUpReportArr, this.nowRow.lID);
+                this.updateState(this.upReportArr, this.nowRow);
+                this.updateState(this.currUpReportArr, this.nowRow);
+                this.updateState(this.pageUpReportArr, this.nowRow);
             }else{
-                this.updateState(this.copyAsidArr, this.nowRow.lID);
+                this.updateState(this.copyAsidArr, this.nowRow);
             }
             if(this.downImg.length){
-                this.updateState(this.downReportArr, this.nowRow.lID);
-                this.updateState(this.currDownReportArr, this.nowRow.lID);
-                this.updateState(this.pageDownReportArr, this.nowRow.lID);
+                this.updateState(this.downReportArr, this.nowRow);
+                this.updateState(this.currDownReportArr, this.nowRow);
+                this.updateState(this.pageDownReportArr, this.nowRow);
             }else{
-                this.updateState(this.copyAsidArr, this.nowRow.lID);
+                this.updateState(this.copyAsidArr, this.nowRow);
             }
         },
         conFirmStopAds(){

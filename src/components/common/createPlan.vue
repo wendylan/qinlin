@@ -258,10 +258,11 @@
 						<el-dialog title="已选点位" :visible.sync="dialogTableVisible">
 							<template slot-scope="scope">
 								<div class="table_wrap car-list" style="margin-top: 60px" :visible.sync="dialogTableVisible">
-									<span @click="getMapADList" class="mapBtn">获取地图选点</span>
+									<el-button @click="getMapADList" class="mapBtn" :disabled="mapBtn">获取地图选点</el-button>
 									<div class="car-title">
 										<i class="el-icon-info" style="color: #1890FF;"></i>
-										<h4> 已选择
+										<h4>已选择
+											<span>{{shopMedia_ADNum.resNum}}</span>个社区,
 											<span>{{shopMedia_ADNum.mediaNum}}</span>个媒体,
 											<p>投放
 												<span>{{shopMedia_ADNum.ADNum}}</span>面</p>
@@ -837,7 +838,7 @@ export default {
             buildPrice: ["", ""], // 表头搜索楼盘价格
             liveYear: ["", ""], // 表头搜索入住年份
             loadSign: true, // table滚轮
-            shopMedia_ADNum: { mediaNum: 0, ADNum: 0 },
+            shopMedia_ADNum: { resNum: 0, mediaNum: 0, ADNum: 0 },
             ADloading: "", // 创建方案、提交选点和报价单时的loading
             computeAuotation: "", // 计算报价单时的loading
             areaCity: [],
@@ -870,7 +871,9 @@ export default {
             beforADList_mState: [], // 保存切换媒体的所有数据--ADList
             scroll_mState: false,
             mapADList: [], // 地图选择的点位数据
-            mapParams: {} // 记录当前地图选点时的参数，包括排期、城市名和rid
+            mapParams: {}, // 记录当前地图选点时的参数，包括排期、城市名和rid
+            mapBtn: true, // 获取地图选点数据的按钮，默认不可点击
+            getMapLoading: "" // 获取地图选点时的loading
         };
     },
     mounted() {
@@ -1747,14 +1750,8 @@ export default {
                                 that.shopingList[i].schedules
                             );
                             if (crossIf) {
-                                console.log(
-                                    "相同的that.shopingList",
-                                    that.shopingList[i]
-                                );
-                                console.log(
-                                    "相同的that.planList",
-                                    that.planList[j]
-                                );
+                                // console.log('相同的that.shopingList', that.shopingList[i])
+                                // console.log('相同的that.planList', that.planList[j])
                                 if (that.shopingList[i].A_B === "A面") {
                                     that.planList[j].checkBox.A = true;
                                 } else if (that.shopingList[i].A_B === "B面") {
@@ -2526,15 +2523,12 @@ export default {
             console.log("selection", selection);
             // let number = 0    // 统计全选后取消的行数或A/B面
             if (selection.length !== 0) {
-                // console.log('number:', number)
                 for (let i = 0; i < selection.length; i++) {
                     // 根据是否被占用去打勾
                     if (!selection[i].box.A) {
-                        // console.log('boxA')
                         selection[i].checkBox.A = true;
                     }
                     if (!selection[i].box.B) {
-                        // console.log('boxB')
                         selection[i].checkBox.B = true;
                     }
                 }
@@ -2542,12 +2536,21 @@ export default {
                 this.deleteShopRow(selection, "all"); // 全选时添加进购物篮
             } else {
                 let shopingArr = this.shopingList;
-                let planListCity = this.planList[0].city;
-                this.resetPlanList(); // 重置当前planList的勾选
+                let planListCity = "";
+                if (this.areaName !== "全市") {
+                    planListCity = this.areaName;
+                } else {
+                    planListCity = this.activeCityData.rName;
+                }
+                this.resetPlanList(); // 重置当前planList的勾选 origin
                 for (let i = 0; i < shopingArr.length; ) {
                     console.log("111");
-                    if (planListCity === shopingArr[i].city) {
-                        // && this.planList[0].schedules === shopingArr[i].schedules
+                    if (
+                        (this.areaName === "全市" &&
+                            planListCity === shopingArr[i].city) ||
+                        (this.areaName !== "全市" &&
+                            planListCity === shopingArr[i].origin)
+                    ) {
                         let crossIf = this.crossSchedules(
                             this.shopingList[i].schedules
                         );
@@ -2568,7 +2571,6 @@ export default {
                         i++;
                     }
                     if (i >= shopingArr.length - 1) {
-                        // this.shopingList = shopingArr
                         this.computeMedia_AD();
                         this.getBadeNumberByShopList();
                     }
@@ -2580,7 +2582,6 @@ export default {
             console.log("planForm", this.planForm);
             if (this.active === 0) {
                 console.log("this.dynamicTags", this.dynamicTags);
-                // this.openFullScreen2()
                 this.submitForm("planForm");
                 this.shopingList = [];
                 this.badgeNumber = 0;
@@ -3871,6 +3872,7 @@ export default {
                     console.log("GetMapInfo地图mapid返回的信息", res);
                     if (!res.data.SysCode) {
                         let mapid = res.data.MapID;
+                        this.mapBtn = false;
                         this.dialogTableVisible = true;
                         // window.open('https://www.dituwuyou.com/qinlin/embed?mid=FPcrNHyq3xXFZDbqlTyHKA&token=fp3nxsKCYZzOSnU0KosEq0GA1o1qcKh5XLA&mapid=' + mapid ,
                         //   '_blank', 'toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes, location=yes, status=yes')
@@ -4187,6 +4189,13 @@ export default {
         // 购物车-获取地图选择的点位列表
         getMapADList() {
             console.log("触发获取地图选点信息click");
+            this.getMapLoading = this.$loading({
+                lock: true,
+                text: "数据获取中...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            this.mapBtn = true;
             api.getApi("/SendMap", { uid: this.sessionData.uID }).then(res => {
                 console.log("地图选点", res);
                 // this.setShopDataByMapAD()
@@ -4200,6 +4209,7 @@ export default {
                     ) {
                         this.loginTimeout();
                     } else {
+                        this.getMapLoading.close();
                         Message({
                             message: "无法获取到数据",
                             type: "warning"
@@ -4269,7 +4279,12 @@ export default {
             } else {
                 this.shopingList = tempArr;
             }
-            this.computeMedia_AD();
+            this.getMapLoading.close();
+            Message({
+                message: "成功获取到" + tempArr.length + "条数据",
+                type: "success"
+            });
+            this.computeMedia_AD("mapAD");
             this.getBadeNumberByShopList();
             this.judgeByselect();
         },
@@ -4277,7 +4292,7 @@ export default {
         judgeHaveDiffAD(data) {
             let ADData = data;
             let shopArr = this.shopingList;
-            console.log("点位是否已存在购物车", ADData);
+            // console.log('点位是否已存在购物车',ADData)
             if (shopArr.length !== 0) {
                 for (let i = 0; i < shopArr.length; i++) {
                     if (
@@ -4333,44 +4348,30 @@ export default {
                     this.shopingList = [];
                     this.getBadeNumberByShopList();
                     this.computeMedia_AD();
-                    let cityData = this.activeCityData;
-                    console.log(
-                        "cityData.rid",
-                        cityData.rid,
-                        ",this.totalPlanList",
-                        this.totalPlanList
-                    );
+                    // let cityData = this.activeCityData
+                    // console.log('cityData.rid', cityData.rid, ',this.totalPlanList', this.totalPlanList)
                     this.$message({
                         type: "success",
                         message: "删除成功!"
                     });
-                    let that = this;
-                    for (let i = 0; i < that.totalPlanList.length; i++) {
-                        setTimeout(function() {
-                            for (
-                                let j = 0;
-                                j < that.totalPlanList[i].list.length;
-                                j++
-                            ) {
-                                that.totalPlanList[i].list[
-                                    j
-                                ].checkBox.A = false;
-                                that.totalPlanList[i].list[
-                                    j
-                                ].checkBox.B = false;
-                            }
-                            if (that.totalPlanList[i].rid === cityData.rid) {
-                                that.planList = that.totalPlanList[i].list;
-                                for (let n = 0; n < that.planList.length; n++) {
-                                    that.$refs.multipleTable.toggleRowSelection(
-                                        that.planList[n],
-                                        false
-                                    );
-                                }
-                                console.log("this.planList", that.planList);
-                            }
-                        }, 10);
-                    }
+                    this.resetPlanList(); // 重置planList的勾选
+
+                    // let that = this
+                    // for (let i = 0; i < that.totalPlanList.length; i++) {
+                    //   setTimeout(function () {
+                    //     for (let j = 0; j < that.totalPlanList[i].list.length; j++) {
+                    //       that.totalPlanList[i].list[j].checkBox.A = false
+                    //       that.totalPlanList[i].list[j].checkBox.B = false
+                    //     }
+                    //     if (that.totalPlanList[i].rid === cityData.rid) {
+                    //       that.planList = that.totalPlanList[i].list
+                    //       for (let n = 0; n < that.planList.length; n++) {
+                    //         that.$refs.multipleTable.toggleRowSelection(that.planList[n], false)
+                    //       }
+                    //       console.log('this.planList', that.planList)
+                    //     }
+                    //   }, 10)
+                    // }
                 })
                 .catch(() => {
                     this.$message({
@@ -4380,11 +4381,12 @@ export default {
                 });
         },
         // 统计购物车媒体数、面数
-        computeMedia_AD() {
+        computeMedia_AD(letter) {
             let shopList = this.shopingList;
             console.log("购物车统计面数媒体数shopList", shopList);
             let mediaArr = [];
             let mediaAD = [];
+            let resArr = [];
             for (let i = 0; i < shopList.length; i++) {
                 if (mediaArr.indexOf(shopList[i].mID) === -1) {
                     mediaArr.push(shopList[i].mID);
@@ -4397,10 +4399,38 @@ export default {
                     // console.log('重复的asIDs是', shopList[i].asIDs)
                 }
             }
-            // console.log('mediaArr', mediaArr)
-            // console.log('mediaAD', mediaAD)
-            this.shopMedia_ADNum.mediaNum = mediaArr.length;
-            this.shopMedia_ADNum.ADNum = mediaAD.length;
+            if (letter === "mapAD") {
+                let stepMNum = 1;
+                let stepADNum = 2;
+                if (mediaArr.length - this.shopMedia_ADNum.mediaNum > 500) {
+                    stepMNum = Math.round(
+                        (mediaArr.length - this.shopMedia_ADNum.mediaNum) / 50
+                    );
+                    stepADNum = Math.round(
+                        (mediaAD.length - this.shopMedia_ADNum.ADNum) / 100
+                    );
+                }
+                let that = this;
+                let timer = setInterval(function() {
+                    if (that.shopMedia_ADNum.mediaNum < mediaArr.length) {
+                        that.shopMedia_ADNum.mediaNum += stepMNum;
+                    }
+                    if (that.shopMedia_ADNum.ADNum < mediaAD.length) {
+                        that.shopMedia_ADNum.ADNum += stepADNum;
+                    }
+                    if (
+                        that.shopMedia_ADNum.mediaNum >= mediaArr.length &&
+                        that.shopMedia_ADNum.ADNum >= mediaAD.length
+                    ) {
+                        that.shopMedia_ADNum.mediaNum = mediaArr.length;
+                        that.shopMedia_ADNum.ADNum = mediaAD.length;
+                        clearInterval(timer);
+                    }
+                }, 1);
+            } else {
+                this.shopMedia_ADNum.mediaNum = mediaArr.length;
+                this.shopMedia_ADNum.ADNum = mediaAD.length;
+            }
         },
         // 统计购物车中相同城市不同排期的同一asids个数
         computeCityDiffAsIdNum() {
@@ -5316,7 +5346,9 @@ export default {
     width: 1100px;
     height: 680px;
 }
-
+/deep/ .car-list .el-button {
+    width: 100px;
+}
 /*购物车列表*/
 .car-title {
     background: #e6f7ff;
@@ -5342,7 +5374,7 @@ export default {
 .car-title span {
     font-size: 14px;
     font-weight: normal;
-    margin: 0 10px;
+    margin: 0 6px;
     cursor: pointer;
     color: #1890ff;
 }

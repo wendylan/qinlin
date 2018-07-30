@@ -40,7 +40,7 @@
                                 <el-button type="primary" icon="el-icon-search" class="searchBtn" @click="searchPic">搜索</el-button>
                             </span>
                             <span>
-                                <el-button plain class="map">一键导出</el-button>
+                                <el-button plain class="map" @click="allDownLoad">一键导出</el-button>
                             </span>
                         </div>
                         <el-tab-pane label="上刊" name="first">
@@ -583,6 +583,10 @@ export default {
                 .catch(res => {
                     console.log(res);
                 });
+        },
+        // 导出功能
+        allDownLoad(){
+            Message.warning('此功能尚未开放');
         },
          // 区域二级联动
         getCitys(arr) {

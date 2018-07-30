@@ -128,8 +128,7 @@ export default {
     data() {
         return {
             //加载中
-            // loading: true,
-            loading: false,
+            loading: true,
             showNewBtn: true,
             keyword: "",
             date: "",
@@ -152,6 +151,47 @@ export default {
             if (role != "BD") {
                 this.showNewBtn = false;
             }
+        },
+        // 获取客户列表
+        GetCustomer() {
+            let session = JSON.parse(sessionStorage.getItem("session_data"));
+            let uType = session.uType;
+            let uid = session.uID;
+            let puid = session.puID;
+            if (uType == "BD") {
+                let info = { uid: uid };
+                this.funcToInit("/MyCustomer", info);
+            } else {
+                let info = { uid: uid, puid: puid };
+                this.funcToInit("/GetCustomer", info);
+            }
+        },
+        // 请求数据整合
+        funcToInit(apiUrl, info) {
+            api
+                .getApi(apiUrl, info)
+                .then(res => {
+                    this.loading = false;
+                    if (!res.data.SysCode) {
+                        this.planList = res.data.reverse();
+                        for (let data of this.planList) {
+                            this.$set(
+                                data,
+                                "clientRName",
+                                areaToText.toTextCity(data.rID)
+                            );
+                        }
+                        this.currentPlan = this.planList;
+                        this.filtCity = filterFormat(this.planList, "rName");
+                    } else if (res.data.SysCode == 100302) {
+                        this.loginTimeout();
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    console.log(res);
+                });
         },
         // 当搜索框为空的时候进行重置显示
         initData() {
@@ -291,72 +331,6 @@ export default {
         //日期排序
         sortData(a, b) {
             return a.joinTime < b.joinTime;
-        },
-        // 获取客户列表
-        GetCustomer() {
-            // let uid = 3;
-            let session = JSON.parse(sessionStorage.getItem("session_data"));
-            let uType = session.uType;
-            let uid = session.uID;
-            let puid = session.puID;
-            if (uType == "BD") {
-                api
-                    .getApi("/MyCustomer", { uid: uid })
-                    .then(res => {
-                        this.loading = false;
-                        if (!res.data.SysCode) {
-                            this.planList = res.data.reverse();
-                            for (let data of this.planList) {
-                                this.$set(
-                                    data,
-                                    "clientRName",
-                                    areaToText.toTextCity(data.rID)
-                                );
-                            }
-                            this.currentPlan = this.planList;
-                            this.filtCity = filterFormat(
-                                this.planList,
-                                "rName"
-                            );
-                        } else if (res.data.SysCode == 100302) {
-                            this.loginTimeout();
-                        } else {
-                            Message.warning(res.data.MSG);
-                        }
-                    })
-                    .catch(res => {
-                        console.log(res);
-                    });
-            } else {
-                // uid=24&puid=2
-                api
-                    .getApi("/GetCustomer", { uid: uid, puid: puid })
-                    .then(res => {
-                        this.loading = false;
-                        if (!res.data.SysCode) {
-                            this.planList = res.data.reverse();
-                            for (let data of this.planList) {
-                                this.$set(
-                                    data,
-                                    "clientRName",
-                                    areaToText.toTextCity(data.rID)
-                                );
-                            }
-                            this.currentPlan = this.planList;
-                            this.filtCity = filterFormat(
-                                this.planList,
-                                "rName"
-                            );
-                        } else if (res.data.SysCode == 100302) {
-                            this.loginTimeout();
-                        } else {
-                            Message.warning(res.data.MSG);
-                        }
-                    })
-                    .catch(res => {
-                        console.log(res);
-                    });
-            }
         },
         loginTimeout() {
             Message.warning("登录超时,请重新登录");

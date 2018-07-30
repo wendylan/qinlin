@@ -52,7 +52,7 @@
                                 <el-input v-model="accountForm.position" placeholder="请输入职务"></el-input>
                             </el-form-item>
                             <el-form-item label="手机号码:" prop="phone">
-                                <el-input v-model="accountForm.phone" placeholder="请输入手机号码"></el-input>
+                                <el-input v-model="accountForm.phone" maxlength="11" minlength="11" placeholder="请输入手机号码"></el-input>
                             </el-form-item>
                             <el-form-item label="邮箱:" prop="email">
                                 <el-input v-model="accountForm.email" placeholder="请输入邮箱" type="email"></el-input>
@@ -206,7 +206,7 @@ export default {
                 ],
                 boss: [{ validator: validateBoss, trigger: "blur" }]
             },
-            CityMultiple: true,
+            CityMultiple: true
         };
     },
     mounted() {
@@ -215,36 +215,34 @@ export default {
         this.getInitEditInfo();
     },
     methods: {
-      //选择权限城市
-      handleSelectCity(val){
-        console.log('添加权限城市',val)
-        console.log('PermissionCity',this.accountForm.PermissionCity)
-        for(let i=0;i<val.length;i++){
-          if(val[i] === '0'){
-            this.throwCity = [
-              { value: "0", label: "全国" },
-            ]
-            this.accountForm.PermissionCity = ['0']
-          }
-        }
-      },
-      removeCity(val){
-        console.log('移除权限城市',val)
-        if(val === '0' || val === '全国'){
-          // this.CityMultiple = true
-          this.throwCity = [
-            { value: "0", label: "全国" },
-            { value: "110100", label: "北京" },
-            { value: "310100", label: "上海" },
-            { value: "440100", label: "广州" },
-            { value: "440300", label: "深圳" },
-            { value: "500100", label: "重庆" },
-            { value: "510100", label: "成都" },
-            { value: "330100", label: "杭州" },
-            { value: "340100", label: "合肥" },
-          ];
-        }
-      },
+        //选择权限城市
+        handleSelectCity(val) {
+            console.log("添加权限城市", val);
+            console.log("PermissionCity", this.accountForm.PermissionCity);
+            for (let i = 0; i < val.length; i++) {
+                if (val[i] === "0") {
+                    this.throwCity = [{ value: "0", label: "全国" }];
+                    this.accountForm.PermissionCity = ["0"];
+                }
+            }
+        },
+        removeCity(val) {
+            console.log("移除权限城市", val);
+            if (val === "0" || val === "全国") {
+                // this.CityMultiple = true
+                this.throwCity = [
+                    { value: "0", label: "全国" },
+                    { value: "110100", label: "北京" },
+                    { value: "310100", label: "上海" },
+                    { value: "440100", label: "广州" },
+                    { value: "440300", label: "深圳" },
+                    { value: "500100", label: "重庆" },
+                    { value: "510100", label: "成都" },
+                    { value: "330100", label: "杭州" },
+                    { value: "340100", label: "合肥" }
+                ];
+            }
+        },
         // 输入账号获取上级信息(远程搜索)
         querySearchAsync(queryString, callback) {
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
@@ -277,15 +275,15 @@ export default {
             // let uWho =  '440100,110100'
             if (uWho == "0") {
                 this.throwCity = [
-                  { value: "0", label: "全国" },
-                  { value: "110100", label: "北京" },
-                  { value: "310100", label: "上海" },
-                  { value: "440100", label: "广州" },
-                  { value: "440300", label: "深圳" },
-                  { value: "500100", label: "重庆" },
-                  { value: "510100", label: "成都" },
-                  { value: "330100", label: "杭州" },
-                  { value: "340100", label: "合肥" },
+                    { value: "0", label: "全国" },
+                    { value: "110100", label: "北京" },
+                    { value: "310100", label: "上海" },
+                    { value: "440100", label: "广州" },
+                    { value: "440300", label: "深圳" },
+                    { value: "500100", label: "重庆" },
+                    { value: "510100", label: "成都" },
+                    { value: "330100", label: "杭州" },
+                    { value: "340100", label: "合肥" }
                 ];
             } else {
                 let uWhoArr = uWho.split(","); // ['440100','110100']
@@ -337,7 +335,7 @@ export default {
             // position    String          职务
             // division    String          所属部门
             let accForm = this.accountForm;
-            accForm.PermissionCity.sort(this.compareFun)
+            accForm.PermissionCity.sort(this.compareFun);
             let account = {
                 uid: JSON.parse(sessionStorage.getItem("session_data")).uID,
                 toid: accForm.uID,
@@ -367,23 +365,23 @@ export default {
                     console.log(err);
                 });
         },
-      // 数组排序,对uWho进行小到大排
-      compareFun(obj1, obj2) {
-        let val1 = obj1;
-        let val2 = obj2;
-        if (val1 < val2) {
-          return -1;
-        } else if (val1 > val2) {
-          return 1;
-        } else {
-          return 0;
-        }
-      },
+        // 数组排序,对uWho进行小到大排
+        compareFun(obj1, obj2) {
+            let val1 = obj1;
+            let val2 = obj2;
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
         //注册接口
         createFun() {
             console.log("accountForm", this.accountForm);
             let actFrom = this.accountForm;
-            actFrom.PermissionCity.sort(this.compareFun)
+            actFrom.PermissionCity.sort(this.compareFun);
             /*realname    String【必填】      用户真实姓名
 				sname       String【必填】      账户名
 				phone       int【必填】         用户手机号码
@@ -420,31 +418,31 @@ export default {
             if (actFrom.puID) {
                 account.puid = actFrom.puID;
             }
-            console.log('提交的账号信息',account);
+            console.log("提交的账号信息", account);
             api
                 .postApi("/RegUser", account)
                 .then(res => {
                     console.log(res);
                     let data = res.data;
-                    if(data.SysCode === 100302 || data.MSG === '登陆超时'){
-                      this.$message({
-                        message: '登录超时或权限异常,请重新登录',
-                        type: 'warning'
-                      })
-                      this.$router.push('/login')
-                    }else{
-                      this.resetForm()
-                      MessageBox.alert(
-                        data.MSG + "<br>" + "用户ID：" + data.uID,
-                        "注册用户",
-                        {
-                          showClose: false,
-                          dangerouslyUseHTMLString: true,
-                          confirmButtonText: "确定"
-                        }
-                      )
-                      // accountList
-                      this.$router.push("./accountList");
+                    if (data.SysCode === 100302 || data.MSG === "登陆超时") {
+                        this.$message({
+                            message: "登录超时或权限异常,请重新登录",
+                            type: "warning"
+                        });
+                        this.$router.push("/login");
+                    } else {
+                        this.resetForm();
+                        MessageBox.alert(
+                            data.MSG + "<br>" + "用户ID：" + data.uID,
+                            "注册用户",
+                            {
+                                showClose: false,
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: "确定"
+                            }
+                        );
+                        // accountList
+                        this.$router.push("./accountList");
                     }
                 })
                 .catch(err => {

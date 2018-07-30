@@ -29,9 +29,16 @@
 					</div>
 				</div>
 				<div class="weixinLogin" v-if="!isActive">
-					<div class="weixinCode">
-						<img src="../../assets/images/code.jpg" alt="">
-						<p>打开微信扫一扫登录</p>
+					<div class="weixinCode" v-show="step === 1">
+						<div class="ws_waiting" v-loading="imgLoading" element-loading-text="正在获取二维码..." element-loading-background="rgba(0, 0, 0, 0.1)">
+							<img :src="codeImg" alt="二维码" v-show="!imgLoading">
+							<p v-show="!imgLoading">打开微信扫一扫登录</p>
+						</div>
+					</div>
+					<div class="weixinCode" v-show="step === 2">
+						<div class="ws_waiting">
+							扫码成功，等待确认！
+						</div>
 					</div>
 				</div>
 				<div class="tip">
@@ -73,7 +80,13 @@ export default {
             username: "", //lxj
             password: "", //qinlin888
             realName: "",
-            checke: false
+            checke: false,
+            websock: "", // websocket连接
+            codeImg: "", // 二维码图片地址
+            imgLoading: true, // 二维码loading
+            isWs: false,
+            step: 1, // 扫码登录的步骤
+            codeLoading: "" // 扫码登录时的loading
             //背景动画参数
             /*   circleArr : [],
 			WIDTH: '',
@@ -110,6 +123,12 @@ export default {
         },
         //登录
         doLogin: function() {
+            let loading = this.$loading({
+                lock: true,
+                text: "正在登录...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             let name = this.username;
             let pass = this.password;
             if (name === "" || name == null) {
@@ -150,6 +169,7 @@ export default {
                                 "session_data",
                                 JSON.stringify(userMsg)
                             ); //userMsg.realName
+                            loading.close();
                             if (userMsg.uType === "SM") {
                                 //sessionStorage.getItem("real_name") 获取session的值
                                 this.$router.push("/superOperate");
@@ -180,17 +200,151 @@ export default {
                             });
                         }, 500);
                     }
+                    loading.close();
                 })
                 .catch(err => {
                     console.log(err);
+                    loading.close();
                 });
-
-            /* let joinTime = '2018-04-03 16:21:45.0'
-			console.log(commentFun.spliceFun(joinTime))*/
         },
+        // 判断是否使用扫码登录
         loginType() {
             this.isActive = !this.isActive;
+            if (this.isActive === false && this.isWs === false) {
+                // console.log('进入if')
+                this.isWs = true;
+                this.initWebsocket();
+            }
+        },
+        // 扫码登录，初始化websocket
+        initWebsocket() {
+            console.log("触发初始化websocket");
+            if ("WebSocket" in window) {
+                let wsuri = "wss://beta.qinlinad.com/QADN/ScanLogin?type=PC";
+                this.websock = new WebSocket(wsuri); //这里面的this都指向vue
+                this.websock.onopen = this.websocketOpen;
+                this.websock.onmessage = this.websocketOnMessage;
+                this.websock.onclose = this.websocketClose;
+                this.websock.onerror = this.websocketError;
+            } else {
+                console.log("您的浏览器不支持 WebSocket!");
+            }
+        },
+        websocketOpen() {
+            // 打开
+            console.log("WebSocket连接成功");
+            // this.websock.send("发送数据");
+        },
+        websocketOnMessage(res) {
+            // 数据接收
+            console.log(typeof res.data, "数据接收", res.data);
+            let wsData = JSON.parse(res.data);
+            // this.codeImg = wsData.qrurl
+            this.imgLoading = false;
+            // this.step = 2
+            if (wsData.step === 1) {
+                this.step = 1;
+                console.log("获取二维码");
+                this.codeImg = wsData.qrurl;
+                this.imgLoading = false;
+            } else if (wsData.step === 2) {
+                this.step = 2;
+                console.log("扫码成功");
+            } else if (wsData.step === 3) {
+                thid.codeLoading = this.$loading({
+                    lock: true,
+                    text: "正在登录...",
+                    spinner: "el-icon-loading",
+                    background: "rgba(0, 0, 0, 0.7)"
+                });
+                this.step = 3;
+                console.log("扫码成功后点击确认按钮");
+                let params = { uid: wsData.uid, token: wsData.token };
+                this.loginFun(params);
+            }
+        },
+        websocketClose() {
+            // 关闭
+            console.log("WebSocket关闭");
+            // this.websock.send("发送数据");
+        },
+        websocketError(event) {
+            // 失败
+            console.log("WebSocket连接失败", event);
+        },
+        //扫码登录接口
+        loginFun(data) {
+            let params = data;
+            api.post("/UserLogin", params).then(res => {
+                console.log("UserLogin", res);
+                let userMsg = res.data;
+                if (userMsg) {
+                    if (!userMsg.SysCode) {
+                        this.getIndustry(); //  储存行业信息
+                        // userMsg.username = name
+                        sessionStorage.setItem(
+                            "session_data",
+                            JSON.stringify(userMsg)
+                        ); //userMsg.realName
+                        thid.codeLoading.close();
+                        this.websock.onclose(); // 关闭websocket连接
+                        if (userMsg.uType === "SM") {
+                            //sessionStorage.getItem("real_name") 获取session的值
+                            this.$router.push("/superOperate");
+                        } else if (userMsg.uType === "MD") {
+                            this.$router.push("/media");
+                        } else if (userMsg.uType === "BD") {
+                            sessionStorage.setItem("username", name); // 用户为销售时，存起username以便创建方案的时候使用
+                            this.$router.push("/sale");
+                        } else if (userMsg.uType === "OP") {
+                            this.$router.push("/operate");
+                        } else {
+                            Message({
+                                message: "账号角色权限异常",
+                                type: "warning"
+                            });
+                        }
+                    } else {
+                        Message({
+                            message: "用户名或密码错误！",
+                            type: "warning"
+                        });
+                    }
+                } else {
+                    Message({
+                        message: "登录异常！",
+                        type: "warning"
+                    });
+                }
+                thid.codeLoading.close();
+            });
         }
+        /* initWebSocket() {
+      if ("WebSocket" in window) {
+        console.log("您的浏览器支持 WebSocket!");
+        // 打开一个 web socket
+        let ws = new WebSocket("ws://localhost:9998/echo")
+        ws.onopen = function () {
+          // Web Socket 已连接上，使用 send() 方法发送数据
+          // ws.send("发送数据");
+          console.log("WebSocket链接成功...")
+        };
+        ws.onmessage = function (evt) {
+          let received_msg = evt.data;
+          console.log("数据已接收...",received_msg);
+        //  ws.close() // 关闭websocket链连接
+        };
+        ws.onclose = function () {
+          // 关闭 websocket
+          console.log("连接已关闭...");
+        }
+        ws.onerror = function(event) {
+          console.log("连接错误...",event);
+        };
+      }else{
+        console.log("您的浏览器不支持 WebSocket!");
+      }
+    }*/
         // 生成max和min之间的随机数
         /*  num (max, _min) {
 			let min = arguments[1] || 0
@@ -297,6 +451,15 @@ export default {
 };
 </script>
 <style scoped>
+.weixinCode img {
+    width: 240px;
+    height: 260px;
+}
+.ws_waiting {
+    height: 280px;
+    width: 300px;
+    margin: 0 auto;
+}
 /deep/ .el-form-item__content {
     margin-left: 0 !important;
 }

@@ -320,7 +320,7 @@ export default {
             }) 
         }, 
         formatJson(filterVal, jsonData) { 
-            return jsonData.map(v => filterVal.map(j => v[j])) 
+            return jsonData.map(v => filterVal.map(j => (j=='hPrice')?(v[j]/100):v[j])) 
         },
         // tab点击
         handleClick() {
@@ -372,89 +372,56 @@ export default {
                 apid: apid
             };
             if (this.planDetail.apState == 0 || this.planDetail.apState == 1) {
-                // uid         int【必填】     当前账户UserID
-                // apid        int             公司对应方案apID
-                api
-                    .getApi("/GetADB", info)
-                    .then(res => {
-                        console.log(res.data);
-                        if (!res.data.SysCode) {
-                            let resInfo = res.data;
-                            // 城市中文名称
-                            for (let data of resInfo) {
-                                data.city = areaToText.toTextCity(data.rID);
-                                let time = this.formatTime(data.pbStar) + "-" + this.formatTime(data.pbEnd);
-                                data.timeRange = time;
-                                let finishTimeRange = '';
-                                if(data.lState ==2){
-                                    finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
-                                }
-                                data.finishTimeRange = finishTimeRange;
-                            }
-                            // 城市筛选过滤
-                            this.filterCityData = filterFormat(resInfo, "city");
-                            this.filtersArea = filterFormat(resInfo, "rName");
-                            this.filtersData = filterFormat(resInfo, "timeRange");
-                            // 选点排期
-                            this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
-                            this.setpointArr = resInfo;
-                            // this.currentSetpoint = this.setpointArr;
-                            this.loading = false;
-                        } else if(res.data.SysCode == 100302){
-                            this.loginTimeout();
-                        } else {
-                            Message.warning(res.data.MSG);
-                        }
-                    })
-                    .catch(res => {
-                        this.loading = false;
-                        console.log(res);
-                    });
+                this.funcToInit('/GetADB', info, this.planDetail.apState);
             } else {
-                // uid         int【必填】     当前账户UserID
-                // apid        int             公司对应方案apID
-                api
-                    .getApi("/GetAdLaunch", info)
-                    .then(res => {
-                        console.log(res.data);
-                        if (!res.data.SysCode) {
-                            let result = res.data;
-                            for (let data of result) {
-                                // 城市中文名称
-                                data.city = areaToText.toTextCity(data.rID);
-                                let time = this.formatTime(data.lStar) + "-" +this.formatTime(data.lEnd);
-                                data.timeRange = time;
-                                let finishTimeRange = '';
-                                if(data.lState ==2){
-                                    finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
-                                }
-                                data.finishTimeRange = finishTimeRange;
-                            }
-                            // 城市筛选过滤
-                            this.filterCityData = filterFormat(result, "city");
-                            this.filtersArea = filterFormat(result, "rName");
-                            this.filtersData = filterFormat(
-                                result,
-                                "timeRange"
-                            );
-                            // 选点排期
-                            this.copyAsidArr = JSON.parse(
-                                JSON.stringify(result)
-                            );
-                            this.setpointArr = result;
-                            // this.currentSetpoint = this.setpointArr;
-                            this.loading = false;
-                        } else if(res.data.SysCode == 100302){
-                            this.loginTimeout();
-                        } else {
-                            Message.warning(res.data.MSG);
-                        }
-                    })
-                    .catch(res => {
-                        this.loading = false;
-                        console.log(res);
-                    });
+                this.funcToInit('/GetAdLaunch', info, this.planDetail.apState);
             }
+        },
+        // 请求数据整合
+        funcToInit(apiUrl, info, state){
+            // uid         int【必填】     当前账户UserID
+            // apid        int             公司对应方案apID
+            api
+                .getApi(apiUrl, info)
+                .then(res => {
+                    console.log(res.data);
+                    if (!res.data.SysCode) {
+                        let resInfo = res.data;
+                        // 城市中文名称
+                        for (let data of resInfo) {
+                            data.city = areaToText.toTextCity(data.rID);
+                            let time = "";
+                            if(state == 0 || state == 1){
+                                time = this.formatTime(data.pbStar) + "-" + this.formatTime(data.pbEnd);
+                            }else{
+                                time = this.formatTime(data.lStar) + "-" + this.formatTime(data.lEnd);
+                            }
+                            data.timeRange = time;
+                            let finishTimeRange = '';
+                            if(data.lState == 2){
+                                finishTimeRange = this.formatTime(data.lStar)+"-"+this.formatTime(data.lSetTime);
+                            }
+                            data.finishTimeRange = finishTimeRange;
+                        }
+                        // 城市筛选过滤
+                        this.filterCityData = filterFormat(resInfo, "city");
+                        this.filtersArea = filterFormat(resInfo, "rName");
+                        this.filtersData = filterFormat(resInfo, "timeRange");
+                        // 选点排期
+                        this.copyAsidArr = JSON.parse(JSON.stringify(resInfo));
+                        this.setpointArr = resInfo;
+                        // this.currentSetpoint = this.setpointArr;
+                        this.loading = false;
+                    } else if(res.data.SysCode == 100302){
+                        this.loginTimeout();
+                    } else {
+                        Message.warning(res.data.MSG);
+                    }
+                })
+                .catch(res => {
+                    this.loading = false;
+                    console.log(res);
+                });
         },
         // 城市转换为中文
         cityToText(rid) {

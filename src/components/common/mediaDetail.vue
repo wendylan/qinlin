@@ -85,7 +85,7 @@
 				</div>
 				<div class="ad_adPanel">
 					<div class="table_wrap">
-						<el-table border :data="mediaList" empty-text="--" style="width: 100%">
+						<el-table border :data="mediaList" style="width: 100%">
 							<el-table-column prop="mTitle" label="媒体名称" min-width="8%">
 							</el-table-column>
 							<el-table-column prop="mType" label="媒体类型" min-width="7%">
@@ -100,7 +100,10 @@
 							</el-table-column>
 							<el-table-column prop="notPush" label="广告限制" min-width="10%" class="tar">
 							</el-table-column>
-							<el-table-column prop="mrk" label="备注" min-width="12%">
+							<el-table-column label="备注" min-width="12%">
+								<template slot-scope="scope">
+									{{ scope.row.mrk || '--' }}
+								</template>
 							</el-table-column>
 							<el-table-column label="门禁图片" min-width="6%">
 								<template slot-scope="scope">
