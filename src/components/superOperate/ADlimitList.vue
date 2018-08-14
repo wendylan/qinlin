@@ -72,24 +72,24 @@ export default {
             role: "",
             //表格
             ADlist: [
-                {
-                    nID: 1,
-                    nTitle: "医疗",
-                    ndescript: "医疗类型的广告",
-                    showInput: false,
-                    changeBtn: false,
-                    typeUpdate: "",
-                    detailUpdate: ""
-                },
-                {
-                    nID: 2,
-                    nTitle: "物理",
-                    ndescript: "物理类型的广告",
-                    showInput: false,
-                    changeBtn: false,
-                    typeUpdate: "",
-                    detailUpdate: ""
-                }
+                // {
+                //     nID: 1,
+                //     nTitle: "医疗",
+                //     ndescript: "医疗类型的广告",
+                //     showInput: false,
+                //     changeBtn: false,
+                //     typeUpdate: "",
+                //     detailUpdate: ""
+                // },
+                // {
+                //     nID: 2,
+                //     nTitle: "物理",
+                //     ndescript: "物理类型的广告",
+                //     showInput: false,
+                //     changeBtn: false,
+                //     typeUpdate: "",
+                //     detailUpdate: ""
+                // }
             ]
         };
     },
@@ -105,22 +105,25 @@ export default {
                 .getApi("/GetNotPush", { uid: uid })
                 .then(res => {
                     console.log(res.data);
-                    if (!res.data.SysCode) {
+                    if (!res.data.SysCode && res.data) {
                         this.ADlist = res.data;
-                        this.loading = false;
                         for (let data of this.ADlist) {
                             data.showInput = false;
                             data.changeBtn = false;
                             data.typeUpdate = "";
                             data.detailUpdate = "";
                         }
-                    } else {
+                    } else if (res.data.SysCode == 100302) {
                         // Message.warning(res.data.MSG);
-                        Message.warning('登录超时,请重新登录');
-                        this.$router.push('/login');
+                        Message.warning("登录超时,请重新登录");
+                        this.$router.push("/login");
+                    } else {
+                        Message.warning(res.data.MSG);
                     }
+                    this.loading = false;
                 })
                 .catch(res => {
+                    this.loading = false;
                     console.log(res);
                 });
         },
@@ -158,10 +161,10 @@ export default {
                         if (res.data.SysCode == 200200) {
                             this.ADlist.splice(index, 1);
                             Message.success(res.data.MSG);
-                        } else if(res.data.SysCode == 100302){
-                            Message.warning('登录超时,请重新登录');
-                            this.$router.push('/login');
-                        }else {
+                        } else if (res.data.SysCode == 100302) {
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
+                        } else {
                             Message.warning(res.data.MSG);
                         }
                     });
@@ -213,18 +216,21 @@ export default {
                     .then(res => {
                         console.log(res);
                         if (res.data.SysCode == 200200) {
-                            location.reload();
                             Message.success(res.data.MSG);
+                            // location.reload();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500);
                             // this.$set(rows, 'nID', res.data.nID);
                             // this.$set(rows, 'nTitle', rows.typeUpdate);
                             // this.$set(rows, 'ndescript', rows.detailUpdate);
                             // this.$set(rows, 'showInput', !rows.showInput);
                             // this.$set(rows, 'changeBtn', !rows.changeBtn);
                             // this.ADlist.push();
-                        } else if(res.data.SysCode == 100302){
-                            Message.warning('登录超时,请重新登录');
-                            this.$router.push('/login');
-                        }else {
+                        } else if (res.data.SysCode == 100302) {
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
+                        } else {
                             // Message.warning(res.data.MSG);
                             Message.warning("广告限制不能重复");
                         }
@@ -259,10 +265,10 @@ export default {
                             this.$set(rows, "showInput", !rows.showInput);
                             this.$set(rows, "changeBtn", !rows.changeBtn);
                             this.ADlist.push();
-                        } else if(res.data.SysCode == 100302){
-                            Message.warning('登录超时,请重新登录');
-                            this.$router.push('/login');
-                        }else {
+                        } else if (res.data.SysCode == 100302) {
+                            Message.warning("登录超时,请重新登录");
+                            this.$router.push("/login");
+                        } else {
                             Message.warning(res.data.MSG);
                         }
                     })

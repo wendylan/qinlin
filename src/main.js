@@ -8,9 +8,16 @@ import axios from 'axios'
 
 Vue.use(vueRouter);
 
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI)
+
 //echarts
 import echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
+
+import htmlToPdf from '@/commonFun/htmlToPdf.js'
+Vue.use(htmlToPdf)
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
