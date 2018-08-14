@@ -50,8 +50,8 @@
                         <div class="first-wrap box-wrap">
                             <h4 v-if="!showTitle">选点排期</h4>
                             <h4 v-if="showTitle">更换点位
-                                <!--<el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位-->
-                                <!--</el-button>-->
+                                <!-- <el-button type="primary" @click="dialogAddPoint = true" class="changeDWBtn">添加点位
+                                </el-button> -->
                                 <span>原投放面数:{{setpointArr.length}}&nbsp;&nbsp; 中止投放面数:{{stopPointNum}} &nbsp;&nbsp;&nbsp; 现投放面数:{{nowPointNum}}</span>
                             </h4>
                             <div style="display:inline-block;margin-left: 30px;margin-top: 20px;" class="search-wrap">
@@ -689,7 +689,7 @@ export default {
                     }
                 }
             },
-            
+
             //添加点位
             dialogAddPoint: false,
             dateInput: "",
@@ -1050,7 +1050,7 @@ export default {
     },
     methods: {
         setInfo(data){
-           console.log('defail------data', data); 
+           console.log('defail------data', data);
             this.$set(this.orderDetail, "rIDs", data.rIDs);
             this.$set(this.orderDetail, "Total", data.Total);
             this.$set(this.orderDetail, "pdTotal", data.pdTotal);
@@ -1059,18 +1059,18 @@ export default {
             // this.priceSheet = data.priceSheet;
         },
         // 导出excel
-        export2Excel(name) { 
-            require.ensure([], () => { 
-                const { export_json_to_excel } = require('../../vendorExcel/Export2Excel'); 
-                const tHeader = ['市', '区域', '资源名称', '媒体名称', '投放面',  '投放日期', '终止日期','资产编号', '商圈', '楼旁类型/写字楼类型', '楼盘价格', '住户数量/办公室数量', '楼栋数量', '入住年份/建成年份', '广告尺寸']; 
-                const filterVal = ['city', 'rName', 'resName', 'mTitle', 'asLab', 'timeRange', 'finishTimeRange', 'assetTag', 'tradingArea', 'cType', 'hPrice', 'hNum', 'fNum', 'chDay', 'adSize']; 
-                const list = this.currentSetpoint; 
-                const data = this.formatJson(filterVal, list); 
-                export_json_to_excel(tHeader, data, name); 
-            }) 
-        }, 
-        formatJson(filterVal, jsonData) { 
-            return jsonData.map(v => filterVal.map(j => (j=='hPrice')?(v[j]/100):v[j])) 
+        export2Excel(name) {
+            require.ensure([], () => {
+                const { export_json_to_excel } = require('../../vendorExcel/Export2Excel');
+                const tHeader = ['市', '区域', '资源名称', '媒体名称', '投放面',  '投放日期', '终止日期','资产编号', '商圈', '楼旁类型/写字楼类型', '楼盘价格', '住户数量/办公室数量', '楼栋数量', '入住年份/建成年份', '广告尺寸'];
+                const filterVal = ['city', 'rName', 'resName', 'mTitle', 'asLab', 'timeRange', 'finishTimeRange', 'assetTag', 'tradingArea', 'cType', 'hPrice', 'hNum', 'fNum', 'chDay', 'adSize'];
+                const list = this.currentSetpoint;
+                const data = this.formatJson(filterVal, list);
+                export_json_to_excel(tHeader, data, name);
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => (j=='hPrice')?(v[j]/100):v[j]))
         },
         // 判断是否是有换点跳转过来的？
         isChangePoint(){
@@ -1977,7 +1977,7 @@ export default {
             let type = file.ptype;
             let info = file;
             file.ptype = "del";
-
+            info.uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             console.log("type--file", type, file);
 
             api
@@ -2995,7 +2995,7 @@ export default {
 }
 
 .up-loader-Imgpanel {
-    width: 390px;
+    width: 384px;
     /*height: 270px;*/
     margin-top: 11px;
     display: inline-block;
@@ -3058,6 +3058,12 @@ export default {
     width: 236px;
     height: 125px;
     overflow: hidden;
+}
+
+/deep/ .el-card__header span:first-child{
+  font-weight: normal;
+  font-size: 14px;
+  color: #666666;
 }
 
 /*页码*/

@@ -1,42 +1,47 @@
 <script>
-import Vue from "vue";
-import LazyLoad from "../../../commonFun/lazyLoad.js";
+import Vue from 'vue';
+import LazyLoad from '../../../commonFun/lazyLoad.js'
 Vue.use(LazyLoad);
 // 时间格式化
 import dateFormat from "../../../commonFun/timeFormat.js";
+import { Tooltip, Dialog } from 'element-ui';
 export default {
-    props: {
-        imgarr: {
+    components:{
+        elTooltip: Tooltip,
+        elDialog: Dialog,
+    },
+    props:{
+        imgarr:{
             type: Array,
-            default: []
+            default:[]
         },
-        showPic: {
+        showPic:{
             type: Number,
             default: 1
-        }
+        },
     },
-    data() {
+    data(){
         return {
             //缩略图
             dialogImageUrl: "",
             dialogVisible: false,
             //显示预览图蒙版
-            showPreImg: null
-        };
+            showPreImg: null,
+        }
     },
-    methods: {
+    methods:{
         // 查看图片
         handlePictureCardPreview(item) {
-            console.log("imgInfo--------", item);
+            console.log('imgInfo--------', item);
             this.dialogImageUrl = item.pURL;
             this.dialogVisible = true;
         },
         // 时间格式规范
         formatTime(val) {
             return dateFormat.toDate(val, ".");
-        }
-    }
-};
+        },
+    },
+}
 </script>
 <template>
     <div>
@@ -299,7 +304,7 @@ export default {
     top: 5px;
 }
 
-.pager {
+.pager{
     width: 100%;
     margin-top: 20px;
 }

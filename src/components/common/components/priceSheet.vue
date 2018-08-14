@@ -10,8 +10,13 @@ import filterFormat from "../../../commonFun/filterTableData.js";
 import dateFormat from "../../../commonFun/timeFormat.js";
 // 转换时间
 import dayToWeek from "../../../commonFun/dayToWeek.js";
+import { Tabs, TabPane } from 'element-ui';
 
 export default {
+    components:{
+        elTabs: Tabs,
+        eltabPane: TabPane,
+    },
     props:{
         copydata:{
             type: Array,

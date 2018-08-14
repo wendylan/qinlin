@@ -24,13 +24,13 @@
                         </div>
                     </div>
                     <div>
-                        <detail :detail="planDetail"></detail>
+                        <detail :detail="planDetail" v-if="isShow"></detail>
                         <div class="plan-panel">
                             <el-tabs v-model="planPanel" @tab-click="handleClick()">
                                 <el-tab-pane label="选点排期" name="first">
                                     <div class="first-wrap box-wrap">
                                         <h4>选点排期
-                                            <el-button type="default" style="margin-left:20px;height: 34px;line-height:1;" icon="el-icon-download" @click="export2Excel(planDetail.apName)">导出</el-button>
+                                            <el-button type="default" icon="el-icon-download" class="searchBtn" @click="export2Excel(planDetail.apName)">导出</el-button>
                                         </h4>
 
                                         <div class="table_wrap">
@@ -68,6 +68,9 @@
                                                 <el-table-column prop="rName" label="区域" min-width="7.4%" :filters="filtersArea" :filter-method="filterOrigin">
                                                 </el-table-column>
                                                 <el-table-column prop="cType" label="楼盘类型" min-width="8.8%">
+                                                    <template slot-scope="scope">
+                                                        <span>{{scope.row.cType||'--'}}</span>
+                                                    </template>
                                                 </el-table-column>
                                                 <el-table-column prop="hNum" label="小区户数" min-width="6.0%" class="tar">
                                                 </el-table-column>
@@ -271,6 +274,7 @@ export default {
     },
     data() {
         return {
+            isShow: true,
             //加载中
             loading: true,
             role: "",
@@ -330,6 +334,8 @@ export default {
         },
         // 获取选点排期列表数据
         getInitData() {
+            this.isShow = false;
+
             // 真实数据
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             let apid = sessionStorage.getItem("plan_apid");
@@ -412,6 +418,10 @@ export default {
                         this.setpointArr = resInfo;
                         // this.currentSetpoint = this.setpointArr;
                         this.loading = false;
+
+                        this.$nextTick(function () {
+                            this.isShow = true;
+                        });
                     } else if(res.data.SysCode == 100302){
                         this.loginTimeout();
                     } else {
@@ -615,6 +625,28 @@ export default {
     font-weight: bold;
 }
 
+.searchBtn {
+    position: relative;
+    /*top: 3px;*/
+    /*left: -3px;*/
+}
+
+/deep/ .searchBtn .el-icon-search {
+    position: relative;
+    top: -2px;
+    left: -9px !important;
+}
+
+/deep/ .el-button.searchBtn span {
+    position: relative;
+    left: -5px;
+    top: -2px;
+}
+/deep/ .el-button {
+    /*width: 76px;*/
+    height: 34px;
+    margin-left: 2px;
+}
 /*报价单*/
 
 /deep/ .el-tabs--border-card {

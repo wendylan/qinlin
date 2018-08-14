@@ -12,7 +12,6 @@
 			<div class="mediaList_container">
 				<el-row>
 					<div class="mediaList_handel">
-						<!--<el-input v-model="input" placeholder="资源名称、商圈"></el-input>-->
 						<span style="display:inline-block">
 							<el-input placeholder="请输入内容" v-model="keyword" class="input-with-select" @change="initData">
 								<el-select v-model="selectInfo" slot="prepend" placeholder="请选择">
@@ -70,7 +69,7 @@
 						<el-table-column label="商圈" min-width="10.2%">
 							<template slot-scope="scope">
 								<el-tooltip class="item" effect="dark" :content="scope.row.tradingArea" placement="bottom">
-									<span>{{scope.row.tradingArea}}</span>
+									<span>{{scope.row.tradingArea || '--' }}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
@@ -79,11 +78,14 @@
 						<el-table-column label="媒体名称" min-width="8.2%">
 							<template slot-scope="scope">
 								<el-tooltip class="item" effect="dark" :content="scope.row.mTitle" placement="bottom">
-									<span>{{scope.row.mTitle}}</span>
+									<span>{{scope.row.mTitle || '--' }}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="assetTag" label="资产编号" min-width="12.7%">
+						<el-table-column label="资产编号" min-width="12.7%">
+							<template slot-scope="scope">
+								{{ scope.row.assetTag || '--' }}
+							</template>
 						</el-table-column>
 						<el-table-column prop="pNum" label="可投面数" min-width="6.1%" class="tar">
 						</el-table-column>
@@ -450,13 +452,13 @@ export default {
             let dataArr = [];
             let uid = JSON.parse(sessionStorage.getItem("session_data")).uID;
             api.getApi("/GetRMList", { uid: uid }).then(res => {
-                console.log("资源媒体列表：", res.data);
+                console.log("资源媒体列表：", res);
                 let RMList = res.data;
                 if (!RMList.SysCode) {
                     // let RMList = reclist
-                    this.beforMediaList = RMList.reverse();
                     if (RMList) {
-                        console.log("资源媒体列表：", res.data);
+                        this.beforMediaList = RMList.reverse();
+                        // console.log('资源媒体列表：', res.data)
                         for (let i = 0; i < RMList.length; i++) {
                             if (RMList[i].mState == "1") {
                                 RMList[i].mState = "正常";
@@ -525,7 +527,7 @@ export default {
                 this.$set(RMList[i], "city", data);
                 dataArr.push(RMList[i]);
                 // console.log('RMList[i]', i, RMList[i])
-                if (i >= index + 20 && RMList.length > 20 + index) {
+                if (i >= index + 29 && RMList.length > 29 + index) {
                     console.log("dataArr", dataArr);
                     for (let j = 0; j < dataArr.length; j++) {
                         this.planList.push(dataArr[j]);
@@ -872,6 +874,12 @@ a {
     padding: 0;
     margin-left: 2px;
 }
+/deep/ .el-button [class*="el-icon-"] + span,
+.select-wrap button .el-icon-search {
+    position: relative;
+    left: -2px;
+    top: 0px;
+}
 
 .mediaList_wrap .mediaList_container .table_wrap {
     width: 1210px;
@@ -1041,8 +1049,8 @@ a {
 
 /deep/ .el-dropdown .el-button-group .el-button:last-child {
     width: 30px;
-    /*position: relative;*/
-    /*top: -1px;*/
+    position: relative;
+    top: 0px;
 }
 
 /deep/ .popper__arrow {

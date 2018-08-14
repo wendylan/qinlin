@@ -96,7 +96,8 @@
 
 <script>
 import api from "../../api/api.js";
-import region from "../../commonFun/areaPackage.js";
+// import region from "../../commonFun/areaPackage.js";
+import areaPackageNew from "../../commonFun/areaPackage_new.js";
 import industryToText from "../../commonFun/industryToText.js";
 import {
     Form,
@@ -162,7 +163,7 @@ export default {
             }
         };
         return {
-            oldCompany_id: '',
+            oldCompany_id: "",
             // 登录信息
             sessionData: {},
             // 所有区域
@@ -310,8 +311,10 @@ export default {
         this.getAreaData();
     },
     methods: {
-        getSession(){
-            this.sessionData = JSON.parse(sessionStorage.getItem('session_data'));
+        getSession() {
+            this.sessionData = JSON.parse(
+                sessionStorage.getItem("session_data")
+            );
         },
         // 处理成所需要的数据格式或者说文本
         getFormatData() {
@@ -323,12 +326,18 @@ export default {
                 this.clientForm = clientInfo;
                 this.clientForm.phone = Number(clientInfo.phone);
                 // 如果有市区id则cascader显示出对应的市区
-                let parStr = Number(
-                    this.clientForm.rID.toString().substr(0, 2) + "0000"
-                );
-                let result = [parStr, this.clientForm.rID];
-                this.handleItemChange([parStr]);
-                this.clientForm.cityArr = [parStr, this.clientForm.rID];
+                // let parStr = Number(
+                //     this.clientForm.rID.toString().substr(0, 2) + "0000"
+                // );
+                // let parStr = this.clientForm.rID.toString().substr(0, 2) + "0000";
+                // let rid = this.clientForm.rID.toString();
+                let parStr =
+                    this.clientForm.rID.toString().substring(0, 2) + "0000";
+                let rid = this.clientForm.rID.toString().substring(0, 4) + "00";
+                let result = [parStr, rid];
+                // this.handleItemChange([parStr]);
+                this.handleItemChange(result);
+                this.clientForm.cityArr = result;
             }
             if (companyInfo) {
                 this.companyForm = companyInfo;
@@ -348,12 +357,20 @@ export default {
                 this.companyForm.industryIdArr = industryResult;
                 // 如果有市区id则cascader显示出对应的市区
 
-                let parStr = Number(
-                    this.companyForm.rID.toString().substr(0, 2) + "0000"
-                );
-                let result = [parStr, this.companyForm.rID];
-                this.handleItemChange([parStr]);
-                this.companyForm.cityArr = [parStr, this.companyForm.rID];
+                // let parStr = Number(
+                //     this.companyForm.rID.toString().substr(0, 2) + "0000"
+                // );
+                // let parStr = this.companyForm.rID.toString().substr(0, 2) + "0000";
+                // let result = [parStr, this.companyForm.rID];
+                let parStr =
+                    this.companyForm.rID.toString().substring(0, 2) + "0000";
+                let rid =
+                    this.companyForm.rID.toString().substring(0, 4) + "00";
+                let result = [parStr, rid];
+
+                // this.handleItemChange([parStr]);
+                this.handleItemChange(result);
+                this.companyForm.cityArr = result;
             }
         },
         handleChange(val) {
@@ -372,22 +389,24 @@ export default {
         },
         // 获取所有区域信息
         getAreaData() {
-            region.province(data => {
-                this.allProvince = data.province;
-                // 处理成所需要的数据格式或者说文本
-                this.getFormatData();
-            });
+            // region.province(data => {
+            //     this.allProvince = data.province;
+            //     // 处理成所需要的数据格式或者说文本
+            //     this.getFormatData();
+            // });
+            this.allProvince = areaPackageNew.province();
+            this.getFormatData();
         },
         // 点击省级去显示其对应市级
         handleItemChange(val) {
             console.log("select", val);
-            region.cityArea(
-                data => {
-                    console.log(data);
-                },
-                val[0],
-                this.allProvince
-            );
+            // region.cityArea(
+            //     data => {
+            //         console.log(data);
+            //     },
+            //     val[0],
+            //     this.allProvince
+            // );
         },
         // 输入获取公司信息(远程搜索)
         querySearchAsync(queryString, callback) {
@@ -412,12 +431,11 @@ export default {
             }
         },
         handleSelect(item) {
-            
             this.companyTags = [];
             console.log(item);
             console.log(item.rID);
-            // 保存cID以便在创建客户的时候进行使用            
-            item.cID = item.cID;            
+            // 保存cID以便在创建客户的时候进行使用
+            item.cID = item.cID;
             item.cName = item.cName;
             item.cAddress = item.cAddress;
             item.cRemark = item.cRemark;
@@ -425,9 +443,14 @@ export default {
 
             // 获取公司所在地的中文名称
             // item.rName = areaToText.toTextCity(item.rID);
-            let cityRID = Number(item.rID.toString().substring(0, 2) + "0000");
-            let areaRID = Number(item.rID.toString().substring(0, 4) + "00");
-            this.handleItemChange([cityRID]);
+            // let cityRID = Number(item.rID.toString().substring(0, 2) + "0000");
+            // let areaRID = Number(item.rID.toString().substring(0, 4) + "00");
+            // this.handleItemChange([cityRID]);
+
+            let cityRID = item.rID.toString().substring(0, 2) + "0000";
+            let areaRID = item.rID.toString().substring(0, 4) + "00";
+            this.handleItemChange([cityRID, areaRID]);
+
             // item.cityArr = [cityRID, areaRID];
             this.$set(item, "cityArr", [cityRID, areaRID]);
 
@@ -454,7 +477,7 @@ export default {
             this.oldcompanyInfo = JSON.parse(JSON.stringify(item));
             // this.$refs["companyForm"].clearValidate();
             // this.isFill = true;
-            Message.warning('该公司已有销售相关联');
+            Message.warning("该公司已有销售相关联");
         },
         // 判断公司信息是否修改
         isChangeCom() {
@@ -526,10 +549,13 @@ export default {
                     return false;
                 }
             });
-            if(company_bool && client_bool){
+            if (company_bool && client_bool) {
                 // 如果有新填入品牌则新增品牌
                 if (this.companyTags.length) {
-                    let cid = (this.companyForm.cID==this.oldCompany_id) ? this.oldCompany_id : this.companyForm.cID;
+                    let cid =
+                        this.companyForm.cID == this.oldCompany_id
+                            ? this.oldCompany_id
+                            : this.companyForm.cID;
                     // 新增品牌
                     this.addBrand(this.companyTags, cid);
                 }
@@ -585,7 +611,7 @@ export default {
             // companyInfo.rid = this.companyForm.rID;
             // companyInfo.iid = this.companyForm.iID;
             // companyInfo.cremark = this.companyForm.cRemark;
-            if(this.isChangeCom()){
+            if (this.isChangeCom()) {
                 // 修改公司信息
                 api
                     .postApi("/SetMyCom", companyInfo)
@@ -593,51 +619,51 @@ export default {
                         let mes = res.data;
                         if (mes.SysCode == 300200) {
                             // Message.success("修改公司信息成功");
-                            if(this.isChangeUser()){
+                            if (this.isChangeUser()) {
                                 this.updateUser(mes.SysCode);
-                            }else{
-                                this.changRoute('修改公司信息成功,是否跳转到列表页面');
+                            } else {
+                                this.changRoute(
+                                    "修改公司信息成功,是否跳转到列表页面"
+                                );
                             }
-                        } else if(mes.SysCode == 100403) {
+                        } else if (mes.SysCode == 100403) {
                             // Message.warning(mes.MSG);
-                            if(this.isChangeUser()){
+                            if (this.isChangeUser()) {
                                 this.updateUser(mes.SysCode);
-                            }else{
-                                this.changRoute('没有权限修改公司信息,是否跳转到列表页面');
+                            } else {
+                                this.changRoute(
+                                    "没有权限修改公司信息,是否跳转到列表页面"
+                                );
                             }
-                        }else if(mes.SysCode == 100302){
+                        } else if (mes.SysCode == 100302) {
                             this.loginTimeout();
-                        }else{
+                        } else {
                             Message.warning(mes.MSG);
                         }
                     })
                     .catch(res => {
                         console.log(res);
                     });
-            }else{
-                if(this.isChangeUser()){
+            } else {
+                if (this.isChangeUser()) {
                     this.updateUser();
-                }else{
-                    Message.warning('请填写你需要修改的信息');
+                } else {
+                    Message.warning("请填写你需要修改的信息");
                 }
             }
         },
         // 编辑之后进行跳转
-        changRoute(str){
-            MessageBox.confirm(
-                `${str}`,
-                "提示",
-                {
-                    showClose: false,
-                    confirmButtonText: "确定",
-                    type: "warning"
-                }
-            )
+        changRoute(str) {
+            MessageBox.confirm(`${str}`, "提示", {
+                showClose: false,
+                confirmButtonText: "确定",
+                type: "warning"
+            })
                 .then(() => {
                     this.$router.push("./clientList");
                 })
                 .catch(res => {
-                    Message.info('取消了操作');
+                    Message.info("取消了操作");
                     // this.companyTags = [];
                     // this.oldBrandTags = [];
                     // this.isFill = false;
@@ -654,7 +680,7 @@ export default {
             this.companyTags = [];
         },
         // 修改用户信息
-        updateUser(code ='') {
+        updateUser(code = "") {
             // uid         int【必填】     当前用户UserID
             // toid        int【必填】     被操作的UserID
             // rid         int             地区rID
@@ -693,16 +719,22 @@ export default {
                     console.log(res);
                     let userMsg = res.data;
                     if (userMsg.SysCode == 100200) {
-                        if(code==300200){
-                            this.changRoute('成功修改客户和公司信息,是否跳转到列表页面');
-                        }else if(code == 100403){
-                           this.changRoute('成功修改客户信息,没有权限修改公司信息,是否跳转到列表页面'); 
-                        }else{
-                           this.changRoute('成功修改客户信息,是否跳转到列表页面');  
+                        if (code == 300200) {
+                            this.changRoute(
+                                "成功修改客户和公司信息,是否跳转到列表页面"
+                            );
+                        } else if (code == 100403) {
+                            this.changRoute(
+                                "成功修改客户信息,没有权限修改公司信息,是否跳转到列表页面"
+                            );
+                        } else {
+                            this.changRoute(
+                                "成功修改客户信息,是否跳转到列表页面"
+                            );
                         }
-                    } else if(userMsg.SysCode == 100302){
+                    } else if (userMsg.SysCode == 100302) {
                         this.loginTimeout();
-                    }else{
+                    } else {
                         Message.warning(userMsg.MSG);
                     }
                 })
@@ -740,10 +772,10 @@ export default {
             this.inputVisible = false;
             this.inputValue = "";
         },
-        loginTimeout(){
+        loginTimeout() {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
-        },
+        }
     }
 };
 </script>
@@ -875,7 +907,7 @@ export default {
 
 /*tags样式*/
 .el-tag {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 .button-new-tag {
     margin-left: 10px;
@@ -969,12 +1001,10 @@ export default {
     max-width: 33.33%;
     /*float: left;*/
 }
-/deep/ form.el-form.demo-ruleForm{
-  display: flex;
-  flex-wrap: wrap;
+/deep/ form.el-form.demo-ruleForm {
+    display: flex;
+    flex-wrap: wrap;
 }
-
-
 
 /deep/ .el-popper[x-placement^="bottom"] {
     margin-top: 3px !important;

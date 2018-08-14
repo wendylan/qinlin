@@ -1,21 +1,26 @@
 <script>
+import { Table, TableColumn } from 'element-ui';
 export default {
-    props: {
-        material: {
+    components:{
+        elTable: Table,
+        elTableColumn: TableColumn,
+    },
+    props:{
+        material:{
             type: Array,
             default: []
         }
     },
-    data() {
-        return {
-            materialInfo: []
-        };
+    data(){
+        return{
+            materialInfo: [], 
+        }
     },
-    created() {
-        console.log("material-----", this.material);
+    created(){
+        console.log('material-----', this.material);
         // this.getMaterialInfo(this.material);
     },
-    methods: {
+    methods:{
         // 组装成物料信息数据
         getMaterialInfo(info) {
             if (this.materialInfo.length) {
@@ -57,14 +62,14 @@ export default {
             }
             this.materialInfo = result;
             return result;
-        }
+        },
     },
-    watch: {
-        material() {
+    watch:{
+        material(){
             this.getMaterialInfo(this.material);
         }
     }
-};
+}
 </script>
 <template>
     <div class="third-wrap box-wrap">

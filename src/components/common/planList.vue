@@ -41,30 +41,34 @@
                     <el-table border :data="currentPlan" style="width: 100%" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
                         <el-table-column label="方案名称" min-width="14.9%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.apName" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apName" placement="bottom" v-if="scope.row.apName.length>15">
                                     <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)">{{scope.row.apName}}</a>
                                 </el-tooltip>
+                                <a href="javascript:void(0);" @click="ToDetail(scope.row.apID)" v-else>{{scope.row.apName}}</a>
                             </template>
                         </el-table-column>
                         <el-table-column prop="cName" label="客户名称" min-width="12.6%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom" v-if="scope.row.cName.length>9">
                                     <span title="">{{scope.row.cName}}</span>
                                 </el-tooltip>
+                                <span v-else title="">{{scope.row.cName}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="bTitle" label="品牌名称" min-width="6.6%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
-                                    <span>{{scope.row.bTitle}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom" v-if="scope.row.bTitle.length>4">
+                                    <span>{{scope.row.bTitle||'--'}}</span>
                                 </el-tooltip>
+                                <span v-else>{{scope.row.bTitle||'--'}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="方案价格" sortable :sort-method="sortPrice" class="tar" min-width="8.3%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.apTotal?priceFormat(scope.row.apTotal/100):0" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apTotal?priceFormat(scope.row.apTotal/100):0" placement="bottom" v-if="scope.row.apTotal?scope.row.apTotal.toString().length>8:0">
                                     <span>&yen; {{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
                                 </el-tooltip>
+                                <span v-else>&yen; {{scope.row.apTotal?priceFormat(scope.row.apTotal/100):0}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="realName" label="所有人" min-width="6.1%">
@@ -437,7 +441,7 @@ export default {
                                                             this.saveContractNo(QCinfo);
                                                             // 组合数据并发布
                                                             this.getDataOfSetPrice(info,"R");
-                                                            
+
                                                         } else {
                                                             if(sumLock && sumLock+sumNotLock == cityContent.length){
                                                                 Message.warning("该方案被预锁,请先解除预锁");
@@ -1153,6 +1157,12 @@ a {
     left: 0;
     margin-left: 2px;
 }
+/deep/ .el-button [class*=el-icon-]+span, .select-wrap button .el-icon-search{
+  position: relative;
+  left: -2px;
+  top: 0px;
+}
+
 
 /deep/ .el-button + .el-button {
     margin-left: 0;
@@ -1392,8 +1402,8 @@ a {
 
 /deep/ .el-dropdown .el-button-group .el-button:last-child {
     width: 30px;
-    /*position: relative;*/
-    /*top: -1px;*/
+    position: relative;
+    top: 0px;
 }
 
 /deep/ .popper__arrow {

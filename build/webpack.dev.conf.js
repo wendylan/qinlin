@@ -39,6 +39,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       : false,
     publicPath: config.dev.assetsPublicPath,
     proxy: config.dev.proxyTable,
+    /*proxyTable: {
+      '/api': {  //使用"/api"来代替
+        target: 'https://beta.qinlinad.com/QADN', //源地址
+        changeOrigin: true, //改变源
+        pathRewrite: {
+          '^/api': 'https://beta.qinlinad.com/QADN' //路径重写
+        }
+      }
+    },*/
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,

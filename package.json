@@ -13,7 +13,10 @@
   "dependencies": {
     "axios": "0.18.0",
     "element-ui": "2.3.3",
+    "html2canvas": "^1.0.0-alpha.12",
     "jquery": "3.2.1",
+    "jspdf": "^1.4.1",
+    "mint-ui": "^2.2.13",
     "vue": "2.5.16",
     "vue-router": "3.0.1"
   },
@@ -55,6 +58,7 @@
     "font-awesome": "^4.7.0",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
+    "html2canvas": "^1.0.0-alpha.12",
     "jest": "^22.0.4",
     "jest-serializer-vue": "^0.3.0",
     "nightwatch": "^0.9.12",

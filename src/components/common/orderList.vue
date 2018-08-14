@@ -43,30 +43,34 @@
                         </el-table-column>
                         <el-table-column label="客户名称" min-width="10.4%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom" v-if="scope.row.cName.length>9">
                                     <span title="">{{scope.row.cName}}</span>
                                 </el-tooltip>
+                                <span v-else title="">{{scope.row.cName}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="bTitle" label="品牌名称" min-width="6.0%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom">
-                                    <span title="">{{scope.row.bTitle}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.bTitle" placement="bottom" v-if="scope.row.bTitle.length>5">
+                                    <span title="">{{scope.row.bTitle||'--'}}</span>
                                 </el-tooltip>
+                                <span v-else title="">{{scope.row.bTitle||'--'}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="合同编号" class="tar" min-width="8.5%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.apQC" placement="bottom" v-if="scope.row.apQC.length>10">
                                     <span title="">{{scope.row.apQC}}</span>
                                 </el-tooltip>
+                                <span v-else title="">{{scope.row.apQC}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column sortable :sort-method="sortPrice" label="订单总价" min-width="7.5%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0" placement="bottom" v-if="scope.row.apTotal?scope.row.apTotal.toString().length>8:0">
                                     <span>&yen; {{(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0}}</span>
                                 </el-tooltip>
+                                <span v-else>&yen; {{(scope.row.apTotal)?priceFormat(scope.row.apTotal/100):0}}</span>
 
                             </template>
                         </el-table-column>
@@ -96,8 +100,9 @@
                             <template slot-scope="scope">
                                 <el-dropdown size="small" split-button trigger="click" placement="bottom-start">操作
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-if="(role=='SM')" :disabled="scope.row.apState==5" @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
-                                        <el-dropdown-item v-if="(role=='MD')" @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
+                                        <el-dropdown-item :disabled="(scope.row.apState==5)||(role!='SM') " @click.native.prevent="finishOrder(scope.row)" class="finish">结束订单</el-dropdown-item>
+                                        <el-dropdown-item :disabled="(scope.row.apState==5)||(role!='SM')" @click.native.prevent="applyPhoto(scope.row)" class="finish">申请画像</el-dropdown-item>
+                                        <el-dropdown-item :disabled="(scope.row.apState==5)||(role!='MD')" @click.native.prevent="changePoint(scope.row.apID)" class="update">更换点位
                                         </el-dropdown-item>
                                         <!-- <el-dropdown-item @click.native.prevent="inputBox1" class="watch">监控备注</el-dropdown-item> -->
                                         <!--<el-dropdown-item disabled="disabled" class="push">推送任务</el-dropdown-item>-->
@@ -109,6 +114,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- 画像申请的弹出框开始 -->
+        <el-dialog :visible.sync="showPhoto" title="协助客户开通受众画像" center>
+            <applyphoto @cancel="cancelApply" @apply="confirmApply"></applyphoto>
+        </el-dialog>
+        <!-- 画像申请的弹出框结束 -->
     </div>
 </template>
 
@@ -118,6 +129,8 @@ import { api } from "../../api/api";
 import dateFormat from "../../commonFun/timeFormat.js";
 // 价格格式化
 import commaFormat from "../../commonFun/commaFormat.js";
+// 画像申请
+import applyphoto from "./components/applyPhoto.vue";
 import {
     Button,
     CheckboxGroup,
@@ -141,6 +154,7 @@ import {
 export default {
     name: "projectList",
     components: {
+        applyphoto,
         elButton: Button,
         elCheckboxGroup: CheckboxGroup,
         elCheckbox: Checkbox,
@@ -169,7 +183,60 @@ export default {
             select: "1",
             //表格
             orderList: [],
-            currentOrder: []
+            currentOrder: [],
+            showPhoto: false
+            // orderList: [
+            //     {
+            //         apID: 368,
+            //         apName: "多城市方案7.6~7.19",
+            //         cName: "饮料A",
+            //         bTitle: "营养快线",
+            //         apTotal: 23400000,
+            //         realName: "汪键",
+            //         rIDs: "北京市(58面2018-07-06至2018-07-19)238,上海市(60面2018-07-06至2018-07-19)239,广州市(60面2018-07-06至2018-07-19)240,深圳市(60面2018-07-06至2018-07-19)241",
+            //         apcTime: "2018-07-05 16:20:22.0",
+            //         apState: 2,
+            //         apQC: "QC201807051101006"
+            //     },
+            //     {
+            //         apID: 371,
+            //         apName: "投放中方案（明天观察状态）",
+            //         cName: "阿里巴巴",
+            //         bTitle: "淘宝",
+            //         apTotal: 39685714,
+            //         realName: "汪键",
+            //         rIDs: "广州市(180面2018-06-26至2018-07-19)246,深圳市(60面2018-06-26至2018-07-19)247",
+            //         apcTime: "2018-07-05 16:28:12.0",
+            //         apState: 3,
+            //         apQC: "QC201807054401002"
+            //     }
+            // ],
+            // currentOrder: [
+            //     {
+            //         apID: 368,
+            //         apName: "多城市方案7.6~7.19",
+            //         cName: "饮料A",
+            //         bTitle: "营养快线",
+            //         apTotal: 23400000,
+            //         realName: "汪键",
+            //         rIDs: "北京市(58面2018-07-06至2018-07-19)238,上海市(60面2018-07-06至2018-07-19)239,广州市(60面2018-07-06至2018-07-19)240,深圳市(60面2018-07-06至2018-07-19)241",
+            //         apcTime: "2018-07-05 16:20:22.0",
+            //         apState: 2,
+            //         apQC: "QC201807051101006"
+            //     },
+            //     {
+            //         apID: 371,
+            //         apName: "投放中方案（明天观察状态）",
+            //         cName: "阿里巴巴",
+            //         bTitle: "淘宝",
+            //         apTotal: 39685714,
+            //         realName: "汪键",
+            //         rIDs: "广州市(180面2018-06-26至2018-07-19)246,深圳市(60面2018-06-26至2018-07-19)247",
+            //         apcTime: "2018-07-05 16:28:12.0",
+            //         apState: 3,
+            //         apQC: "QC201807054401002"
+            //     }
+            // ],
         };
     },
     mounted() {
@@ -209,7 +276,10 @@ export default {
                                 let arr = item.rIDs.split(",");
                                 let resultArr = [];
                                 for (let data of arr) {
-                                    let text = data.substr(0, data.indexOf(")") + 1);
+                                    let text = data.substr(
+                                        0,
+                                        data.indexOf(")") + 1
+                                    );
                                     resultArr.push(text);
                                 }
                                 item.cityArea = resultArr;
@@ -230,14 +300,14 @@ export default {
         // 跳转到详情页面
         ToDetail(apid) {
             console.log(apid);
-            sessionStorage.setItem('change_point', 'no');
+            sessionStorage.setItem("change_point", "no");
             sessionStorage.setItem("order_apid", apid);
             this.$router.push("./orderDetail");
         },
         // 更换点位
         changePoint(apid) {
             // Message.warning("该功能尚未完善");
-            sessionStorage.setItem('change_point', 'yes');
+            sessionStorage.setItem("change_point", "yes");
             sessionStorage.setItem("order_apid", apid);
             this.$router.push("./orderDetail");
         },
@@ -415,9 +485,24 @@ export default {
             }
             this.currentOrder = JSON.parse(JSON.stringify(this.orderList));
         },
-        loginTimeout(){
+        loginTimeout() {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
+        },
+        // 申请画像
+        applyPhoto() {
+            // Message.warning('该功能尚未完善');
+            this.showPhoto = true;
+        },
+        cancelApply() {
+            Message.info("取消画像申请");
+            console.log("用户取消了操作");
+            this.showPhoto = !this.showPhoto;
+        },
+        confirmApply(data) {
+            console.log(data);
+            this.showPhoto = !this.showPhoto;
+            // Message.success('该订单住户画像开通成功');
         },
 
         //提示框
@@ -579,6 +664,13 @@ a {
     /*position: relative;*/
     /*top: 1px;*/
     /*left: 0;*/
+}
+
+/deep/ .el-button [class*="el-icon-"] + span,
+.select-wrap button .el-icon-search {
+    position: relative;
+    left: -2px;
+    top: 0px;
 }
 
 .mediaList_wrap .mediaList_container .table_wrap {
@@ -837,6 +929,8 @@ a {
 
 /deep/ .el-dropdown .el-button-group .el-button:last-child {
     width: 30px;
+    position: relative;
+    top: 0px;
 }
 
 /*/deep/ .el-button-group .el-button:not(:last-child){*/

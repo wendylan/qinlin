@@ -28,7 +28,7 @@ var filterData = function (dataArr, key, otherkey = '', IsLock = '') {
 			}
 		}
 	}
-	console.log(dataList);
+	// console.log(dataList);
 	return dataList;
 }
 export default filterData;

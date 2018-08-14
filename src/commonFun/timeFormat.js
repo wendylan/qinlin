@@ -11,7 +11,7 @@ timeFormat.toDate = function (time, format = '-') {
 		}
 		time = new Date(Date.parse(time.toString().replace(/-/g, "/")));
 		let year = time.getFullYear();
-		let month = time.getMonth() + 1;//js从0开始取 
+		let month = time.getMonth() + 1;//js从0开始取
 		let date = time.getDate();
 
 		if (month < 10) {
@@ -25,7 +25,7 @@ timeFormat.toDate = function (time, format = '-') {
 	}
 
 	return result;
-}
+};
 // 获取时间年月日时分秒
 timeFormat.toDateTime = function (time) {
 	let result = '';
@@ -36,7 +36,7 @@ timeFormat.toDateTime = function (time) {
 		}
 		time = new Date(Date.parse(time.toString().replace(/-/g, "/")));
 		let year = time.getFullYear();
-		let month = time.getMonth() + 1;//js从0开始取 
+		let month = time.getMonth() + 1;//js从0开始取
 		let date = time.getDate();
 		let hour = time.getHours();
 		let minutes = time.getMinutes();
@@ -62,5 +62,5 @@ timeFormat.toDateTime = function (time) {
 	}
 
 	return result;
-}
+};
 export default timeFormat;

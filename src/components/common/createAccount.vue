@@ -30,10 +30,11 @@
                                     <el-option label="销售" value="BD"></el-option>
                                     <el-option label="运营" value="OP"></el-option>
                                     <el-option label="工程人员" value="EP"></el-option>
+                                    <!-- <el-option label="广告主" value="AD"></el-option> -->
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="权限城市:" prop="PermissionCity">
-                                <el-select v-model="accountForm.PermissionCity" :multiple="CityMultiple" placeholder="请选择权限城市(多选)" @change="handleSelectCity" @remove-tag="removeCity">
+                                <el-select v-model="accountForm.PermissionCity" :multiple="CityMultiple" filterable placeholder="请选择权限城市(多选)" @change="handleSelectCity" @remove-tag="removeCity">
                                     <el-option v-for="item in throwCity" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -206,13 +207,57 @@ export default {
                 ],
                 boss: [{ validator: validateBoss, trigger: "blur" }]
             },
-            CityMultiple: true
+            CityMultiple: true,
+            citiesList: [
+                { value: "0", label: "全国" },
+                { value: "110100", label: "北京市" },
+                { value: "130100", label: "石家庄" },
+                { value: "130600", label: "保定市" },
+                { value: "210100", label: "沈阳市" },
+                { value: "210200", label: "大连市" },
+                { value: "220100", label: "长春市" },
+                { value: "220200", label: "吉林市" },
+                { value: "230100", label: "哈尔滨" },
+                { value: "310100", label: "上海市" },
+                { value: "320100", label: "南京市" },
+                { value: "320200", label: "无锡市" },
+                { value: "330100", label: "杭州市" },
+                { value: "330200", label: "宁波市" },
+                { value: "330300", label: "温州市" },
+                { value: "340100", label: "合肥市" },
+                { value: "341200", label: "阜阳市" },
+                { value: "350200", label: "厦门市" },
+                { value: "410100", label: "郑州市" },
+                { value: "410300", label: "洛阳市" },
+                { value: "410500", label: "安阳市" },
+                { value: "410800", label: "焦作市" },
+                { value: "411000", label: "许昌市" },
+                { value: "411300", label: "南阳市" },
+                { value: "411700", label: "驻马店市" },
+                { value: "420100", label: "武汉市" },
+                { value: "430100", label: "长沙市" },
+                { value: "440100", label: "广州市" },
+                { value: "440300", label: "深圳市" },
+                { value: "440600", label: "佛山市" },
+                { value: "440800", label: "湛江市" },
+                { value: "441900", label: "东莞市" },
+                { value: "450100", label: "南宁市" },
+                { value: "500100", label: "重庆市" },
+                { value: "510100", label: "成都市" },
+                { value: "520100", label: "贵阳市" },
+                { value: "530100", label: "昆明市" },
+                { value: "610100", label: "西安市" },
+                { value: "610300", label: "宝鸡市" },
+                { value: "620100", label: "兰州市" },
+                { value: "630100", label: "西宁市" }
+            ]
         };
     },
     mounted() {
         //  this.ShowRegion()
         this.getUhwo();
         this.getInitEditInfo();
+        console.log(this.citiesList.length);
     },
     methods: {
         //选择权限城市
@@ -230,17 +275,7 @@ export default {
             console.log("移除权限城市", val);
             if (val === "0" || val === "全国") {
                 // this.CityMultiple = true
-                this.throwCity = [
-                    { value: "0", label: "全国" },
-                    { value: "110100", label: "北京" },
-                    { value: "310100", label: "上海" },
-                    { value: "440100", label: "广州" },
-                    { value: "440300", label: "深圳" },
-                    { value: "500100", label: "重庆" },
-                    { value: "510100", label: "成都" },
-                    { value: "330100", label: "杭州" },
-                    { value: "340100", label: "合肥" }
-                ];
+                this.throwCity = this.citiesList;
             }
         },
         // 输入账号获取上级信息(远程搜索)
@@ -272,19 +307,8 @@ export default {
                 sessionStorage.getItem("session_data")
             );
             let uWho = sessionData.uWho; // ['440100','110100']
-            // let uWho =  '440100,110100'
             if (uWho == "0") {
-                this.throwCity = [
-                    { value: "0", label: "全国" },
-                    { value: "110100", label: "北京" },
-                    { value: "310100", label: "上海" },
-                    { value: "440100", label: "广州" },
-                    { value: "440300", label: "深圳" },
-                    { value: "500100", label: "重庆" },
-                    { value: "510100", label: "成都" },
-                    { value: "330100", label: "杭州" },
-                    { value: "340100", label: "合肥" }
-                ];
+                this.throwCity = this.citiesList;
             } else {
                 let uWhoArr = uWho.split(","); // ['440100','110100']
                 let cityList = [];
@@ -352,14 +376,18 @@ export default {
                 .then(res => {
                     console.log(res);
                     let data = res.data;
-                    MessageBox.alert(data.MSG + "<br>", "修改用户", {
-                        showClose: false,
-                        dangerouslyUseHTMLString: true,
-                        confirmButtonText: "确定"
-                    }).then(res => {
-                        // accountList
-                        this.$router.push("./accountList");
-                    });
+                    if (data.SysCode == 100200) {
+                        MessageBox.alert(data.MSG + "<br>", "修改用户", {
+                            showClose: false,
+                            dangerouslyUseHTMLString: true,
+                            confirmButtonText: "确定"
+                        }).then(res => {
+                            // accountList
+                            this.$router.push("./accountList");
+                        });
+                    } else {
+                        Message.info("程序出错了,请稍后重试！");
+                    }
                 })
                 .catch(err => {
                     console.log(err);

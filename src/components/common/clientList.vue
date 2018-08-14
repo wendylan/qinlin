@@ -41,18 +41,20 @@
                     <el-table border :data="currentPlan" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" style="width: 100%" :default-sort="{prop: 'joinTime', order: 'descending'}">
                         <el-table-column label="联系人" min-width="6%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.realName" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.realName" placement="bottom" v-if="scope.row.realName.length>18">
                                     <span>{{scope.row.realName}}</span>
                                 </el-tooltip>
+                                <span v-else>{{scope.row.realName}}</span>
                             </template>
                         </el-table-column>
                         <!--<el-table-column prop="clientRName" label="所在地" min-width="7.2%">-->
                         <!--</el-table-column>-->
                         <el-table-column label="职位" class="tar" min-width="7.2%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.position" placement="bottom">
-                                    <span>{{scope.row.position}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.position" placement="bottom" v-if="scope.row.position.length>18">
+                                    <span>{{scope.row.position||'--'}}</span>
                                 </el-tooltip>
+                                <span v-else>{{scope.row.position||'--'}}</span>
                             </template>
 
                         </el-table-column>
@@ -60,21 +62,29 @@
                         </el-table-column>
                         <el-table-column label="公司名称" min-width="18.4%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cName" placement="bottom" v-if="scope.row.cName.length>18">
                                     <span>{{scope.row.cName||'--'}}</span>
                                 </el-tooltip>
+                                <span v-else>{{scope.row.cName||'--'}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="rName" label="所在城市" min-width="8%" :filters="filtCity" :filter-method="filterCity" :filter-multiple="false">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.rName||'--'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column label="公司品牌" min-width="12.1%">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.cBrand" placement="bottom">
-                                    <span>{{scope.row.cBrand}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.cBrand" placement="bottom" v-if="scope.row.cBrand.length>18">
+                                    <span>{{scope.row.cBrand||'--'}}</span>
                                 </el-tooltip>
+                                <span v-else>{{scope.row.cBrand||'--'}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="puName" label="所有人" min-width="6.1%">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.puName||'--'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column label="创建日期" min-width="8.3%" sortable :sort-method="sortData">
                             <template slot-scope="scope">
@@ -498,6 +508,12 @@ export default {
     position: relative;
     /*top: 1px;*/
     left: 0;
+}
+/deep/ .el-button [class*="el-icon-"] + span,
+.select-wrap button .el-icon-search {
+    position: relative;
+    left: -2px;
+    top: 0px;
 }
 
 .mediaList_wrap .mediaList_container .table_wrap {

@@ -31,7 +31,7 @@
 									<span>{{obj.cityArea}}</span>
 								</li>
 								<li>所属商圈：
-									<span>{{obj.tradingArea}}</span>
+									<span>{{obj.tradingArea || '--'}}</span>
 								</li>
 							</ul>
 						</el-col>
@@ -50,7 +50,7 @@
 									<span>{{obj.housePrice}}</span>
 								</li>
 								<li>{{res_village.joinTime}}：
-									<span>{{obj.joinTime}}</span>
+									<span>{{obj.joinTime || '--'}}</span>
 								</li>
 							</ul>
 						</el-col>
@@ -63,7 +63,7 @@
 									<span>{{obj.latLng}}</span>
 								</li>
 								<li> 所属物业：
-									<span>{{obj.pmc}}</span>
+									<span>{{obj.pmc || '--'}}</span>
 								</li>
 								<li> 小区全貌：
 									<span @click="showResImg" style="color: #108EE9;cursor: pointer">查看</span>
@@ -92,13 +92,19 @@
 							</el-table-column>
 							<el-table-column prop="mState" label="状态" min-width="7%">
 							</el-table-column>
-							<el-table-column prop="assetTag" label="资产编号" min-width="10.2%">
+							<el-table-column label="资产编号" min-width="10.2%">
+								<template slot-scope="scope">
+									{{ scope.row.assetTag || '--' }}
+								</template>
 							</el-table-column>
 							<el-table-column prop="adSize" label="广告尺寸" min-width="7%">
 							</el-table-column>
 							<el-table-column prop="adViewSize" label="可视画面" min-width="7%">
 							</el-table-column>
-							<el-table-column prop="notPush" label="广告限制" min-width="10%" class="tar">
+							<el-table-column label="广告限制" min-width="10%" class="tar">
+								<template slot-scope="scope">
+									{{ scope.row.notPush || '--' }}
+								</template>
 							</el-table-column>
 							<el-table-column label="备注" min-width="12%">
 								<template slot-scope="scope">
@@ -134,7 +140,6 @@
 
 <script>
 import api from "../../api/api";
-import commentFun from "../../js/commentFun";
 import areaToText from "../../commonFun/areaToText.js";
 import areaToText_new from "../../commonFun/areaToText_new";
 import { Button, Table, TableColumn, Row, Col, Message } from "element-ui";
@@ -246,7 +251,7 @@ export default {
                     }
                     //  this.obj.cType = res.data.cType houseType
                     this.obj.housePrice = res.data.hPrice / 100 + "元/平方米";
-                    this.obj.joinTime = res.data.chDay; //commentFun.spliceFun(res.data.joinTime)
+                    this.obj.joinTime = res.data.chDay;
                     this.obj.resAddress = res.data.resAddress;
                     this.obj.latLng = res.data.latLng;
                     this.obj.tradingArea = res.data.tradingArea;
@@ -396,7 +401,6 @@ $(function() {
     $(".ad_tab")
         .find("li")
         .click(function() {
-            console.log(123);
             $(this)
                 .addClass("curr_ad")
                 .siblings()

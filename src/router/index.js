@@ -26,6 +26,8 @@ import adminIndex from '../components/superOperate/superOperate_index.vue';
 import ADlimitList from '../components/superOperate/ADlimitList.vue';
 import superOperateCommon from '../components/superOperate/superOperate_common.vue';
 import dataAnalysis from '../components/superOperate/dataAnalysis.vue'
+import SMqinlinzk from '../components/superOperate/SMqinlinzk.vue'
+
 //普通运营
 import operateIndex from '../components/operate/operate_index.vue';
 import operateCommon from '../components/operate/operate_common.vue';
@@ -37,14 +39,31 @@ import saleCommon from '../components/sale/sale_common.vue';
 //媒介
 import mediaIndex from '../components/media/media_index.vue';
 import mediaCommon from '../components/media/media_common.vue';
+//广告主
+import adOwnerIndex from '../components/adOwner/adOwner_index.vue';
+import adOwnerCommon from '../components/adOwner/adOwner_common.vue';
+import ADReport from '../components/adOwner/ADqinlinzkReport.vue';
+import ADqinlinzk from '../components/adOwner/ADqinlinzk.vue';
+import totalView from '../components/adOwner/totalView.vue';
+import trafficTrend from '../components/adOwner/trafficTrends.vue';
+import resVisitors from '../components/adOwner/resVisitors.vue';
+import accessPeriod from '../components/adOwner/accessPeriod.vue';
+import residentAttr from '../components/adOwner/residentAttr.vue';
+import costPreferences from '../components/adOwner/costPreferences.vue'
+import ADorderDetail from '../components/adOwner/ADorderDetail.vue'
 //登录
 import login from '../components/home/login.vue';
 //修改密码
 import changePwd from '../components/home/changePwd.vue';
 //亲邻科技上刊报告
-import upReport from '../components/h5/upReport.vue';
-import downReport from '../components/h5/downReport.vue';
+// import upReport from '../components/h5/upReport.vue';
+// import downReport from '../components/h5/downReport.vue';
 import Report from '../components/h5/Report.vue';
+
+//404
+import NotFountPage from '../components/common/NotFoundPage.vue'
+// 方案分享页面
+import  shareADList from '../components/common/shareADList'
 
 Vue.use(Router);
 
@@ -54,10 +73,10 @@ export default new Router({
 		{ path: '/', redirect: '/login' },
 		{ path: '/login', name: 'login', component: login },
     { path: '/mapMessage',name: 'mapMessage',component: mapMessage },
-
+    { path: '/shareADList', name: 'shareADList', component: shareADList },
 		//上下刊报告h5页面
-		{ path: '/upReport', name: 'upReport', component: upReport },
-		{ path: '/downReport', name: 'downReport', component: downReport },
+		// { path: '/upReport', name: 'upReport', component: upReport },
+		// { path: '/downReport', name: 'downReport', component: downReport },
 		{ path: '/Report', name: 'Report', component: Report },
 
 		//admin
@@ -93,6 +112,15 @@ export default new Router({
 				{ path: '/superOperate/changePwd', component: changePwd },
 				{ path: '/superOperate/ludanReport', component: ludanReport },
 				{ path: '/superOperate/dataAnalysis', component: dataAnalysis },
+				{ path: '/superOperate/SMqinlinzk', component: SMqinlinzk },
+        { path: '/superOperate/changePwd', component: changePwd },
+        { path: '/superOperate/totalView', component: totalView },
+        { path: '/superOperate/trafficTrend', component: trafficTrend },
+        { path: '/superOperate/resVisitors', component: resVisitors },
+        { path: '/superOperate/accessPeriod', component: accessPeriod },
+        { path: '/superOperate/residentAttr', component: residentAttr },
+        { path: '/superOperate/costPreferences', component: costPreferences },
+        { path: '/superOperate/ADqinlinzk', component: ADqinlinzk },
 			]
 		},
 		//普通运营
@@ -134,6 +162,7 @@ export default new Router({
 				{ path: '/media/photoGallery', component: photoGallery },
 				{ path: '/media/changePwd', component: changePwd },
 				{ path: '/media/ludanReport', component: ludanReport },
+        { path: '/media/mapMessage',component: mapMessage },
 			]
 		},
 		//销售
@@ -153,9 +182,34 @@ export default new Router({
 				{ path: '/sale/editPlan', component: editPlan },
 				{ path: '/sale/planDetail', component: planDetail },
 				{ path: '/sale/orderDetail', component: orderDetail },
+				{ path: '/sale/photoGallery', component: photoGallery },
 				{ path: '/sale/changePwd', component: changePwd },
+        { path: '/sale/mapMessage',component: mapMessage },
 			]
 		},
+		//广告主
+		{
+			path: '/',
+			component: adOwnerCommon,
+			children: [
+				{ path: '/adOwner', component: adOwnerIndex },
+				{ path: '/adOwner/planList', component: planList },
+				{ path: '/adOwner/orderList', component: orderList },
+				{ path: '/adOwner/changePwd', component: changePwd },
+				{ path: '/adOwner/ADReport', component: ADReport },
+				{ path: '/adOwner/ADqinlinzk', component: ADqinlinzk },
+				{ path: '/adOwner/totalView', component: totalView },
+				{ path: '/adOwner/trafficTrend', component: trafficTrend },
+				{ path: '/adOwner/resVisitors', component: resVisitors },
+				{ path: '/adOwner/accessPeriod', component: accessPeriod },
+				{ path: '/adOwner/residentAttr', component: residentAttr },
+				{ path: '/adOwner/costPreferences', component: costPreferences },
+				{ path: '/adOwner/ADorderDetail', component: ADorderDetail },
+				{ path: '/adOwner/ADplanDetail', component: planDetail },
+			]
+		},
+    //404
+    { path: '*', component: NotFountPage }
 
 	]
 })

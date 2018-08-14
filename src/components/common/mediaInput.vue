@@ -174,7 +174,7 @@
 							</el-form-item>
 							<el-form-item label="门禁照片:" prop="mImg">
 								<div class="upload_img_wrap" style="width: 120px;" @click="saveImgInfo(item.text)">
-									<el-upload :action="doUpload" list-type="picture-card" :limit='1' :file-list="updataMedia" :on-success="mediaUploadSuccess" :on-change="mediaUploadChange" :on-preview="handlePictureCardPreview">
+									<el-upload :disabled="isUpload" :action="doUpload" list-type="picture-card" :limit='1' :file-list="updataMedia" :before-upload="beforeUpload_media" :on-success="mediaUploadSuccess" :on-change="mediaUploadChange" :on-preview="handlePictureCardPreview">
 										<i class="el-icon-plus"></i>
 									</el-upload>
 								</div>
@@ -281,6 +281,7 @@ export default {
         };
 
         return {
+            isUpload: true,
             assetIdBolean: false,
             mstateOption: [
                 { label: "禁用", value: "0" },
@@ -1397,6 +1398,9 @@ export default {
         //媒体图片
         handlePictureCardPreview() {},
         mediaUploadChange() {},
+        beforeUpload_media(file) {
+            this.$message.error("该功能暂未开放！");
+        },
         // 图片上传前验证格式和大小
         beforeUpload_res(file) {
             const isJPG =
@@ -1452,6 +1456,7 @@ export default {
         },
         // 设置媒体图片信息
         saveImgInfo(m_title) {
+            this.$message.warning("该功能暂未开放！");
             console.log("获取当前媒体标题", m_title); // mediaImg_title
             this.mediaImg_title = m_title;
         },
@@ -1947,7 +1952,7 @@ export default {
                     ) {
                         Message({
                             type: "success",
-                            message: "状态更改成功"
+                            message: "修改成功"
                         });
                     } else if (
                         res.data.SysCode === 200302 ||

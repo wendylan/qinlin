@@ -16,7 +16,7 @@
                                     <el-input placeholder="请输入内容" v-model="keyword" class="input-with-select">
                                         <el-select v-model="select" slot="prepend" placeholder="请选择">
                                             <el-option label="方案名称" value="1" v-if="(activeName=='first')||(activeName=='second')"></el-option>
-                                            <el-option label="账号名称" value="2"></el-option>
+                                            <!-- <el-option label="账号名称" value="2"></el-option> -->
                                             <el-option label="资源名称" value="3"></el-option>
                                         </el-select>
                                     </el-input>
@@ -48,7 +48,7 @@
                             <photo :imgarr="pageUpImgArr" :show-pic="showPic"></photo>
                             <!--页码-->
                             <div class="pager" v-if="showPic ===3">
-                                <el-pagination small background :current-page.sync="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                <el-pagination v-if="paginationShow" small background :current-page.sync="currUpPage" :page-sizes="[10, 20]" :page-size="pageUpSize" layout="sizes, prev, pager, next, jumper" :total="currUpImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
@@ -57,7 +57,7 @@
                             <photo :imgarr="pageDownImgArr" :show-pic="showPic"></photo>
                             <!--页码-->
                             <div class="pager" v-if="showPic ===3">
-                                <el-pagination small background :current-page.sync="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                <el-pagination v-if="paginationShow" small background :current-page.sync="currDownPage" :page-sizes="[10, 20]" :page-size="pageDownSize" layout="sizes, prev, pager, next, jumper" :total="currDownImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
@@ -66,7 +66,7 @@
                             <photo :imgarr="pageInstallImgArr" :show-pic="showPic"></photo>
                             <!--页码-->
                             <div class="pager"  v-if="showPic ===3">
-                                <el-pagination small background :current-page.sync="currInstallPage" :page-sizes="[10, 20]" :page-size="pageInstallSize" layout="sizes, prev, pager, next, jumper" :total="currInstallImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                <el-pagination v-if="paginationShow" small background :current-page.sync="currInstallPage" :page-sizes="[10, 20]" :page-size="pageInstallSize" layout="sizes, prev, pager, next, jumper" :total="currInstallImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
@@ -75,7 +75,7 @@
                             <photo :imgarr="pageSearchImgArr" :show-pic="showPic"></photo>
                             <!--页码-->
                             <div class="pager" v-if="showPic ===3">
-                                <el-pagination small background :current-page.sync="currSearchPage" :page-sizes="[10, 20]" :page-size="pageSearchSize" layout="sizes, prev, pager, next, jumper" :total="currSearchImgArr.length" @size-change="sizeChange" @current-change='changePage'>
+                                <el-pagination v-if="paginationShow" small background :current-page.sync="currSearchPage" :page-sizes="[10, 20]" :page-size="pageSearchSize" layout="sizes, prev, pager, next, jumper" :total="currSearchImgArr.length" @size-change="sizeChange" @current-change='changePage'>
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
@@ -170,6 +170,7 @@ export default {
     data() {
         return {
             // 当前页
+            paginationShow: true,
             currUpPage: 1,
             currDownPage: 1,
             pageUpSize: 10,
@@ -360,7 +361,11 @@ export default {
             }else{
                 this.pageSearchSize = pageVal;
             }
+            this.paginationShow = false;
             this.changePage(1);
+            this.$nextTick(function () {
+                this.paginationShow = true;
+            });
         },
         // 分页功能
         changePage(page) {
@@ -390,7 +395,7 @@ export default {
                 // arr = this.searchAreaArr;
                 arr = this.currSearchImgArr;
             }
-            
+
             let total = arr.length;
             for (let i = (page - 1) * pageSize;i < (page * pageSize < total ? page * pageSize : total);i++) {
                 resultArr.push(arr[i]);
@@ -906,7 +911,7 @@ export default {
                         let alt = data.pRemarks;
                         if(range && keyword && city.length){
                             if(
-                                dateFormat.toDate(data.pUTime) >= range[0] && 
+                                dateFormat.toDate(data.pUTime) >= range[0] &&
                                 dateFormat.toDate(data.pUTime) <= range[1]
                             ){
                                 if (
@@ -1056,7 +1061,12 @@ export default {
                         this.currSearchImgArr = arr;
                         // this.currSearchPage = 1;
                     }
+                    this.paginationShow = false;
                     this.changePage(1);
+                    this.$nextTick(function () {
+                        this.paginationShow = true;
+                    });
+                    // this.changePage(1);
                 }
                 if (!arr.length) {
                     this.showPic = 2;
@@ -1162,6 +1172,11 @@ export default {
     width: 76px;
     height: 34px;
 }
+/deep/ .el-button [class*=el-icon-]+span, .select-wrap button .el-icon-search{
+  position: relative;
+  left: -2px;
+  top: 0px;
+}
 
 .searchInput /deep/ .el-input__inner,
 .searchInput {
@@ -1265,7 +1280,7 @@ export default {
 }
 
 .find .photoCard {
-    margin-right: 20px;
+    margin-right: 6px;
 }
 
 .photoCard {
@@ -1793,6 +1808,9 @@ export default {
     .mediaList_wrap .mediaList_container .table_wrap {
         width: 1284px;
     }
+  .find .photoCard {
+    margin-right: 20px;
+  }
 
     .photoCard + .photoCard {
         /*margin-left: 26px;*/

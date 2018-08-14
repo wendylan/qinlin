@@ -38,8 +38,20 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="realName" label="姓名" min-width="7.8%">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.realName" placement="bottom" v-if="scope.row.realName.length>8">
+                                    <span>{{scope.row.realName||'--'}}</span>
+                                </el-tooltip>
+                                <span v-else>{{scope.row.realName||'--'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="uWhoArr" label="权限城市" class="tar" min-width="14.2%" :filters="filterUWhoData" :filter-method="filterUWho" :filter-multiple="true">
+                            <template slot-scope="scope" >
+                                <el-tooltip class="item" effect="dark" :content="scope.row.uWhoArr" placement="bottom" v-if="scope.row.uWhoArr.length>18">
+                                    <span>{{scope.row.uWhoArr||'--'}}</span>
+                                </el-tooltip>
+                                <span v-else>{{scope.row.uWhoArr||'--'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="uType" label="账号角色" min-width="8.1%" :filters="[
 							{text: '系统管理员', value: 'SA'},
@@ -55,6 +67,9 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="puName" label="上级" min-width="7.8%">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.puName||'--'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column label="创建日期" min-width="9.8%" sortable :sort-method="sortData">
                             <template slot-scope="scope">
@@ -186,7 +201,7 @@ export default {
                                         cityList.push(cityObj);
                                     }
                                     if (i >= uWhoArr.length - 1) {
-                                        console.log("result", result);
+                                        // console.log("result", result);
                                         // data.uWhoArr = result;
                                         this.$set(
                                             account[index],
@@ -206,7 +221,7 @@ export default {
                         console.log("cityList", cityList);
 
                         this.currAccount = this.accountList;
-                    } else if(res.data.SysCode == 100302){
+                    } else if (res.data.SysCode == 100302) {
                         this.loginTimeout();
                     } else {
                         Message.warning(res.data.MSG);
@@ -298,7 +313,7 @@ export default {
         },
         // 筛选权限城市
         filterUWho(value, row) {
-            console.log(value, "-------------", row);
+            // console.log(value, "-------------", row);
             // if(value =='全国'){
             // 	return true;
             // }
@@ -356,9 +371,9 @@ export default {
                             if (res.data.SysCode == 100200) {
                                 Message.success("操作成功");
                                 row.uState = row.uState ? 0 : 1;
-                            } else if(res.data.SysCode == 100302){
+                            } else if (res.data.SysCode == 100302) {
                                 this.loginTimeout();
-                            }else{
+                            } else {
                                 Message.warning(res.data.MSG);
                             }
                         })
@@ -383,10 +398,10 @@ export default {
                 this.showNewBtn = false;
             }
         },
-        loginTimeout(){
+        loginTimeout() {
             Message.warning("登录超时,请重新登录");
             this.$router.push("/login");
-        },
+        }
     }
 };
 </script>
@@ -525,6 +540,12 @@ a {
     left: 0;
     margin-left: 2px;
 }
+/deep/ .el-button [class*="el-icon-"] + span,
+.select-wrap button .el-icon-search {
+    position: relative;
+    left: -2px;
+    top: 0px;
+}
 
 /deep/ .el-button + .el-button {
     margin-left: 0;
@@ -615,9 +636,12 @@ a {
 
 /*超出省略*/
 /deep/ .el-table .cell {
-    overflow-x: hidden;
+    /* overflow-x: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap; */
     white-space: nowrap;
+    max-width: 300px;
+    text-overflow: ellipsis;
 }
 
 /*筛选*/
@@ -707,6 +731,25 @@ a {
     position: relative;
 }
 
+.tar /deep/ .el-table-filter__content{
+  overflow-x: hidden;
+  min-width: 100px;
+  overflow-y: scroll;
+  height: 172px;
+}
+.tar /deep/ .el-table-filter__content::-webkit-scrollbar {
+  width: 4px;
+  background: #fafafa;
+}
+
+.tar /deep/ .el-table-filter__content::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
 /*1440*/
 @media all and (min-width: 1420px) {
     .ad_mediaDetail_nav p {
@@ -733,5 +776,33 @@ a {
     .mediaList_wrap .mediaList_container .table_wrap {
         width: 1764px !important;
     }
+    /deep/ .el-table__row td:nth-child(2) .cell {
+        width: 168px;
+    }
 }
+</style>
+
+<style>
+  .tar  .el-table-filter__content{
+    overflow-x: hidden;
+    min-width: 100px;
+    overflow-y: scroll;
+    height: 196px;
+  }
+  .tar  .el-table-filter__content::-webkit-scrollbar {
+    width: 4px;
+    background: #fafafa;
+  }
+
+  .tar  .el-table-filter__content::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  .el-table-filter__list-item{
+    color: #606266;
+  }
+
 </style>
